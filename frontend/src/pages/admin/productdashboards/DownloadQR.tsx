@@ -122,7 +122,7 @@ const handleDownloadQR = async (row: DownloadProductQRCode) => {
             const ctx = canvas.getContext('2d');
 
             if (ctx) {
-                const padding = 20; 
+                const padding = 40; 
                 // const productQrNamePaddingLeft = 30;
 
                 const productName = row.product_name || 'Unknown Product';
@@ -130,12 +130,13 @@ const handleDownloadQR = async (row: DownloadProductQRCode) => {
 
                 // Set font for product_name and measure its height
                 ctx.font = '20px Arial'; 
+                ctx.textAlign = 'center';
                 const productNameHeight = 20; 
                 const productNameWidth = ctx.measureText(productName).width; 
 
                 // Set font for product_qr_id and measure its width
                 ctx.font = '20px Arial'; 
-                const productQrIdHeight = 20; 
+                const productQrIdHeight = 40; 
                 const productQrIdWidth = ctx.measureText(productQrId).width; 
 
                 // Calculate canvas dimensions
@@ -145,12 +146,12 @@ const handleDownloadQR = async (row: DownloadProductQRCode) => {
                 // Set canvas dimensions
                 canvas.width = canvasWidth; 
                 canvas.height = canvasHeight;
-
+                ctx.textAlign = 'center';
                 ctx.fillStyle = '#FFFFFF';
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
 
                 const imageX = (canvasWidth - imageBitmap.width) / 2; 
-                const imageY = padding + 10; 
+                const imageY = padding + 30; 
                 ctx.drawImage(imageBitmap, imageX, imageY);
 
                 // Draw product_name vertically on the left side of the QR code
@@ -160,17 +161,21 @@ const handleDownloadQR = async (row: DownloadProductQRCode) => {
                 // Rotate 90 degrees counterclockwise
                 ctx.rotate(-Math.PI / 2); 
                 ctx.fillStyle = '#000000'; 
+                ctx.font = '40px Arial'; 
 
                // Draw the product name vertically
                 ctx.fillText(productName, 0, 10);
                 ctx.restore();
 
                 // Draw product_qr_id centered horizontally below the QR code
+                ctx.textAlign = 'center';
                 ctx.fillStyle = '#000000'; 
-                ctx.font = '12px Arial'; 
+                ctx.font = '40px Arial'; 
+               
+                
                 // 5 pixels below the QR code image
                 const productQrIdY = imageY + imageBitmap.height + 5 + productQrIdHeight; 
-                ctx.fillText(productQrId, (canvasWidth - productQrIdWidth) / 2, productQrIdY); 
+                ctx.fillText(productQrId, (canvasWidth ) / 2, productQrIdY); 
 
                 const finalImageBlob = await new Promise<Blob>((resolve) => canvas.toBlob(resolve));
                 const imageName = image.qr_code_image.split('/').pop() || 'qr_code.png';
