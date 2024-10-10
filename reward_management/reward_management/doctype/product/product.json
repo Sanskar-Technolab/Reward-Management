@@ -8,7 +8,6 @@
  "engine": "InnoDB",
  "field_order": [
   "product_section",
-  "naming_series",
   "product_name",
   "product_image",
   "category",
@@ -22,13 +21,6 @@
    "fieldname": "product_section",
    "fieldtype": "Section Break",
    "label": "Product "
-  },
-  {
-   "fieldname": "naming_series",
-   "fieldtype": "Select",
-   "hidden": 1,
-   "label": "Naming Series",
-   "options": "{product_name}.-.{YYYY}.-.#####"
   },
   {
    "fieldname": "product_name",
@@ -78,7 +70,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-10-09 11:06:10.451221",
+ "modified": "2024-10-10 16:57:54.866796",
  "modified_by": "Administrator",
  "module": "Reward Management",
  "name": "Product",
