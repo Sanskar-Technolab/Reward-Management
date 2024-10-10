@@ -1,0 +1,31 @@
+{
+ "attach_print": 0,
+ "channel": "System Notification",
+ "condition": "",
+ "creation": "2024-09-04 10:27:52.348237",
+ "days_in_advance": 0,
+ "docstatus": 0,
+ "doctype": "Notification",
+ "document_type": "User",
+ "enabled": 1,
+ "event": "New",
+ "idx": 0,
+ "is_standard": 1,
+ "message": "<p><strong>{{doc.username}}</strong>Your registration request has been approved, and your account has been created successfully.</p>\n",
+ "message_type": "HTML",
+ "modified": "2024-09-05 18:39:26.729797",
+ "modified_by": "Administrator",
+ "module": "Reward Management",
+ "name": "Customer Account Has Been Approved",
+ "owner": "Administrator",
+ "recipients": [
+  {
+   "receiver_by_document_field": "",
+   "receiver_by_role": "Customer"
+  }
+ ],
+ "send_system_notification": 0,
+ "send_to_all_assignees": 0,
+ "subject": "Your Account Has Been Approved",
+ "value_changed": "status"
+}

@@ -1,0 +1,32 @@
+{
+ "attach_print": 0,
+ "channel": "System Notification",
+ "condition": "doc.request_status=='Pending'",
+ "creation": "2024-09-04 10:24:39.717198",
+ "days_in_advance": 0,
+ "docstatus": 0,
+ "doctype": "Notification",
+ "document_type": "Redeem Request",
+ "enabled": 1,
+ "event": "New",
+ "idx": 0,
+ "is_standard": 1,
+ "message": "<p><a href=\"../../rewards/redeemption-request\"><strong>{{doc.full_name}}</strong> has sent a request for<strong> {{doc.redeemed_points}} </strong>points redemption.</a></p>\n",
+ "message_type": "Markdown",
+ "modified": "2024-09-11 18:07:44.927686",
+ "modified_by": "Administrator",
+ "module": "Reward Management",
+ "name": "New Redeem Request Received",
+ "owner": "Administrator",
+ "recipients": [
+  {
+   "receiver_by_role": "Admin"
+  },
+  {
+   "receiver_by_role": "Administrator"
+  }
+ ],
+ "send_system_notification": 0,
+ "send_to_all_assignees": 0,
+ "subject": "New Redeem Request Received"
+}

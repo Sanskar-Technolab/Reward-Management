@@ -1,0 +1,147 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "naming_series:",
+ "creation": "2024-07-30 17:47:37.675696",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "naming_series",
+  "customer_id",
+  "full_name",
+  "redeemed_points",
+  "current_point_status",
+  "total_points",
+  "transection_id",
+  "request_status",
+  "column_break_egy3",
+  "mobile_number",
+  "received_date",
+  "received_time",
+  "amount",
+  "approved_on",
+  "approve_time"
+ ],
+ "fields": [
+  {
+   "default": "RI.-.YYYY.-.#####",
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "label": "Naming Series",
+   "options": "RI.-.YYYY.-.#####"
+  },
+  {
+   "fieldname": "customer_id",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Customer ID",
+   "options": "Customer",
+   "reqd": 1
+  },
+  {
+   "fieldname": "redeemed_points",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Redeemed Points",
+   "reqd": 1
+  },
+  {
+   "fieldname": "current_point_status",
+   "fieldtype": "Int",
+   "label": "Current Points"
+  },
+  {
+   "fetch_from": "customer_id.total_points",
+   "fieldname": "total_points",
+   "fieldtype": "Int",
+   "label": "Total Points"
+  },
+  {
+   "fieldname": "transection_id",
+   "fieldtype": "Data",
+   "label": "Transection ID"
+  },
+  {
+   "fieldname": "request_status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Action",
+   "options": "Pending\nCancel\nApproved"
+  },
+  {
+   "fieldname": "column_break_egy3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "customer_id.mobile_number",
+   "fieldname": "mobile_number",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Mobile Number",
+   "reqd": 1
+  },
+  {
+   "fieldname": "received_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Received Date"
+  },
+  {
+   "fieldname": "received_time",
+   "fieldtype": "Time",
+   "label": "Received Time"
+  },
+  {
+   "fieldname": "amount",
+   "fieldtype": "Currency",
+   "label": "Amount"
+  },
+  {
+   "fieldname": "approved_on",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Approved Date"
+  },
+  {
+   "fieldname": "approve_time",
+   "fieldtype": "Time",
+   "label": "Approve Time"
+  },
+  {
+   "fetch_from": "customer_id.full_name",
+   "fieldname": "full_name",
+   "fieldtype": "Data",
+   "label": "Full Name"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2024-09-11 16:47:01.248253",
+ "modified_by": "Administrator",
+ "module": "Reward Management",
+ "name": "Redeem Request",
+ "naming_rule": "By \"Naming Series\" field",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

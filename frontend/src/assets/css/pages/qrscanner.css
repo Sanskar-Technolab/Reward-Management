@@ -1,0 +1,57 @@
+
+
+  /* #html5-qrcode-anchor-scan-type-change{
+    display: none !important;
+  } */
+ #my-qr-reader__scan_region{
+    display: flex !important;
+    justify-content: center !important;
+ }
+ #html5-qrcode-button-camera-start{
+    background-color: #eae1ff !important;
+    color: #845adf !important;
+    font-weight: 500 !important;
+    margin-bottom: 0.25rem;
+    margin-inline-start: 0px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border-radius: 0.25rem;
+    border-width: 1px;
+    border-color: transparent;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    font-family: 'Inter', sans-serif;
+    transition-property: all;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 150ms;
+ }
+ #html5-qrcode-button-camera-stop{
+    background-color: #eae1ff !important;
+    color: #845adf !important;
+    font-weight: 500 !important;
+    margin-bottom: 0.25rem;
+    margin-inline-start: 0px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border-radius: 0.25rem;
+    border-width: 1px;
+    border-color: transparent;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    font-family: 'Inter', sans-serif;
+    transition-property: all;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 150ms;
+ }

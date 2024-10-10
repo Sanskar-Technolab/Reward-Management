@@ -1,0 +1,82 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-07-30 17:14:40.077293",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "product_qr_name",
+  "product_table_name",
+  "product_qr_id",
+  "carpenter_id",
+  "points",
+  "generated_date",
+  "qr_code_image",
+  "scanned",
+  "redeem_date"
+ ],
+ "fields": [
+  {
+   "fieldname": "product_qr_name",
+   "fieldtype": "Data",
+   "label": "Product QR Name"
+  },
+  {
+   "fieldname": "product_table_name",
+   "fieldtype": "Link",
+   "label": "Product Name",
+   "options": "Product"
+  },
+  {
+   "fieldname": "product_qr_id",
+   "fieldtype": "Int",
+   "label": "Product Qr ID"
+  },
+  {
+   "fieldname": "carpenter_id",
+   "fieldtype": "Link",
+   "label": "Carpenter ID",
+   "options": "Customer"
+  },
+  {
+   "fetch_from": "product_table_name.reward_points",
+   "fieldname": "points",
+   "fieldtype": "Int",
+   "label": "Points"
+  },
+  {
+   "fieldname": "generated_date",
+   "fieldtype": "Date",
+   "label": "Generated Date"
+  },
+  {
+   "fieldname": "qr_code_image",
+   "fieldtype": "Attach",
+   "label": "Qr Code Image"
+  },
+  {
+   "default": "0",
+   "fieldname": "scanned",
+   "fieldtype": "Check",
+   "label": "Scanned"
+  },
+  {
+   "fieldname": "redeem_date",
+   "fieldtype": "Date",
+   "label": "Redeem Date"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2024-08-27 12:19:24.071265",
+ "modified_by": "Administrator",
+ "module": "Reward Management",
+ "name": "Product QR Table",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

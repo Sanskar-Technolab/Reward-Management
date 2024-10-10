@@ -1,0 +1,46 @@
+/* .product-card:hover .product-icons {
+    display: block;
+} */
+.box {
+    position: relative;
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    border-radius: 0.5rem;
+    --tw-bg-opacity: 1;
+    background-color: rgb(255 255 255 / var(--tw-bg-opacity));
+    font-size: 0.813rem;
+    color: rgb(var(--default-text-color));
+    --tw-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --tw-shadow-colored: 0 1px 2px 0 var(--tw-shadow-color);
+    box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+.box-body {
+    padding: 1.25rem;
+    color: rgb(var(--default-text-color));
+}
+.product-image img {
+    background-color: rgb(var(--light));
+}
+.card-img, .card-img-bottom, .card-img-top {
+    width: 100%;
+}
+.product-card {
+    position: relative; /* Ensure the card is the positioning context for the icons */
+  }
+  
+  .product-icons {
+    position: absolute; /* Position icons absolutely relative to the card */
+    top: 5%;
+    right: 5%;
+    display: none; /* Hide icons by default */
+    flex-direction: column; /* Stack icons vertically */
+    gap: 1rem; /* Add space between icons */
+    padding: 0.5rem;
+  }
+  
+  .product-card:hover .product-icons {
+    display: flex; /* Show icons on hover */
+  }
+
+  

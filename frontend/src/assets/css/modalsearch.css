@@ -1,0 +1,80 @@
+.ti-modal .ti-modal-content {
+    display: flex;
+    flex-direction: column;
+    border-radius: 0.25rem;
+    border-width: 1px;
+    --tw-bg-opacity: 1;
+    background-color: rgb(255 255 255 / var(--tw-bg-opacity));
+    --tw-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --tw-shadow-colored: 0 1px 2px 0 var(--tw-shadow-color);
+    box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+.ti-modal .ti-modal-box {
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+    max-width: 28rem;
+}
+.ti-modal {
+    position: fixed;
+    top: 30px;
+    inset-inline-start: 0px;
+    z-index: 60;
+    height: 100%;
+    width: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    margin: 0.75rem;
+}
+.open.ti-modal .ti-modal-box {
+    opacity: 1;
+    transition-duration: 500ms;
+}
+
+.ti-modal .ti-modal-content {
+    display: flex;
+    flex-direction: column;
+    border-radius: 0.25rem;
+    border-width: 1px;
+    --tw-bg-opacity: 1;
+    background-color: rgb(255 255 255 / var(--tw-bg-opacity));
+    --tw-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --tw-shadow-colored: 0 1px 2px 0 var(--tw-shadow-color);
+    box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+.search-tags {
+    margin-top: 0.25rem !important;
+    margin-bottom: 0.25rem !important;
+    display: inline-flex;
+    cursor: default;
+    align-items: center;
+    border-radius: 0.25rem;
+    border-width: 1px;
+    border-color: --default-border;
+    font-size: 0.75rem;
+    font-weight: 400;
+    line-height: 1.2;
+    color: var(--default-text-color);
+}
+.ti-modal .ti-modal-footer {
+  
+    -moz-column-gap: 0.5rem;
+    column-gap: 0.5rem;
+    border-top-width: 1px;
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+.ti-btn-primary {
+    background-color: rgb(234, 225, 255);
+    color: rgb(132 90 223);
+  }
+
+@media (min-width: 768px)
+{
+    .ti-modal .ti-modal-box {
+        max-width: 32rem;
+    }
+}
+

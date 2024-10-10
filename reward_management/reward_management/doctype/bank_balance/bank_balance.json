@@ -1,0 +1,119 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "naming_series:",
+ "creation": "2024-07-30 17:49:51.792479",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "naming_series",
+  "redeem_request_id",
+  "carpainter_id",
+  "carpainter_name",
+  "transfer_time",
+  "column_break_fsqs",
+  "mobile_number",
+  "transaction_id",
+  "transfer_date",
+  "amount"
+ ],
+ "fields": [
+  {
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "label": "Naming Series",
+   "options": "TI.-.YYYY.-.MM.-.#####"
+  },
+  {
+   "fieldname": "redeem_request_id",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Redeem Request ID",
+   "options": "Redeem Request",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "redeem_request_id.customer_id",
+   "fieldname": "carpainter_id",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Carpainter ID",
+   "options": "Customer",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "carpainter_id.full_name",
+   "fieldname": "carpainter_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Carpainter Name",
+   "reqd": 1
+  },
+  {
+   "fieldname": "transfer_time",
+   "fieldtype": "Time",
+   "label": "Transfer Time"
+  },
+  {
+   "fieldname": "column_break_fsqs",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "redeem_request_id.mobile_number",
+   "fieldname": "mobile_number",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Mobile Number",
+   "reqd": 1
+  },
+  {
+   "fieldname": "transaction_id",
+   "fieldtype": "Data",
+   "label": "Tansaction ID"
+  },
+  {
+   "fieldname": "transfer_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Transfer Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "amount",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Amount"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2024-09-11 16:48:46.897301",
+ "modified_by": "Administrator",
+ "module": "Reward Management",
+ "name": "Bank Balance",
+ "naming_rule": "By \"Naming Series\" field",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

@@ -1,0 +1,32 @@
+{
+ "attach_print": 0,
+ "channel": "System Notification",
+ "condition": "doc.status == \"Pending\"",
+ "creation": "2024-09-04 10:26:15.199995",
+ "days_in_advance": 0,
+ "docstatus": 0,
+ "doctype": "Notification",
+ "document_type": "Customer Registration",
+ "enabled": 1,
+ "event": "New",
+ "idx": 0,
+ "is_standard": 1,
+ "message": "<p><a href=\"../../rewards/carpenter-registration\"><strong>{{doc.carpainter_name}}</strong> has sent a request for a new account.</a></p>\n",
+ "message_type": "Markdown",
+ "modified": "2024-09-04 15:16:41.630874",
+ "modified_by": "Administrator",
+ "module": "Reward Management",
+ "name": "New Customer Registration",
+ "owner": "Administrator",
+ "recipients": [
+  {
+   "receiver_by_role": "Admin"
+  },
+  {
+   "receiver_by_role": "Administrator"
+  }
+ ],
+ "send_system_notification": 0,
+ "send_to_all_assignees": 0,
+ "subject": "New Customer Registration"
+}

@@ -1,0 +1,29 @@
+.category-link {
+  
+    border-radius: 0.5rem;
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgb(var(--default-border));
+    padding: 1.25rem;
+  
+    transition-property: all;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 150ms;
+    transition-duration: 0.3s;
+    transition-timing-function: linear;
+}
+
+.page-link.bg-blue-800 {
+    background-color: rgb(132, 90, 223)!important;
+}
+
+.page-link.text-pink-100 {
+    color: #f5f5f5 !important;
+}
+.link-icon i {
+    color: var(--primaries);
+}
+
+.link-icon:hover i {
+    color: white;
+}

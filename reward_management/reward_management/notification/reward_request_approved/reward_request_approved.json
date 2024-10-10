@@ -1,0 +1,30 @@
+{
+ "attach_print": 0,
+ "channel": "System Notification",
+ "condition": "doc.request_status==\"Approved\"",
+ "creation": "2024-09-04 10:25:37.823379",
+ "days_in_advance": 0,
+ "docstatus": 0,
+ "doctype": "Notification",
+ "document_type": "Redeem Request",
+ "enabled": 0,
+ "event": "Value Change",
+ "idx": 0,
+ "is_standard": 1,
+ "message": "<p><a href=\"../../rewards/redeem-request\">Your request for <strong>{{doc.redeemed_points}}</strong> points redemption has been approved!</a></p>\n",
+ "message_type": "HTML",
+ "modified": "2024-09-06 11:15:04.496453",
+ "modified_by": "Administrator",
+ "module": "Reward Management",
+ "name": "Reward Request Approved",
+ "owner": "Administrator",
+ "recipients": [
+  {
+   "receiver_by_role": "Customer"
+  }
+ ],
+ "send_system_notification": 0,
+ "send_to_all_assignees": 0,
+ "subject": "Reward Request Approved",
+ "value_changed": "request_status"
+}

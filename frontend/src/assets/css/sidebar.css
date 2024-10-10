@@ -1,0 +1,184 @@
+/* Existing styles for the sidebar */
+.side-menu {
+    width: 15rem; /* Default width */
+    background-color: rgb(17 ,28 ,67);
+    color: white;
+    transition: width 0.3s ease; /* Smooth transition for width change */
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    /* overflow-y:scroll; */
+    z-index: 1000; /* Ensure it’s above other content */
+    font-family: 'Montserrat', sans-serif;
+}
+
+.side-menu:hover{
+    width: 15rem !important;
+    background-color: rgb(17, 28 ,67);
+    color: white;
+     transition: width 0.3s ease; /* Smooth transition for width change */
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    /* overflow-y:scroll; */
+    z-index: 1000; /* Ensure it’s above other content */
+    font-family: 'Montserrat', sans-serif;
+}
+
+/* When sidebar is in narrow mode (5rem) */
+.side-menu.narrow {
+    width: 5rem;
+}
+
+/* When sidebar is in wide mode (15rem) */
+.side-menu.wide {
+    width: 15rem;
+}
+
+/* When the sidebar is active (narrow), hide the menu text */
+.side-menu.narrow .menu-text {
+    display: none;
+  }
+  
+  /* When the sidebar is hovered, show the menu text */
+  .side-menu.narrow:hover .menu-text {
+    display: block;
+  }
+
+  .side-menu.narrow:hover .cUXLct{
+    display: block;
+  }
+  .side-menu.narrow:hover .menulistcollapsed {
+    display: block;
+  }
+
+
+/* Hide menu text when sidebar is narrow */
+.menu-text.hidden {
+    display: none !important;
+}
+
+/* Show menu text when sidebar is wide */
+.menu-text.block {
+    display: block !important;
+}
+
+/* Style for the menu items */
+.side-menu ul {
+    list-style: none;
+    padding: 0;
+}
+
+.side-menu.wide .main-sidebar-header {
+    position: fixed;
+    z-index: 9;
+    display: flex;
+    height: 3.75rem;
+    width: 15rem;
+    align-items: center;
+    justify-content: center;
+    border-bottom-width: 1px;
+    border-inline-end-width: 1px;
+    border-bottom-color: rgb(255 255 255 / 0.1);
+    border-inline-end-color: rgb(255 255 255 / 0.1);
+    padding-top: 0.813rem;
+    padding-bottom: 0.813rem;
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+    transition-property: all;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 150ms;
+    transition-duration: 0.05s;
+    transition-timing-function: linear;
+}
+
+.side-menu.narrow  .main-sidebar-header{
+    position: fixed;
+    z-index: 9;
+    display: flex;
+    height: 3.75rem;
+    width: 5rem;
+    align-items: center;
+    justify-content: center;
+    border-bottom-width: 1px;
+    border-inline-end-width: 1px;
+    border-bottom-color: rgb(255 255 255 / 0.1);
+    border-inline-end-color: rgb(255 255 255 / 0.1);
+    padding-top: 0.813rem;
+    padding-bottom: 0.813rem;
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+    transition-property: all;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 150ms;
+    transition-duration: 0.05s;
+    transition-timing-function: linear;
+}
+.main-sidebar {
+    display: flex;
+    position: relative;
+    margin-top: 3.72rem !important;
+    height: 100vh;
+    overflow: auto;
+    padding-top: 1.5rem;
+    padding-bottom: 5rem;
+    justify-content: center;
+}
+
+.sidebar-menu-item:hover{
+    background-color: rgb(255 255 255 / 0.05);
+    --tw-text-opacity: 1;
+    color: rgb(255 255 255 / var(--tw-text-opacity));
+   width: 100%;
+    border-radius: 0.5rem;
+}
+.sidebar-menu-item{
+  
+        position: relative;
+        display: flex;
+        align-items: center;
+        white-space: nowrap;
+        border-radius: 0.5rem;
+        padding: 13px 15px;
+        font-size: 0.85rem;
+        line-height: 1;
+        font-weight: 600;
+        --tw-text-opacity: 1;
+        color: rgb(163 174 209 / var(--tw-text-opacity));
+        text-decoration-line: none;
+       
+    
+}
+
+.side-menu.narrow .sidebar-menu-item{
+  
+    position: relative;
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+    border-radius: 0.5rem;
+  
+    font-size: 0.85rem;
+    font-weight: 600;
+    line-height: 1;
+    --tw-text-opacity: 1;
+    color: rgb(163 174 209 / var(--tw-text-opacity));
+  
+    text-decoration-line: none;
+   
+
+}
+.menu-text{
+    margin-left: 10px;
+   
+}
+.sidebaricon{
+    width: 20px !important;
+    height: 20px !important;
+}
+.main-sidebar-scroll {
+    overflow-y: auto;
+    max-height: calc(100vh - 3.75rem); /* Adjust height considering the header height */
+}
