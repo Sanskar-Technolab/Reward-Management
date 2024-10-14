@@ -7,21 +7,21 @@
  "docstatus": 0,
  "doctype": "Notification",
  "document_type": "User",
- "enabled": 1,
+ "enabled": 0,
  "event": "New",
  "idx": 0,
  "is_standard": 1,
  "message": "<p><strong>{{doc.username}}</strong>Your registration request has been approved, and your account has been created successfully.</p>\n",
  "message_type": "HTML",
- "modified": "2024-09-05 18:39:26.729797",
+ "modified": "2024-10-14 11:04:11.268683",
  "modified_by": "Administrator",
  "module": "Reward Management",
  "name": "Customer Account Has Been Approved",
  "owner": "Administrator",
  "recipients": [
   {
-   "receiver_by_document_field": "",
-   "receiver_by_role": "Customer"
+   "receiver_by_document_field": "owner",
+   "receiver_by_role": "Admin"
   }
  ],
  "send_system_notification": 0,

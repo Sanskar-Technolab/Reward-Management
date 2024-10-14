@@ -83,11 +83,11 @@ const TableComponent = <T,>({
                 <tbody>
                     {currentItems.map((item: any, index: any) => (
                         <tr key={index} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
-                            <td className="p-3 text-defaultsize font-medium text-defaulttextcolor whitespace-nowrap border border-gray-300 border-b-0">{indexOfFirstItem + index + 1}</td>
+                            <td className="p-3 text-defaultsize font-medium text-defaulttextcolor whitespace-nowrap border border-gray-300 ">{indexOfFirstItem + index + 1}</td>
                             {columns.map((column) => (
                                 <td
                                     key={column.accessor as string}
-                                    className={`p-3  text-defaultsize font-medium whitespace-nowrap border border-gray-300 border-b-0 ${columnStyles[column.header] || 'text-defaulttextcolor'}`}
+                                    className={`p-3  text-defaultsize font-medium whitespace-nowrap border border-gray-300 ${columnStyles[column.header] || 'text-defaulttextcolor'}`}
                                 >
                                     {typeof item[column.accessor] === 'string'
                                         ? stripHtmlTags(item[column.accessor] as string)
@@ -95,7 +95,7 @@ const TableComponent = <T,>({
                                 </td>
                             ))}
                             {showProductQR && (
-                                <td className="p-3 text-defaultsize font-medium text-defaulttextcolor whitespace-nowrap border border-gray-300 border-b-0">
+                                <td className="p-3 text-defaultsize font-medium text-defaulttextcolor whitespace-nowrap border border-gray-300 ">
                                     <Link aria-label="anchor" to="#" className="link-icon bg-[var(--bg-primary)] hover:bg-[var(--primaries)] py-2 px-[10px] rounded-full mr-2">
                                         <i className={iconsConfig.editIcon || "ri-edit-line"}></i>
                                     </Link>
@@ -108,7 +108,7 @@ const TableComponent = <T,>({
                                 </td>
                             )}
                             {(showEdit || showDelete || showView) && (
-                                <td className="p-3 text-defaultsize font-medium text-defaulttextcolor whitespace-nowrap border border-gray-300 border-b-0">
+                                <td className="p-3 text-defaultsize font-medium text-defaulttextcolor whitespace-nowrap border border-gray-300 ">
                                     {showEdit && (
                                         <button onClick={() => onEdit?.(item)} className="link-icon bg-[var(--bg-primary)] hover:bg-[var(--primaries)] py-2 px-[10px] rounded-full mr-2">
                                             <i className={iconsConfig.editIcon || "ri-edit-line"}></i>

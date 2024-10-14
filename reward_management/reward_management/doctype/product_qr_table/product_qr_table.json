@@ -12,6 +12,7 @@
   "carpenter_id",
   "points",
   "generated_date",
+  "generated_time",
   "qr_code_image",
   "scanned",
   "redeem_date"
@@ -65,12 +66,17 @@
    "fieldname": "redeem_date",
    "fieldtype": "Date",
    "label": "Redeem Date"
+  },
+  {
+   "fieldname": "generated_time",
+   "fieldtype": "Time",
+   "label": "Generated Time"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2024-08-27 12:19:24.071265",
+ "modified": "2024-10-14 11:52:15.057358",
  "modified_by": "Administrator",
  "module": "Reward Management",
  "name": "Product QR Table",
