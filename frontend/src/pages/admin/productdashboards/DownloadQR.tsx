@@ -17,6 +17,7 @@ interface QRCodeImage {
 interface DownloadProductQRCode {
     product_name?: string;
     generated_date?: string;
+    generated_time?:string;
     total_product?: number;
     points?: number;
     qr_code_images?: QRCodeImage[];
@@ -50,6 +51,7 @@ const DownloadQRCode: React.FC = () => {
                     const aggregatedData = response.data.message.message.map((item: any) => ({
                         product_name: item.qr_code_images[0]?.product_name || 'Unknown Product Name',
                         generated_date: item.generated_date,
+                        generated_time:item.generated_time,
                         total_product: item.total_product,
                         points: item.qr_code_images.reduce((acc: number, img: any) => acc + img.points, 0),
                         qr_code_images: item.qr_code_images, // Include qr_code_images here
@@ -122,7 +124,7 @@ const handleDownloadQR = async (row: DownloadProductQRCode) => {
             const ctx = canvas.getContext('2d');
 
             if (ctx) {
-                const padding = 40; 
+                const padding = 35; 
                 // const productQrNamePaddingLeft = 30;
 
                 const productName = row.product_name || 'Unknown Product';
@@ -219,6 +221,7 @@ const handleDownloadQR = async (row: DownloadProductQRCode) => {
                                     { header: 'Product Name', accessor: 'product_name' },
                                     { header: 'Reward Points', accessor: 'points' },
                                     { header: 'Generated Date', accessor: 'generated_date' },
+                                    { header: 'Generated Time', accessor: 'generated_time' },
                                     { header: 'Total QR', accessor: 'total_product' },
                                 ]}
                                 data={data}
