@@ -36,6 +36,7 @@ const EditProduct: React.FC = () => {
     const [showSuccessAlert, setShowSuccessAlert] = useState(false);
     const [newCategory, setNewCategory] = useState('');
     const [showAddCategoryModal, setShowAddCategoryModal] = useState(false);
+    const [showRewardPercent, setShowRewardPercent] = useState(false);
 
 
 
@@ -60,8 +61,8 @@ const EditProduct: React.FC = () => {
     };
 
 
-      // Fetch the product categories
-      const { data: productcategoryData, error } = useFrappeGetDocList<ProductCategory>('Product Category', {
+    // Fetch the product categories
+    const { data: productcategoryData, error } = useFrappeGetDocList<ProductCategory>('Product Category', {
         fields: ['name', 'category_name']
     });
 
@@ -69,7 +70,7 @@ const EditProduct: React.FC = () => {
     useEffect(() => {
         if (productPrice && rewardPercent) {
             const calculatedPoints = (parseFloat(productPrice) * parseFloat(rewardPercent)) / 100;
-            setRewardPoints(calculatedPoints.toFixed(2)); 
+            setRewardPoints(calculatedPoints.toFixed(2));
         } else {
             setRewardPoints(rewardPoints);
         }
@@ -77,14 +78,14 @@ const EditProduct: React.FC = () => {
         if (showSuccessAlert) {
             const timer = setTimeout(() => {
                 setShowSuccessAlert(false);
-                navigate('/product-master'); 
-            }, 3000); 
+                navigate('/product-master');
+            }, 3000);
             return () => clearTimeout(timer);
         }
     }, [showSuccessAlert, navigate, productPrice, rewardPercent]);
 
     useEffect(() => {
-        document.title='Edit Product';
+        document.title = 'Edit Product';
         const fetchProductData = async () => {
             if (!productId) return;
 
@@ -98,7 +99,7 @@ const EditProduct: React.FC = () => {
                 });
 
                 if (response.data && response.data.message.message) {
-                    console.log("Edit Product Data",response);
+                    console.log("Edit Product Data", response);
                     const product = response.data.message.message;
 
                     setProductName(product.product_name || '');
@@ -210,12 +211,12 @@ const EditProduct: React.FC = () => {
     return (
         <Fragment>
 
-            <Pageheader 
-                currentpage={"Edit Product"} 
-                activepage={"/product-master"} 
-                mainpage={"/product-master"} 
-                activepagename='Product Master' 
-                mainpagename='Edit Product' 
+            <Pageheader
+                currentpage={"Edit Product"}
+                activepage={"/product-master"}
+                mainpage={"/product-master"}
+                activepagename='Product Master'
+                mainpagename='Edit Product'
             />
             {/* <Pageheader currentpage="Edit Product" activepage="Product Master" mainpage="Edit Product" /> */}
             <div className="grid grid-cols-12 gap-6 bg-white mt-5 rounded-lg shadow-lg">
@@ -252,6 +253,7 @@ const EditProduct: React.FC = () => {
                                                     />
                                                 </div>
 
+                                               
                                                 <div className="xl:col-span-12 col-span-12">
                                                     <label htmlFor="product-cost-add" className="form-label text-sm font-semibold text-defaulttextcolor">Reward Points</label>
                                                     <input
@@ -261,8 +263,7 @@ const EditProduct: React.FC = () => {
                                                         placeholder="Reward points"
                                                         value={rewardPoints}
                                                         onChange={(e) => setRewardPoints(e.target.value)}
-                                                        
-                                                        readOnly
+                                                        readOnly={showRewardPercent} // Make read-only if the checkbox is checked
                                                     />
                                                 </div>
                                                 <div className="xl:col-span-12 col-span-12 mb-4">
@@ -297,7 +298,7 @@ const EditProduct: React.FC = () => {
                                                         <select
                                                             id="product-category-add"
                                                             name="product-category-add"
-                                                            className="w-full border border-defaultborder text-defaultsize text-defaulttextcolor rounded-[0.5rem] mr-1" 
+                                                            className="w-full border border-defaultborder text-defaultsize text-defaulttextcolor rounded-[0.5rem] mr-1"
                                                             value={productCategory}
                                                             onChange={(e) => setProductCategory(e.target.value)}
                                                             required
@@ -311,25 +312,41 @@ const EditProduct: React.FC = () => {
                                                         </select>
                                                         <button
                                                             type="button"
-                                                            className="ti-btn ti-btn-primary bg-primary p-3 rounded-[0.5rem]" 
+                                                            className="ti-btn ti-btn-primary bg-primary p-3 rounded-[0.5rem]"
                                                             onClick={() => setShowAddCategoryModal(true)}
                                                         >
-                                                            <i className="fas fa-plus" /> 
+                                                            <i className="fas fa-plus" />
                                                         </button>
                                                     </div>
                                                 </div>
-                                                <div className="xl:col-span-12 col-span-12">
-                                                    <label htmlFor="reward-percent-add" className="form-label text-sm font-semibold text-defaulttextcolor">Set Reward Percent</label>
-                                                    <input
-                                                        type="text"
-                                                        className="form-control w-full text-defaultsize text-defaulttextcolor border border-defaultborder rounded-[0.5rem] mt-2"
-                                                        id="reward-percent-add"
-                                                        placeholder="Set Reward Percent"
-                                                        value={rewardPercent}
-                                                        onChange={(e) => setRewardPercent(e.target.value)}
-                                                        required
-                                                    />
+                                              
+                                                 {/* Toggle Checkbox for Reward Percent */}
+                                                 <div className="xl:col-span-12 col-span-12 rounded-full">
+                                                    <label className="form-label text-sm font-semibold text-defaulttextcolor ">
+                                                        <input
+                                                            type="checkbox"
+                                                            className="mr-2"
+                                                            checked={showRewardPercent}
+                                                            onChange={() => setShowRewardPercent(!showRewardPercent)}
+                                                        />
+                                                        Add Reward Percent
+                                                    </label>
                                                 </div>
+                                                {/* Conditionally render Reward Percent input */}
+                                                {showRewardPercent && (
+                                                    <div className="xl:col-span-12 col-span-12">
+                                                        <label htmlFor="reward-percent-add" className="form-label text-sm font-semibold text-defaulttextcolor">Set Reward Percent</label>
+                                                        <input
+                                                            type="text"
+                                                            className="form-control w-full text-defaultsize text-defaulttextcolor border border-defaultborder rounded-[0.5rem] mt-2"
+                                                            id="reward-percent-add"
+                                                            placeholder="Set Reward Percent"
+                                                            value={rewardPercent}
+                                                            onChange={(e) => setRewardPercent(e.target.value)}
+                                                            required
+                                                        /> 
+                                                    </div>
+                                                )}
                                                 <div className="xl:col-span-12 col-span-12 ">
                                                     <label htmlFor="product-images-add" className="form-label text-sm font-semibold text-defaulttextcolor">Product Image</label>
                                                     <input
@@ -359,7 +376,7 @@ const EditProduct: React.FC = () => {
                                         <button
                                             type="button"
                                             className="ti-btn ti-btn-success bg-defaulttextcolor ti-btn text-white !font-medium m-1"
-                                            onClick={resetForm} 
+                                            onClick={resetForm}
                                         >
                                             Cancel
                                         </button>
@@ -373,8 +390,8 @@ const EditProduct: React.FC = () => {
                                 </div>
                             </form>
 
-                            
-                             {showAddCategoryModal && (
+
+                            {showAddCategoryModal && (
                                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
                                     <div className="modal-overlay" onClick={handleCloseModal} />
                                     <div className="modal-container bg-white rounded-lg shadow-lg w-full max-w-lg">
@@ -417,7 +434,7 @@ const EditProduct: React.FC = () => {
                                     showCancleButton={false}
                                     showCollectButton={false}
                                     showAnotherButton={false}
-                                    showMessagesecond = {false}
+                                    showMessagesecond={false}
                                     message="Product updated successfully!" />
                             )}
                         </div>
