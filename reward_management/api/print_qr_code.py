@@ -1,11 +1,12 @@
 import frappe
+from frappe.utils import now, format_datetime
+
 from frappe.model.document import Document
 import requests
 from io import BytesIO
 from PIL import Image
-from datetime import datetime
-import uuid 
 import hashlib
+from datetime import datetime
 
 
 @frappe.whitelist(allow_guest=True)
@@ -18,7 +19,7 @@ def print_qr_code():
         qr_doc['qr_table_data'] = frappe.get_all("Product QR Table",
                                                  filters={"parent": qr_doc['name']},
                                                  fields=["product_table_name", "qr_code_image", "product_qr_id", "points","generated_date","generated_time","scanned","product_qr_name","carpenter_id","redeem_date"])
-              # Format date fields as dd-MM-yyyy
+        # Format date fields as dd-MM-yyyy
         for qr_data in qr_doc['qr_table_data']:
             if qr_data.get('generated_date'):
                 qr_data['generated_date'] = frappe.utils.formatdate(qr_data['generated_date'], 'dd-MM-yyyy')
@@ -47,24 +48,46 @@ def create_product_qr(product_name, quantity):
             product_qr_doc.reload()
 
         # Retrieve child table rows
-        child_table_rows = product_qr_doc.get("qr_table") or []
+        # child_table_rows = product_qr_doc.get("qr_table") or []
 
         # Store the current date and time once
-        current_datetime = datetime.now()
-        formatted_date = current_datetime.strftime('%Y-%m-%d')
-        formatted_time = current_datetime.strftime('%H:%M:%S')
+        # current_datetime = datetime.now()
+        # formatted_date = current_datetime.strftime('%Y-%m-%d')
+        # formatted_time = current_datetime.strftime('%H:%M:%S')
+        
+        # Get the current date and time using frappe.utils.now()
+        current_datetime = now()
+        current_datetime_obj = datetime.strptime(current_datetime, "%Y-%m-%d %H:%M:%S.%f")
+
+        # Get the timestamp value from the datetime object
+        timestamp_value = current_datetime_obj.timestamp()
+        current_date = format_datetime(current_datetime, "yyyy-MM-dd") 
+        current_time = format_datetime(current_datetime, "HH:mm:ss")
+        
+        print("\n\n\ncurrent date-----",current_date)
+        print("\n\n\ncurrent time-----",current_time)
+        print("\n\n\ncurrent datetime-----",current_datetime)
 
         # Add new rows based on the quantity requested
         for i in range(quantity):
             child_row = product_qr_doc.append("qr_table", {})
 
             # Generate a unique 8-digit numeric hash value
-            hash_input = f"{current_datetime.timestamp()}_{product_name}_{i}"  # Use the same timestamp for all
-            product_qr_id = int(hashlib.md5(hash_input.encode()).hexdigest(), 16) % 100000000  # Ensure 8 digits
-            child_row.product_qr_id = f"{product_qr_id:08d}"  # Format as 8-digit number
-            child_row.product_table_name = product_name  # Set product_name directly
-            child_row.generated_date = formatted_date  # Use the stored date
-            child_row.generated_time = formatted_time  # Use the stored time
+            # Use the same timestamp for all
+            hash_input = f"{timestamp_value}_{product_name}_{i}"  
+            # Ensure 8 digits
+            product_qr_id = int(hashlib.md5(hash_input.encode()).hexdigest(), 16) % 100000000  
+             # Format as 8-digit number
+            child_row.product_qr_id = f"{product_qr_id:08d}" 
+            # Set product_name directly
+            child_row.product_table_name = product_name  
+            # Use the stored date
+            # child_row.generated_date = formatted_date 
+            # # Use the stored time 
+            # child_row.generated_time = formatted_time  
+            
+            child_row.generated_date = current_date  # Use Frappe's current date
+            child_row.generated_time = current_time
 
             # Generate QR code using the API with product_name and product_qr_id concatenated
             qr_content = f"{product_qr_doc.name}_{product_name}_{child_row.product_qr_id}"
@@ -242,7 +265,7 @@ def get_product_by_name(productName):
     formatted_data = []
     for date_time_key, qr_data_list in qr_data_by_date_time.items():
         total_count = counts_by_date_time.get(date_time_key, 0)
-        formatted_date, formatted_time = date_time_key.split(' ', 1)  # Split back into date and time
+        formatted_date, formatted_time = date_time_key.split(' ', 1) 
         formatted_data.append({
             "generated_date": formatted_date,
             "generated_time": formatted_time,
