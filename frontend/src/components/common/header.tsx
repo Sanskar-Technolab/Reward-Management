@@ -22,6 +22,17 @@ const Header = ({ toggleSidebar, isSidebarActive }: any) => {
     const username = localStorage.getItem("username");
     const carpenterrole = localStorage.getItem('carpenterrole');
     console.log(carpenterrole);
+
+    const roles = JSON.parse(localStorage.getItem('user_roles')) || [];
+    console.log("admin role-----", roles);
+
+    // Check if the user has Admin or Administrator roles
+    const isAdmin = roles.includes("Admin");
+    const isAdministrator = roles.includes("Administrator");
+
+    // Debug logs to check if the conditions are correct
+    console.log("isAdmin:", isAdmin);
+    console.log("isAdministrator:", isAdministrator);
     const [fullScreen, setFullScreen] = useState(false);
     const [theme, setTheme] = useState({
         dataNavLayout: 'vertical',
@@ -217,7 +228,7 @@ const Header = ({ toggleSidebar, isSidebarActive }: any) => {
                                     <ul className="text-defaulttextcolor font-medium dark:text-[#8c9097] dark:text-white/50">
 
                                         <li className="user-profile-list hover:bg-[var(--bg-primary)] hover:text-[var(--primaries)]">
-                                            {(carpenterrole  !== "Customer") && (
+                                            {(isAdmin || isAdministrator) && (
                                                 <a className="w-full ti-dropdown-item !text-[0.8125rem] !gap-x-0 !p-[0.65rem] !inline-flex" href={`/admin-profile`}>
                                                     <i className="ti ti-user-circle text-[1.125rem] me-2 opacity-[0.7]"></i>Profile
                                                 </a>
