@@ -101,89 +101,71 @@ const DownloadQRCode: React.FC = () => {
         navigate('/product-master');
     };
 
-    const handleDownloadQR = async () => {
-        // Create a container div for all QR codes
+    const handleDownloadQR = async (row: DownloadProductQRCode) => {
+        // Create a container div for selected QR codes
         const qrContainerDiv = document.createElement('div');
         qrContainerDiv.style.display = 'flex';
         qrContainerDiv.style.flexWrap = 'wrap';
-        qrContainerDiv.style.padding = '15px';
-        qrContainerDiv.style.gap = '20px';
+        qrContainerDiv.style.padding = '18px';
+        qrContainerDiv.style.gap = '25px';
         qrContainerDiv.style.justifySelf = 'center';
-        // qrContainerDiv.style.alignItems='center';
     
-        data.forEach((row) => {
-            row.qr_code_images?.forEach((image) => {
-                const qrWrapperDiv = document.createElement('div');
-                qrWrapperDiv.style.display = 'flex';
-                qrWrapperDiv.style.flexDirection = 'row'; 
-                qrWrapperDiv.style.alignItems = 'center';
-                // qrWrapperDiv.style.justifyItems = 'center'; 
+        // Extract the QR code images for the specific row
+        row.qr_code_images?.forEach((image) => {
+            const qrWrapperDiv = document.createElement('div');
+            qrWrapperDiv.style.display = 'flex';
+            qrWrapperDiv.style.flexDirection = 'row'; 
+            qrWrapperDiv.style.alignItems = 'center'; 
     
-                const productNameDiv = document.createElement('div');
-                productNameDiv.style.display= 'flex';
-                productNameDiv.style.alignItems='center';
-                productNameDiv.style.fontSize = "20px";
-                productNameDiv.style.fontWeight = "bold";
-                // Rotate the product name
-                productNameDiv.style.transform = 'rotate(-90deg)'; 
-                // Prevent wrapping
-                productNameDiv.style.whiteSpace = 'nowrap'; 
+            const productNameDiv = document.createElement('div');
+            productNameDiv.style.display = 'flex';
+            productNameDiv.style.alignItems = 'center';
+            productNameDiv.style.fontSize = "20px";
+            productNameDiv.style.padding ="10px";
+            productNameDiv.style.fontWeight = "bold";
+            productNameDiv.style.transform = 'rotate(-90deg)'; 
+            productNameDiv.style.whiteSpace = 'nowrap'; 
+            productNameDiv.innerText = row.product_name || 'Unknown Product Name';
     
-                productNameDiv.innerText = row.product_name || 'Unknown Product Name';
+            const qrImageWrapper = document.createElement('div');
+            qrImageWrapper.style.display = 'flex';
+            qrImageWrapper.style.flexDirection = 'column';
+            qrImageWrapper.style.alignItems = 'center';
     
-                const qrImageWrapper = document.createElement('div');
-                qrImageWrapper.style.display = 'flex';
-                 // Stack image and QR ID vertically
-                qrImageWrapper.style.flexDirection = 'column';
-                 // Center content horizontally
-                qrImageWrapper.style.alignItems = 'center';
+            const img = document.createElement('img');
+            img.src = image.qr_code_image;
     
-                const img = document.createElement('img');
-                img.src = image.qr_code_image;
-                // Set a max width for the image to prevent overflow
-                // img.style.maxWidth = '100px'; 
+            const qrIdDiv = document.createElement('div');
+            qrIdDiv.style.textAlign = 'center';
+            qrIdDiv.style.fontSize = "20px";
+            qrIdDiv.style.fontWeight = "bold";
+            qrIdDiv.innerText = image.qr_code_image.split('/').pop()?.replace('.png', '') || 'Unknown QR Code ID';
     
-                const qrIdDiv = document.createElement('div');
-                qrIdDiv.style.textAlign = 'center';
-                qrIdDiv.style.fontSize = "20px";
-                qrIdDiv.style.fontWeight = "bold";
-                qrIdDiv.innerText = image.qr_code_image.split('/').pop()?.replace('.png', '') || 'Unknown QR Code ID';
-                // Append image to the wrapper
-                qrImageWrapper.appendChild(img);
-                 // Append QR ID below the image
-                qrImageWrapper.appendChild(qrIdDiv);
-                 // Append product name first
-                qrWrapperDiv.appendChild(productNameDiv);
-                 // Append the image wrapper to the container
-                qrWrapperDiv.appendChild(qrImageWrapper);
-                // Append wrapper to the container
-                qrContainerDiv.appendChild(qrWrapperDiv); 
-            });
+            qrImageWrapper.appendChild(img);
+            qrImageWrapper.appendChild(qrIdDiv);
+            qrWrapperDiv.appendChild(productNameDiv);
+            qrWrapperDiv.appendChild(qrImageWrapper);
+            qrContainerDiv.appendChild(qrWrapperDiv); 
         });
     
-        // Append the container to the body for capturing
         document.body.appendChild(qrContainerDiv);
     
         // Capture the div using html2canvas
         try {
             const canvas = await html2canvas(qrContainerDiv, { useCORS: true });
             const zip = new JSZip();
-            // Convert canvas to base64
             const imgData = canvas.toDataURL('image/png').split(',')[1]; 
-            // Add the captured image to the ZIP file
             zip.file('qr_codes.png', imgData, { base64: true }); 
     
             const content = await zip.generateAsync({ type: 'blob' });
-            // Download the ZIP file
             saveAs(content, 'qr_codes.zip'); 
-    
         } catch (error) {
             console.error('Error capturing images:', error);
         } finally {
-            // Clean up the DOM
             document.body.removeChild(qrContainerDiv); 
         }
     };
+    
     
     return (
         <Fragment>

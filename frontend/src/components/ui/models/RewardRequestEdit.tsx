@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 interface ViewModalProps {
     title: string;
@@ -47,6 +47,14 @@ const RewardRequestEdit: React.FC<ViewModalProps> = ({
     showTransactionId,
     showAmount
 }) => {
+    // Use Effect to fetch data when the amount field is shown
+    useEffect(() => {
+        if (showAmount) {
+            // Fetch amount logic could go here if not done in parent
+            // Assuming you might want to fetch based on some other condition
+        }
+    }, [showAmount]);
+
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
             <div className="bg-white rounded-lg shadow-lg w-full max-w-lg">
@@ -108,7 +116,7 @@ const RewardRequestEdit: React.FC<ViewModalProps> = ({
                             />
                         </div>
                          )}
-                            {showAmount && (
+                         {showAmount && (
                         <div className="xl:col-span-12 col-span-12 mb-4">
                             <label htmlFor="amount" className="form-label text-sm text-defaulttextcolor font-semibold">{amountLabel}</label>
                             <input
