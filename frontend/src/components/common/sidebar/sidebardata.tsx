@@ -92,11 +92,11 @@ export const SidebarData = [
     path: '/set-reward-points',
     icon: <IconCoins className='sidebaricon'  />
   },
-  {
-    title: 'Points Conversion Rate ',
-    path: '/point-conversion',
-    icon: <IconCoins className='sidebaricon'  />
-  },
+  // {
+  //   title: 'Points Conversion Rate ',
+  //   path: '/point-conversion',
+  //   icon: <IconCoins className='sidebaricon'  />
+  // },
   {
     title: "FAQ's",
     path: '/frequently-asked-question',
