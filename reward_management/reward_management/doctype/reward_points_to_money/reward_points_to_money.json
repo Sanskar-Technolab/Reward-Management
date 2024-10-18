@@ -1,0 +1,46 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-10-18 11:50:36.049232",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "reward_point",
+  "payout_amount"
+ ],
+ "fields": [
+  {
+   "fieldname": "reward_point",
+   "fieldtype": "Data",
+   "label": "Reward Point"
+  },
+  {
+   "fieldname": "payout_amount",
+   "fieldtype": "Data",
+   "label": "Payout Amount"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "issingle": 1,
+ "links": [],
+ "modified": "2024-10-18 11:53:36.201923",
+ "modified_by": "Administrator",
+ "module": "Reward Management",
+ "name": "Reward Points to Money",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

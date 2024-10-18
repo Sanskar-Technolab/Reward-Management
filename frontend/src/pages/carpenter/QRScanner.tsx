@@ -124,7 +124,7 @@ const QRScanner = () => {
       // First API call to collect points
       const response = await axios.post(`/api/method/reward_management.api.carpenter_master.update_customer_points`, {
         points: productQrPoints,
-        carpenter_id: customerId // Use customerId instead of carpenterId
+        carpenter_id: customerId 
       });
 
       if (response.data.message?.success === true) {
@@ -134,17 +134,17 @@ const QRScanner = () => {
         const updateResponse = await axios.post(`/api/method/reward_management.api.qr_code_product_detail.update_scanned_status`, {
           product_table_name: productTableName,
           product_qr_id: productQrId,
-          carpenter_id: customerId // Ensure customerId is passed
+          carpenter_id: customerId 
         });
 
         console.log("Product QR table data:", updateResponse);
 
         if (updateResponse.data.message?.success === true) {
           console.log("Scanned status updated successfully:", updateResponse);
-          setShowAlert(false); // Close the SuccessAlert
+          setShowAlert(false); 
           setAlertMessage("Points collected and status updated successfully!");
           setIsError(false);
-          setShowPointCollectAlert(true); // Open the PointCollectAlert
+          setShowPointCollectAlert(true);
         } else {
           setAlertMessage("Failed to update scanned status. Please try again.");
           setIsError(true);
