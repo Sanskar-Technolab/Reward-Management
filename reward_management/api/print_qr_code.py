@@ -47,14 +47,6 @@ def create_product_qr(product_name, quantity):
             product_qr_doc.insert()
             product_qr_doc.reload()
 
-        # Retrieve child table rows
-        # child_table_rows = product_qr_doc.get("qr_table") or []
-
-        # Store the current date and time once
-        # current_datetime = datetime.now()
-        # formatted_date = current_datetime.strftime('%Y-%m-%d')
-        # formatted_time = current_datetime.strftime('%H:%M:%S')
-        
         # Get the current date and time using frappe.utils.now()
         current_datetime = now()
         current_datetime_obj = datetime.strptime(current_datetime, "%Y-%m-%d %H:%M:%S.%f")
@@ -64,30 +56,24 @@ def create_product_qr(product_name, quantity):
         current_date = format_datetime(current_datetime, "yyyy-MM-dd") 
         current_time = format_datetime(current_datetime, "HH:mm:ss")
         
-        print("\n\n\ncurrent date-----",current_date)
-        print("\n\n\ncurrent time-----",current_time)
-        print("\n\n\ncurrent datetime-----",current_datetime)
-
+        # Fetch reward_points from Product master
+        product_details = frappe.get_doc("Product", product_name)  # Assuming product_name is the unique identifier
+        reward_points = product_details.reward_points if product_details else 0  # Default to 0 if not found
+        
         # Add new rows based on the quantity requested
         for i in range(quantity):
             child_row = product_qr_doc.append("qr_table", {})
 
             # Generate a unique 8-digit numeric hash value
-            # Use the same timestamp for all
             hash_input = f"{timestamp_value}_{product_name}_{i}"  
-            # Ensure 8 digits
             product_qr_id = int(hashlib.md5(hash_input.encode()).hexdigest(), 16) % 100000000  
-             # Format as 8-digit number
             child_row.product_qr_id = f"{product_qr_id:08d}" 
-            # Set product_name directly
             child_row.product_table_name = product_name  
-            # Use the stored date
-            # child_row.generated_date = formatted_date 
-            # # Use the stored time 
-            # child_row.generated_time = formatted_time  
-            
-            child_row.generated_date = current_date  # Use Frappe's current date
+            child_row.generated_date = current_date  
             child_row.generated_time = current_time
+
+            # Set the points value from the Product master
+            child_row.points = reward_points  # Set points from the product master
 
             # Generate QR code using the API with product_name and product_qr_id concatenated
             qr_content = f"{product_qr_doc.name}_{product_name}_{child_row.product_qr_id}"
@@ -95,7 +81,7 @@ def create_product_qr(product_name, quantity):
             response = requests.get(qr_api_url)
 
             if response.status_code == 200:
-                # Save QR code image to File Manager with a file name based on product_name and product_qr_id
+                # Save QR code image to File Manager
                 file_name = f"{child_row.product_qr_id}.png"
                 qr_image_bytes = BytesIO(response.content)
                 qr_image = Image.open(qr_image_bytes)

@@ -33,7 +33,7 @@ const Login = () => {
     const [alertTitle, setAlertTitle] = useState('');
 
     const [logo, setLogo] = useState(null);
-    const [loading, setLoading] = useState(true); // Loading state
+    const [loading, setLoading] = useState(true); 
 
     const [data, setData] = useState({
         email: "",
@@ -372,7 +372,7 @@ const Login = () => {
                 console.error('Error fetching website settings:', error);
                 setLogo("/assets/frappe/images/frappe-framework-logo.svg");
             } finally {
-                setLoading(false); // End loading state
+                setLoading(false); 
             }
         };
 
