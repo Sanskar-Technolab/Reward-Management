@@ -269,7 +269,7 @@ const CarpenterRewardRequest: React.FC = () => {
                 <EditModalComponent
                     title="Edit Reward Request"
                     questionLabel="Request ID"
-                    answerLabel="Amount"
+                    answerLabel="Redeem Points"
                     statusLabel="Action"
                     transactionIdLabel="Transaction ID"
                     amountLabel="Amount"

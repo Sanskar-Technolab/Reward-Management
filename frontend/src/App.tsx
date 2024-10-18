@@ -36,6 +36,8 @@ import RedeemRequest from './pages/carpenter/RewardRequest.tsx';
 import HelpAndSupport from './pages/carpenter/HelpAndSupport.tsx';
 import Announcement from './pages/carpenter/Announcements.tsx';
 import CustomerProfile from './pages/carpenter/CustomerProfile.tsx';
+import PointConversion from './pages/admin/transactions/PointsConversion.tsx';
+
 
 
 
@@ -142,6 +144,7 @@ useEffect(() => {
         <Route element={<AppLayout/>}>
         <Route path='/' element={<PrivateRoutes/>}>
           <Route path='/admin-profile' element={<AdminProfile />} />
+          <Route path='/point-conversion' element= {<PointConversion/>} />
           <Route path='/admin-dashboard' element={<AdminDashboard />} />
           <Route path='/product-master' element={<ProductMaster />} />
           <Route path='/add-product' element={<AddProduct />}/>
