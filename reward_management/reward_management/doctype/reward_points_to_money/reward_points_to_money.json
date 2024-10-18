@@ -11,19 +11,19 @@
  "fields": [
   {
    "fieldname": "reward_point",
-   "fieldtype": "Data",
+   "fieldtype": "Int",
    "label": "Reward Point"
   },
   {
    "fieldname": "payout_amount",
-   "fieldtype": "Data",
+   "fieldtype": "Int",
    "label": "Payout Amount"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2024-10-18 11:53:36.201923",
+ "modified": "2024-10-18 16:45:50.116596",
  "modified_by": "Administrator",
  "module": "Reward Management",
  "name": "Reward Points to Money",

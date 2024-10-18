@@ -21,7 +21,7 @@ interface RewardRequest {
     mobile_number?: string;
     received_date?: string;
     received_time?: string;
-    amount?: string;
+    amount?: number;
     approved_on?: string;
     approve_time?: string;
 }
@@ -46,13 +46,36 @@ const CarpenterRewardRequest: React.FC = () => {
     const [showSuccessAlert, setShowSuccessAlert] = useState(false);
     const [fromDate, setFromDate] = useState<Date | null>(null);
     const [toDate, setToDate] = useState<Date | null>(null);
+    const [amount, setAmount] = useState<string>(''); 
 
     const { data: rewardrequestData } = useFrappeGetDocList<RewardRequest>('Redeem Request', {
         fields: ['name', 'customer_id', 'total_points', 'current_point_status', 'redeemed_points', 'received_date', 'received_time', 'request_status', 'approved_on', 'approve_time', 'transection_id', 'amount']
     });
 
+    const isApproved = selectedRewardRequest?.request_status === 'Approved';
+
+     // Function to calculate the amount dynamically
+     const calculateAmount = async (requestId: string) => {
+        try {
+            const response = await axios.post(`/api/method/reward_management.api.admin_redeem_request.calculate_amount`, { request_id: requestId });
+            if (response.data) {
+                console.log("amount count-----", response);
+                setAmount(response.data.message.amount); 
+            } else {
+                setAmount('');
+                alert('Could not calculate amount. Please check your input.');
+            }
+        } catch (error) {
+            console.error('Error fetching amount:', error);
+            alert('An error occurred while calculating the amount. Please try again later.');
+        }
+    };
     useEffect(() => {
         document.title='Reward Request';
+        if (selectedRewardRequest) {
+            // Pass the request ID to calculate amount
+            calculateAmount(selectedRewardRequest.name); 
+        }
         if (showSuccessAlert) {
             const timer = setTimeout(() => {
                 setShowSuccessAlert(false);
@@ -60,7 +83,7 @@ const CarpenterRewardRequest: React.FC = () => {
             }, 3000); 
             return () => clearTimeout(timer);
         }
-    }, [showSuccessAlert]);
+    }, [showSuccessAlert,selectedRewardRequest]);
 
     const formattedData = rewardrequestData?.map(request => ({
         ...request,
@@ -134,7 +157,8 @@ const CarpenterRewardRequest: React.FC = () => {
     };
 
     const handleSearch = (value: string) => {
-        setSearchQuery(value); // Update search query
+         // Update search query
+        setSearchQuery(value);
         setCurrentPage(1);
         console.log("Search value:", value);
         // Implement search logic here
@@ -142,7 +166,8 @@ const CarpenterRewardRequest: React.FC = () => {
     const handleDateFilter = (from: Date | null, to: Date | null) => {
         setFromDate(from);
         setToDate(to);
-        setCurrentPage(1); // Reset to the first page
+        // Reset to the first page
+        setCurrentPage(1);
     };
 
     const handleAddProductClick = () => {
@@ -154,8 +179,8 @@ const CarpenterRewardRequest: React.FC = () => {
     // handle edit modal----
     const handleEdit = (rewardRequest: RewardRequest) => {
         setSelectedRewardRequest(rewardRequest);
-        setIsModalOpen(true); 
-    }
+        setIsModalOpen(true);
+    };
 
     const handleCloseModal = () => {
         setIsModalOpen(false);
@@ -168,14 +193,16 @@ const CarpenterRewardRequest: React.FC = () => {
 
         // Get current date and time
         const now = new Date();
-        const currentDate = now.toISOString().split('T')[0]; // Format: YYYY-MM-DD
-        const currentTime = now.toISOString().split('T')[1].split('.')[0]; // Format: HH:MM:SS
+         // Format: YYYY-MM-DD
+        const currentDate = now.toISOString().split('T')[0];
+        // Format: HH:MM:SS
+        const currentTime = now.toISOString().split('T')[1].split('.')[0]; 
 
         const data = {
             approved_on: currentDate,
             approve_time: currentTime,
             transaction_id: selectedRewardRequest.transection_id,
-            amount: selectedRewardRequest.amount,
+            amount: amount, 
             action: selectedRewardRequest.request_status,  
             request_id: selectedRewardRequest.name,
         };
@@ -188,7 +215,7 @@ const CarpenterRewardRequest: React.FC = () => {
              
                 setShowSuccessAlert(true);
                 handleCloseModal();
-                // Optionally, you can re-fetch the data here or use a state update to reflect changes.
+                
             } else {
                 console.error("Failed to update Redeem Request:", response.data);
                 alert('Failed to update Redeem Request.');
@@ -204,7 +231,7 @@ const CarpenterRewardRequest: React.FC = () => {
         setIsModalOpen(false); 
     }
 
-    const isApproved = selectedRewardRequest?.request_status === 'Approved';
+  
 
     return (
         <Fragment>
@@ -273,21 +300,21 @@ const CarpenterRewardRequest: React.FC = () => {
                     statusLabel="Action"
                     transactionIdLabel="Transaction ID"
                     amountLabel="Amount"
-                    question={selectedRewardRequest.name} // Adjust according to your data
-                    answer={selectedRewardRequest.redeemed_points || ''} // Adjust according to your data
-                    status={selectedRewardRequest.request_status || ''} // Adjust according to your data
-                    transactionId={isApproved ? selectedRewardRequest.transection_id || '' : ''} // Conditionally show transactionId
-                    amount={isApproved ? selectedRewardRequest.amount || '' : ''} // Conditionally show amount
+                    question={selectedRewardRequest.name}  
+                    answer={selectedRewardRequest.redeemed_points || ''} 
+                    status={selectedRewardRequest.request_status || ''} 
+                    transactionId={isApproved ? selectedRewardRequest.transection_id || '' : ''} 
+                    amount={isApproved ? amount : ''}  
                     onClose={handleCloseModal}
+                    setAmount={setAmount} 
                     onSubmit={handleSubmit}
                     onCancel={handleCancel}
                     setQuestion={(value) => setSelectedRewardRequest(prev => ({ ...prev, name: value }))}
                     setAnswer={(value) => setSelectedRewardRequest(prev => ({ ...prev, redeemed_points: value }))}
                     setStatus={(value) => setSelectedRewardRequest(prev => ({ ...prev, request_status: value }))}
                     setTransactionId={(value) => setSelectedRewardRequest(prev => ({ ...prev, transection_id: value }))}
-                    setAmount={(value) => setSelectedRewardRequest(prev => ({ ...prev, amount: value }))}
-                    showTransactionId={isApproved} // Pass the condition to modal
-                    showAmount={isApproved} // Pass the condition to modal
+                    showTransactionId={isApproved} 
+                    showAmount={isApproved} 
                 />
             )}
 
@@ -298,8 +325,12 @@ const CarpenterRewardRequest: React.FC = () => {
                     showCollectButton={false}
                     showAnotherButton={false}
                     showMessagesecond={false}
-                    message="Reward Request Update successfully!"
-                />
+                    message="Reward Request Update successfully!" onClose={function (): void {
+                        throw new Error('Function not implemented.');
+                    } } onCancel={function (): void {
+                        throw new Error('Function not implemented.');
+                    } }                
+                    />
             )}
         </Fragment>
     );
