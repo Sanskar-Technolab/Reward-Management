@@ -13,6 +13,43 @@ def get_redeem_request():
     
     return redeem_requests
 
+# Reward point to rate conversion logic-------
+@frappe.whitelist()
+def calculate_amount(request_id):
+    try:
+        # Fetch the redeem request document
+        redeem_request = frappe.get_doc("Redeem Request", request_id)
+        redeemed_points = redeem_request.get("redeemed_points")
+        # Initialize amount
+        amount = 0
+        
+        # Fetch Reward Points to Money conversion from Single Doctype
+        conversion = frappe.get_doc('Reward Points to Money', 'Reward Points to Money')
+        reward_point = conversion.reward_point
+        payout_amount = conversion.payout_amount
+
+        # Check if redeemed_points is present and is a number
+        if redeemed_points and isinstance(redeemed_points, (int, float)):
+            if reward_point and payout_amount :
+                # Calculate the amount based on redeemed points
+                amount = (redeemed_points / reward_point) * payout_amount
+                redeem_request.amount = amount  
+                # redeem_request.save() 
+        else:
+            # Log a message if no valid redeemed points are found
+            frappe.log_warning(_("No valid redeemed points found for request ID: {0}").format(request_id))
+
+        print("Redeem Request:", redeem_request)
+        
+        # Return the calculated amount
+        return {"amount": amount}
+
+    except Exception as e:
+        # Log the error with traceback for debugging
+        frappe.log_error(frappe.get_traceback(), _("Error in calculate_amount"))
+        frappe.throw(_("Failed to calculate amount: {0}").format(str(e)))
+        
+
 # update reward request status---
 @frappe.whitelist()
 def update_redeem_request_status(request_id, action, transaction_id=None, amount=None):
@@ -79,41 +116,3 @@ def create_bank_balance(redeem_request_id, amount, transaction_id=None):
     except Exception as e:
         frappe.log_error(frappe.get_traceback(), _("Error in creating Bank Balance"))
         frappe.throw(_("Failed to create Bank Balance: {0}").format(str(e)))
-
-
-# Calculate amount based on redeemed points and payout conversion rate
-# @frappe.whitelisted()
-# def calculate_amount(request_id):
-#     # Fetch the redeem request document
-#     redeem_request = frappe.get_doc("Redeem Request", request_id)
-
-#     # Get the redeemed points from the redeem request
-#     redeemed_points = redeem_request.redeemed_points  # Ensure there's a field to store redeemed points
-
-#     conversion = get_reward_point_to_money()
-#     reward_point = conversion.get('reward_point')
-#     payout_amount = conversion.get('payout_amount')
-
-#     if reward_point and payout_amount:
-#         # Calculate the equivalent amount for the redeemed points
-#         amount = (redeemed_points / reward_point) * payout_amount
-#         # Print amount and request_id
-#         print(f"Calculated Amount for Request ID {request_id}: {amount}")
-#         return amount
-#     else:
-#         frappe.throw(_("Invalid Reward Points to Money conversion rate. Please check the configuration."))
-        
-        
-        
-# # Get Reward Point to Money conversion rates
-# def get_reward_point_to_money():
-#     # Fetch Reward Points and Payout Amount from your custom doctype
-#     points_conversion = frappe.get_single('Reward Points to Money')  
-
-#     reward_point = points_conversion.reward_point 
-#     payout_amount = points_conversion.payout_amount
-
-#     return {
-#         'reward_point': reward_point,
-#         'payout_amount': payout_amount
-#     }  
