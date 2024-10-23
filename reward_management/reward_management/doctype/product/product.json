@@ -14,7 +14,9 @@
   "column_break_crem",
   "reward_points",
   "product_price",
-  "discription"
+  "discription",
+  "section_break_xlgw",
+  "reward_point_conversion_rate"
  ],
  "fields": [
   {
@@ -66,11 +68,21 @@
    "fieldname": "product_price",
    "fieldtype": "Int",
    "label": "Product Price"
+  },
+  {
+   "fieldname": "reward_point_conversion_rate",
+   "fieldtype": "Table",
+   "label": "Reward Point Conversion Rate",
+   "options": "Reward Point Canversion Table"
+  },
+  {
+   "fieldname": "section_break_xlgw",
+   "fieldtype": "Section Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-10-10 16:57:54.866796",
+ "modified": "2024-10-21 13:53:51.106558",
  "modified_by": "Administrator",
  "module": "Reward Management",
  "name": "Product",

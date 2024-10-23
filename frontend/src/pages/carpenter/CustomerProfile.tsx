@@ -100,7 +100,7 @@ const AdminProfile = () => {
 
                     }
                 );
-                setGenders(response.data.message); // 
+                setGenders(response.data.message); 
 
             } catch (error) {
                 console.error("Error fetching redemptions count:", error);
@@ -262,7 +262,7 @@ const AdminProfile = () => {
             <div className='container sm:p-3 !p-0 mt-4'>
                 <div className="grid grid-cols-12 gap-6 mb-[3rem]">
                     <div className="xl:col-span-12 col-span-12">
-                        <div className="box ">
+                        <div className=" ">
                             <div className="box-header sm:flex block !justify-start m-4 text-[0.75rem] font-medium  text-primary">
                                 Personal Details
                             </div>

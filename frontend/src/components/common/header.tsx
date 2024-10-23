@@ -11,6 +11,7 @@ import 'boxicons/css/boxicons.min.css';
 import NotificationDropdown from '../ui/notification';
 import Modalsearch from "./modalsearch/modalsearch";
 import { useFrappeAuth } from "frappe-react-sdk";
+import axios from 'axios';
 
 
 
@@ -18,8 +19,8 @@ const Header = ({ toggleSidebar, isSidebarActive }: any) => {
 
     const { logout } = useFrappeAuth();
 
-    const Profilephoto = localStorage.getItem("uploadedFileUrl") || ProfilePic;
-    const username = localStorage.getItem("username");
+    // const Profilephoto = localStorage.getItem("uploadedFileUrl") || ProfilePic;
+    // const username = localStorage.getItem("username");
     const carpenterrole = localStorage.getItem('carpenterrole');
     console.log(carpenterrole);
 
@@ -47,10 +48,34 @@ const Header = ({ toggleSidebar, isSidebarActive }: any) => {
     const [notificationCount, setNotificationCount] = useState(0);
     const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
     const [isDropdownVisible, setDropdownVisible] = useState(false);
-
+    const [UserImage, setUserImage] = useState(ProfilePic);
+    const [username, setUsername] = useState('');
     const toggleDropdown = () => {
         setDropdownOpen(!dropdownOpen);
     };
+
+    useEffect(() => {
+        const fetchUserEmailAndInitScanner = async () => {
+            try {
+                const userResponse = await axios.get(`/api/method/frappe.auth.get_logged_user`, {
+                   
+                });
+    
+                const userdata = await axios.get(`/api/resource/User/${userResponse.data.message}`, {
+                   
+                });
+    
+                setUsername(userdata.data.data.username || "");
+                setUserImage(userdata.data.data.user_image || ProfilePic);
+    
+            } catch (error) {
+                console.error("Error fetching data:", error);
+                // You might want to set an error state or show a notification here.
+            }
+        };
+    
+        fetchUserEmailAndInitScanner();
+    }, []);
 
     const toggleFullScreen = () => {
         const elem = document.documentElement;
@@ -216,7 +241,7 @@ const Header = ({ toggleSidebar, isSidebarActive }: any) => {
                                 <button id="dropdown-profile" type="button"
                                     className="hs-dropdown-toggle ti-dropdown-toggle !gap-2 !p-0 flex-shrink-0 sm:me-2 me-0 !rounded-full !shadow-none text-xs align-middle !border-0 !shadow-transparent "
                                     onClick={handleDropdownToggle}>
-                                    <img className="inline-block rounded-full w-[30px] h-[30px]" src={Profilephoto} width="32" height="32" alt="Image Description" />
+                                    <img className="inline-block rounded-full w-[30px] h-[30px]" src={UserImage} width="32" height="32" alt="Image Description" />
                                 </button>
                                 <div className="md:block hidden dropdown-profile cursor-pointer" onClick={handleDropdownToggle}>
                                     <p className="font-semibold mb-0 pt-3 leading-none text-[#536485] text-[0.813rem] ">{username}</p>

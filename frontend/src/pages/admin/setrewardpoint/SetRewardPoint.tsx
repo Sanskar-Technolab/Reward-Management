@@ -90,7 +90,7 @@ const SetRewardPointsDashboard: React.FC = () => {
             <div className="grid grid-cols-12 gap-x-6 p-6">
                 <div className="col-span-12 flex justify-center items-center">
                     <div className="xl:col-span-3 col-span-12 bg-white mt-5 rounded-lg shadow-lg p-6">
-                        <div className="box">
+                        <div className="">
                             <div className="box-header">
                                 <div className="box-title text-center text-[var(--primaries)] text-sm font-semibold">
                                     Set Redeem Points

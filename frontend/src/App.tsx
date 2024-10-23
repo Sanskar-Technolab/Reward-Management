@@ -96,29 +96,29 @@ useEffect(() => {
   const fetchWebsiteSettings = async () => {
       try {
           const response = await fetch('/api/method/reward_management.api.website_settings.get_website_settings');
-          console.log("image response", response);
+          // console.log("image response", response);
 
           // Check if the response is OK and parse the JSON
           if (response.ok) {
               const data = await response.json();
-              console.log("Fetched data:", data);
+              // console.log("Fetched data:", data);
 
               // Check if the response indicates success
               if (data && data.message && data.message.status === 'success') {
                   const { favicon } = data.message.data || {};
 
                   // Log the splash_image for debugging
-                  console.log("Fetched splash_image:", favicon);
+                  // console.log("Fetched splash_image:", favicon);
 
                   if (favicon) {
                       // Prepend window.origin to the splash_image path
                       const absoluteFaviconUrl = `${window.origin}${favicon}`;
-                      console.log("Absolute favicon URL:", absoluteFaviconUrl); 
+                      // console.log("Absolute favicon URL:", absoluteFaviconUrl); 
                       setFavicons(absoluteFaviconUrl); 
                   } else {
                       const defaultFaviconUrl = "/assets/frappe/images/frappe-framework-logo.svg";
                       setFavicons(defaultFaviconUrl);
-                      console.log("Fallback favicon set to default.");
+                      // console.log("Fallback favicon set to default.");
                   }
               } else {
                   console.error("Error fetching website settings:", data?.message || 'No message available');

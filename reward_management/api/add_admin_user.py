@@ -24,28 +24,36 @@ def get_users():
     return users
 
 
-
-# create new user-------
 @frappe.whitelist(allow_guest=True)
-def create_admin_user(first_name, last_name, email, mobile_number, password):
-    if not frappe.get_all("User", filters={"email": email}):
-        user = frappe.get_doc({
-            "doctype": "User",
-            "first_name": first_name,
-            "last_name": last_name,
-            "email": email,
-            "mobile_no": mobile_number,
-            "send_welcome_email": 0,
-            "role_profile_name": "Admin",
-            "new_password": password
-        })
-        user.insert(ignore_permissions=True)
-        return {"status": "success", "message": _("User created successfully.")}
-    else:
+def create_admin_user(first_name, last_name, email, mobile_no, password, username):
+    # Check for existing email
+    if frappe.get_value("User", {"email": email}):
         return {"status": "error", "message": _("Email already exists.")}
+    
+    # Check for existing username
+    if frappe.get_value("User", {"username": username}):
+        return {"status": "error", "message": _("Username already exists.")}
 
-                      
-                      
+    # Check for existing mobile number
+    if frappe.get_value("User", {"mobile_no": mobile_no}):
+        return {"status": "error", "message": _("Mobile number already exists.")}
+
+    # If no duplicate found, create the new user
+    user = frappe.get_doc({
+        "doctype": "User",
+        "first_name": first_name,
+        "last_name": last_name,
+        "username": username,
+        "email": email,
+        "mobile_no": mobile_no,
+        "send_welcome_email": 0,
+        "role_profile_name": "Admin",
+        "new_password": password
+    })
+    user.insert(ignore_permissions=True)
+
+    return {"status": "success", "message": _("User created successfully.")}
+
 # Get User Doctype Data 
 
 @frappe.whitelist(allow_guest=True)

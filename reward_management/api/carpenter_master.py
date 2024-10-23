@@ -122,7 +122,7 @@ def update_customer_points(points):
 # update carpainter product table ----- 
 
 @frappe.whitelist()
-def update_carpainter_points(product_name, points):
+def update_carpainter_points(product_name, points,earned_amount):
     try:
         logged_in_user = frappe.session.user
         user_info = frappe.get_doc("User", logged_in_user)
@@ -142,6 +142,7 @@ def update_carpainter_points(product_name, points):
             "doctype": "Carpainter Product Detail",
             "product_name": product_name,
             "earned_points": points,
+            "earned_amount":earned_amount,
             "date": nowdate()
         })
 

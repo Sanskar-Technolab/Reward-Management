@@ -178,8 +178,9 @@ const ProductMaster: React.FC = () => {
             setIsConfirmDeleteModalOpen(false);
             mutateProducts();
         } catch (error) {
-            console.error('Error deleting announcement:', error.message || error);
-            alert('Failed to delete announcement.');
+            console.log(error),
+            console.error('Error deleting product:', error.message || error);
+            alert('Failed to delete Product.');
         }
     };
 
@@ -202,7 +203,7 @@ const ProductMaster: React.FC = () => {
 
             <div className="grid grid-cols-12 gap-x-6 bg-white mt-5 rounded-lg shadow-lg">
                 <div className="xl:col-span-12 col-span-12">
-                    <div className="box">
+                    <div className="">
 
                         <TableBoxComponent
                             title="Products"

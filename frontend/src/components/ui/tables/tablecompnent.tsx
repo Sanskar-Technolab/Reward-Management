@@ -16,8 +16,9 @@ interface TableProps<T> {
     showDelete?: boolean;
     showView?: boolean;
     editHeader?: string;
+    columnStyles?: { [key: string]: string };
+    HeadStyles?: { [key: string]: string };
     // Custom styles for columns
-    columnStyles?: { [key: string]: string }; 
      // Handler for edit action
     onEdit?: (item: T) => void;
     // Handler for delete action
@@ -52,6 +53,7 @@ const TableComponent = <T,>({
     showView = false,
     editHeader = "Edit",
     columnStyles = {},
+    HeadStyles = {},
     onEdit,
     onDelete,
     onView,
@@ -66,14 +68,14 @@ const TableComponent = <T,>({
             <table className="table whitespace-nowrap min-w-full">
                 <thead>
                     <tr>
-                        <th className="text-start p-3 text-sm text-defaulttextcolor font-semibold border border-gray-300">S.No</th>
+                        <th className="text-center p-3 text-sm text-defaulttextcolor font-semibold border border-gray-300">S.No</th>
                         {columns.map((column) => (
-                            <th key={column.header} className="text-start p-3 text-sm text-defaulttextcolor font-semibold border border-gray-300">
+                            <th key={column.header}  className={` text-start p-3 text-sm text-defaulttextcolor font-semibold border border-gray-300${HeadStyles[column.header] || ''}`}>
                                 {column.header}
                             </th>
                         ))}
                         {showProductQR && (
-                            <th className="text-start p-3 text-sm text-defaulttextcolor font-semibold border border-gray-300">Product QR</th>
+                            <th className={` text-start p-3 text-sm text-defaulttextcolor font-semibold border border-gray-300 ${HeadStyles['Product QR'] || ''}`}>Product QR</th>
                         )}
                         {(showEdit || showDelete || showView) && (
                             <th className="text-start p-3 text-sm text-defaulttextcolor font-semibold border border-gray-300">{editHeader}</th>
@@ -83,7 +85,7 @@ const TableComponent = <T,>({
                 <tbody>
                     {currentItems.map((item: any, index: any) => (
                         <tr key={index} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
-                            <td className="p-3 text-defaultsize font-medium text-defaulttextcolor whitespace-nowrap border border-gray-300 ">{indexOfFirstItem + index + 1}</td>
+                            <td className="p-3 text-defaultsize font-medium text-center text-defaulttextcolor whitespace-nowrap border border-gray-300 ">{indexOfFirstItem + index + 1}</td>
                             {columns.map((column) => (
                                 <td
                                     key={column.accessor as string}
