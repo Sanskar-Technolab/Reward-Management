@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import Pageheader from '../../../components/common/pageheader/pageheader';
 import SunEditor from 'suneditor-react';
 import { useNavigate } from 'react-router-dom';
@@ -7,6 +7,9 @@ import SuccessAlert from '../../../components/ui/alerts/SuccessAlert';
 import '../../../assets/css/style.css';
 import '../../../assets/css/pages/admindashboard.css';
 import { useFrappeGetDocList, useFrappePostCall } from 'frappe-react-sdk';
+// import TableComponent from '../../../components/ui/tables/tablecompnent'; // Ensure correct path
+// import TableBoxComponent from '../../../components/ui/tables/tableboxheader';
+
 
 import axios from 'axios';
 
@@ -17,7 +20,7 @@ interface ProductCategory {
 }
 
 const AddProduct: React.FC = () => {
- 
+
     const [files, setFiles] = useState<File[]>([]);
     const [previews, setPreviews] = useState<string[]>([]);
     const [productName, setProductName] = useState('');
@@ -27,10 +30,15 @@ const AddProduct: React.FC = () => {
     const [productDescription, setProductDescription] = useState('');
     const [productCategory, setProductCategory] = useState('');
     const [newCategory, setNewCategory] = useState('');
+    const [pointReward, setPointReward] = useState('');
+    const [rewardAmount, setRewardAmount] = useState('');
     const [showSuccessAlert, setShowSuccessAlert] = useState(false);
     const navigate = useNavigate(); // Initialize navigate
     const [showAddCategoryModal, setShowAddCategoryModal] = useState(false);
-    const [showRewardPercent, setShowRewardPercent] = useState(false); 
+    const [showRewardPercent, setShowRewardPercent] = useState(false);
+    // const [currentPage, setCurrentPage] = useState<number>(1);
+    // const [itemsPerPage] = useState<number>(10);
+    // const [pointConversionData, setPointConversionData] = useState<PointConversion[]>([]);
 
 
 
@@ -53,9 +61,6 @@ const AddProduct: React.FC = () => {
             console.error("Error adding category:", error);
         }
     };
-
-
-
 
     // Handle file input change
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -101,6 +106,8 @@ const AddProduct: React.FC = () => {
         const data = {
             productName: productName,
             rewardPoints: rewardPoints,
+            pointReward: pointReward,
+            rewardAmount: rewardAmount,
             productPrice: productPrice,
             discription: productDescription,
             productCategory,
@@ -126,6 +133,8 @@ const AddProduct: React.FC = () => {
         setPreviews([]);
         setProductName('');
         setRewardPoints('');
+        setRewardAmount('');
+        setPointReward('');
         setProductPrice('');
         setRewardPercent('');
         setProductDescription('');
@@ -181,184 +190,285 @@ const AddProduct: React.FC = () => {
 
     };
 
+
+    // const [activeTab, setActiveTab] = useState('addProduct'); // State for managing tabs
+    // // Other states: productName, productPrice, etc.
+
+    // const handleTabChange = (tab) => {
+    //     setActiveTab(tab); // Change active tab
+    // };
+
+
+    // const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+
+    // const handlePrevPage = () => {
+    //     if (currentPage > 1) setCurrentPage(currentPage - 1);
+    // };
+
+    // const handleNextPage = () => {
+    //     if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+    // };
+
+    // const handlePageChange = (pageNumber: number) => {
+    //     setCurrentPage(pageNumber);
+    // };
+
     return (
         <>
-         <Pageheader 
-                currentpage={"Add Product"} 
-                activepage={"/product-master"} 
-                mainpage={"/add-product"} 
-                activepagename='Product Master' 
-                mainpagename='Add Product' 
+            <Pageheader
+                currentpage={"Add Product"}
+                activepage={"/product-master"}
+                mainpage={"/add-product"}
+                activepagename='Product Master'
+                mainpagename='Add Product'
             />
             {/* <Pageheader currentpage="Add Product" activepage="Product Master" mainpage="Add Product" /> */}
             <div className="grid grid-cols-12 gap-6 bg-white mt-5 rounded-lg shadow-lg">
+
                 <div className="xl:col-span-12 col-span-12">
-                    <div className="box">
+                    <div className="">
                         <div className="box-body add-products !p-0">
-                            <form onSubmit={handleSubmit}>
-                                <div className="p-6">
-                                    <div className="grid grid-cols-12 md:gap-x-[3rem] gap-0">
-                                        <div className="xxl:col-span-6 xl:col-span-12 lg:col-span-12 md:col-span-6 col-span-12">
-                                            <div className="grid grid-cols-12 gap-4">
-                                                <div className="xl:col-span-12 col-span-12">
-                                                    <label htmlFor="product-name-add" className="form-label text-sm font-semibold text-defaulttextcolor">Product Name</label>
-                                                    <input
-                                                        type="text"
-                                                        className="form-control w-full border border-defaultborder text-defaultsize text-defaulttextcolor rounded-[0.5rem] mt-2"
-                                                        id="product-name-add"
-                                                        placeholder="Name"
-                                                        value={productName}
-                                                        onChange={(e) => setProductName(e.target.value)}
-                                                        required
-                                                    />
-                                                </div>
-                                                <div className="xl:col-span-12 col-span-12">
-                                                    <label htmlFor="product-price-add" className="form-label text-sm font-semibold text-defaulttextcolor">Product Price</label>
-                                                    <input
-                                                        type="text"
-                                                        className="form-control w-full text-defaultsize text-defaulttextcolor border border-defaultborder rounded-[0.5rem] mt-2"
-                                                        id="product-price-add"
-                                                        placeholder="Price"
-                                                        value={productPrice}
-                                                        onChange={(e) => setProductPrice(e.target.value)}
-                                                        required
-                                                    />
-                                                </div>
-
-
-
-                                                <div className="xl:col-span-12 col-span-12">
-                                                    <label htmlFor="product-cost-add" className="form-label text-sm font-semibold text-defaulttextcolor">Reward Points</label>
-                                                    <input
-                                                        type="text"
-                                                        className="form-control w-full text-defaultsize text-defaulttextcolor border border-defaultborder rounded-[0.5rem] mt-2"
-                                                        id="product-cost-add"
-                                                        placeholder="Reward points"
-                                                        value={rewardPoints}
-                                                        onChange={(e) => setRewardPoints(e.target.value)}
-                                                        readOnly={showRewardPercent} // Make read-only if the checkbox is checked
-                                                    />
-                                                </div>
-
-                                                <div className="xl:col-span-12 col-span-12 mb-4">
-                                                    <label className="form-label text-sm font-semibold text-defaulttextcolor">Product Description</label>
-                                                    <div id="product-features" className="mt-2">
-                                                        <SunEditor
-                                                            setContents={productDescription}
-                                                            onChange={setProductDescription}
-                                                            setOptions={{
-                                                                buttonList: [
-                                                                    ['undo', 'redo'],
-                                                                    ['formatBlock', 'font', 'fontSize'],
-                                                                    ['bold', 'underline', 'italic'],
-                                                                    ['fontColor', 'hiliteColor'],
-                                                                    ['align', 'list', 'lineHeight'],
-                                                                    ['table', 'link'],
-                                                                    ['fullScreen', 'showBlocks', 'codeView']
-                                                                ]
-                                                            }}
-                                                            height="200px"
+                            {/* Tab Buttons */}
+                            {/* <div className="flex justify-evenly border-b mb-6 gap-4 font-semibold text-sm p-5">
+                                <button
+                                    className={`flex-1 bg-white text-defaulttextcolor tab-button ${activeTab === 'addProduct' ? 'border-b-2 border-primary text-primary' : ''}`}
+                                    onClick={() => handleTabChange('addProduct')}
+                                >
+                                    Add Product
+                                </button>
+                                <button
+                                    className={`flex-1 bg-white text-defaulttextcolor tab-button ${activeTab === 'pointConversion' ? 'border-b-2 border-primary text-primary' : ''}`}
+                                    onClick={() => handleTabChange('pointConversion')}
+                                >
+                                    Point Conversion
+                                </button>
+                            </div>
+                            {activeTab === 'addProduct' && ( */}
+                                <form onSubmit={handleSubmit}>
+                                    <div className="p-6">
+                                        <div className="grid grid-cols-12 md:gap-x-[3rem] gap-0">
+                                            <div className="xxl:col-span-6 xl:col-span-12 lg:col-span-12 md:col-span-6 col-span-12">
+                                                <div className="grid grid-cols-12 gap-4">
+                                                    <div className="xl:col-span-12 col-span-12">
+                                                        <label htmlFor="product-name-add" className="form-label text-sm font-semibold text-defaulttextcolor">Product Name</label>
+                                                        <input
+                                                            type="text"
+                                                            className="form-control w-full border border-defaultborder text-defaultsize text-defaulttextcolor rounded-[0.5rem] mt-2"
+                                                            id="product-name-add"
+                                                            placeholder="Name"
+                                                            value={productName}
+                                                            onChange={(e) => setProductName(e.target.value)}
+                                                            required
                                                         />
+                                                    </div>
+                                                    <div className="xl:col-span-12 col-span-12">
+                                                        <label htmlFor="product-price-add" className="form-label text-sm font-semibold text-defaulttextcolor">Product Price</label>
+                                                        <input
+                                                            type="text"
+                                                            className="form-control w-full text-defaultsize text-defaulttextcolor border border-defaultborder rounded-[0.5rem] mt-2"
+                                                            id="product-price-add"
+                                                            placeholder="Price"
+                                                            value={productPrice}
+                                                            onChange={(e) => setProductPrice(e.target.value)}
+                                                            required
+                                                        />
+                                                    </div>
+
+
+
+                                                    <div className="xl:col-span-12 col-span-12">
+                                                        <label htmlFor="product-cost-add" className="form-label text-sm font-semibold text-defaulttextcolor">Reward Points</label>
+                                                        <input
+                                                            type="text"
+                                                            className="form-control w-full text-defaultsize text-defaulttextcolor border border-defaultborder rounded-[0.5rem] mt-2"
+                                                            id="product-cost-add"
+                                                            placeholder="Reward points"
+                                                            value={rewardPoints}
+                                                            onChange={(e) => setRewardPoints(e.target.value)}
+                                                            readOnly={showRewardPercent} // Make read-only if the checkbox is checked
+                                                        />
+                                                    </div>
+
+                                                    <div className="xl:col-span-12 col-span-12 mb-4">
+                                                        <label className="form-label text-sm font-semibold text-defaulttextcolor">Product Description</label>
+                                                        <div id="product-features" className="mt-2">
+                                                            <SunEditor
+                                                                setContents={productDescription}
+                                                                onChange={setProductDescription}
+                                                                setOptions={{
+                                                                    buttonList: [
+                                                                        ['undo', 'redo'],
+                                                                        ['formatBlock', 'font', 'fontSize'],
+                                                                        ['bold', 'underline', 'italic'],
+                                                                        ['fontColor', 'hiliteColor'],
+                                                                        ['align', 'list', 'lineHeight'],
+                                                                        ['table', 'link'],
+                                                                        ['fullScreen', 'showBlocks', 'codeView']
+                                                                    ]
+                                                                }}
+                                                                height="200px"
+                                                            />
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div className="xxl:col-span-6 xl:col-span-12 lg:col-span-12 md:col-span-6 col-span-12 gap-4">
-                                            <div className='grid grid-cols-12 gap-4'>
-                                                {/* Product Category Dropdown */}
-                                                <div className="xl:col-span-12 col-span-12">
-                                                    <label htmlFor="product-category-add" className="form-label text-sm font-semibold text-defaulttextcolor">Category</label>
-                                                    <div className="flex items-center mt-[8px]">
-                                                        <select
-                                                            id="product-category-add"
-                                                            name="product-category-add"
-                                                            className="w-full border border-defaultborder text-defaultsize text-defaulttextcolor rounded-[0.5rem] mr-1" // added margin-right
-                                                            value={productCategory}
-                                                            onChange={(e) => setProductCategory(e.target.value)}
-                                                            required
-                                                        >
-                                                            <option value="">Select a category</option>
-                                                            {productcategoryData && productcategoryData.map((category) => (
-                                                                <option key={category.name} value={category.category_name}>
-                                                                    {category.category_name}
-                                                                </option>
-                                                            ))}
-                                                        </select>
-                                                        <button
-                                                            type="button"
-                                                            className="ti-btn ti-btn-primary bg-primary p-3 rounded-[0.5rem]" 
-                                                            onClick={() => setShowAddCategoryModal(true)}
-                                                        >
-                                                            <i className="fas fa-plus" /> 
-                                                        </button>
+                                            <div className="xxl:col-span-6 xl:col-span-12 lg:col-span-12 md:col-span-6 col-span-12 gap-4">
+                                                <div className='grid grid-cols-12 gap-4'>
+                                                    {/* Product Category Dropdown */}
+                                                    <div className="xl:col-span-12 col-span-12">
+                                                        <label htmlFor="product-category-add" className="form-label text-sm font-semibold text-defaulttextcolor">Category</label>
+                                                        <div className="flex items-center mt-[8px]">
+                                                            <select
+                                                                id="product-category-add"
+                                                                name="product-category-add"
+                                                                className="w-full border border-defaultborder text-defaultsize text-defaulttextcolor rounded-[0.5rem] mr-1" // added margin-right
+                                                                value={productCategory}
+                                                                onChange={(e) => setProductCategory(e.target.value)}
+                                                                required
+                                                            >
+                                                                <option value="">Select a category</option>
+                                                                {productcategoryData && productcategoryData.map((category) => (
+                                                                    <option key={category.name} value={category.category_name}>
+                                                                        {category.category_name}
+                                                                    </option>
+                                                                ))}
+                                                            </select>
+                                                            <button
+                                                                type="button"
+                                                                className="ti-btn ti-btn-primary bg-primary p-3 rounded-[0.5rem]"
+                                                                onClick={() => setShowAddCategoryModal(true)}
+                                                            >
+                                                                <i className="fas fa-plus" />
+                                                            </button>
+                                                        </div>
                                                     </div>
-                                                </div>
 
 
                                                     {/* Toggle Checkbox for Reward Percent */}
                                                     <div className="xl:col-span-12 col-span-12 rounded-full">
-                                                    <label className="form-label text-sm font-semibold text-defaulttextcolor ">
-                                                        <input
-                                                            type="checkbox"
-                                                            className="mr-2"
-                                                            checked={showRewardPercent}
-                                                            onChange={() => setShowRewardPercent(!showRewardPercent)}
-                                                        />
-                                                        Add Reward Percent
-                                                    </label>
-                                                </div>
-                                                {/* Conditionally render Reward Percent input */}
-                                                {showRewardPercent && (
+                                                        <label className="form-label text-sm font-semibold text-defaulttextcolor ">
+                                                            <input
+                                                                type="checkbox"
+                                                                className="mr-2"
+                                                                checked={showRewardPercent}
+                                                                onChange={() => setShowRewardPercent(!showRewardPercent)}
+                                                            />
+                                                            Add Reward Percent
+                                                        </label>
+                                                    </div>
+                                                    {/* Conditionally render Reward Percent input */}
+                                                    {showRewardPercent && (
+                                                        <div className="xl:col-span-12 col-span-12">
+                                                            <label htmlFor="reward-percent-add" className="form-label text-sm font-semibold text-defaulttextcolor">Set Reward Percent</label>
+                                                            <input
+                                                                type="text"
+                                                                className="form-control w-full text-defaultsize text-defaulttextcolor border border-defaultborder rounded-[0.5rem] mt-2"
+                                                                id="reward-percent-add"
+                                                                placeholder="Set Reward Percent"
+                                                                value={rewardPercent}
+                                                                onChange={(e) => setRewardPercent(e.target.value)}
+                                                                required
+                                                            />
+                                                        </div>
+                                                    )}
+
+                                                    {/* point calculation */}
                                                     <div className="xl:col-span-12 col-span-12">
-                                                        <label htmlFor="reward-percent-add" className="form-label text-sm font-semibold text-defaulttextcolor">Set Reward Percent</label>
+                                                        <label htmlFor="point-reward-add" className="form-label text-sm font-semibold text-defaulttextcolor">Point</label>
                                                         <input
                                                             type="text"
                                                             className="form-control w-full text-defaultsize text-defaulttextcolor border border-defaultborder rounded-[0.5rem] mt-2"
-                                                            id="reward-percent-add"
-                                                            placeholder="Set Reward Percent"
-                                                            value={rewardPercent}
-                                                            onChange={(e) => setRewardPercent(e.target.value)}
+                                                            id="point-reward-add"
+                                                            placeholder="Set Reward Points"
+                                                            value={pointReward}
+                                                            onChange={(e) => setPointReward(e.target.value)}
                                                             required
-                                                        /> 
+                                                        />
                                                     </div>
-                                                )}
+                                                    {/* amount per point */}
+                                                    <div className="xl:col-span-12 col-span-12">
+                                                        <label htmlFor="reward-amount-add" className="form-label text-sm font-semibold text-defaulttextcolor">Amount per Point</label>
+                                                        <input
+                                                            type="text"
+                                                            className="form-control w-full text-defaultsize text-defaulttextcolor border border-defaultborder rounded-[0.5rem] mt-2"
+                                                            id="reward-amount-add"
+                                                            placeholder="Set Amount Per Point"
+                                                            value={rewardAmount}
+                                                            onChange={(e) => setRewardAmount(e.target.value)}
+                                                            required
+                                                        />
+                                                    </div>
 
-                                            
-                                                <div className="xl:col-span-12 col-span-12 product-documents-container ">
-                                                    <p className="font-semibold mb-2 text-sm text-defaulttextcolor">Product Image</p>
-                                                    <input
-                                                        type="file"
-                                                        accept="image/*"
-                                                        multiple
-                                                        onChange={handleFileChange}
-                                                        className="form-control w-full text-defaultsize text-defaulttextcolor border border-defaultborder rounded-[0.5rem] p-2 "
-                                                    />
-                                                    <div className="image-preview-grid mt-4">
-                                                        {previews.map((src, index) => (
-                                                            <img key={index} src={src} alt={`Preview ${index}`} className="preview-image" />
-                                                        ))}
+                                                    {/* Product image */}
+
+                                                    <div className="xl:col-span-12 col-span-12 product-documents-container ">
+                                                        <p className="font-semibold mb-2 text-sm text-defaulttextcolor">Product Image</p>
+                                                        <input
+                                                            type="file"
+                                                            accept="image/*"
+                                                            multiple
+                                                            onChange={handleFileChange}
+                                                            className="form-control w-full text-defaultsize text-defaulttextcolor border border-defaultborder rounded-[0.5rem] p-2 "
+                                                        />
+                                                        <div className="image-preview-grid mt-4">
+                                                            {previews.map((src, index) => (
+                                                                <img key={index} src={src} alt={`Preview ${index}`} className="preview-image" />
+                                                            ))}
+                                                        </div>
                                                     </div>
+
                                                 </div>
                                             </div>
                                         </div>
+                                        <div className="px-6  py-4 border-t  dark:border-defaultborder sm:flex justify-end">
+                                            <button
+                                                type="submit"
+                                                className="ti-btn ti-btn-primary !font-medium m-1">
+                                                Add Product<i className="bi bi-plus-lg ms-2"></i>
+                                            </button>
+                                            <button
+                                                type="button"
+                                                className="ti-btn ti-btn-success bg-defaulttextcolor ti-btn text-white !font-medium m-1"
+                                                onClick={resetForm}
+                                            >
+                                                Cancel
+                                            </button>
+                                        </div>
                                     </div>
-                                    <div className="px-6 py-4 border-t border-dashed dark:border-defaultborder/10 sm:flex justify-end">
-                                        <button
-                                            type="submit"
-                                            className="ti-btn ti-btn-primary !font-medium m-1">
-                                            Add Product<i className="bi bi-plus-lg ms-2"></i>
-                                        </button>
-                                        <button
-                                            type="button"
-                                            className="ti-btn ti-btn-success bg-defaulttextcolor ti-btn text-white !font-medium m-1"
-                                            onClick={resetForm} 
-                                        >
-                                            Cancel
-                                        </button>
-                                    </div>
+                                </form>
+                            {/* )}
+
+                            {activeTab === 'pointConversion' && (
+                                <div className="box-body m-5">
+                                    <TableComponent<PointConversion>
+                                        columns={[
+                                            
+                                            { header: 'Product Name', accessor: 'product_name' },
+                                            { header: 'Reward Point', accessor: ' reward_point' },
+                                            { header: 'Payout Amount', accessor: ' payout_amount' },
+                                            { header: 'From Date', accessor: 'from_date' },
+                                            {
+                                                header: 'Status',
+                                                accessor: 'scanned',
+                                            },
+                                            
+                                        ]}
+                                        data={filteredData}
+                                        currentPage={currentPage}
+                                        itemsPerPage={itemsPerPage}
+                                        handlePrevPage={handlePrevPage}
+                                        handleNextPage={handleNextPage}
+                                        handlePageChange={handlePageChange}
+                                        showProductQR={false}
+                                        showEdit={false}
+                                        columnStyles={{
+                                            'Product': 'text-[var(--primaries)] font-semibold',
+                                        }}
+                                    />
                                 </div>
-                            </form>
-                          
+
+                            )}  */}
+
                             {showAddCategoryModal && (
                                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
                                     <div className="modal-overlay" onClick={handleCloseModal} />
@@ -401,7 +511,11 @@ const AddProduct: React.FC = () => {
                                     showCancleButton={false}
                                     showCollectButton={false}
                                     showAnotherButton={false}
-                                    showMessagesecond={false} message="New Product Added successfully!" />
+                                    showMessagesecond={false} message="New Product Added successfully!" onClose={function (): void {
+                                        throw new Error('Function not implemented.');
+                                    }} onCancel={function (): void {
+                                        throw new Error('Function not implemented.');
+                                    }} />
                             )}
                         </div>
                     </div>

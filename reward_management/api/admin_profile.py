@@ -59,23 +59,76 @@ def get_user_details(name):
 
     
 # Update Admin User Profile------ 
+# @frappe.whitelist(allow_guest=True)
+# def update_user_details():
+#     try:
+#         user_data = frappe.form_dict  # Use form_dict to get form data
+#         name = user_data.get('name')
+#         print("name----",name)
+
+#         if not name:
+#             return {"status": "error", "message": "Name is required."}
+
+#         # Fetch User document based on the name
+#         user = frappe.get_doc("User", {"name": name})
+
+#         if not user:
+#             return {"status": "error", "message": "User not found."}
+
+#         # Update user document fields
+#         user.first_name = user_data.get('first_name', user.first_name)
+#         user.last_name = user_data.get('last_name', user.last_name)
+#         user.full_name = user_data.get('full_name', user.full_name)
+#         user.username = user_data.get('username', user.username)
+#         user.phone = user_data.get('phone', user.phone)
+#         user.mobile_no = user_data.get('mobile_no', user.mobile_no)
+#         user.gender = user_data.get('gender', user.gender)
+#         user.birth_date = user_data.get('birth_date', user.birth_date)
+#         user.location = user_data.get('location', user.location)
+#         user.bio = user_data.get('bio', user.bio)
+#         user.interest = user_data.get('interest', user.interest)
+
+#         # Handle profile image update
+#         if user_data.get('user_image'):
+#             user.user_image = user_data.get('user_image')
+
+#         # Save changes
+#         user.save()
+
+#         return {"status": "success", "message": "User details updated successfully."}
+
+#     except frappe.DoesNotExistError:
+#         frappe.log_error(frappe.get_traceback(), _("User Not Found Error"))
+#         return {"status": "error", "message": "User not found."}
+
+#     except Exception as e:
+#         frappe.log_error(frappe.get_traceback(), _("API Error"))
+#         return {"status": "error", "message": str(e)}
+
+
 @frappe.whitelist(allow_guest=True)
 def update_user_details():
     try:
-        user_data = frappe.form_dict  # Use form_dict to get form data
-        name = user_data.get('name')
-        print("name----",name)
+        user_data = frappe.form_dict
+        name_or_email = user_data.get('name')
 
-        if not name:
-            return {"status": "error", "message": "Name is required."}
+        if not name_or_email:
+            return {"status": "error", "message": "Name or Email is required."}
 
-        # Fetch User document based on the name
-        user = frappe.get_doc("User", {"name": name})
+        # Try finding by email or name
+        if name_or_email == "Administrator":
+            user = frappe.get_doc("User", "Administrator")
+        else:
+            user = frappe.db.get_value("User", {"email": name_or_email}, "name")
+            if not user:
+                user = frappe.db.get_value("User", {"name": name_or_email}, "name")
 
-        if not user:
-            return {"status": "error", "message": "User not found."}
+            if not user:
+                return {"status": "error", "message": "User not found."}
+            
+            user = frappe.get_doc("User", user)
 
-        # Update user document fields
+        # Update the fields...
         user.first_name = user_data.get('first_name', user.first_name)
         user.last_name = user_data.get('last_name', user.last_name)
         user.full_name = user_data.get('full_name', user.full_name)
@@ -85,16 +138,11 @@ def update_user_details():
         user.gender = user_data.get('gender', user.gender)
         user.birth_date = user_data.get('birth_date', user.birth_date)
         user.location = user_data.get('location', user.location)
-        user.bio = user_data.get('bio', user.bio)
-        user.interest = user_data.get('interest', user.interest)
 
-        # Handle profile image update
         if user_data.get('user_image'):
             user.user_image = user_data.get('user_image')
 
-        # Save changes
         user.save()
-
         return {"status": "success", "message": "User details updated successfully."}
 
     except frappe.DoesNotExistError:
@@ -105,15 +153,13 @@ def update_user_details():
         frappe.log_error(frappe.get_traceback(), _("API Error"))
         return {"status": "error", "message": str(e)}
 
-  
-
 
     
 @frappe.whitelist(allow_guest=True)
 def update_user_image(name, new_image_url):
     try:
         # Fetch User document based on email
-        user = frappe.get_doc("User", {"name": name})
+        user = frappe.get_doc("User", {"email": name})
 
         # Update user image field
         user.user_image = new_image_url
@@ -160,7 +206,7 @@ def update_password_without_current():
         user = frappe.get_doc("User", {"email": email})
 
         # Set new password
-        user.new_password = new_password  # Assuming 'new_password' is the field name in User doctype
+        user.new_password = new_password  
         user.save()
 
         return {"status": "success", "message": "Password updated successfully."}

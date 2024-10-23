@@ -29,9 +29,9 @@ const Faqs = () => {
     }
   }, [data]);
 
-  const stripHTML = (html: string) => {
-    return html.replace(/<[^>]*>?/gm, '');
-  };
+  // const stripHTML = (html: string) => {
+  //   return html.replace(/<[^>]*>?/gm, '');
+  // };
 
   const toggleAccordion = (index: number) => {
     setExpandedIndex(expandedIndex === index ? null : index);
@@ -67,7 +67,7 @@ const Faqs = () => {
         <div className="xl:col-span-10 col-span-12">
           <div className="grid grid-cols-12 gap-x-6">
             <div className="xl:col-span-12 col-span-12">
-              <div className="box">
+              <div className="">
                 <div className="box-header">
                   <div className="box-title text-[.9375rem] text-defaulttextcolor font-bold p-[1.25rem] ">
                     General Topics ?

@@ -11,7 +11,7 @@ const AdminProfile = () => {
     const [selectedImage, setSelectedImage] = useState(face9); // Set the default image URL here
     const [activeTab, setActiveTab] = useState('personal-info'); // State to manage active tab
     const fileInputRef = useRef(null);
-    const [UserImage ,setUserImage] = useState('')
+    const [UserImage, setUserImage] = useState('')
     const [changeImage, setchangeImage] = useState('');
     const [firstName, setFirstName] = useState(''); // State to store first name
     const [lastName, setLastName] = useState(''); // State to store first name
@@ -30,7 +30,7 @@ const AdminProfile = () => {
     const [showConfirmPassword, setShowConfirmPassword] = useState(false); // State to track show and hide confirm password
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
-    const [passwordsMatch, setPasswordsMatch] = useState(true); 
+    const [passwordsMatch, setPasswordsMatch] = useState(false);
 
 
     // Reset form fields to their initial values
@@ -40,10 +40,10 @@ const AdminProfile = () => {
 
 
 
-    
+
     const numberRegex = /^\d{10}$/;
 
-    const handleMobileNumberChange = (e:any) => {
+    const handleMobileNumberChange = (e: any) => {
         const value = e.target.value;
 
         // Validate the input value against the regex
@@ -56,12 +56,12 @@ const AdminProfile = () => {
         // Log the input value for debugging
         console.log("Mobile Number:", value);
     };
-    
-   
+
+
     localStorage.setItem('username', username)
 
     useEffect(() => {
-        document.title='Profile Setting';
+        document.title = 'Profile Setting';
         if (showSuccessAlert) {
             const timer = setTimeout(() => setShowSuccessAlert(false), 3000);
             return () => clearTimeout(timer);
@@ -72,26 +72,24 @@ const AdminProfile = () => {
                 const userResponse = await axios.get(`/api/method/frappe.auth.get_logged_user`,
                     {
                         method: "GET",
-                       
-                    } 
+
+                    }
                 );
-                // console.log("userData----->", userResponse.data.message);
+                console.log("userData----->", userResponse.data.message);
                 //   const userData = userResponse.data;
 
                 const userdata = await axios.get(`/api/resource/User/${userResponse.data.message}`,
                     {
                         method: "GET",
-                     
+
                     }
                 );
-                // console.log("userData----->", userdata.data.data);
+                console.log("userData----->", userdata.data.data);
                 //   document.getElementById('first-name').innerText = userdata.data.data.first_name || "";
                 setFirstName(userdata.data.data.first_name || "");
                 setLastName(userdata.data.data.last_name || "");
                 setUsername(userdata.data.data.username || "");
                 setFullname(userdata.data.data.full_name || "");
-
-              
                 setEmail(userdata.data.data.email || "");
                 setPhone(userdata.data.data.phone || "");
                 setMobileno(userdata.data.data.mobile_no || "");
@@ -116,7 +114,7 @@ const AdminProfile = () => {
                 const response = await axios.get(`/api/method/reward_management.api.admin_profile.get_all_gender`,
                     {
                         method: "GET",
-                      
+
                     }
                 );
                 setGenders(response.data.message); // 
@@ -133,48 +131,47 @@ const AdminProfile = () => {
 
     }, [showSuccessAlert]);
 
-    const handleImageChange = (e:any) => {
+    const handleImageChange = (e: any) => {
         const file = e.target.files[0];
         if (file) {
             setSelectedImage(URL.createObjectURL(file));
             setchangeImage(file);  // Store the actual file object here
         }
     };
-        const update_user_details = async () => {
-            try {
-                const response = await axios.post(`/api/method/reward_management.api.admin_profile.update_user_details`,
-                    {
-                        name: email,
-                        first_name: firstName,
-                        last_name: lastName,
-                        full_name: fullname,
-                        username,
-                        phone,
-                        mobile_no: mobileno,
-                        gender,
-                        birth_date: birthdate,
-                        location,
-                    },
-                    {
-                        
-                    }
-                );
+    //    update user profile data-------
+    const update_user_details = async () => {
+        let userNameOrEmail = email.toLowerCase();  // Make sure case sensitivity isn't an issue
 
-                if (response.data.message.status === "success") {
-                    setShowSuccessAlert(true);
-                    // localStorage.getItem('username')
-                    setTimeout(() => {
-                        window.location.reload(); // Reload the page after 3 seconds
-                    }, 3000);
-                    console.log("User details updated successfully.");
-                    // Optionally, you can add more logic here, such as redirecting the user or showing a success message
-                } else {
-                    console.error("Error updating user details:", response.data.message);
-                }
-            } catch (error) {
-                console.error("Error updating user details:", error);
+        try {
+            // Use either "Administrator" or the provided name/email
+            const response = await axios.post('/api/method/reward_management.api.admin_profile.update_user_details', {
+                name: userNameOrEmail === "administrator" ? "Administrator" : userNameOrEmail, // Special case for Administrator
+                first_name: firstName,
+                last_name: lastName,
+                full_name: fullname,
+                username,
+                phone,
+                mobile_no: mobileno,
+                gender,
+                birth_date: birthdate,
+                location
+            });
+
+            if (response.data.message.status === "success") {
+                setShowSuccessAlert(true);
+                setTimeout(() => {
+                    window.location.reload(); // Reload the page after 3 seconds
+                }, 3000);
+                console.log("User details updated successfully.");
+            } else {
+                // console.log("errorrrrrr",response);
+                console.error("Error updating user details:", response.data.message);
             }
-        };
+        } catch (error) {
+            console.error("Error updating user details:", error);
+        }
+    };
+
 
     const openFileInput = () => {
         if (fileInputRef.current) {
@@ -184,14 +181,14 @@ const AdminProfile = () => {
 
 
 
-    const handleTabClick = (tabId) => {
+    const handleTabClick = (tabId: any) => {
         setActiveTab(tabId); // Set the active tab when clicked
     };
 
 
 
 
-    const uploadFile = async (file) => {
+    const uploadFile = async (file: any) => {
         const formData = new FormData();
         formData.append("file", file, file.name);  // Ensure the correct File object is appended
         formData.append("is_private", "0");
@@ -202,7 +199,7 @@ const AdminProfile = () => {
             const response = await axios.post(`/api/method/upload_file`, formData, {
                 headers: {
                     'Accept': 'application/json',
-                    
+
                     'Content-Type': 'multipart/form-data'
                 }
             });
@@ -234,14 +231,14 @@ const AdminProfile = () => {
                     new_image_url: uploadedFileUrl,
                     name: email,
                 }, {
-                    
+
                 });
 
                 if (response.data.message.status === "success") {
                     // setShowSuccessAlert(true);
-                    console.log("uploadedFileUrl",uploadedFileUrl);
-                    localStorage.setItem('uploadedFileUrl',uploadedFileUrl);
-                    
+                    console.log("uploadedFileUrl", uploadedFileUrl);
+                    localStorage.setItem('uploadedFileUrl', uploadedFileUrl);
+
                     setUserImage(uploadedFileUrl);  // Update the user's profile image with the new image URL
                 } else {
                     console.error("Failed to update user image:", response.data);
@@ -255,61 +252,60 @@ const AdminProfile = () => {
     const removeUserImage = async () => {
         try {
             // Set the default image
-            setSelectedImage(face9); // Assuming face9 is the default image you want to set
-    
+            setSelectedImage(face9);
+
             // Call the API to remove the user image
             await axios.post(`/api/method/reward_management.api.admin_profile.remove_user_image`, {
                 name: email,
             });
-    
+
             // Remove the image from localStorage
             localStorage.removeItem('uploadedFileUrl');
-            setUserImage(face9); 
+            setUserImage(face9);
             // Show success alert
             // alert("User image removed successfully");
-    
+
             // Delay the update of the profile picture to reflect the changes
             setTimeout(() => {
-                setProfilePic(face9); // Assuming setProfilePic is a state setter for the profile image
+                setUserImage(face9); // Assuming setProfilePic is a state setter for the profile image
             }, 2000); // 2000 milliseconds = 2 seconds
-    
+
         } catch (error) {
             console.error('Error removing user image:', error);
         }
     };
-    
+
+    // Toggle visibility of new password
     const toggleNewPasswordVisibility = () => {
         setShowNewPassword(!showNewPassword);
     };
 
+    // Toggle visibility of confirm password
     const toggleConfirmPasswordVisibility = () => {
         setShowConfirmPassword(!showConfirmPassword);
     };
 
-    const handlePasswordChange = (e:any) => {
+    // Handle password change
+    const handlePasswordChange = (e: any) => {
         const { id, value } = e.target;
         if (id === 'new-password') {
             setNewPassword(value);
         } else if (id === 'confirm-password') {
             setConfirmPassword(value);
         }
-        // Check if passwords match
-        setPasswordsMatch(newPassword === confirmPassword);
-    };
 
+        // Check if passwords match after both values are set
+        setPasswordsMatch(newPassword === value || confirmPassword === value);
+    };
     const savePassword = async () => {
         try {
-            const response = await axios.post(`/api/method/reward_management.api.admin_profile.update_password_without_current`, 
+            const response = await axios.post(`/api/method/reward_management.api.admin_profile.update_password_without_current`,
                 {
-                    email : email,
+                    email: email,
                     new_password: newPassword
-                  
+
                 },
-                {
-                    // headers: {
-                    //     Authorization: `token ${API_KEY}:${API_SECRET}`,
-                    // },
-                }
+
             );
 
             if (response.data.message.status === "success") {
@@ -325,18 +321,19 @@ const AdminProfile = () => {
 
     return (
         <Fragment>
-                <Pageheader 
-                currentpage={"Admin Profile"} 
-                activepage={"/admin-profile"} 
+            <Pageheader
+                currentpage={"Admin Profile"}
+                activepage={"/admin-profile"}
                 // mainpage={"/admin-profile"} 
                 activepagename="Admin Profile"
-                // mainpagename="Admin Profile"
+            // mainpagename="Admin Profile"
             />
-            {/* <Pageheader currentpage="Admin Profile" activepage="Admin Profile" mainpage="Admin Profile" /> */}
+            
             <div className='container sm:p-3 !p-0 mt-4'>
                 <div className="grid grid-cols-12 gap-6 mb-[3rem]">
                     <div className="xl:col-span-12 col-span-12">
                         <div className="box ">
+                            {/* tab buttons----- */}
                             <div className="box-header sm:flex block !justify-start m-4">
                                 <nav aria-label="Tabs" className="md:flex block !justify-start whitespace-nowrap">
                                     <Link to="#" className={`m-1 block w-full cursor-pointer text-defaulttextcolor dark:text-defaulttextcolor/70 py-2 px-3 flex-grow text-[0.75rem] font-medium rounded-[5px] hover:text-primary ${activeTab === 'personal-info' ? 'bg-primary/10 text-primary' : ''}`} id="Personal-item" onClick={() => handleTabClick('personal-info')}>
@@ -347,12 +344,13 @@ const AdminProfile = () => {
                                     </Link>
                                 </nav>
                             </div>
+                            {/* end of tab buttons---- */}
                             <div className="box-body border">
                                 <div className="tab-content">
                                     <div className={`tab-pane ${activeTab === 'personal-info' ? 'show active' : 'hidden'}`} id="personal-info" aria-labelledby="Personal-item">
                                         {/* Personal Information Content */}
                                         <div className="sm:p-4 p-0">
-                                            <h6 className="font-semibold mb-4 text-[1rem]">Photo :</h6>
+                                            <h6 className="font-semibold mb-4 text-[1rem]">Photo </h6>
                                             <div className="mb-6 sm:flex items-center">
                                                 <div className="mb-0 me-[3rem] relative">
                                                     <span className="avatar avatar-xxl avatar-rounded relative inline-block">
@@ -369,7 +367,7 @@ const AdminProfile = () => {
                                                     <button type="button" className="bg-light ti-btn text-defaulttextcolor" onClick={removeUserImage}>Remove</button>
                                                 </div>
                                             </div>
-                                            <h6 className="font-semibold mb-4 text-[1rem]">Profile :</h6>
+                                            <h6 className="font-semibold mb-4 text-[1rem]">Profile </h6>
                                             <div className="sm:grid grid-cols-12 gap-6 mb-6">
                                                 <div className="xl:col-span-6 col-span-12">
                                                     <label htmlFor="first-name" className="form-label text-sm text-defaulttextcolor font-semibold">First Name</label>
@@ -392,13 +390,13 @@ const AdminProfile = () => {
                                                     <label htmlFor="full-name" className="form-label text-sm text-defaulttextcolor font-semibold">Full Name</label>
                                                     <input type="text" className="form-control w-full rounded-[5px] border border-[#dadada] form-control-light mt-2 text-sm" id="full-name" placeholder="Full Name"
                                                         value={fullname} // Set the value from the state
-                                                        onChange={(e) => 
-                                                        
+                                                        onChange={(e) =>
+
 
                                                             setFullname(e.target.value)
 
-                                                        
-                                                    }
+
+                                                        }
                                                     />
                                                 </div>
                                                 <div className="xl:col-span-6 col-span-12">
@@ -411,7 +409,7 @@ const AdminProfile = () => {
                                                     </div>
                                                 </div>
                                             </div>
-                                            <h6 className="font-semibold mb-4 text-[1rem]">Personal information :</h6>
+                                            <h6 className="font-semibold mb-4 text-[1rem]">Personal information </h6>
                                             <div className="sm:grid grid-cols-12 gap-6 mb-6">
                                                 <div className="xl:col-span-6 col-span-12">
                                                     <label htmlFor="email-address" className="form-label text-sm text-defaulttextcolor font-semibold">Email Address</label>
@@ -478,7 +476,7 @@ const AdminProfile = () => {
                                                     />
                                                 </div>
                                             </div>
-                                            <div className='border-t border-defaultborder p-4 flex justify-end'>
+                                            <div className='p-4 flex justify-end'>
                                                 <button
                                                     className="ti-btn ti-btn-primary bg-primary me-3"
                                                     onClick={update_user_details} // Call the update_user_details function on button click
@@ -496,65 +494,66 @@ const AdminProfile = () => {
                                         </div>
                                     </div>
                                     <div className={`tab-pane ${activeTab === 'security' ? 'show active' : 'hidden'}`} id="security" aria-labelledby="security-item">
-                {/* Security (Password) Content */}
-                <div className="sm:p-4 p-0">
-                    <h6 className="font-semibold mb-6 text-[1rem]">Update Password :</h6>
-                    <div className="sm:grid grid-cols-12 gap-6 mb-6">
-                        <div className="xl:col-span-6 col-span-12 relative">
-                            <label htmlFor="new-password" className="form-label text-sm text-defaulttextcolor font-semibold">New Password</label>
-                            <input
-                                type={showNewPassword ? 'text' : 'password'}
-                                className="form-control w-full rounded-[5px] border border-[#dadada] form-control-light mt-2 text-sm"
-                                id="new-password"
-                                value={newPassword}
-                                onChange={handlePasswordChange} // Attach onChange handler here
-                                placeholder="Enter new password"
-                            />
-                            <button
-                                type="button"
-                                onClick={toggleNewPasswordVisibility}
-                                className="absolute inset-y-[50px] right-0 pr-3 flex items-center text-xs text-gray-500"
-                            >
-                                {showNewPassword ? 'Hide' : 'Show'}
-                            </button>
-                        </div>
+                                        {/* Security (Password) Content */}
+                                        <div className="sm:p-4 p-0">
+                                            <h6 className="font-semibold mb-6 text-[1rem]">Update Password </h6>
+                                            <div className="sm:grid grid-cols-12 gap-6 mb-6">
+                                                <div className="xl:col-span-6 col-span-12 relative">
+                                                    <label htmlFor="new-password" className="form-label text-sm text-defaulttextcolor font-semibold">New Password</label>
+                                                    <input
+                                                        type={showNewPassword ? 'text' : 'password'}
+                                                        className="form-control w-full rounded-[5px] border border-[#dadada] form-control-light mt-2 text-sm"
+                                                        id="new-password"
+                                                        value={newPassword}
+                                                        onChange={handlePasswordChange} // Attach onChange handler here
+                                                        placeholder="Enter new password"
+                                                    />
+                                                    <button
+                                                        type="button"
+                                                        onClick={toggleNewPasswordVisibility}
+                                                        className="absolute inset-y-[50px] right-0 pr-3 flex items-center text-xs text-gray-500"
+                                                    >
+                                                        {showNewPassword ? 'Hide' : 'Show'}
+                                                    </button>
+                                                </div>
 
-                        <div className="xl:col-span-6 col-span-12 relative">
-                            <label htmlFor="confirm-password" className="form-label text-sm text-defaulttextcolor font-semibold">Confirm Password</label>
-                            <input 
-                                type={showConfirmPassword ? 'text' : 'password'} 
-                                className="form-control w-full rounded-[5px] border border-[#dadada] form-control-light mt-2 text-sm"
-                                id="confirm-password"
-                                value={confirmPassword}
-                                onChange={handlePasswordChange} // Attach onChange handler here
-                                placeholder="Confirm password" 
-                            />
-                            <button
-                                type="button"
-                                onClick={toggleConfirmPasswordVisibility}
-                                className="absolute inset-y-1 pt-8 right-0 pr-3 flex items-center text-xs text-gray-500"
-                            >
-                                {showConfirmPassword ? 'Hide' : 'Show'}
-                            </button>
-                        </div>
-                    </div>
-                    <div className='border-t border-defaultborder p-4 flex justify-end'>
-                        <button className={`ti-btn ti-btn-primary bg-primary me-3 ${passwordsMatch ? 'opacity-50 cursor-not-allowed' : ''}`} 
-                            onClick={savePassword}
-                            // disabled={!passwordsMatch}
-                        >
-                            Save Password
-                        </button>
-                        <button
-                            type="button"
-                            className="bg-light ti-btn text-defaulttextcolor"
-                            onClick={resetForm}
-                        >
-                            Cancel
-                        </button>
-                    </div>
-                </div>
-            </div>
+                                                <div className="xl:col-span-6 col-span-12 relative">
+                                                    <label htmlFor="confirm-password" className="form-label text-sm text-defaulttextcolor font-semibold">Confirm Password</label>
+                                                    <input
+                                                        type={showConfirmPassword ? 'text' : 'password'}
+                                                        className="form-control w-full rounded-[5px] border border-[#dadada] form-control-light mt-2 text-sm"
+                                                        id="confirm-password"
+                                                        value={confirmPassword}
+                                                        onChange={handlePasswordChange} // Attach onChange handler here
+                                                        placeholder="Confirm password"
+                                                    />
+                                                    <button
+                                                        type="button"
+                                                        onClick={toggleConfirmPasswordVisibility}
+                                                        className="absolute inset-y-1 pt-8 right-0 pr-3 flex items-center text-xs text-gray-500"
+                                                    >
+                                                        {showConfirmPassword ? 'Hide' : 'Show'}
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div className=' p-4 flex justify-end'>
+                                                <button className={`ti-btn ti-btn-primary bg-primary me-3 ${!passwordsMatch ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                                    onClick={savePassword}
+                                                    disabled={!passwordsMatch}
+                                                // disabled={!passwordsMatch}
+                                                >
+                                                    Save Password
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    className="bg-light ti-btn text-defaulttextcolor"
+                                                    onClick={resetForm}
+                                                >
+                                                    Cancel
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>

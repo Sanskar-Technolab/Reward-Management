@@ -1,6 +1,7 @@
 import frappe
 from frappe import _
-
+from frappe.utils import now, format_datetime
+from frappe.utils.file_manager import save_file
 
 @frappe.whitelist(allow_guest=True)
 def get_all_products():
@@ -62,6 +63,12 @@ def get_all_products_data():
             all_products = []
 
             for product in products:
+                # Fetch child table data (Point conversion rate)
+              
+                point_data = frappe.get_all("Reward Point Canversion Table",
+                    filters={"parent": product.get("name")},  # Filter by parent product name
+                    fields=["*"]  # Retrieve all fields from the child table
+                )
                 # Prepare product details including child table data
                 product_details = {
                     "product_id": product.get("name"),
@@ -70,7 +77,8 @@ def get_all_products_data():
                     "product_price":product.get("product_price"),
                     "discription": product.get("discription"),
                     "category": product.get("category"),
-                    "product_image": product.get("product_image")  # Initialize an empty list for images
+                    "product_image": product.get("product_image") ,
+                    "point_data": point_data
                 }
 
                 all_products.append(product_details)
@@ -210,19 +218,34 @@ def add_category(productCategory):
 
 # Add New Product--------
 @frappe.whitelist(allow_guest=True)
-def add_product(productName, productPrice, rewardPoints, discription, productCategory,productImage=None):
+def add_product(productName, productPrice, rewardPoints, discription, rewardAmount, pointReward, productCategory, productImage=None):
     try:
         # Create a new instance of the Product document
         product = frappe.new_doc("Product")
         product.product_name = productName
         product.reward_points = rewardPoints
-        product.product_price=productPrice
+        product.product_price = productPrice
         product.discription = discription
-        product.category=productCategory
+        product.category = productCategory
 
         # If product image file is provided, save it as an attachment
         if productImage:
-            product.product_image = productImage  # Attach file_url to product_image field
+            product.product_image = productImage
+
+        # Add child table data (Reward Point Canversion Table)
+        if rewardAmount and pointReward:
+            # Create a new instance of the Reward Point Canversion Table
+            reward_point_row = product.append("reward_point_conversion_rate")  
+            
+            # Set the fields for the child table
+            reward_point_row.product_name = product.product_name  
+            reward_point_row.product_id = product.product_name
+            reward_point_row.reward_point = pointReward  
+            reward_point_row.payout_amount = rewardAmount  
+            
+            # Set the current date 
+            current_date = frappe.utils.nowdate()
+            reward_point_row.from_date = current_date  
 
         # Save the Product document
         product.insert(ignore_permissions=True)
@@ -271,6 +294,24 @@ def get_tableproduct_detail(product_id=None):
         product = frappe.get_doc("Product", product_id)
         frappe.log_error(frappe.as_json(product.as_dict()), "Product Details")
         
+        # Initialize an empty list to store the child table data
+        reward_points_data = []
+
+        # Iterate over the child table 'reward_point_conversion_rate'
+        for reward_row in product.reward_point_conversion_rate:  
+            reward_points_data.append({
+                "product_name": reward_row.product_name,
+                "product_id": reward_row.product_id,
+                "reward_point": reward_row.reward_point,
+                "payout_amount": reward_row.payout_amount,
+                "from_date": reward_row.from_date  
+            })
+
+        # Get reward_point from the last row if it exists
+        last_reward_point = reward_points_data[-1]["reward_point"] if reward_points_data else None
+        last_payout_amount = reward_points_data[-1]["payout_amount"] if reward_points_data else None
+
+        
         return {
             "message": {
                 "product_id": product.name,
@@ -279,7 +320,9 @@ def get_tableproduct_detail(product_id=None):
                 "discription": getattr(product, 'discription', ''),
                 "reward_points": getattr(product, 'reward_points', 0),
                 "product_price":getattr(product,'product_price',0),
-                "product_image": getattr(product, 'product_image', '')
+                "product_image": getattr(product, 'product_image', ''),
+                "reward_point": last_reward_point ,
+                "payout_amount":last_payout_amount
             }
         }
     except Exception as e:
