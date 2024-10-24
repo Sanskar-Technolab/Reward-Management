@@ -89,7 +89,9 @@ const EditProduct: React.FC = () => {
             fields: ["name", "category_name"],
         });
 
-    const fetchRewardPointConversionData = async (productId:any) => {
+
+
+    const fetchRewardPointConversionData = async (productId: any) => {
         try {
             const response = await axios.get(`/api/resource/Product/${productId}`);
             const productData = response.data.data;
@@ -103,6 +105,7 @@ const EditProduct: React.FC = () => {
     };
 
     useEffect(() => {
+        document.title = "Edit Product";
         const getData = async () => {
             const data = await fetchRewardPointConversionData(productId);
             setChildTableData(data);
@@ -127,7 +130,7 @@ const EditProduct: React.FC = () => {
     }, [showSuccessAlert, navigate, productPrice, rewardPercent, productId]);
 
     useEffect(() => {
-        document.title = "Edit Product";
+       
         const fetchProductData = async () => {
             if (!productId) return;
 
@@ -288,7 +291,7 @@ const EditProduct: React.FC = () => {
 
     // Other states: productName, productPrice, etc.
 
-    const handleTabChange = (tab:any) => {
+    const handleTabChange = (tab: any) => {
         setActiveTab(tab); // Change active tab
     };
 
@@ -299,18 +302,18 @@ const EditProduct: React.FC = () => {
         const year = d.getFullYear();
         return `${day}-${month}-${year}`;
     };
-    
+
     // Filter data based on search query and date range
     const filteredData = childTableData
         .filter((item: any) => {
             const matchesSearch = item.product_name
                 .toLowerCase()
                 .includes(searchQuery.toLowerCase());
-            
+
             const matchesDate =
                 (!fromDate || new Date(item.from_date) >= fromDate) &&
                 (!toDate || new Date(item.from_date) <= toDate);
-            
+
             return matchesSearch && matchesDate;
         })
         .map((item: any) => ({
@@ -332,42 +335,42 @@ const EditProduct: React.FC = () => {
         setCurrentPage(pageNumber);
     };
 
-   
 
-    const deleteMatchedRow = async (itemToDelete:any) => {
+
+    const deleteMatchedRow = async (itemToDelete: any) => {
         const { product_name, reward_point, payout_amount, from_date } = itemToDelete;
 
-       
-    try {
-        // Convert from_date from 'dd-mm-yyyy' to 'yyyy-mm-dd' for the comparison
-        const dateParts = from_date.split('-');
-        if (dateParts.length !== 3) {
-            throw new Error("Invalid date format. Expected dd-mm-yyyy: " + from_date);
-        }
-        const fromDate = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`; // Convert to 'yyyy-mm-dd'
 
-        // Fetch the existing product data first
-        const response = await axios.get(`/api/resource/Product/${productId}`);
-        const productData = response.data.data;
-
-        // Filter out the row that matches the criteria
-        const updatedChildTable = productData.reward_point_conversion_rate.filter(
-            (childItem: any) => {
-                // Convert child's from_date from 'yyyy-mm-dd' to a comparable format
-                const childDateParts = childItem.from_date.split('-');
-                if (childDateParts.length !== 3) {
-                    throw new Error("Invalid childItem.from_date: " + childItem.from_date);
-                }
-                const childDate = `${childDateParts[0]}-${childDateParts[1]}-${childDateParts[2]}`; // Ensure it's 'yyyy-mm-dd' for comparison
-
-                return !(
-                    childItem.product_name === product_name &&
-                    childItem.reward_point === reward_point &&
-                    childItem.payout_amount === payout_amount &&
-                    childDate === fromDate // Compare dates as 'yyyy-mm-dd'
-                );
+        try {
+            // Convert from_date from 'dd-mm-yyyy' to 'yyyy-mm-dd' for the comparison
+            const dateParts = from_date.split('-');
+            if (dateParts.length !== 3) {
+                throw new Error("Invalid date format. Expected dd-mm-yyyy: " + from_date);
             }
-        );
+            const fromDate = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`; // Convert to 'yyyy-mm-dd'
+
+            // Fetch the existing product data first
+            const response = await axios.get(`/api/resource/Product/${productId}`);
+            const productData = response.data.data;
+
+            // Filter out the row that matches the criteria
+            const updatedChildTable = productData.reward_point_conversion_rate.filter(
+                (childItem: any) => {
+                    // Convert child's from_date from 'yyyy-mm-dd' to a comparable format
+                    const childDateParts = childItem.from_date.split('-');
+                    if (childDateParts.length !== 3) {
+                        throw new Error("Invalid childItem.from_date: " + childItem.from_date);
+                    }
+                    const childDate = `${childDateParts[0]}-${childDateParts[1]}-${childDateParts[2]}`; // Ensure it's 'yyyy-mm-dd' for comparison
+
+                    return !(
+                        childItem.product_name === product_name &&
+                        childItem.reward_point === reward_point &&
+                        childItem.payout_amount === payout_amount &&
+                        childDate === fromDate // Compare dates as 'yyyy-mm-dd'
+                    );
+                }
+            );
 
             // Prepare data for the product update
             const data = {
@@ -387,7 +390,7 @@ const EditProduct: React.FC = () => {
                 },
             });
 
-            setShowSuccessAlert(true); 
+            setShowSuccessAlert(true);
         } catch (error) {
             console.error("Error deleting matched row:", error);
         }
@@ -395,20 +398,20 @@ const EditProduct: React.FC = () => {
 
 
     const handleDeleteAmount = (item: PointConversion) => {
-         // Save the item to be deleted
+        // Save the item to be deleted
         setPointConversionToDelete(item);
         // Open the confirmation modal
-        setIsConfirmDeleteModalOpen(true); 
+        setIsConfirmDeleteModalOpen(true);
     };
 
     // Confirmation function
     const confirmDelete = () => {
         if (pointConversionToDelete) {
-             // Call delete function
+            // Call delete function
             deleteMatchedRow(pointConversionToDelete);
         }
         // Close the confirmation modal
-        setIsConfirmDeleteModalOpen(false); 
+        setIsConfirmDeleteModalOpen(false);
     };
 
 
@@ -472,11 +475,11 @@ const EditProduct: React.FC = () => {
 
             // Show success alert
 
-            setShowSuccessAlert(true); 
+            setShowSuccessAlert(true);
             // Close the modal
-            setShowAddRowModal(false); 
+            setShowAddRowModal(false);
             // Clear the input fields
-            setRewardPoint(""); 
+            setRewardPoint("");
             setPayoutAmount("");
         } catch (error) {
             console.error("Error adding new row:", error);
@@ -487,7 +490,7 @@ const EditProduct: React.FC = () => {
     const handleAddRow = () => {
         setShowAddRowModal(true);
         console.log("Adding new row");
-       
+
     };
 
     return (
@@ -795,7 +798,7 @@ const EditProduct: React.FC = () => {
                                         showButton={false}
                                         icon="ri-arrow-left-line"
                                         // Add row button
-                                        onAddButtonClick={handleAddRow} 
+                                        onAddButtonClick={handleAddRow}
                                     />
                                     <TableComponent<PointConversion>
                                         columns={[
@@ -805,7 +808,7 @@ const EditProduct: React.FC = () => {
                                             { header: "From Date", accessor: "from_date" },
                                         ]}
                                         // Use filtered and paginated data
-                                        data={filteredData} 
+                                        data={filteredData}
                                         currentPage={currentPage}
                                         itemsPerPage={itemsPerPage}
                                         handlePrevPage={handlePrevPage}
@@ -815,10 +818,10 @@ const EditProduct: React.FC = () => {
                                         showEdit={false}
                                         editHeader="Delete"
                                         showDelete={true}
-                                        onDelete={(item) => handleDeleteAmount(item)} 
+                                        onDelete={(item) => handleDeleteAmount(item)}
                                         columnStyles={{
-                                           'Product Name': "text-[var(--primaries)] font-semibold",
-                                           
+                                            'Product Name': "text-[var(--primaries)] font-semibold",
+
                                         }}
                                     />
                                     <button
