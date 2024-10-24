@@ -18,9 +18,6 @@ import axios from 'axios';
 const Header = ({ toggleSidebar, isSidebarActive }: any) => {
 
     const { logout } = useFrappeAuth();
-
-    // const Profilephoto = localStorage.getItem("uploadedFileUrl") || ProfilePic;
-    // const username = localStorage.getItem("username");
     const carpenterrole = localStorage.getItem('carpenterrole');
     console.log(carpenterrole);
 

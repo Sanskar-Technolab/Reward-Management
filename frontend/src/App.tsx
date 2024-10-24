@@ -43,6 +43,7 @@ import PointConversion from './pages/admin/transactions/PointsConversion.tsx';
 
 function App() {
   const [isSidebarActive, setIsSidebarActive] = useState(false);
+  const [faviconUrl, setFaviconUrl] = useState<string | null>(null); 
 
   const toggleSidebar = () => {
     setIsSidebarActive(!isSidebarActive);
@@ -76,63 +77,62 @@ function App() {
 
 
 // Function to set the favicon
-function setFavicons(favImg:any) {
-  let headTitle = document.querySelector('head');
-  
-  // Remove existing favicon if it exists
-  const existingFavicon = document.querySelector('link[rel="shortcut icon"]');
-  if (existingFavicon) {
-      headTitle.removeChild(existingFavicon);
-  }
+const setFavicon = (url: string) => {
+  let headTitle: HTMLHeadElement | null = document.head; // Assign document.head to headTitle
 
-  let setFavicon = document.createElement('link');
-  setFavicon.setAttribute('rel', 'shortcut icon');
-  setFavicon.setAttribute('type', 'image/svg+xml'); // Adjust type if needed
-  setFavicon.setAttribute('href', favImg);
-  headTitle.appendChild(setFavicon);
-}
+  if (headTitle) { // Check if headTitle is not null
+      const existingFavicon = headTitle.querySelector('link[rel="shortcut icon"]');
+      if (existingFavicon) {
+          headTitle.removeChild(existingFavicon);
+      }
+
+      let setFaviconLink = document.createElement('link');
+      setFaviconLink.setAttribute('rel', 'shortcut icon');
+      setFaviconLink.setAttribute('type', 'image/svg+xml'); // Adjust type if needed
+      setFaviconLink.setAttribute('href', url);
+      headTitle.appendChild(setFaviconLink);
+  } else {
+      console.error('Head element not found'); // Optional: Handle the case where headTitle is null
+  }
+};
 
 useEffect(() => {
   const fetchWebsiteSettings = async () => {
-      try {
-          const response = await fetch('/api/method/reward_management.api.website_settings.get_website_settings');
-          // console.log("image response", response);
+    try {
+        const response = await fetch('/api/method/reward_management.api.website_settings.get_website_settings');
 
-          // Check if the response is OK and parse the JSON
-          if (response.ok) {
-              const data = await response.json();
-              // console.log("Fetched data:", data);
+        // Check if the response is OK and parse the JSON
+        if (response.ok) {
+            const data = await response.json();
 
-              // Check if the response indicates success
-              if (data && data.message && data.message.status === 'success') {
-                  const { favicon } = data.message.data || {};
+            // Check if the response indicates success
+            if (data && data.message && data.message.status === 'success') {
+                const { favicon } = data.message.data || {};
 
-                  // Log the splash_image for debugging
-                  // console.log("Fetched splash_image:", favicon);
+                if (favicon) {
+                    // Prepend window.origin to the favicon path
+                    const absoluteFaviconUrl = `${window.origin}${favicon}`;
+                    setFaviconUrl(absoluteFaviconUrl); 
+                    setFavicon(absoluteFaviconUrl); // Call setFavicon with the absolute URL
+                } else {
+                    const defaultFaviconUrl = "/assets/frappe/images/frappe-framework-logo.svg";
+                    setFaviconUrl(defaultFaviconUrl);
+                    setFavicon(defaultFaviconUrl); // Call setFavicon with the default URL
+                }
+            } else {
+                console.error("Error fetching website settings:", data?.message || 'No message available');
+            }
+        } else {
+            console.error("Network response was not ok:", response.statusText);
+        }
+    } catch (error) {
+        console.error("Error fetching website settings:", error.message || error);
+    }
+};
 
-                  if (favicon) {
-                      // Prepend window.origin to the splash_image path
-                      const absoluteFaviconUrl = `${window.origin}${favicon}`;
-                      // console.log("Absolute favicon URL:", absoluteFaviconUrl); 
-                      setFavicons(absoluteFaviconUrl); 
-                  } else {
-                      const defaultFaviconUrl = "/assets/frappe/images/frappe-framework-logo.svg";
-                      setFavicons(defaultFaviconUrl);
-                      // console.log("Fallback favicon set to default.");
-                  }
-              } else {
-                  console.error("Error fetching website settings:", data?.message || 'No message available');
-              }
-          } else {
-              console.error("Network response was not ok:", response.statusText);
-          }
-      } catch (error) {
-          console.error("Error fetching website settings:", error.message || error);
-      }
-  };
-
-  fetchWebsiteSettings();
+fetchWebsiteSettings();
 }, []);
+
 
 
   const router = createBrowserRouter(
@@ -170,6 +170,7 @@ useEffect(() => {
           <Route path='/customer-announcement' element={<Announcement/>} />
           <Route path='/profile-setting' element={<CustomerProfile/>}/>
           <Route path='*' element={<Navigate to="/" replace />} />
+          
         </Route>
         </Route>
         

@@ -65,21 +65,25 @@ const SubMenu = ({ item, isSidebarActive, isHover }: any) => {
         </SidebarLink>
       ) : (
         <div onClick={item.subNav && showSubnav} className="submenu-list cursor-pointer sidebar-menu-item">
-          <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
-            {item.icon}
-            <SidebarLabel $isSidebarActive={isSidebarActive} $isHover={isHover}>{item.title}</SidebarLabel>
-          </div>
-          <div className={`menulistcollapsed ${isSidebarActive ? (isHover ? 'block':'hidden') : 'block'}`}>
-            {item.subNav && subnav ? item.iconOpened : item.subNav ? item.iconClosed : null}
-          </div>
-        </div>
+                <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+                    {item.icon}
+                    <SidebarLabel $isSidebarActive={isSidebarActive} $isHover={isHover}>
+                        {item.title}
+                    </SidebarLabel>
+                </div>
+                <div className={`menulistcollapsed ${isSidebarActive ? (isHover ? 'block' : 'hidden') : 'block'}`}>
+                    {item.subNav && subnav ? item.iconOpened : item.subNav ? item.iconClosed : null}
+                </div>
+            </div>
       )}
-      {subnav && item.subNav && item.subNav.map((subItem: any, index: any) => (
-        <DropdownLink to={subItem.path} key={index}>
-          {subItem.icon}
-          <SidebarLabel $isSidebarActive={isSidebarActive}>{subItem.title}</SidebarLabel>
-        </DropdownLink>
-      ))}
+     {subnav && item.subNav && item.subNav.map((subItem: any, index: any) => (
+                <DropdownLink to={subItem.path} key={index}>
+                    {subItem.icon}
+                    <SidebarLabel $isSidebarActive={isSidebarActive} $isHover={isHover}>
+                        {subItem.title}
+                    </SidebarLabel>
+                </DropdownLink>
+            ))}
     </>
   );
 };
