@@ -27,3 +27,22 @@
 .link-icon:hover i {
     color: white;
 }
+/* Add this CSS to your stylesheet */
+.qr-container {
+    border: 1px solid #ccc; /* Border for visibility */
+    padding: 15px;
+    max-height: 80vh; /* Maximum height for scrolling */
+    overflow-x: auto; /* Enable horizontal scrolling */
+    overflow-y: auto; /* Enable vertical scrolling */
+    display: flex;
+    flex-direction: column; /* Stack items vertically */
+}
+
+/* Style for the individual QR wrappers */
+.qr-wrapper {
+    display: flex;
+    flex-direction: column; /* Stack product name and image vertically */
+    align-items: center; /* Center-align items */
+    padding-bottom: 20px; /* Space between each QR code */
+    width: 100%; /* Full width for each item */
+}

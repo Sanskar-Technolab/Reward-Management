@@ -6,24 +6,55 @@ import '../../assets/css/pages/carpenterproducts.css';
 import Modalsearch from "../../components/common/modalsearch/modalsearch";
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import 'boxicons/css/boxicons.min.css';
-import sidebarLogo from '../../assets/images/sanskar-logo.png';
 import { Link } from 'react-router-dom';
 
 const CustomerProducts = () => {
   const [fullScreen, setFullScreen] = useState(false);
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
   const [productsData, setProductsData] = useState([]);
+  const [logo, setLogo] = useState("/assets/frappe/images/frappe-framework-logo.svg");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    document.title='Products';
+    document.title = 'Products';
+
+    const fetchWebsiteSettings = async () => {
+      try {
+        const response = await axios.get('/api/method/reward_management.api.website_settings.get_website_settings');
+        console.log('API Image Response:', response.data);
+
+        // Check if the response is successful and contains the expected structure
+        if (response && response.data && response.data.message && response.data.message.status === 'success') {
+          const { banner_image } = response.data.message.data;
+
+          // If banner_image exists, set it as the logo
+          if (banner_image) {
+            const fullBannerImageURL = `${window.origin}${banner_image}`;
+            setLogo(fullBannerImageURL);
+            console.log('Banner Image Set:', fullBannerImageURL);
+          } else {
+            console.log('No banner_image found, using default logo.');
+            setLogo("/assets/frappe/images/frappe-framework-logo.svg");
+          }
+        } else {
+          console.error('API response was not successful:', response.data.message);
+          setLogo("/assets/frappe/images/frappe-framework-logo.svg");
+        }
+      } catch (error) {
+        console.error('Error fetching website settings:', error);
+        setLogo("/assets/frappe/images/frappe-framework-logo.svg");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchWebsiteSettings();
 
     const fetchData = async () => {
       try {
-        const response = await axios.get(`/api/method/reward_management.api.product_master.get_all_products_data`,{
-      });
-        
+        const response = await axios.get('/api/method/reward_management.api.product_master.get_all_products_data');
         console.log("API Response:", response.data);
-        
+
         // Access the message property to get the products array
         const products = response.data.message || [];
         setProductsData(products);
@@ -31,7 +62,7 @@ const CustomerProducts = () => {
         console.error("Error fetching data:", error);
       }
     };
-  
+
     fetchData();
   }, []);
 
@@ -53,6 +84,12 @@ const CustomerProducts = () => {
     }
     setFullScreen(!fullScreen);
   };
+  if (loading) {
+
+
+    return <div className='' ></div>;
+  }
+
 
   return (
     <Fragment>
@@ -61,7 +98,7 @@ const CustomerProducts = () => {
           <div className="main-header-container pe-[1rem]">
             <div className="header-content-left">
               <div className="header-element md:px-[0.325rem] flex items-center">
-                <img src={sidebarLogo} alt="Sidebar Logo" className="sidebar-logo w-18 h-10" />
+                <img src={logo} alt="Sidebar Logo" className="sidebar-logo w-18 h-10" />
               </div>
             </div>
             <div className="header-content-right flex items-center">
@@ -113,8 +150,8 @@ const CustomerProducts = () => {
                         <Link aria-label="Add to cart" to="#" className="cart">
                           <i className="ri-shopping-cart-line bg-primary/20 p-2 text-primary rounded-[8px] "></i>
                         </Link>
-                        <Link aria-label="View product" to={`/view-product-details?product_id=${product.product_id}`} className="view">
-                          <i className="ri-eye-line bg-success/20 text-success p-2 rounded-[8px] "></i>
+                        <Link aria-label="View product" to={`/view-product-details/${product.product_id}`} className="view">
+                          <i className="ri-eye-line bg-success/20 text-success p-2 rounded-[8px]"></i>
                         </Link>
                       </div>
                       <p className="product-name font-semibold mb-0 flex items-center justify-between">

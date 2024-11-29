@@ -33,7 +33,7 @@ const AddProduct: React.FC = () => {
     const [pointReward, setPointReward] = useState('');
     const [rewardAmount, setRewardAmount] = useState('');
     const [showSuccessAlert, setShowSuccessAlert] = useState(false);
-    const navigate = useNavigate(); // Initialize navigate
+    const navigate = useNavigate(); 
     const [showAddCategoryModal, setShowAddCategoryModal] = useState(false);
     const [showRewardPercent, setShowRewardPercent] = useState(false);
     // const [currentPage, setCurrentPage] = useState<number>(1);
@@ -111,7 +111,7 @@ const AddProduct: React.FC = () => {
             productPrice: productPrice,
             discription: productDescription,
             productCategory,
-            productImage: fileUrls.length > 0 ? fileUrls[0] : null // Assuming you use the first image if available
+            productImage: fileUrls.length > 0 ? fileUrls[0] : null
         };
 
         try {
@@ -121,7 +121,7 @@ const AddProduct: React.FC = () => {
             // Navigate after showing the success alert
             setTimeout(() => {
                 navigate('/product-master');
-            }, 3000); // Delay for 3 seconds
+            }, 3000); 
         } catch (error) {
             console.error("Error submitting form", error);
         }
@@ -154,7 +154,7 @@ const AddProduct: React.FC = () => {
         document.title = 'Add Product';
         if (productPrice && rewardPercent) {
             const calculatedPoints = (parseFloat(productPrice) * parseFloat(rewardPercent)) / 100;
-            setRewardPoints(calculatedPoints.toFixed(2)); // Round to 2 decimal places
+            setRewardPoints(calculatedPoints.toFixed(2)); 
         } else {
             setRewardPoints('');
         }
@@ -162,8 +162,8 @@ const AddProduct: React.FC = () => {
         if (showSuccessAlert) {
             const timer = setTimeout(() => {
                 setShowSuccessAlert(false);
-                navigate('/product-master'); // Navigate after success alert is hidden
-            }, 3000); // Hide alert after 3 seconds
+                navigate('/product-master'); 
+            }, 3000); 
             return () => clearTimeout(timer);
         }
     }, [productPrice, rewardPercent, showSuccessAlert, productcategoryData]);
