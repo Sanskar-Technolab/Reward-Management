@@ -1,21 +1,67 @@
 import { Fragment, useState, useEffect } from 'react';
-import sidebarLogo from '../../assets/images/sanskar-logo.png';
+// import sidebarLogo from '../../assets/images/sanskar-logo.png';
 import Modalsearch from "../../components/common/modalsearch/modalsearch";
+import { useParams } from 'react-router-dom';
 
 import axios from 'axios';
 // import { API_KEY, API_SECRET, BASE_URL } from "../../utils/constants";
+
+// interface ProductDetails {
+//   product_name: string;
+//   category: string;
+//   description: string;
+//   product_images?: string;
+// }
 
 const Productdetails = () => {
   const [fullScreen, setFullScreen] = useState(false);
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
   const [productDetails, setProductDetails] = useState<any>(null);
+  const [logo, setLogo] = useState("/assets/frappe/images/frappe-framework-logo.svg"); 
+  const [loading, setLoading] = useState(true);
 
   // Extract product_id from URL parameters
-  const urlParams = new URLSearchParams(window.location.search);
-  const productId = urlParams.get('product_id');
+  // const urlParams = new URLSearchParams(window.location.search);
+  // const productId = urlParams.get('product_id');
+  const { product_id: productId } = useParams<{ product_id: string }>();
 
   useEffect(() => {
     document.title='View Product';
+
+    const fetchWebsiteSettings = async () => {
+      try {
+        const response = await axios.get('/api/method/reward_management.api.website_settings.get_website_settings');
+        console.log('API Image Response:', response.data);
+
+        // Check if the response is successful and contains the expected structure
+        if (response && response.data && response.data.message && response.data.message.status === 'success') {
+          const { banner_image } = response.data.message.data;
+
+          // If banner_image exists, set it as the logo
+          if (banner_image) {
+            const fullBannerImageURL = `${window.origin}${banner_image}`;
+             // Set the banner image as the logo
+            setLogo(fullBannerImageURL);
+            console.log('Banner Image Set:', fullBannerImageURL);
+          } else {
+            console.log('No banner_image found, using default logo.');
+            setLogo("/assets/frappe/images/frappe-framework-logo.svg"); 
+          }
+        } else {
+          console.error('API response was not successful:', response.data.message);
+          setLogo("/assets/frappe/images/frappe-framework-logo.svg"); 
+        }
+      } catch (error) {
+        console.error('Error fetching website settings:', error);
+        setLogo("/assets/frappe/images/frappe-framework-logo.svg"); 
+      } finally {
+        setLoading(false); 
+      }
+    };
+
+    fetchWebsiteSettings();
+
+    
     if (!productId) {
       console.error('No product ID found in URL');
       return;
@@ -23,7 +69,10 @@ const Productdetails = () => {
 
     const fetchProductDetails = async () => {
       try {
-        const response = await axios.get(`/api/method/reward_management.api.product_master.get_product_details?product_id=${productId}`, {
+        // const response = await axios.get(`/api/method/reward_management.api.product_master.get_product_details?product_id=${productId}`, {
+        // });
+        const response = await axios.get(`/api/method/reward_management.api.product_master.get_product_details`, {
+          params: { product_id: productId }
         });
         console.log("data product card", response);
         setProductDetails(response.data.message.message);
@@ -54,6 +103,12 @@ const Productdetails = () => {
     setFullScreen(!fullScreen);
   };
 
+  if (loading) {
+   
+   
+    return <div className='' ></div>; 
+}
+
   return (
     <Fragment>
       <header className="bg-white border border-defaultborder border-b-2">
@@ -61,7 +116,7 @@ const Productdetails = () => {
           <div className="main-header-container pe-[1rem]">
             <div className="header-content-left">
               <div className="header-element md:px-[0.325rem] flex items-center">
-                <img src={sidebarLogo} alt="Sidebar Logo" className="sidebar-logo w-18 h-10" />
+              <img src={logo} alt="Sidebar Logo" className="sidebar-logo w-18 h-10" />
               </div>
             </div>
             <div className="header-content-right flex items-center">
@@ -87,7 +142,7 @@ const Productdetails = () => {
 
       <div className="grid grid-cols-12 gap-6 mt-4 mx-20">
         <div className="xl:col-span-12 col-span-12">
-          <div className="box">
+          <div className="">
             <div className="box-body">
               <div className="sm:grid grid-cols-12 gap-x-6">
                 <div className="xxl:col-span-5 xl:col-span-12 col-span-12">
@@ -95,7 +150,8 @@ const Productdetails = () => {
                     {productDetails?.product_images ? (
                       <img
                         className="object-cover w-full"
-                        src={`${productDetails.product_images}`} // Concatenate with base URL if needed
+                        // Concatenate with base URL if needed
+                        src={`${productDetails.product_images}`} 
                         alt={productDetails.product_name}
                       />
                     ) : (

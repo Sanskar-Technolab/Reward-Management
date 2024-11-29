@@ -6,9 +6,11 @@ import TableComponent from '../../../components/ui/tables/tablecompnent'; // Ens
 import TableBoxComponent from '../../../components/ui/tables/tableboxheader';
 import '../../../assets/css/style.css';
 import '../../../assets/css/pages/admindashboard.css';
-import html2canvas from 'html2canvas';
+// import html2canvas from 'html2canvas';
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
+import { jsPDF } from 'jspdf';
+
 
 
 interface QRCodeImage {
@@ -93,7 +95,6 @@ const DownloadQRCode: React.FC = () => {
 
     const handleSearch = (value: string) => {
         console.log("Search value:", value);
-        // Implement search logic here
     };
 
     const handleAddProductClick = () => {
@@ -101,137 +102,78 @@ const DownloadQRCode: React.FC = () => {
         navigate('/product-master');
     };
 
+    // download and create pdf for qr images---------
+    
     const handleDownloadQR = async (row: DownloadProductQRCode) => {
-        // Create a container div for selected QR codes
-        const qrContainerDiv = document.createElement('div');
-        // qrContainerDiv.style.display = 'flex';
-        qrContainerDiv.style.flexWrap = 'wrap';
-        qrContainerDiv.style.padding = '18px';
-        // qrContainerDiv.style.gap = '25px';
-        // qrContainerDiv.style.justifySelf = 'center';
+        const zip = new JSZip();
+        const pdf = new jsPDF();
+         // Set image width to 100
+        const imageWidth = 100; 
+        // Set image height to 75
+        const imageHeight = 75;  
+        const rowSpacing = 15;
+        const maxImagesPerPage = 3;
     
-        // Extract the QR code images for the specific row
-        row.qr_code_images?.forEach((image) => {
-            const qrWrapperDiv = document.createElement('div');
-            qrWrapperDiv.style.display = 'flex';
-            qrWrapperDiv.style.flexDirection = 'row'; 
-            qrWrapperDiv.style.alignItems = 'center'; 
-            qrWrapperDiv.style.paddingBottom='20px';
-            qrWrapperDiv.style.justifyContent='center';
+        row.qr_code_images.forEach((image, index) => {
+            const totalImages = row.qr_code_images.length;
     
-            const productNameDiv = document.createElement('div');
-            productNameDiv.style.display = 'flex';
-            productNameDiv.style.alignItems = 'center';
-            productNameDiv.style.fontSize = "20px";
-            productNameDiv.style.padding ="10px";
-            productNameDiv.style.fontWeight = "bold";
-            productNameDiv.style.transform = 'rotate(-90deg)'; 
-            productNameDiv.style.whiteSpace = 'nowrap'; 
-            productNameDiv.innerText = row.product_name || 'Unknown Product Name';
+            // Extract QR Code ID from the image path
+            const qrCodeID = image.qr_code_image.split('/').pop()?.replace('.png', '') || 'Unknown QR Code ID';
     
-            const qrImageWrapper = document.createElement('div');
-            qrImageWrapper.style.display = 'flex';
-            qrImageWrapper.style.flexDirection = 'column';
-            qrImageWrapper.style.alignItems = 'center';
+            // Calculate the width of the QR Code ID text
+            const qrCodeIdWidth = pdf.getStringUnitWidth(qrCodeID) * pdf.internal.scaleFactor;
+            
+            // Set the page width to be the max of the image width and the QR Code ID text width
+             // Add some padding
+            const pageWidth = Math.max(imageWidth, qrCodeIdWidth) + 20; 
     
-            const img = document.createElement('img');
-            img.src = image.qr_code_image;
+            // Adjust X position to center the image and text on the page
+            const x = (pageWidth - imageWidth) / 2;
     
-            const qrIdDiv = document.createElement('div');
-            qrIdDiv.style.textAlign = 'center';
-            qrIdDiv.style.fontSize = "20px";
-            qrIdDiv.style.fontWeight = "bold";
-            qrIdDiv.innerText = image.qr_code_image.split('/').pop()?.replace('.png', '') || 'Unknown QR Code ID';
+            // Calculate Y position for the QR code image
+            const y = (index % maxImagesPerPage) * (imageHeight + rowSpacing) +20; 
     
-            qrImageWrapper.appendChild(img);
-            qrImageWrapper.appendChild(qrIdDiv);
-            qrWrapperDiv.appendChild(productNameDiv);
-            qrWrapperDiv.appendChild(qrImageWrapper);
-            qrContainerDiv.appendChild(qrWrapperDiv); 
+            // Add QR code image to the PDF at the specified x, y position with the new size
+            pdf.addImage(image.qr_code_image, 'PNG', x+2, y, imageWidth, imageHeight);
+    
+            // Add rotated product name on the left side of the QR code (rotated -90 degrees)
+            pdf.saveGraphicsState();
+            pdf.setFontSize(16);
+            pdf.setFont('helvetica', 'bold');
+            pdf.text(row.product_name, x-2, y + imageHeight / 2, { angle: 90 });
+            pdf.restoreGraphicsState();
+    
+            // Add QR Code ID below the QR code
+            // Some space below the image
+            const qrCodeIdY = y + imageHeight + 5+2; 
+            // Center horizontally
+            const qrCodeIdX = (pageWidth - qrCodeIdWidth) / 2;  
+    
+            pdf.setFont('helvetica', 'bold');
+            pdf.setFontSize(16); 
+            pdf.text(qrCodeID, qrCodeIdX, qrCodeIdY);
+    
+            // Add a page break after every 3 images (3 images per page)
+            if ((index + 1) % maxImagesPerPage === 0 && index !== totalImages -  1) {
+                pdf.addPage();
+            }
+    
+            // Set the page width dynamically for each page
+            pdf.internal.pageSize.width = pageWidth;
         });
     
-        document.body.appendChild(qrContainerDiv);
+        // Save the PDF as a blob and add it to the ZIP file
+        const pdfBlob = pdf.output('blob');
+        zip.file(`${row.product_name || 'QR_Codes'}.pdf`, pdfBlob);
     
-        // Capture the div using html2canvas
-        try {
-            const canvas = await html2canvas(qrContainerDiv, { useCORS: true });
-            const zip = new JSZip();
-            const imgData = canvas.toDataURL('image/png').split(',')[1]; 
-            zip.file('qr_codes.png', imgData, { base64: true }); 
-    
-            const content = await zip.generateAsync({ type: 'blob' });
-            saveAs(content, 'qr_codes.zip'); 
-        } catch (error) {
-            console.error('Error capturing images:', error);
-        } finally {
-            document.body.removeChild(qrContainerDiv); 
-        }
+        // Generate the ZIP and download it
+        const zipBlob = await zip.generateAsync({ type: 'blob' });
+        saveAs(zipBlob, 'qr_codes.zip');
     };
     
-    // const handleDownloadQR = async (row: DownloadProductQRCode) => {
-    //     try {
-    //         const zip = new JSZip();
     
-    //         // Ensure qr_code_images is an array (fallback to an empty array if undefined)
-    //         const qrImages = row.qr_code_images || [];
     
-    //         // Extract the QR code images for the specific row
-    //         const qrPromises = qrImages.map(async (image, index) => {
-    //             // Create a temporary container for each QR code
-    //             const qrWrapperDiv = document.createElement('div');
-    //             qrWrapperDiv.style.display = 'flex';
-    //             qrWrapperDiv.style.flexDirection = 'row'; 
-    //             qrWrapperDiv.style.alignItems = 'center'; 
-    //             qrWrapperDiv.style.justifyContent = 'center';
-    //             qrWrapperDiv.style.padding = '10px';
-    
-    //             const productNameDiv = document.createElement('div');
-    //             productNameDiv.style.display = 'flex';
-    //             productNameDiv.style.alignItems = 'center';
-    //             productNameDiv.style.fontSize = "20px";
-    //             productNameDiv.style.padding = "10px";
-    //             productNameDiv.style.fontWeight = "bold";
-    //             productNameDiv.style.transform = 'rotate(-90deg)'; 
-    //             productNameDiv.style.whiteSpace = 'nowrap'; 
-    //             productNameDiv.innerText = row.product_name || 'Unknown Product Name';
-    
-    //             const img = document.createElement('img');
-    //             img.src = image.qr_code_image;
-    
-    //             const qrIdDiv = document.createElement('div');
-    //             qrIdDiv.style.textAlign = 'center';
-    //             qrIdDiv.style.fontSize = "20px";
-    //             qrIdDiv.style.fontWeight = "bold";
-    //             qrIdDiv.innerText = image.qr_code_image.split('/').pop()?.replace('.png', '') || `QR_Code_${index}`;
-    
-    //             qrWrapperDiv.appendChild(productNameDiv);
-    //             qrWrapperDiv.appendChild(img);
-    //             qrWrapperDiv.appendChild(qrIdDiv);
-    //             document.body.appendChild(qrWrapperDiv); // Temporarily append to body
-    
-    //             // Capture each QR code and save as a separate image in the zip
-    //             const canvas = await html2canvas(qrWrapperDiv, { useCORS: true });
-    //             const imgData = canvas.toDataURL('image/png').split(',')[1]; 
-    //             const qrCodeFileName = `QR_Code_${index}.png`;
-    
-    //             // Add the captured image to the zip file
-    //             zip.file(qrCodeFileName, imgData, { base64: true });
-    
-    //             // Clean up by removing the temporary div
-    //             document.body.removeChild(qrWrapperDiv);
-    //         });
-    
-    //         // Wait for all QR code images to be processed
-    //         await Promise.all(qrPromises);
-    
-    //         // Generate the zip file and trigger download
-    //         const content = await zip.generateAsync({ type: 'blob' });
-    //         saveAs(content, 'qr_codes.zip'); 
-    //     } catch (error) {
-    //         console.error('Error capturing images:', error);
-    //     }
-    // };
-    
+
     return (
         <Fragment>
             <Pageheader 

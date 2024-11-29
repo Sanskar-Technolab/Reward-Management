@@ -140,7 +140,7 @@ fetchWebsiteSettings();
       <>
         <Route path='/' element={<Login />} />
         <Route path='/customer-product' element={<CusromerProducts />} />
-        <Route path='/view-product-details' element={<CustomerProductDetails/>} />
+        <Route path='/view-product-details/:product_id' element={<CustomerProductDetails/>} />
         <Route element={<AppLayout/>}>
         <Route path='/' element={<PrivateRoutes/>}>
           <Route path='/admin-profile' element={<AdminProfile />} />

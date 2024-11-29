@@ -46,6 +46,7 @@
     "html2canvas": "^1.4.1",
     "html5-qrcode": "^2.3.8",
     "js-cookie": "^3.0.5",
+    "jspdf": "^2.5.2",
     "jszip": "^3.10.1",
     "notyf": "^3.10.0",
     "preline": "^2.4.1",
