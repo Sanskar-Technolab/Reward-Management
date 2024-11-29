@@ -14,19 +14,19 @@ interface PointHistoryItem {
     product_category: string;
 }
 
-interface Carpenter {
-    city: string;
-    current_points: number;
-    email: string;
-    first_name: string;
-    full_name: string;
-    last_name: string;
-    mobile_number: string;
-    name: string;
-    point_history: PointHistoryItem[];
-    redeem_points: number;
-    total_points: number;
-}
+// interface Carpenter {
+//     city: string;
+//     current_points: number;
+//     email: string;
+//     first_name: string;
+//     full_name: string;
+//     last_name: string;
+//     mobile_number: string;
+//     name: string;
+//     point_history: PointHistoryItem[];
+//     redeem_points: number;
+//     total_points: number;
+// }
 
 const PointHistory: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(1);

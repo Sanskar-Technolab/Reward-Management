@@ -6,21 +6,27 @@ import TableComponent from '../../../components/ui/tables/tablecompnent'; // Ens
 import TableBoxComponent from '../../../components/ui/tables/tableboxheader';
 import '../../../assets/css/style.css';
 import '../../../assets/css/pages/admindashboard.css';
+// import html2canvas from 'html2canvas';
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
+import { jsPDF } from 'jspdf';
+
+
 
 interface QRCodeImage {
     qr_code_image: string;
     points: number;
+    product_qr_id: string;
 }
 
 interface DownloadProductQRCode {
     product_name?: string;
     generated_date?: string;
-    generated_time?:string;
+    generated_time?: string;
     total_product?: number;
     points?: number;
     qr_code_images?: QRCodeImage[];
+    product_qr_id?:string;
 }
 
 const DownloadQRCode: React.FC = () => {
@@ -51,7 +57,7 @@ const DownloadQRCode: React.FC = () => {
                     const aggregatedData = response.data.message.message.map((item: any) => ({
                         product_name: item.qr_code_images[0]?.product_name || 'Unknown Product Name',
                         generated_date: item.generated_date,
-                        generated_time:item.generated_time,
+                        generated_time: item.generated_time,
                         total_product: item.total_product,
                         points: item.qr_code_images.reduce((acc: number, img: any) => acc + img.points, 0),
                         qr_code_images: item.qr_code_images, // Include qr_code_images here
@@ -89,7 +95,6 @@ const DownloadQRCode: React.FC = () => {
 
     const handleSearch = (value: string) => {
         console.log("Search value:", value);
-        // Implement search logic here
     };
 
     const handleAddProductClick = () => {
@@ -97,115 +102,90 @@ const DownloadQRCode: React.FC = () => {
         navigate('/product-master');
     };
 
-    // Function to handle QR code image download
-    // const handleDownloadQR = (row: DownloadProductQRCode) => {
-    //     if (row.qr_code_images) {
-    //         row.qr_code_images.forEach((image) => {
-    //             const link = document.createElement('a');
-    //             link.href = image.qr_code_image;
-    //             link.download = image.qr_code_image.split('/').pop() || 'qr_code.png';
-    //             link.click();
-    //         });
-    //     }
-    // };
-
-//   // Function to handle QR code image download as a zip file
-const handleDownloadQR = async (row: DownloadProductQRCode) => {
-    if (row.qr_code_images) {
+    // download and create pdf for qr images---------
+    
+    const handleDownloadQR = async (row: DownloadProductQRCode) => {
         const zip = new JSZip();
-        const imgFolder = zip.folder("qr_code_images");
-
-        const imageFetchPromises = row.qr_code_images.map(async (image) => {
-            const response = await fetch(image.qr_code_image);
-            const blob = await response.blob();
-            const imageBitmap = await createImageBitmap(blob); 
-
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-
-            if (ctx) {
-                const padding = 35; 
-                // const productQrNamePaddingLeft = 30;
-
-                const productName = row.product_name || 'Unknown Product';
-                const productQrId = image.qr_code_image.split('/').pop()?.replace('.png', '') || 'Unknown QR Code ID';
-
-                // Set font for product_name and measure its height
-                ctx.font = '20px Arial'; 
-                ctx.textAlign = 'center';
-                const productNameHeight = 20; 
-                const productNameWidth = ctx.measureText(productName).width; 
-
-                // Set font for product_qr_id and measure its width
-                ctx.font = '20px Arial'; 
-                const productQrIdHeight = 40; 
-                const productQrIdWidth = ctx.measureText(productQrId).width; 
-
-                // Calculate canvas dimensions
-                const canvasWidth = Math.max(imageBitmap.width, productNameWidth, productQrIdWidth) + 3 * padding;
-                const canvasHeight = imageBitmap.height + productNameHeight + productQrIdHeight + 60; 
-
-                // Set canvas dimensions
-                canvas.width = canvasWidth; 
-                canvas.height = canvasHeight;
-                ctx.textAlign = 'center';
-                ctx.fillStyle = '#FFFFFF';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-                const imageX = (canvasWidth - imageBitmap.width) / 2; 
-                const imageY = padding + 30; 
-                ctx.drawImage(imageBitmap, imageX, imageY);
-
-                // Draw product_name vertically on the left side of the QR code
-                ctx.save();
-                ctx.textAlign = 'center';
-                ctx.translate(padding - 10, (canvasHeight/2)); 
-                // Rotate 90 degrees counterclockwise
-                ctx.rotate(-Math.PI / 2); 
-                ctx.fillStyle = '#000000'; 
-                ctx.font = '40px Arial'; 
-
-               // Draw the product name vertically
-                ctx.fillText(productName, 0, 10);
-                ctx.restore();
-
-                // Draw product_qr_id centered horizontally below the QR code
-                ctx.textAlign = 'center';
-                ctx.fillStyle = '#000000'; 
-                ctx.font = '40px Arial'; 
-               
-                
-                // 5 pixels below the QR code image
-                const productQrIdY = imageY + imageBitmap.height + 5 + productQrIdHeight; 
-                ctx.fillText(productQrId, (canvasWidth ) / 2, productQrIdY); 
-
-                const finalImageBlob = await new Promise<Blob>((resolve) => canvas.toBlob(resolve));
-                const imageName = image.qr_code_image.split('/').pop() || 'qr_code.png';
-                imgFolder?.file(imageName, finalImageBlob!); 
+        const pdf = new jsPDF();
+         // Set image width to 100
+        const imageWidth = 100; 
+        // Set image height to 75
+        const imageHeight = 75;  
+        const rowSpacing = 15;
+        const maxImagesPerPage = 3;
+    
+        row.qr_code_images.forEach((image, index) => {
+            const totalImages = row.qr_code_images.length;
+    
+            // Extract QR Code ID from the image path
+            const qrCodeID = image.qr_code_image.split('/').pop()?.replace('.png', '') || 'Unknown QR Code ID';
+    
+            // Calculate the width of the QR Code ID text
+            const qrCodeIdWidth = pdf.getStringUnitWidth(qrCodeID) * pdf.internal.scaleFactor;
+            
+            // Set the page width to be the max of the image width and the QR Code ID text width
+             // Add some padding
+            const pageWidth = Math.max(imageWidth, qrCodeIdWidth) + 20; 
+    
+            // Adjust X position to center the image and text on the page
+            const x = (pageWidth - imageWidth) / 2;
+    
+            // Calculate Y position for the QR code image
+            const y = (index % maxImagesPerPage) * (imageHeight + rowSpacing) +20; 
+    
+            // Add QR code image to the PDF at the specified x, y position with the new size
+            pdf.addImage(image.qr_code_image, 'PNG', x+2, y, imageWidth, imageHeight);
+    
+            // Add rotated product name on the left side of the QR code (rotated -90 degrees)
+            pdf.saveGraphicsState();
+            pdf.setFontSize(16);
+            pdf.setFont('helvetica', 'bold');
+            pdf.text(row.product_name, x-2, y + imageHeight / 2, { angle: 90 });
+            pdf.restoreGraphicsState();
+    
+            // Add QR Code ID below the QR code
+            // Some space below the image
+            const qrCodeIdY = y + imageHeight + 5+2; 
+            // Center horizontally
+            const qrCodeIdX = (pageWidth - qrCodeIdWidth) / 2;  
+    
+            pdf.setFont('helvetica', 'bold');
+            pdf.setFontSize(16); 
+            pdf.text(qrCodeID, qrCodeIdX, qrCodeIdY);
+    
+            // Add a page break after every 3 images (3 images per page)
+            if ((index + 1) % maxImagesPerPage === 0 && index !== totalImages -  1) {
+                pdf.addPage();
             }
+    
+            // Set the page width dynamically for each page
+            pdf.internal.pageSize.width = pageWidth;
         });
-
-        await Promise.all(imageFetchPromises);
-
-        zip.generateAsync({ type: 'blob' }).then((blob) => {
-            saveAs(blob, `${row.product_name || 'qr_codes'}.zip`);
-        });
-    }
-};
+    
+        // Save the PDF as a blob and add it to the ZIP file
+        const pdfBlob = pdf.output('blob');
+        zip.file(`${row.product_name || 'QR_Codes'}.pdf`, pdfBlob);
+    
+        // Generate the ZIP and download it
+        const zipBlob = await zip.generateAsync({ type: 'blob' });
+        saveAs(zipBlob, 'qr_codes.zip');
+    };
+    
+    
+    
 
     return (
         <Fragment>
-             <Pageheader 
+            <Pageheader 
                 currentpage={"Download QR"} 
                 activepage={"/product-master"} 
                 mainpage={"/download-qr-code"} 
                 activepagename='Product Master' 
                 mainpagename='Download QR' 
             />
-            {/* {/ <Pageheader currentpage="Download QR" activepage="Product Master" mainpage="Download QR" /> /} */}
             <div className="grid grid-cols-12 gap-x-6 bg-white mt-5 rounded-lg shadow-lg">
                 <div className="xl:col-span-12 col-span-12">
-                    <div className="box">
+                    <div className="">
                         <TableBoxComponent
                             title="Download Product QR"
                             onSearch={handleSearch}
@@ -232,11 +212,12 @@ const handleDownloadQR = async (row: DownloadProductQRCode) => {
                                 handlePageChange={handlePageChange}
                                 showProductQR={false}
                                 editHeader='Download QR'
-                                showEdit={true} // Adjust based on your needs
+                                showEdit={true} 
                                 iconsConfig={{
                                     editIcon: "bi bi-download",
                                 }}
-                                onEdit={handleDownloadQR} // Pass the entire row to handleDownloadQR
+                                 // Pass the entire row to handleDownloadQR
+                                onEdit={handleDownloadQR}
                                 columnStyles={{
                                     'Product Name': 'text-[var(--primaries)] font-semibold',
                                 }}

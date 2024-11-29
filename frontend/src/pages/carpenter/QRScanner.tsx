@@ -4,6 +4,7 @@ import { Html5QrcodeScanner } from 'html5-qrcode';
 import '../../assets/css/pages/qrscanner.css';
 import SuccessAlert from '../../components/ui/alerts/SuccessAlert';
 import PointCollectAlert from '../../components/ui/alerts/PointCollected';
+// import { AlertTitle } from '@mui/material';
 
 const QRScanner = () => {
   const [userEmail, setUserEmail] = useState<string | null>(null);
@@ -11,6 +12,7 @@ const QRScanner = () => {
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [showPointCollectAlert, setShowPointCollectAlert] = useState<boolean>(false);
   const [alertMessage, setAlertMessage] = useState<string>('');
+  const [alertTitle, setAlertTitle] = useState<string>('');
   const [isError, setIsError] = useState<boolean>(false);
   const [isCollectingPoints, setIsCollectingPoints] = useState<boolean>(false);
   const qrScannerRef = useRef<HTMLDivElement | null>(null);
@@ -19,6 +21,7 @@ const QRScanner = () => {
   const [productQrId, setProductQrId] = useState<string>('');
 
   const [productQrPoints, setProductQrPoints] = useState<string>('');
+  const [productEanredAmount , setProductEarnedAmount] = useState<string>('');
   useEffect(() => {
     
     document.title='QR Scanner';
@@ -70,33 +73,37 @@ const QRScanner = () => {
           const productResponse = await axios.get(`/api/method/reward_management.api.qr_code_product_detail.get_product_details_from_qr`, {
             params: { decode_text: decodedText },
           });
-       
-
+    
           if (productResponse.data.message?.error) {
-            console.log("error message",productResponse.data.message?.error);
-            setAlertMessage("This QR Code has already been scanned.");
+            const errorMessage = productResponse.data.message.error; 
+            setAlertTitle("Error");
+            setAlertMessage(errorMessage); 
             setIsError(true);
+            setShowAlert(true); 
           } else {
             const productData = productResponse.data;
-            console.log("scanned qr data", productData);
-            setProductTableName(productData.message.product_table_name); // Save product_table_name
+            console.log("Scanned QR data", productData);
+            setProductTableName(productData.message.product_table_name);
             setProductQrId(productData.message.product_qr_id);
             setProductQrPoints(productData.message.points);
+            setProductEarnedAmount(productData.message.earned_amount);
             setAlertMessage(
-              `Product Name: ${productData.message.product_name}  Points: ${productData.message.points}`
+              `Product Name: ${productData.message.product_name} Points: ${productData.message.points} Earned Amount: ${productData.message.earned_amount}`
             );
             setIsError(false);
             setCarpenterData(productData);
+            setShowAlert(true); // Ensure to show the alert for success as well
           }
-          setShowAlert(true);
         } catch (error) {
           console.error("Error fetching product details:", error);
+          setAlertTitle("Error"); // Add title for consistency
           setAlertMessage("Error fetching product details. Please try again.");
           setIsError(true);
-          setShowAlert(true);
+          setShowAlert(true); // Ensure to show the alert
         }
       };
-
+      
+    
       const html5QrCodeScanner: any = new Html5QrcodeScanner("my-qr-reader", { fps: 10, qrbox: 250 }, true);
       html5QrCodeScanner.render(onScanSuccess);
 
@@ -167,7 +174,8 @@ const QRScanner = () => {
       // Call the API to update carpenter points
       const response = await axios.post(`/api/method/reward_management.api.carpenter_master.update_carpainter_points`, {
         product_name: productTableName,
-        points: productQrPoints
+        points: productQrPoints,
+        earned_amount : productEanredAmount
       });
 
       if (response.data.message?.success === true) {
@@ -197,11 +205,10 @@ const QRScanner = () => {
         isError ? (
           <SuccessAlert
             message={alertMessage}
-            title="This QR Code has already been scanned"
+            title={alertTitle}
             buttonLabel="Close"
             onClose={() => setShowAlert(false)}
-            showButton={true}
-            showMessage={false} onCancel={function (): void {
+            showButton={true} onCancel={function (): void {
               throw new Error('Function not implemented.');
             } }          />
         ) : (
@@ -210,12 +217,10 @@ const QRScanner = () => {
               title="QR Code Successfully Scanned"
               collectButtonLabel="Collect"
               showMessage={true}
-              showMessagesecond={false}
-              onClose={() => setShowAlert(false)} // You might want to set showAlert to false here to close the alert
+              onClose={() => setShowAlert(false)}
               showCollectButton={true}
               onCollect={handleCollectPoints}
-              showButton={true} // Set this to true to show the close button
-              onCancel={function (): void {
+              showButton={true} onCancel={function (): void {
                 throw new Error('Function not implemented.');
               } }          />
         )

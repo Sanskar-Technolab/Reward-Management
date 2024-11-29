@@ -62,7 +62,7 @@ const Login = () => {
         try {
             const response = await axios.get(`/api/method/frappe.core.doctype.user.user.get_roles`, {
                 params: {
-                    uid: username  // Replace with correct parameter if needed
+                    uid: username  
                 },
 
             });
@@ -89,13 +89,13 @@ const Login = () => {
 
             // Fetch roles
             const rolesResponse = await fetchUserRoles(username);
-            // console.log("rolesResponse----", rolesResponse);
+            console.log("rolesResponse----", rolesResponse);
 
             // Extract roles from the response
             const roles = rolesResponse.message || []; // Assuming `message` contains the array of roles
             localStorage.setItem('user_roles', JSON.stringify(roles));
 
-            // console.log('User roles:', roles);
+            console.log('User roles:', roles);
 
             login({ username: username, password: password });
 
@@ -111,6 +111,7 @@ const Login = () => {
             } else if (roles.includes('Administrator')) {
                 navigate('/admin-dashboard');
             }
+           
 
 
         } catch (err) {
@@ -349,7 +350,7 @@ const Login = () => {
         const fetchWebsiteSettings = async () => {
             try {
                 const response = await axios.get('/api/method/reward_management.api.website_settings.get_website_settings');
-                console.log('API Image Response:', response.data);
+                // console.log('API Image Response:', response.data);
 
                 // Check if the response is successful and contains the expected structure
                 if (response && response.data && response.data.message && response.data.message.status === 'success') {

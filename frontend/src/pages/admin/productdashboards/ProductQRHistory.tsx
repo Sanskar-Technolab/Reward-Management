@@ -40,7 +40,7 @@ const ProductQRHistory: React.FC = () => {
                 const flattenedData = fetchedData.flatMap((item: any) =>
                     item.qr_table_data?.map((qrItem: any) => ({
                         ...qrItem,
-                        scanned: qrItem.scanned === '1' ? 'Scanned' : 'Not Scanned',
+                        scanned: qrItem.scanned == '1' ? 'Scanned' : 'Not Scanned',
                     })) ?? []
                 );
                 
@@ -135,7 +135,7 @@ const ProductQRHistory: React.FC = () => {
             />
             <div className="grid grid-cols-12 gap-x-6 bg-white mt-5 rounded-lg shadow-lg">
                 <div className="xl:col-span-12 col-span-12">
-                    <div className="box">
+                    <div className="">
                         <TableBoxComponent
                             title="Product QR History"
                             onSearch={handleSearch}

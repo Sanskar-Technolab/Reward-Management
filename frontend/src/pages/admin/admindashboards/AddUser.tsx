@@ -8,6 +8,8 @@ import TableComponent from '../../../components/ui/tables/tablecompnent';
 import TableBoxComponent from '../../../components/ui/tables/tableboxheader';
 import AddAdminUser from '../../../components/ui/models/AddAdminModel';
 import SuccessAlert from '../../../components/ui/alerts/SuccessAlert';
+import { Notyf } from "notyf";
+import "notyf/notyf.min.css";
 
 // Validation Schema
 const schema = yup.object().shape({
@@ -20,7 +22,7 @@ const schema = yup.object().shape({
 });
 
 const AddUserDashboard: React.FC = () => {
-    const { control, handleSubmit, reset, formState: { errors } } = useForm({
+    const { control, handleSubmit, reset, formState: { errors },setFocus } = useForm({
         resolver: yupResolver(schema),
         defaultValues: {
             firstName: '',
@@ -32,12 +34,22 @@ const AddUserDashboard: React.FC = () => {
         }
     });
 
+
+
+    const notyf = new Notyf({
+        position: {
+            x: "right",
+            y: "top",
+        },
+        duration: 5000,
+    });
+
     const [usersData, setUsersData] = useState<User[]>([]);
     const [showSuccessAlert, setShowSuccessAlert] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage] = useState(5); // Number of items per page
-    const [searchQuery, setSearchQuery] = useState(''); // State for search query
+    const [itemsPerPage] = useState(10); 
+    const [searchQuery, setSearchQuery] = useState('');
 
     // Fetching admin users
     const { data, error } = useFrappeGetCall<User[]>('reward_management.api.add_admin_user.get_users');
@@ -69,22 +81,58 @@ const AddUserDashboard: React.FC = () => {
     // Submitting new admin user
     const { call: createAdminUser } = useFrappePostCall('reward_management.api.add_admin_user.create_admin_user');
 
-    const onSubmit = async (data: any) => {
+    const onSubmit = async (data:any) => {
         try {
             const response = await createAdminUser({
                 first_name: data.firstName,
                 last_name: data.lastName,
+                username: data.username,
                 email: data.email,
-                mobile_number: data.mobileNumber,
+                mobile_no: data.mobileNumber,
                 password: data.password
             });
+    
             console.log("User created successfully", response);
-            setShowSuccessAlert(true);
-            handleCloseModal();
-        } catch (error) {
+    
+            // Handle success or error based on response structure
+            if (response.message.status === "success") {
+                setShowSuccessAlert(true);
+                handleCloseModal();
+            } else if (response.message.status === "error") {
+                notyf.error(response.message || "An error occurred while creating the user.");
+                reset();
+            } else {
+                notyf.error("Unexpected response from the server.");
+            }
+    
+        } catch (error: any) {
             console.error("Error creating admin user:", error);
+    
+            // Check for server messages
+            if (error.response && error.response.data && error.response.data._server_messages) {
+                const serverMessages = JSON.parse(error.response.data._server_messages);
+    
+                const userFriendlyMessages = serverMessages.map(
+                    (msg: string) => JSON.parse(msg).message
+                );
+    
+                notyf.error(userFriendlyMessages.join("\n"));
+    
+                // Focus on appropriate field based on error messages
+                if (userFriendlyMessages.includes("Username already exists")) {
+                    setFocus("username");
+                } else if (userFriendlyMessages.includes("Email already exists")) {
+                    setFocus("email");
+                } else if (userFriendlyMessages.includes("Mobile number already exists")) {
+                    setFocus("mobileNumber");
+                }
+            } else {
+                // Generic error message
+                notyf.error("An error occurred while creating the user.");
+            }
         }
     };
+    
 
     // Filter the data based on search query
     const filteredData = usersData.filter(item => {
@@ -187,8 +235,14 @@ const AddUserDashboard: React.FC = () => {
             )}
             {/* Success Alert */}
             {showSuccessAlert && <SuccessAlert 
-            showButton={false}
-            message="New Admin User Created Successfully!" />}
+                showButton={false}
+                message="New Admin User Created Successfully!"
+                onClose={function (): void {
+                    throw new Error('Function not implemented.');
+                } } 
+                onCancel={function (): void {
+                    throw new Error('Function not implemented.');
+                } } />}
         </Fragment>
     );
 };

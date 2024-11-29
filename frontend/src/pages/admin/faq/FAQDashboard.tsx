@@ -262,7 +262,7 @@ const filteredData = formattedFAQData.filter(faq => {
           
             <div className="grid grid-cols-12 gap-x-6 bg-white mt-5 rounded-lg shadow-lg">
                 <div className="xl:col-span-12 col-span-12">
-                    <div className="box">
+                    <div className="">
                         <TableBoxComponent
                             title="FAQ"
                             onSearch={handleSearch}

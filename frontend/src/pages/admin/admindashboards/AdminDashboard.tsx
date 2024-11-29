@@ -178,7 +178,7 @@ const AdminDashboard: React.FC = () => {
             {/* Table Section */}
             <div className="grid grid-cols-12 gap-x-6 bg-white mt-5 rounded-lg shadow-lg">
                 <div className="xl:col-span-12 col-span-12">
-                    <div className="box">
+                    <div className="">
                         <div className="box-header flex justify-between items-center p-4 border-b">
                             <div className="box-title text-[.9375rem] font-bold text-defaulttextcolor">
                                 Top 10 Customer

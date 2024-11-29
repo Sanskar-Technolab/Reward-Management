@@ -29,11 +29,11 @@ const ProductMaster: React.FC = () => {
     const [loading, setLoading] = useState(false);
     const [alertMessage, setAlertMessage] = useState('');
     const [alertTitle, setAlertTitle] = useState('');
-    const [searchQuery, setSearchQuery] = useState(''); 
-    const [itemsPerPage] = useState(5); 
-    const [productToDelete, setProductToDelete] = useState<Product| null>(null);
-    const [isConfirmDeleteModalOpen, setIsConfirmDeleteModalOpen] = useState(false); 
-    const { data: productsData ,mutate: mutateProducts} = useFrappeGetDocList<Product>('Product', {
+    const [searchQuery, setSearchQuery] = useState('');
+    const [itemsPerPage] = useState(5);
+    const [productToDelete, setProductToDelete] = useState<Product | null>(null);
+    const [isConfirmDeleteModalOpen, setIsConfirmDeleteModalOpen] = useState(false);
+    const { data: productsData, mutate: mutateProducts } = useFrappeGetDocList<Product>('Product', {
         fields: ['name', 'product_name', 'category', 'reward_points', 'product_price']
     });
     // Fetch Product QR Data
@@ -45,17 +45,17 @@ const ProductMaster: React.FC = () => {
         const qrData = productQRData?.find(qr => qr.product_name === product.name);
         return {
             ...product,
-            quantity: qrData?.quantity || 0  
+            quantity: qrData?.quantity || 0
         };
     });
     const navigate = useNavigate();
 
     useEffect(() => {
-        document.title='Products Dashboard';
+        document.title = 'Products Dashboard';
         if (showSuccessAlert) {
             const timer = setTimeout(() => {
-                setShowSuccessAlert(false); 
-                window.location.reload(); 
+                setShowSuccessAlert(false);
+                window.location.reload();
             }, 3000);
             return () => clearTimeout(timer);
         }
@@ -113,7 +113,7 @@ const ProductMaster: React.FC = () => {
 
     const handleConfirm = async (quantity: number) => {
         if (selectedProduct) {
-            setLoading(true); 
+            setLoading(true);
             try {
                 const response = await axios.post(`/api/method/reward_management.api.print_qr_code.create_product_qr`, {
                     product_name: selectedProduct.name,
@@ -123,19 +123,19 @@ const ProductMaster: React.FC = () => {
                 setAlertMessage('QR Codes created successfully!');
                 setShowSuccessAlert(true);
                 console.log('QR Codes created successfully:', response.data);
-              
+
 
                 closeModal();
             } catch (error) {
                 console.error('Error creating QR codes:', error);
-               
+
             }
             finally {
-                setLoading(false); 
+                setLoading(false);
             }
         } else {
             console.error('No product selected');
-          
+
         }
     };
 
@@ -148,7 +148,7 @@ const ProductMaster: React.FC = () => {
     const handleAddProductClick = () => {
         console.log("Add Product button clicked");
         navigate('/add-product');
-       
+
     };
 
     const handleDeleteProduct = (item: Product) => {
@@ -169,7 +169,7 @@ const ProductMaster: React.FC = () => {
 
             if (!response.ok) {
                 const responseData = await response.json();
-                throw new Error(`Error: ${responseData.message || response.statusText}`); 
+                throw new Error(`Error: ${responseData.message || response.statusText}`);
             }
 
             setAlertTitle('Success');
@@ -178,8 +178,9 @@ const ProductMaster: React.FC = () => {
             setIsConfirmDeleteModalOpen(false);
             mutateProducts();
         } catch (error) {
-            console.error('Error deleting announcement:', error.message || error);
-            alert('Failed to delete announcement.');
+            console.log(error),
+                console.error('Error deleting product:', error.message || error);
+            alert('Failed to delete Product.');
         }
     };
 
@@ -191,27 +192,27 @@ const ProductMaster: React.FC = () => {
 
     return (
         <Fragment>
-             <Pageheader 
-                currentpage={"Product Master"} 
-                activepage={"/product-master"} 
+            <Pageheader
+                currentpage={"Product Master"}
+                activepage={"/product-master"}
                 // mainpage={"/product-master"} 
-                activepagename='Product Master' 
-                // mainpagename='Product Master' 
+                activepagename='Product Master'
+            // mainpagename='Product Master' 
             />
             {/* <Pageheader currentpage={pagecurrentPage} activepage={activePage} mainpage={mainPage}  /> */}
 
             <div className="grid grid-cols-12 gap-x-6 bg-white mt-5 rounded-lg shadow-lg">
                 <div className="xl:col-span-12 col-span-12">
-                    <div className="box">
+                    <div className="">
 
                         <TableBoxComponent
                             title="Products"
                             onSearch={handleSearch}
                             onAddButtonClick={handleAddProductClick}
-                            buttonText="Add Product" 
-                            showButton={true} 
-                            icon="" 
-                            buttonOnClick={handleAddProductClick} 
+                            buttonText="Add Product"
+                            showButton={true}
+                            icon=""
+                            buttonOnClick={handleAddProductClick}
                         />
                         <div className="box-body m-5">
                             <div className="table-responsive pt-2">
@@ -262,9 +263,9 @@ const ProductMaster: React.FC = () => {
                                                         className={`link-icon bg-[var(--bg-primary)] hover:bg-[var(--primaries)] py-2 px-[10px] rounded-full mr-2 ${product.quantity === 0 ? '' : 'opacity-50 cursor-not-allowed'}`}
                                                         onClick={(e) => {
                                                             if (product.quantity <= 0) {
-                                                                e.preventDefault(); 
+                                                                e.preventDefault();
                                                                 handleDeleteProduct(product);
-                                                            } 
+                                                            }
                                                             // else {
                                                             //     // Implement delete functionality here
                                                             // }
@@ -285,7 +286,7 @@ const ProductMaster: React.FC = () => {
                                     <div className="text-defaulttextcolor dark:text-defaulttextcolor/70 font-normal text-defaultsize">
                                         Showing {currentItems.length} Entries <i className="bi bi-arrow-right ms-2 font-semibold"></i>
                                     </div>
-                                    <div className="ms-auto">
+                                    {/* <div className="ms-auto">
                                         <nav aria-label="Page navigation" className="pagination-style-4">
                                             <ul className="ti-pagination flex items-center px-3 mb-0">
                                                 <li className="page-item px-2">
@@ -318,7 +319,67 @@ const ProductMaster: React.FC = () => {
                                                 </li>
                                             </ul>
                                         </nav>
+                                    </div> */}
+                                    <div className="ms-auto">
+                                        <nav aria-label="Page navigation" className="pagination-style-4">
+                                            <ul className="ti-pagination flex items-center px-3 mb-0">
+                                                <li className="page-item px-2">
+                                                    <button
+                                                        className="page-link"
+                                                        onClick={() => handlePageChange(1)}
+                                                        disabled={currentPage === 1}
+                                                    >
+                                                        «
+                                                    </button>
+                                                </li>
+                                                <li className="page-item px-2">
+                                                    <button
+                                                        className="page-link"
+                                                        onClick={handlePrevPage}
+                                                        disabled={currentPage === 1}
+                                                    >
+                                                        Prev
+                                                    </button>
+                                                </li>
+                                                {Array.from({ length: Math.min(5, totalPages) }, (_, idx) => {
+                                                    const startPage = Math.max(1, currentPage - 2);
+                                                    const pageNumber = startPage + idx;
+
+                                                    return (
+                                                        pageNumber <= totalPages && (
+                                                            <li className="page-item px-2" key={pageNumber}>
+                                                                <button
+                                                                    className={`page-link px-2 rounded-md ${currentPage === pageNumber ? 'text-white bg-blue-800' : 'bg-gray-200'}`}
+                                                                    onClick={() => handlePageChange(pageNumber)}
+                                                                >
+                                                                    {pageNumber}
+                                                                </button>
+                                                            </li>
+                                                        )
+                                                    );
+                                                })}
+                                                <li className="page-item px-2">
+                                                    <button
+                                                        className="page-link"
+                                                        onClick={handleNextPage}
+                                                        disabled={currentPage === totalPages}
+                                                    >
+                                                        Next
+                                                    </button>
+                                                </li>
+                                                <li className="page-item px-2">
+                                                    <button
+                                                        className="page-link"
+                                                        onClick={() => handlePageChange(totalPages)}
+                                                        disabled={currentPage === totalPages}
+                                                    >
+                                                        »
+                                                    </button>
+                                                </li>
+                                            </ul>
+                                        </nav>
                                     </div>
+
                                 </div>
                             </div>
                         </div>
@@ -333,7 +394,9 @@ const ProductMaster: React.FC = () => {
                     onClose={closeModal}
                     onCancel={closeModal}
                     onConfirm={handleConfirm}
-                    title={`Create QR Code for ${selectedProduct.name}`}
+                    title={`Create QR Code for ${selectedProduct.name}`} onSubmit={function (): void {
+                        throw new Error('Function not implemented.');
+                    }}
                 />
             )}
             {loading && (
@@ -344,15 +407,21 @@ const ProductMaster: React.FC = () => {
 
             {/* Success Alert */}
             {showSuccessAlert && <SuccessAlert
-                    title={alertTitle}
-                    showButton={false}
-                    showCancleButton={false}
-                    showCollectButton={false}
-                    showAnotherButton={false}
-                    showMessagesecond={false}
-                    message={alertMessage}
-                />}
-                
+                title={alertTitle}
+                showButton={false}
+                showCancleButton={false}
+                showCollectButton={false}
+                showAnotherButton={false}
+                showMessagesecond={false}
+                message={alertMessage}
+                onClose={function (): void {
+                    throw new Error('Function not implemented.');
+                }}
+                onCancel={function (): void {
+                    throw new Error('Function not implemented.');
+                }}
+            />}
+
 
 
 
@@ -365,7 +434,7 @@ const ProductMaster: React.FC = () => {
                     cancelText="Cancel"
                     confirmText="Continue"
                 />
-            )} 
+            )}
         </Fragment>
     );
 };
