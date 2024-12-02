@@ -1,0 +1,21 @@
+/* Adjust gap between slider items */
+/* .slider-image {
+    margin-bottom: -20px;
+  }
+   */
+  /* Position dots */
+  .slick-dots {
+    bottom: 40px !important;
+  }
+  .slick-dots li button:before {
+    font-size: 10px !important;
+  }
+  .slick-dots li button:after {
+ font-size: 10px !important;
+  }
+  
+  
+  .slick-dots li.slick-active button:before {
+    color: #000; /* Adjust active dot color */
+  }
+  

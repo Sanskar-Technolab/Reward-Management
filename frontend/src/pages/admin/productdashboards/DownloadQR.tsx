@@ -103,63 +103,109 @@ const DownloadQRCode: React.FC = () => {
     };
 
     // download and create pdf for qr images---------
+    // const handleDownloadQR = async (row: DownloadProductQRCode) => {
+    //     const zip = new JSZip();
+    //     const pdf = new jsPDF();
     
+    //     const imageWidth = 100; // Image width
+    //     const imageHeight = 75; // Image height
+    //     const rowSpacing = 15; // Spacing between text and image
+    
+    //     row.qr_code_images.forEach((image, index) => {
+    //         const qrCodeID = image.qr_code_image.split('/').pop()?.replace('.png', '') || 'Unknown QR Code ID';
+            
+    //         // Calculate dimensions of the page based on content
+    //         const qrCodeIdWidth = pdf.getStringUnitWidth(qrCodeID) * pdf.internal.scaleFactor;
+    //         const pageWidth = Math.max(imageWidth, qrCodeIdWidth) + 30; // Adding some padding
+    //         const pageHeight = imageHeight + rowSpacing + 40; // Adjust height for image and text spacing
+            
+    //         // Add a new page and set its dimensions
+    //         if (index > 0) {
+    //             pdf.addPage([pageWidth, pageHeight]);
+    //         } else {
+    //             pdf.internal.pageSize.width = pageWidth;
+    //             pdf.internal.pageSize.height = pageHeight;
+    //         }
+            
+    //         // Calculate positions to center the image and text
+    //         const imageX = (pageWidth - imageWidth) / 2;
+    //         const imageY = 10; // Some top margin
+    //         const qrCodeIdX = (pageWidth - qrCodeIdWidth) / 2;
+    //         const qrCodeIdY = imageY + imageHeight + rowSpacing;
+    
+    //         // Add the QR code image to the page
+    //         pdf.addImage(image.qr_code_image, 'PNG', imageX, imageY, imageWidth, imageHeight);
+    
+    //         // Add the product name rotated on the left
+    //         pdf.saveGraphicsState();
+    //         pdf.setFontSize(16);
+    //         pdf.setFont('helvetica', 'bold');
+    //         pdf.text(row.product_name, imageX - 5, imageY + imageHeight / 2, { angle: 90 });
+    //         pdf.restoreGraphicsState();
+    
+    //         // Add the QR Code ID below the image
+    //         pdf.setFont('helvetica', 'bold');
+    //         pdf.setFontSize(16);
+    //         pdf.text(qrCodeID, qrCodeIdX, qrCodeIdY);
+    //     });
+    
+    //     // Save the PDF as a blob and add it to the ZIP file
+    //     const pdfBlob = pdf.output('blob');
+    //     zip.file(`${row.product_name || 'QR_Codes'}.pdf`, pdfBlob);
+    
+    //     // Generate the ZIP and download it
+    //     const zipBlob = await zip.generateAsync({ type: 'blob' });
+    //     saveAs(zipBlob, 'qr_codes.zip');
+    // };
     const handleDownloadQR = async (row: DownloadProductQRCode) => {
         const zip = new JSZip();
         const pdf = new jsPDF();
-         // Set image width to 100
+    
         const imageWidth = 100; 
-        // Set image height to 75
-        const imageHeight = 75;  
-        const rowSpacing = 15;
-        const maxImagesPerPage = 3;
-    
+        const imageHeight = 75; 
+        const rowSpacing = 10; 
+        const paddingY = 10; 
+        const topPadding = 20;    
         row.qr_code_images.forEach((image, index) => {
-            const totalImages = row.qr_code_images.length;
-    
-            // Extract QR Code ID from the image path
             const qrCodeID = image.qr_code_image.split('/').pop()?.replace('.png', '') || 'Unknown QR Code ID';
-    
-            // Calculate the width of the QR Code ID text
-            const qrCodeIdWidth = pdf.getStringUnitWidth(qrCodeID) * pdf.internal.scaleFactor;
             
-            // Set the page width to be the max of the image width and the QR Code ID text width
-             // Add some padding
-            const pageWidth = Math.max(imageWidth, qrCodeIdWidth) + 20; 
+            // Calculate dimensions of the page based on content
+            const qrCodeIdWidth = pdf.getStringUnitWidth(qrCodeID) * pdf.internal.scaleFactor;
+            const pageWidth = Math.max(imageWidth, qrCodeIdWidth) + 30; 
+            const pageHeight = imageHeight + rowSpacing + 40 +topPadding; 
+            
+            // Add a new page and set its dimensions
+            if (index > 0) {
+                pdf.addPage([pageWidth, pageHeight]);
+            } else {
+                pdf.internal.pageSize.width = pageWidth;
+                pdf.internal.pageSize.height = pageHeight;
+            }
     
-            // Adjust X position to center the image and text on the page
-            const x = (pageWidth - imageWidth) / 2;
+            // Calculate positions for centering the image and text
+            const imageX = (pageWidth - imageWidth) / 2; 
+            const imageY = (pageHeight - imageHeight - rowSpacing - 30) / 2; 
     
-            // Calculate Y position for the QR code image
-            const y = (index % maxImagesPerPage) * (imageHeight + rowSpacing) +20; 
+            const qrCodeIdX = (pageWidth - qrCodeIdWidth) / 2; 
+            const qrCodeIdY = imageY + imageHeight + rowSpacing; 
+            // Center the product name vertically inside the available space
+            const productNameX = imageX - 5; 
+            const productNameY = imageY + imageHeight / 2 + paddingY;
     
-            // Add QR code image to the PDF at the specified x, y position with the new size
-            pdf.addImage(image.qr_code_image, 'PNG', x+2, y, imageWidth, imageHeight);
+            // Add the QR code image to the page
+            pdf.addImage(image.qr_code_image, 'PNG', imageX, imageY, imageWidth, imageHeight);
     
-            // Add rotated product name on the left side of the QR code (rotated -90 degrees)
+            // Add the product name rotated on the left (centered vertically in the available space)
             pdf.saveGraphicsState();
             pdf.setFontSize(16);
             pdf.setFont('helvetica', 'bold');
-            pdf.text(row.product_name, x-2, y + imageHeight / 2, { angle: 90 });
+            pdf.text(row.product_name, productNameX, productNameY, { angle: 90 });
             pdf.restoreGraphicsState();
     
-            // Add QR Code ID below the QR code
-            // Some space below the image
-            const qrCodeIdY = y + imageHeight + 5+2; 
-            // Center horizontally
-            const qrCodeIdX = (pageWidth - qrCodeIdWidth) / 2;  
-    
+            // Add the QR Code ID below the image
             pdf.setFont('helvetica', 'bold');
-            pdf.setFontSize(16); 
+            pdf.setFontSize(16);
             pdf.text(qrCodeID, qrCodeIdX, qrCodeIdY);
-    
-            // Add a page break after every 3 images (3 images per page)
-            if ((index + 1) % maxImagesPerPage === 0 && index !== totalImages -  1) {
-                pdf.addPage();
-            }
-    
-            // Set the page width dynamically for each page
-            pdf.internal.pageSize.width = pageWidth;
         });
     
         // Save the PDF as a blob and add it to the ZIP file
@@ -170,8 +216,6 @@ const DownloadQRCode: React.FC = () => {
         const zipBlob = await zip.generateAsync({ type: 'blob' });
         saveAs(zipBlob, 'qr_codes.zip');
     };
-    
-    
     
 
     return (

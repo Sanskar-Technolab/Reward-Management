@@ -203,7 +203,7 @@ def get_product_by_name(productName):
         qr_table_data = frappe.get_all("Product QR Table",
                                        filters={"parent": product_qr_doc['name']},
                                        fields=["product_table_name", "qr_code_image", "product_qr_id", "points", "generated_date", "generated_time"],
-                                       order_by="generated_date desc")
+                                       order_by="generated_date desc, generated_time desc")
 
         # Ensure qr_table_data is populated
         product_qr_doc['qr_table_data'] = qr_table_data

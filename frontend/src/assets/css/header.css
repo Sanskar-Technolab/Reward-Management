@@ -6,12 +6,13 @@
     top: 0;
     inset-inline-start: 0;
     z-index: 49;
-    height: 3.75rem;
+    height: 4rem;
     width: 100%;
     max-width: 100%;
     border-bottom-width: 1px;
     /* border-bottom-color: rgb(var(--header-border-color)); */
-    background-color: rgb(255 255 255);
+    background-color:#D9D9D9;
+    ;
     transition: all 0.1s linear;
 }
 
@@ -98,7 +99,8 @@
     fill: rgb(var(--header-prime-color));
     padding: 0.25rem;
     font-size: 1.25rem;
-    color: rgb(var(--header-prime-color));
+    /* color: rgb(var(--header-prime-color)); */
+    color:black;
     transition-property: all;
     transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
     transition-duration: 150ms;
