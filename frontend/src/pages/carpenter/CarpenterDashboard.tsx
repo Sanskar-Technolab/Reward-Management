@@ -6,6 +6,7 @@ import ProjectSlider from "../../components/ui/slider/projectslider";
 import Arrow from "../../assets/images/reward_management/arrow.png";
 import ProductCard from "../../components/ui/productcard/card";
 import ProductImage from "../../assets/images/reward_management/Group 20.png";
+import { useNavigate } from 'react-router-dom'; 
 
 const CarpenterDashboard: React.FC = () => {
   const [redeemPoints, setRedeemPoints] = useState<number>(0);
@@ -13,7 +14,7 @@ const CarpenterDashboard: React.FC = () => {
   const [currentPoints, setCurrentPoints] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(true);
   const [isError, setError] = useState<string | null>(null);
-
+  const navigate = useNavigate(); 
   const { data, isLoading, error } = useFrappeGetCall(
     "reward_management.api.carpenter_master.get_carpainter_data"
   );
@@ -90,6 +91,11 @@ const CarpenterDashboard: React.FC = () => {
     
       },
   ];
+   // Function to handle the button click (for example, logging the product name)
+   const handleRedeemClick = (productName:any) => {
+    const formattedProductName = productName.replace(/\s+/g, '-'); 
+    navigate(`/product-details/${formattedProductName}`); 
+  };
 
   return (
     <Fragment>
@@ -101,7 +107,7 @@ const CarpenterDashboard: React.FC = () => {
         </div>
       </div>
       <ProjectSlider /> 
-      <div className="grid grid-cols-12 gap-x-6 pb-10 ">
+      <div className="grid grid-cols-12 gap-x-6 pb-10 md:mt-0 sm:mt-5 ">
         <div className="xxl:col-span-12 xl:col-span-12 lg:col-span-12 col-span-12">
           <div className="grid grid-cols-12 gap-x-6">
             <div className="xl:col-span-12 col-span-12">
@@ -113,7 +119,7 @@ const CarpenterDashboard: React.FC = () => {
                     </p>
                   </div>
                   <div className="grid grid-cols-12 xl:gap-y-0 gap-4">
-                    <div className="category-link xxl:col-span-4 xl:col-span-3 lg:col-span-6 md:col-span-6 sm:col-span-6 col-span-12 p-4 bg-white shadow-lg rounded-lg transition-colors duration-300 hover:bg-purple-50 dark:bg-gray-800 dark:hover:bg-purple-900">
+                    <div className="category-link xxl:col-span-4 xl:col-span-3 lg:col-span-6 md:col-span-6 sm:col-span-12 col-span-12 p-4 bg-white shadow-lg rounded-lg transition-colors duration-300 hover:bg-purple-50 dark:bg-gray-800 dark:hover:bg-purple-900">
                       <div className="flex flex-row items-start mb-4 ">
                         <span className="avatar avatar-lg bg-[var(--primaries)] text-white inline-flex items-center justify-center w-12 h-12 rounded-sm mb-2 mr-3">
                           <i className="ti ti-wallet text-[1.25rem]"></i>
@@ -128,7 +134,7 @@ const CarpenterDashboard: React.FC = () => {
                         </div>
                       </div>
                     </div>
-                    <div className="category-link xxl:col-span-4 xl:col-span-3 lg:col-span-6 md:col-span-6 sm:col-span-6 col-span-12 p-4 bg-white shadow-lg rounded-lg transition-colors duration-300 hover:bg-purple-50 dark:bg-gray-800 dark:hover:bg-purple-900">
+                    <div className="category-link xxl:col-span-4 xl:col-span-3 lg:col-span-6 md:col-span-6 sm:col-span-12 col-span-12 p-4 bg-white shadow-lg rounded-lg transition-colors duration-300 hover:bg-purple-50 dark:bg-gray-800 dark:hover:bg-purple-900">
                       <div className="flex flex-row items-start mb-4 ">
                         <span className="avatar avatar-lg bg-[var(--primaries)] text-white inline-flex items-center justify-center w-12 h-12 rounded-sm mb-2 mr-3">
                           <i className="ti ti-wallet text-[1.25rem]"></i>
@@ -143,7 +149,7 @@ const CarpenterDashboard: React.FC = () => {
                         </div>
                       </div>
                     </div>
-                    <div className="category-link xxl:col-span-4 xl:col-span-3 lg:col-span-6 md:col-span-6 sm:col-span-6 col-span-12 p-4 bg-white shadow-lg rounded-lg transition-colors duration-300 hover:bg-purple-50 dark:bg-gray-800 dark:hover:bg-purple-900">
+                    <div className="category-link xxl:col-span-4 xl:col-span-3 lg:col-span-6 md:col-span-6 sm:col-span-12 col-span-12 p-4 bg-white shadow-lg rounded-lg transition-colors duration-300 hover:bg-purple-50 dark:bg-gray-800 dark:hover:bg-purple-900">
                       <div className="flex flex-row items-start mb-4 ">
                         <span className="avatar avatar-lg bg-[var(--primaries)] text-white inline-flex items-center justify-center w-12 h-12 rounded-sm mb-2 mr-3">
                           <i className="ti ti-wallet text-[1.25rem]"></i>
@@ -159,7 +165,7 @@ const CarpenterDashboard: React.FC = () => {
                       </div>
                     </div>
                   </div>
-
+{/* Featured section------- */}
                   <div>
                     <p className="font-semibold text-[1.125rem] text-defaulttextcolor dark:text-defaulttextcolor/70 my-5  ">
                       Featured
@@ -167,8 +173,8 @@ const CarpenterDashboard: React.FC = () => {
                   </div>
                   <div className="grid grid-cols-12 xl:gap-y-0 gap-4">
                     <Link
-                      to="/banking-history"
-                      className="category-link xxl:col-span-4 xl:col-span-3 lg:col-span-6 md:col-span-6 sm:col-span-6 col-span-12 p-4 bg-white shadow-lg rounded-lg transition-colors duration-300 hover:bg-purple-50 dark:bg-gray-800 dark:hover:bg-purple-900 "
+                      to="/product-catalogue"
+                      className="category-link xxl:col-span-4 xl:col-span-3 lg:col-span-6 md:col-span-6 sm:col-span-12 col-span-12 p-4 bg-white shadow-lg rounded-lg transition-colors duration-300 hover:bg-purple-50 dark:bg-gray-800 dark:hover:bg-purple-900 "
                     >
                       <div className="flex flex-row items-start mb-4 ">
                         <div className="bg-primary/20 rounded-[10px] w-12 h-12 flex items-center justify-center">
@@ -186,7 +192,7 @@ const CarpenterDashboard: React.FC = () => {
 
                     <Link
                       to="/qr-scanner"
-                      className="category-link xxl:col-span-4 xl:col-span-3 lg:col-span-6 md:col-span-6 sm:col-span-6 col-span-12 p-4 bg-white shadow-lg rounded-lg transition-colors duration-300 hover:bg-purple-50 dark:bg-gray-800 dark:hover:bg-purple-900 "
+                      className="category-link xxl:col-span-4 xl:col-span-3 lg:col-span-6 md:col-span-6 sm:col-span-12 col-span-12 p-4 bg-white shadow-lg rounded-lg transition-colors duration-300 hover:bg-purple-50 dark:bg-gray-800 dark:hover:bg-purple-900 "
                     >
                       <div className="flex flex-row items-start mb-4">
                         <div className="bg-primary/20 rounded-[10px] w-12 h-12 flex items-center justify-center">
@@ -204,7 +210,7 @@ const CarpenterDashboard: React.FC = () => {
 
                     <Link
                       to="/point-history"
-                      className="category-link xxl:col-span-4 xl:col-span-3 lg:col-span-6 md:col-span-6 sm:col-span-6 col-span-12 p-4 bg-white shadow-lg rounded-lg transition-colors duration-300 hover:bg-purple-50 dark:bg-gray-800 dark:hover:bg-purple-900 "
+                      className="category-link xxl:col-span-4 xl:col-span-3 lg:col-span-6 md:col-span-6 sm:col-span-12 col-span-12 p-4 bg-white shadow-lg rounded-lg transition-colors duration-300 hover:bg-purple-50 dark:bg-gray-800 dark:hover:bg-purple-900 "
                     >
                       <div className="flex flex-row items-start mb-4">
                         <div className="bg-primary/20 rounded-[10px] w-12 h-12 flex items-center justify-center">
@@ -221,7 +227,7 @@ const CarpenterDashboard: React.FC = () => {
                     </Link>
                     <Link
                       to="/redeem-request"
-                      className="category-link xxl:col-span-4 xl:col-span-3 lg:col-span-6 md:col-span-6 sm:col-span-6 col-span-12 p-4 bg-white shadow-lg rounded-lg transition-colors duration-300 hover:bg-purple-50 dark:bg-gray-800 dark:hover:bg-purple-900 mt-5 "
+                      className="category-link xxl:col-span-4 xl:col-span-3 lg:col-span-6 md:col-span-6 sm:col-span-12 col-span-12 p-4 bg-white shadow-lg rounded-lg transition-colors duration-300 hover:bg-purple-50 dark:bg-gray-800 dark:hover:bg-purple-900 xxl:mt-5 xl:mt-0 lg:mt-0 "
                     >
                       <div className="flex flex-row items-start mb-4 ">
                         <div className="bg-primary/20 rounded-[10px] w-12 h-12 flex items-center justify-center">
@@ -238,7 +244,7 @@ const CarpenterDashboard: React.FC = () => {
                     </Link>
                     <Link
                       to="/banking-history"
-                      className="category-link xxl:col-span-4 xl:col-span-3 lg:col-span-6 md:col-span-6 sm:col-span-6 col-span-12 p-4 bg-white shadow-lg rounded-lg transition-colors duration-300 hover:bg-purple-50 dark:bg-gray-800 dark:hover:bg-purple-900 mt-5"
+                      className="category-link xxl:col-span-4 xl:col-span-3 lg:col-span-6 md:col-span-6 sm:col-span-12 col-span-12 p-4 bg-white shadow-lg rounded-lg transition-colors duration-300 hover:bg-purple-50 dark:bg-gray-800 dark:hover:bg-purple-900 mt-5"
                     >
                       <div className="flex flex-row items-start mb-4 ">
                         <div className="bg-primary/20 rounded-[10px] w-12 h-12 flex items-center justify-center">
@@ -255,7 +261,7 @@ const CarpenterDashboard: React.FC = () => {
                     </Link>
                     <Link
                       to="/help-and-support"
-                      className="category-link xxl:col-span-4 xl:col-span-3 lg:col-span-6 md:col-span-6 sm:col-span-6 col-span-12 p-4 bg-white shadow-lg rounded-lg transition-colors duration-300 hover:bg-purple-50 dark:bg-gray-800 dark:hover:bg-purple-900 mt-5"
+                      className="category-link xxl:col-span-4 xl:col-span-3 lg:col-span-6 md:col-span-6 sm:col-span-12 col-span-12 p-4 bg-white shadow-lg rounded-lg transition-colors duration-300 hover:bg-purple-50 dark:bg-gray-800 dark:hover:bg-purple-900 mt-5"
                     >
                       <div className="flex flex-row items-start mb-4 ">
                         <div className="bg-primary/20 rounded-[10px] w-12 h-12 flex items-center justify-center">
@@ -279,8 +285,8 @@ const CarpenterDashboard: React.FC = () => {
                       </p>
                     </div>
                     <div className="text-defaultsize underline text-defaulttextcolor dark:text-defaulttextcolor/70 mt-5 flex  items-start">
-                      <Link to="#" className="w-18 ">
-                        {" "}
+                      <Link to="/gift-products" className="w-18 ">
+                     
                         View more
                       </Link>
                       <img
@@ -295,13 +301,14 @@ const CarpenterDashboard: React.FC = () => {
                     {products.map((product, index) => (
                       <div
                         key={index}
-                        className="xxl:col-span-4 xl:col-span-3 lg:col-span-6 md:col-span-6 sm:col-span-6 col-span-12"
+                        className="xxl:col-span-3 xl:col-span-3 lg:col-span-6 md:col-span-6 sm:col-span-12 col-span-12"
                       >
                         <ProductCard
                           productImage={product.productImage}
                           productName={product.productName}
                           rewardPoints={product.rewardPoints}
-                          rewardImage={product.rewardImage}
+                          // rewardImage={product.rewardImage}
+                          onClick={() => handleRedeemClick(product.productName)} 
                         />
                       </div>
                     ))}

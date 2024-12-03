@@ -21,14 +21,14 @@ function ImageSlider({ images }) {
   };
 
   return (
-    <div className="relative p-4 mx-auto">
+    <div className="relative  mx-auto pb-4 mb-4">
       <Slider {...settings}>
         {images.map((image, index) => (
-          <div key={index} className="px-2"> {/* Added padding for gap */}
+          <div key={index} className="px-2"> 
             <img
               src={image}
               alt={`Slider ${index + 1}`}
-              className="rounded-lg w-full h-[400px] object-cover"
+              className=" w-full lg:h-[450px] md:h[300px] sm:h-[200px] object-fill"
             />
           </div>
         ))}

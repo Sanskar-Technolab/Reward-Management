@@ -40,7 +40,10 @@ import PointConversion from './pages/admin/transactions/PointsConversion.tsx';
 import QRRewardGuide from './pages/carpenter/QRRewardGuide.tsx';
 import GiftProduct from './pages/carpenter/GiftProduct/ViewProducts.tsx';
 import ProductDetail from './pages/carpenter/GiftProduct/ProductDetails.tsx';
-
+import ProductOrder from './pages/carpenter/GiftProduct/ProductOrder.tsx';
+import ProductCatalogue from './pages/carpenter/ProductCategory/ProductCatalogue.tsx';
+import CatalogueProduct from './pages/carpenter/ProductCategory/CatalogueProducts.tsx';
+import Contact from './pages/carpenter/ContactUs.tsx';
 
 function App() {
   const [isSidebarActive, setIsSidebarActive] = useState(false);
@@ -173,7 +176,12 @@ fetchWebsiteSettings();
           <Route path='/profile-setting' element={<CustomerProfile/>}/>
           <Route path = '/gift-products' element={<GiftProduct/>}/>
           <Route path='/product-details/:productId' element={<ProductDetail />} />
+          <Route path='/product-order/:productId' element={<ProductOrder/>}/>
+          <Route path='/product-catalogue' element={<ProductCatalogue/>}/>
+          <Route path='/catalogue-products' element={<CatalogueProduct/>}/>
+           <Route path='/contact-us' element={<Contact/>}/>
           <Route path='*' element={<Navigate to="/" replace />} />
+         
           
         </Route>
         </Route>

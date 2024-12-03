@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import  { useRef } from 'react';
 import Slider from 'react-slick'; // Import react-slick carousel
 import sliderimage from '../../../assets/images/reward_management/slider.png'; // Import the slider image
 import 'slick-carousel/slick/slick.css';
@@ -21,21 +21,21 @@ const SliderCard = () => {
                 <ul> {dots} </ul>
             </div>
         ),
-        customPaging: i => <button className="slick-dot"></button>, // Optional: Custom dot styling
+        customPaging: _i => <button className="slick-dot"></button>, // Optional: Custom dot styling
     };
 
     return (
-        <section className="relative p-4 max-w-3xl mx-auto">
+        <section className="relative p-4 lg:max-w-[450px] md:max-w-[400px] sm:max-w-[350px] max-w-[250px] mx-auto">
             {/* React-Slick Slider */}
             <Slider ref={sliderRef} {...sliderSettings}>
-                {[1, 2, 3].map((slide, index) => (
+                {[1, 2, 3].map((_slide, index) => (
                     <div key={index} className="slide-item">
                         <div className="slide-wrap flex flex-col items-center text-center">
                             {/* Image */}
                             <img
                                 src={sliderimage}
                                 alt={`Slider ${index + 1}`}
-                                className="w-full max-h-64 object-cover rounded-lg"
+                                className="w-full max-h-64 object-cover rounded-[10px]"
                             />
                             {/* Description */}
                             <div className="text-center mt-4 px-4">

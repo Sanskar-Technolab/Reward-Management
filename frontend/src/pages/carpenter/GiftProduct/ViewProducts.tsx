@@ -3,7 +3,7 @@ import '../../../assets/css/header.css';
 import '../../../assets/css/style.css';
 import Pageheader from '../../../components/common/pageheader/pageheader';
 import ProductImage from "../../../assets/images/reward_management/Group 20.png"; 
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { useNavigate } from 'react-router-dom'; 
 
 
 const ViewProduct = () => {
@@ -79,7 +79,7 @@ const ViewProduct = () => {
                   {products.map((product, index) => (
                     <div
                       key={index}
-                      className="xxl:col-span-4 xl:col-span-3 lg:col-span-6 md:col-span-6 sm:col-span-6 col-span-12"
+                      className="xxxl:col-span-2 xxl:col-span-3 xl:col-span-4 lg:col-span-6 md:col-span-6 sm:col-span-12 col-span-12"
                     >
                       <ProductCard
                         productImage={product.productImage}

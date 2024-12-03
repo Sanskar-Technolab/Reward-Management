@@ -41,9 +41,9 @@ export function ProductCard({ productImage, productName, rewardPoints, onClick }
               <p>{rewardPoints}</p>
             </Typography>
           </div>
-          <div>
+          <div className="md:w-[50%] sm:w-[100%] flex md:justify-center sm:justify-end items-center">
             <Button
-              className="bg-[#fff] border border-gray-500 rounded-[5px] text-black text-[16.58px] font-normal normal-case"
+              className="bg-[#fff] md:py-0 sm:py-2 py-3 md:px-2 sm:px-5  border border-gray-500 rounded-[5px] text-black text-[16.58px] font-normal normal-case md:h-[40px] "
               onClick={onClick} // Call the passed onClick function here
             >
               Redeem
