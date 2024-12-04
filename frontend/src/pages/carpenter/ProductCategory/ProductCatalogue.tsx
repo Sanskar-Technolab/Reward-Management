@@ -1,20 +1,17 @@
 import "../../../assets/css/header.css";
 import "../../../assets/css/style.css";
 import Pageheader from "../../../components/common/pageheader/pageheader";
-import ProductCatalogueImage from '../../../assets/images/reward_management/Frame 5.png';
-import { Link } from "react-router-dom"; // Import Link for navigation
+// import ProductCatalogueImage from '../../../assets/images/reward_management/Frame 5.png';
+import { Link } from "react-router-dom"; 
+import { useFrappeGetDocList } from "frappe-react-sdk"; 
 
 const ProductCatalogue = () => {
-  const products = [
-    { id: 1, name: "Substrate preparation", image: ProductCatalogueImage },
-    { id: 2, name: "Waterproofing", image: ProductCatalogueImage },
-    { id: 3, name: "Laying ceramic tiles and natural stone", image: ProductCatalogueImage },
-    { id: 4, name: "Laying of hardwood floors", image: ProductCatalogueImage },
-    { id: 5, name: "Substrate preparation", image: ProductCatalogueImage },
-    { id: 6, name: "Waterproofing", image: ProductCatalogueImage },
-    { id: 7, name: "Laying ceramic tiles and natural stone", image: ProductCatalogueImage },
-    { id: 8, name: "Laying of hardwood floors", image: ProductCatalogueImage },
-  ];
+
+   // Fetch Product Category data
+   const { data: products, error, isLoading } = useFrappeGetDocList('Product Category', {
+    fields: ['name', 'catalogue_image'], // Fetch fields from the Product Category doctype
+    limit: 10, // Adjust limit as needed
+  });
 
   return (
     <>
@@ -27,15 +24,21 @@ const ProductCatalogue = () => {
       />
       <div className="grid grid-cols-12 gap-x-6 pb-5 mt-5">
         <div className="xxl:col-span-12 xl:col-span-12 lg:col-span-12 col-span-12">
+          {/* Handle loading, error, and rendering */}
+          {isLoading ? (
+            <p>Loading...</p>
+          ) : error ? (
+            <p>Error fetching products: {error.message}</p>
+          ) : (
           <div className="grid xxl:grid-cols-6 xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 lg:gap-6 md:gap-4 sm:gap-3 gap-2">
-            {products.map((product) => (
+             {products.map((product) => (
               <Link 
-                key={product.id} 
-                to={`/catalogue-products?catalogueId=${encodeURIComponent(product.name)}`} // Passing product name as a query parameter
+              key={product.name}
+                to={`/catalogue-products?catalogueId=${encodeURIComponent(product.name)}`}
                 className="border border-gray-200 rounded-[10px] p-4 hover:shadow-lg transition block"
               >
                 <img
-                  src={product.image}
+                  src={product.catalogue_image || "placeholder-image-url.png"}
                   alt={product.name}
                   className="w-full h-48 object-cover rounded-[10px]"
                 />
@@ -45,6 +48,7 @@ const ProductCatalogue = () => {
               </Link>
             ))}
           </div>
+          )}
         </div>
       </div>
     </>

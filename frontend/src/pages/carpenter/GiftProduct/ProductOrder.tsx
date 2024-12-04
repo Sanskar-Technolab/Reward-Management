@@ -4,13 +4,15 @@ import "../../../assets/css/style.css";
 import Pageheader from "../../../components/common/pageheader/pageheader";
 import ProductImage from "../../../assets/images/reward_management/Group 20.png";
 import { CardContent } from "@mui/joy";
+import { useParams } from "react-router-dom";
 import RewardImage from "../../../assets/images/reward_management/Frame.png";
 import { Box, Text,Button } from "@radix-ui/themes";
 import MobileVerify from '../../../components/ui/models/VerifyMobile';
 const ProductOrder = () => {
   const [fullname, setFullname] = useState<string>("");
   const [isMobileVerifyOpen, setIsMobileVerifyOpen] = useState<boolean>(false);
-
+  const { productId } = useParams<{ productId: string }>();
+  console.log("product order",productId)
   const product = {
     name: "iPhone 16 (128GB)",
 
@@ -35,8 +37,8 @@ const ProductOrder = () => {
     <>
       <Pageheader
         currentpage="Product Order"
-        activepage="/products-order"
-        mainpage="/product-details/:productId"
+        activepage={`/product-details/${productId}`} // Correctly format the dynamic URL
+        mainpage="/product-order"
         activepagename="Product Details"
         mainpagename="Product Order"
       />
@@ -54,7 +56,7 @@ const ProductOrder = () => {
 
             <div className="flex flex-col justify-between p-4">
               <CardContent>
-                <div className="text-black text-lg pt-3">{product.name}</div>
+                <div className="text-black text-lg pt-3">{productId}</div>
 
                 <div className="text-defaulttextcolor text-md pt-5">Points</div>
 

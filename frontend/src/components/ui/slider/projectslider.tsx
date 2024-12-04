@@ -9,13 +9,13 @@ function ImageSlider({ images }) {
   const settings = {
     dots: true,
     infinite: true,
-    speed: 1000,
+    speed: 3000,
     slidesToShow: 1,
     slidesToScroll: 1,
     lazyLoad: true,
     arrows: false,
-    centerMode: true, // To create space between the slides
-    focusOnSelect: true,
+    // centerMode: true, 
+    // focusOnSelect: true,
     autoplay: true,
     autoplaySpeed: 2000,
   };
@@ -28,7 +28,7 @@ function ImageSlider({ images }) {
             <img
               src={image}
               alt={`Slider ${index + 1}`}
-              className=" w-full lg:h-[450px] md:h[300px] sm:h-[200px] object-fill"
+              className=" w-full lg:h-[450px] md:h[300px] sm:h-[200px] object-cover"
             />
           </div>
         ))}
@@ -40,8 +40,8 @@ function ImageSlider({ images }) {
 const SlideChangeProject = () => {
   const images = [
     sliderimage,
-    "https://via.placeholder.com/800x400?text=Image+2",
-    "https://via.placeholder.com/800x400?text=Image+3",
+    sliderimage,
+    sliderimage,
   ];
 
   return (

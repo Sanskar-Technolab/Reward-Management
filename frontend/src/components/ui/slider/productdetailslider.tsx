@@ -9,12 +9,12 @@ function ImageSlider({ images }) {
   const settings = {
     dots: true,
     infinite: true,
-    speed: 1000,
+    speed: 3000,
     slidesToShow: 1,
     slidesToScroll: 1,
     lazyLoad: true,
     arrows: false,
-    centerMode: true, // To create space between the slides
+    centerMode: true, 
     focusOnSelect: true,
     autoplay: true,
     autoplaySpeed: 2000,
@@ -24,11 +24,11 @@ function ImageSlider({ images }) {
     <div className="relative pt-4 mx-auto">
       <Slider {...settings}>
         {images.map((image, index) => (
-          <div key={index} className="px-2"> {/* Added padding for gap */}
+          <div key={index} className="px-2"> 
             <img
               src={image}
               alt={`Slider ${index + 1}`}
-              className="rounded-lg w-full lg:h-[400px] md:h-[300px] sm:h-[200px] object-cover"
+              className=" w-full lg:h-[400px] md:h-[300px] sm:h-[200px] object-cover"
             />
           </div>
         ))}

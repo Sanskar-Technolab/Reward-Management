@@ -6,7 +6,8 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
-  "category_name"
+  "category_name",
+  "catalogue_image"
  ],
  "fields": [
   {
@@ -14,11 +15,18 @@
    "fieldtype": "Data",
    "label": "Category Name",
    "unique": 1
+  },
+  {
+   "fieldname": "catalogue_image",
+   "fieldtype": "Attach Image",
+   "label": "Catalogue Image"
   }
  ],
+ "image_field": "catalogue_image",
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-10-07 14:37:51.882583",
+ "make_attachments_public": 1,
+ "modified": "2024-12-04 12:23:25.923361",
  "modified_by": "Administrator",
  "module": "Reward Management",
  "name": "Product Category",
