@@ -10,7 +10,7 @@ const Announcements = () => {
     // Fetch Announcements from the doctype
     const { data, error, isLoading } = useFrappeGetDocList<Announcement>('Announcements', {
         fields: ['name', 'title', 'subject', 'published_on', 'end_date'],
-         // limit_start: pageIndex * 10,
+    
          limit: 0,
          orderBy: {
              field: 'creation',
