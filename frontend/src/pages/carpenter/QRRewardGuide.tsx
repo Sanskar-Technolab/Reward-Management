@@ -61,13 +61,13 @@ const MySwiper = () => {
           <div className="xxl:col-span-4 xl:col-span-4 lg:col-span-4 md:col-span-3 sm:col-span-2"></div>
           <div className="xxl:col-span-4 xl:col-span-4 lg:col-span-4 md:col-span-6 sm:col-span-8 col-span-12">
             <Card className="p-0 box-shadow-md  border-defaultborder shadow-md rounded-[10px] bg-white">
-              <div className="flex justify-center mb-8 bg-[#D9D9D9] p-8">
+              <div className="flex justify-center mb-8 bg-[#D9D9D9] p-8 border border-b-[#B3B3B3]">
                 <img src={logo} alt="logo" className="w-20" />
               </div>
               {/* Slider section */}
               <SliderCard /> {/* Use the SliderCard component here */}
               {/* Bottom Navigation Buttons */}
-              <div className="flex justify-between mt-4 bg-[#D9D9D9] p-8 ">
+              <div className="flex justify-between mt-4 bg-[#D9D9D9] border border-t-[#B3B3B3] p-8 ">
                 <Button
                   className="text-black p-0 bg-transparent underline"
                   onClick={() => navigate("/home")}

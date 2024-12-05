@@ -16,7 +16,9 @@
   "registration_date",
   "registration_time",
   "approved_date",
-  "approved_time"
+  "approved_time",
+  "first_name",
+  "last_name"
  ],
  "fields": [
   {
@@ -28,23 +30,21 @@
   {
    "fieldname": "carpainter_id",
    "fieldtype": "Link",
+   "hidden": 1,
    "label": "Customer ID",
    "options": "Customer"
   },
   {
-   "fetch_from": "carpainter_id.full_name",
    "fieldname": "carpainter_name",
    "fieldtype": "Data",
    "label": "Customer Name"
   },
   {
-   "fetch_from": "carpainter_id.mobile_number",
    "fieldname": "mobile_number",
    "fieldtype": "Data",
    "label": "Mobile Number"
   },
   {
-   "fetch_from": "carpainter_id.city",
    "fieldname": "city",
    "fieldtype": "Data",
    "label": "City"
@@ -78,11 +78,21 @@
    "fieldname": "approved_time",
    "fieldtype": "Time",
    "label": "Approved Time"
+  },
+  {
+   "fieldname": "first_name",
+   "fieldtype": "Data",
+   "label": "First Name"
+  },
+  {
+   "fieldname": "last_name",
+   "fieldtype": "Data",
+   "label": "Last Name"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-09-11 16:48:00.513477",
+ "modified": "2024-12-05 11:53:16.732792",
  "modified_by": "Administrator",
  "module": "Reward Management",
  "name": "Customer Registration",
