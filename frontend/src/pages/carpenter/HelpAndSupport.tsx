@@ -18,7 +18,7 @@ const Faqs = () => {
   const { data } = useFrappeGetDocList<FAQ>('FAQ', {
     fields: ['name', 'question', 'status', 'created_date', 'answer'],
     filters: [['status', '=', 'Active']],
-     // limit_start: pageIndex * 10,
+     
      limit: 0,
      orderBy: {
          field: 'creation',
