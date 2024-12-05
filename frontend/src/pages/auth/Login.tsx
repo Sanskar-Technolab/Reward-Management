@@ -455,14 +455,14 @@ const Login = () => {
                 <div className="grid grid-cols-12 gap-4 b ">
                     <div className="xxl:col-span-4 xl:col-span-4 lg:col-span-4 md:col-span-3 sm:col-span-2"></div>
                     <div className="xxl:col-span-4 xl:col-span-4 lg:col-span-4 md:col-span-6 sm:col-span-8 col-span-12 ">
-
+                    <div className="box-shadow-md rounded-[20px] shadow-md bg-white ">
                         
-                            <div className="flex justify-center bg-[#D9D9D9] p-8 border border-b-[#B3B3B3] ">
+                            <div className="flex justify-center bg-[#D9D9D9]  border-b-[#B3B3B3] rounded-t-[20px] p-8 ">
                                 {/* <img src={desktoplogo} alt="logo" className="w-28" /> */}
                                 <img src={logo } alt="logo" className="w-20" />
                             </div>
-                            <div className="p-8 bg-white">
-                            <div className="text-center mb-5">
+                            
+                            <div className="text-center mb-5 px-8 pt-5">
                                 <p className="text-lg font-semibold">
                                     {currentForm === "login" && "Login"}
                                     {currentForm === "register" && "Registration"}
@@ -475,11 +475,11 @@ const Login = () => {
                                 </p>
                             </div>
 
-                            <div className="flex justify-evenly border-b mb-6 gap-4 font-semibold text-sm">
-                                <Button onClick={() => setCurrentForm('login')} className={`flex-1 bg-white text-defaulttextcolor ${currentForm === 'login' ? 'border-b-2 border-primary text-primary' : ''}`}>
+                            <div className="flex justify-evenly border-b mb-6 gap-4 font-semibold text-sm ">
+                                <Button onClick={() => setCurrentForm('login')} className={`flex-1 bg-white text-defaulttextcolor ${currentForm === 'login' ? 'border-b-2 border-primary text-black font-bold' : ''}`}>
                                     Admin
                                 </Button>
-                                <Button onClick={() => setCurrentForm('register')} className={`flex-1 bg-white text-defaulttextcolor ${currentForm === 'register' ? 'border-b-2 border-primary text-primary' : ''}`}>
+                                <Button onClick={() => setCurrentForm('register')} className={`flex-1 bg-white text-defaulttextcolor ${currentForm === 'register' ? 'border-b-2 border-primary text-black font-bold' : ''}`}>
                                     Customer
                                 </Button>
                             </div>
@@ -492,7 +492,7 @@ const Login = () => {
                                 </Callout.Root>
                             )}
 
-                            <div className="mt-6">
+                            <div className="mt-6 px-8 pb-8">
                                 {currentForm === 'login' && (
                                     <form onSubmit={handleLogin} className='max-w-[350px] w-[350px]'>
                                         <Box className="mb-4">
@@ -526,7 +526,7 @@ const Login = () => {
                                                 </button>
                                             </div>
                                         </Box>
-                                        <Button type="submit" className="w-full mb-2 ti-btn ti-btn-primary !bg-primary !text-white !font-medium ">
+                                        <Button type="submit" className="w-full mb-2 ti-btn ti-btn-primary !bg-black !text-white !font-medium ">
                                             Login
                                         </Button>
                                     </form>
@@ -614,7 +614,7 @@ const Login = () => {
                                                     </Box>
                                                     <Box className="xl:col-span-12 col-span-12 grid mt-2">
                                                         <Button
-                                                            className="ti-btn ti-btn-primary !bg-primary !text-white !font-medium"
+                                                            className="ti-btn ti-btn-primary !bg-black !text-white !font-medium"
                                                             type="submit"
                                                             id="register"
                                                             onClick={handleRegister}
@@ -632,7 +632,7 @@ const Login = () => {
                                             ) : (
                                                 <Box className="xl:col-span-12 col-span-12 grid mt-2">
                                                     <Button
-                                                        className="ti-btn ti-btn-primary !bg-primary !text-white !font-medium"
+                                                        className="ti-btn ti-btn-primary !bg-black !text-white !font-medium"
                                                         type="button"
                                                         onClick={handleGetOtp}
                                                         id="getotp"
@@ -644,7 +644,7 @@ const Login = () => {
                                         </Box>
 
                                         <Box className="mt-4 text-center">
-                                            <Text className="text-default">Already have an account? <a href="#" className="text-primary" onClick={() => setCurrentForm("carpenterLogin")}>Login</a></Text>
+                                            <Text className="text-default">Already have an account? <a href="#" className="text-black font-bold" onClick={() => setCurrentForm("carpenterLogin")}>Login</a></Text>
                                         </Box>
 
                                         <Box className="text-center my-4 authentication-barrier">
@@ -652,7 +652,7 @@ const Login = () => {
                                         </Box>
 
                                         <Box className="mt-4 text-center">
-                                            <Text className="text-default">View as a <a href="/customer-product" className="text-primary">Customer?</a></Text>
+                                            <Text className="text-default">View as a <a href="/customer-product" className="text-black font-bold">Customer?</a></Text>
                                         </Box>
                                     </form>
                                 )}
@@ -695,7 +695,7 @@ const Login = () => {
                                               type="submit"
                                               onClick={handlelogincarpenter}
                                               id="logincarpenter"
-                                              className="w-full mb-2 ti-btn ti-btn-primary !bg-primary !text-white !font-medium"
+                                              className="w-full mb-2 ti-btn ti-btn-primary !bg-black !text-white !font-medium"
                                           >
                                               Login
                                           </Button>
@@ -706,18 +706,18 @@ const Login = () => {
                                           )}
                                       </>
                                         ) : (
-                                            <Button type="button" onClick={handleloginGetOtp} id='getloginotp' className="w-full mb-2 ti-btn ti-btn-primary !bg-primary !text-white !font-medium ">
+                                            <Button type="button" onClick={handleloginGetOtp} id='getloginotp' className="w-full mb-2 ti-btn ti-btn-primary !bg-black !text-white !font-medium ">
                                                 Get OTP
                                             </Button>
                                         )}
                                         <Box className="mt-4 text-center">
-                                            <Text className="text-default">Don't have an account? <a href="#" className="text-primary" onClick={() => setCurrentForm("register")}>Register</a></Text>
+                                            <Text className="text-default">Don't have an account? <a href="#" className="text-black font-bold" onClick={() => setCurrentForm("register")}>Register</a></Text>
                                         </Box>
                                         <Box className="text-center my-4 authentication-barrier">
                                             <Text>OR</Text>
                                         </Box>
                                         <Box className="mt-4 text-center">
-                                            <Text className="text-default">View as a <a href="/customer-product" className="text-primary" onClick={() => setCurrentForm("carpenterLogin")}>Customer?</a></Text>
+                                            <Text className="text-default">View as a <a href="/customer-product" className="text-black font-bold" onClick={() => setCurrentForm("carpenterLogin")}>Customer?</a></Text>
                                         </Box>
                                     </form>
                                 )}

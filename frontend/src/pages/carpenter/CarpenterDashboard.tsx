@@ -5,8 +5,10 @@ import { useFrappeGetCall } from "frappe-react-sdk";
 import ProjectSlider from "../../components/ui/slider/projectslider";
 import Arrow from "../../assets/images/reward_management/arrow.png";
 import ProductCard from "../../components/ui/productcard/card";
-import ProductImage from "../../assets/images/reward_management/Group 20.png";
+import axios from 'axios';
 import { useNavigate } from 'react-router-dom'; 
+import { Notyf } from 'notyf';
+import 'notyf/notyf.min.css'; 
 
 const CarpenterDashboard: React.FC = () => {
   const [redeemPoints, setRedeemPoints] = useState<number>(0);
@@ -14,12 +16,45 @@ const CarpenterDashboard: React.FC = () => {
   const [currentPoints, setCurrentPoints] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(true);
   const [isError, setError] = useState<string | null>(null);
+  const [products, setProducts] = useState([]);
   const navigate = useNavigate(); 
   const { data, isLoading, error } = useFrappeGetCall(
     "reward_management.api.carpenter_master.get_carpainter_data"
   );
 
+    // Initialize Notyf for notifications
+    const notyf = new Notyf({
+      duration: 3000,  
+      // Positioning the notification at the top center
+      position: { x: 'center', y: 'top' }, 
+    });
+
   useEffect(() => {
+
+    const fetchProducts = async () => {
+      try {
+        const response = await axios.get('/api/method/reward_management.api.gift_product.get_gift_products');
+        console.log("Full Response:", response); 
+        const productData = response.data.message.data;
+        console.log("gift data",productData)
+  
+        if (response.data.message.status === 'success') {
+          if (Array.isArray(productData) && productData.length > 0) {
+            setProducts(productData);
+          } else {
+            setError('No products available.');
+          }
+        } else {
+          setError('API returned an error status.');
+        }
+      } catch (err) {
+        setError(err.message || 'Failed to fetch products.');
+      } finally {
+        setLoading(false);
+      }
+    };
+  
+    fetchProducts();
     document.title = "Customer Dashboard";
     if (!isLoading && !error && data) {
       const responseData = data.message.data;
@@ -52,50 +87,16 @@ const CarpenterDashboard: React.FC = () => {
     return <div>{isError}</div>;
   }
 
-  // productcard calling--------
-  const products = [
-    {
-      productName: "Snapdeal Gift Card",
-      productImage: ProductImage,
-      rewardPoints: "500",
-     
-    },
-    {
-      productName: "Amazon Gift Card",
-      productImage: ProductImage,
-      rewardPoints: "700",
-     
-    },
-    {
-      productName: "Flipkart Gift Card",
-      productImage: ProductImage,
-      rewardPoints: "1000",
-  
-    },
-    {
-        productName: "Flipkart Gift Card",
-        productImage: ProductImage,
-        rewardPoints: "1000",
-    
-      },
-      {
-        productName: "Flipkart Gift Card",
-        productImage: ProductImage,
-        rewardPoints: "1000",
-    
-      },
-      {
-        productName: "Flipkart Gift Card",
-        productImage: ProductImage,
-        rewardPoints: "1000",
-    
-      },
-  ];
-   // Function to handle the button click (for example, logging the product name)
-   const handleRedeemClick = (productName:any) => {
-    const formattedProductName = productName.replace(/\s+/g, '-'); 
-    navigate(`/product-details/${formattedProductName}`); 
+   // Function to handle the redeem button click
+   const handleRedeemClick = (productName: any, pointsRequired: number) => {
+    if (currentPoints >= pointsRequired) {
+      const formattedProductName = productName.replace(/\s+/g, '-');
+      navigate(`/product-details/${formattedProductName}`);
+    } else {
+      notyf.error('You do not have sufficient points to redeem this product.');  // Show error notification
+    }
   };
+
 
   return (
     <Fragment>
@@ -121,7 +122,7 @@ const CarpenterDashboard: React.FC = () => {
                   <div className="grid grid-cols-12 xl:gap-y-0 gap-4">
                     <div className="category-link xxl:col-span-4 xl:col-span-3 lg:col-span-6 md:col-span-6 sm:col-span-12 col-span-12 p-4 bg-white shadow-lg rounded-lg transition-colors duration-300 hover:bg-purple-50 dark:bg-gray-800 dark:hover:bg-purple-900">
                       <div className="flex flex-row items-start mb-4 ">
-                        <span className="avatar avatar-lg bg-[var(--primaries)] text-white inline-flex items-center justify-center w-12 h-12 rounded-sm mb-2 mr-3">
+                        <span className="avatar avatar-lg bg-black rounded-[5px] text-white inline-flex items-center justify-center w-12 h-12 mb-2 mr-3">
                           <i className="ti ti-wallet text-[1.25rem]"></i>
                         </span>
                         <div className="flex flex-col items-start">
@@ -136,7 +137,7 @@ const CarpenterDashboard: React.FC = () => {
                     </div>
                     <div className="category-link xxl:col-span-4 xl:col-span-3 lg:col-span-6 md:col-span-6 sm:col-span-12 col-span-12 p-4 bg-white shadow-lg rounded-lg transition-colors duration-300 hover:bg-purple-50 dark:bg-gray-800 dark:hover:bg-purple-900">
                       <div className="flex flex-row items-start mb-4 ">
-                        <span className="avatar avatar-lg bg-[var(--primaries)] text-white inline-flex items-center justify-center w-12 h-12 rounded-sm mb-2 mr-3">
+                        <span className="avatar avatar-lg bg-black rounded-[5px] text-white inline-flex items-center justify-center w-12 h-12  mb-2 mr-3">
                           <i className="ti ti-wallet text-[1.25rem]"></i>
                         </span>
                         <div className="flex flex-col items-start">
@@ -151,7 +152,7 @@ const CarpenterDashboard: React.FC = () => {
                     </div>
                     <div className="category-link xxl:col-span-4 xl:col-span-3 lg:col-span-6 md:col-span-6 sm:col-span-12 col-span-12 p-4 bg-white shadow-lg rounded-lg transition-colors duration-300 hover:bg-purple-50 dark:bg-gray-800 dark:hover:bg-purple-900">
                       <div className="flex flex-row items-start mb-4 ">
-                        <span className="avatar avatar-lg bg-[var(--primaries)] text-white inline-flex items-center justify-center w-12 h-12 rounded-sm mb-2 mr-3">
+                        <span className="avatar avatar-lg bg-black rounded-[5px] text-white inline-flex items-center justify-center w-12 h-12 mb-2 mr-3">
                           <i className="ti ti-wallet text-[1.25rem]"></i>
                         </span>
                         <div className="flex flex-col items-start">
@@ -177,8 +178,8 @@ const CarpenterDashboard: React.FC = () => {
                       className="category-link xxl:col-span-4 xl:col-span-3 lg:col-span-6 md:col-span-6 sm:col-span-12 col-span-12 p-4 bg-white shadow-lg rounded-lg transition-colors duration-300 hover:bg-purple-50 dark:bg-gray-800 dark:hover:bg-purple-900 "
                     >
                       <div className="flex flex-row items-start mb-4 ">
-                        <div className="bg-primary/20 rounded-[10px] w-12 h-12 flex items-center justify-center">
-                          <span className="avatar avatar-lg bg-[var(--primaries)] text-white inline-flex items-center justify-center  w-7 h-7 rounded-[8px] ">
+                        <div className="bg-black/20 rounded-[10px] w-12 h-12 flex items-center justify-center">
+                          <span className="avatar avatar-lg bg-black text-white inline-flex items-center justify-center  w-7 h-7 rounded-[8px] ">
                             <i className="ri-bank-line text-[1rem]"></i>
                           </span>
                         </div>
@@ -195,8 +196,8 @@ const CarpenterDashboard: React.FC = () => {
                       className="category-link xxl:col-span-4 xl:col-span-3 lg:col-span-6 md:col-span-6 sm:col-span-12 col-span-12 p-4 bg-white shadow-lg rounded-lg transition-colors duration-300 hover:bg-purple-50 dark:bg-gray-800 dark:hover:bg-purple-900 "
                     >
                       <div className="flex flex-row items-start mb-4">
-                        <div className="bg-primary/20 rounded-[10px] w-12 h-12 flex items-center justify-center">
-                          <span className="avatar avatar-lg bg-primary text-white inline-flex items-center justify-center w-7 h-7 rounded-[8px]">
+                        <div className="bg-black/20 rounded-[10px] w-12 h-12 flex items-center justify-center">
+                          <span className="avatar avatar-lg bg-black text-white inline-flex items-center justify-center w-7 h-7 rounded-[8px]">
                             <i className="bi bi-qr-code-scan text-[1rem]"></i>
                           </span>
                         </div>
@@ -213,8 +214,8 @@ const CarpenterDashboard: React.FC = () => {
                       className="category-link xxl:col-span-4 xl:col-span-3 lg:col-span-6 md:col-span-6 sm:col-span-12 col-span-12 p-4 bg-white shadow-lg rounded-lg transition-colors duration-300 hover:bg-purple-50 dark:bg-gray-800 dark:hover:bg-purple-900 "
                     >
                       <div className="flex flex-row items-start mb-4">
-                        <div className="bg-primary/20 rounded-[10px] w-12 h-12 flex items-center justify-center">
-                          <span className="avatar avatar-lg bg-[var(--primaries)] text-white inline-flex items-center justify-center w-7 h-7 rounded-[8px]  ">
+                        <div className="bg-black/20 rounded-[10px] w-12 h-12 flex items-center justify-center">
+                          <span className="avatar avatar-lg bg-black text-white inline-flex items-center justify-center w-7 h-7 rounded-[8px]  ">
                             <i className="bi bi-coin text-[1rem]"></i>
                           </span>
                         </div>
@@ -230,8 +231,8 @@ const CarpenterDashboard: React.FC = () => {
                       className="category-link xxl:col-span-4 xl:col-span-3 lg:col-span-6 md:col-span-6 sm:col-span-12 col-span-12 p-4 bg-white shadow-lg rounded-lg transition-colors duration-300 hover:bg-purple-50 dark:bg-gray-800 dark:hover:bg-purple-900 xxl:mt-5 xl:mt-0 lg:mt-0 "
                     >
                       <div className="flex flex-row items-start mb-4 ">
-                        <div className="bg-primary/20 rounded-[10px] w-12 h-12 flex items-center justify-center">
-                          <span className="avatar avatar-lg bg-[var(--primaries)] text-white inline-flex items-center justify-center  w-7 h-7 rounded-[8px] ">
+                        <div className="bg-black/20 rounded-[10px] w-12 h-12 flex items-center justify-center">
+                          <span className="avatar avatar-lg bg-black text-white inline-flex items-center justify-center  w-7 h-7 rounded-[8px] ">
                             <i className="ri-gift-line text-[1rem]"></i>
                           </span>
                         </div>
@@ -247,8 +248,8 @@ const CarpenterDashboard: React.FC = () => {
                       className="category-link xxl:col-span-4 xl:col-span-3 lg:col-span-6 md:col-span-6 sm:col-span-12 col-span-12 p-4 bg-white shadow-lg rounded-lg transition-colors duration-300 hover:bg-purple-50 dark:bg-gray-800 dark:hover:bg-purple-900 mt-5"
                     >
                       <div className="flex flex-row items-start mb-4 ">
-                        <div className="bg-primary/20 rounded-[10px] w-12 h-12 flex items-center justify-center">
-                          <span className="avatar avatar-lg bg-[var(--primaries)] text-white inline-flex items-center justify-center  w-7 h-7 rounded-[8px] ">
+                        <div className="bg-black/20 rounded-[10px] w-12 h-12 flex items-center justify-center">
+                          <span className="avatar avatar-lg bg-black text-white inline-flex items-center justify-center  w-7 h-7 rounded-[8px] ">
                             <i className="ri-bank-line text-[1rem]"></i>
                           </span>
                         </div>
@@ -264,8 +265,8 @@ const CarpenterDashboard: React.FC = () => {
                       className="category-link xxl:col-span-4 xl:col-span-3 lg:col-span-6 md:col-span-6 sm:col-span-12 col-span-12 p-4 bg-white shadow-lg rounded-lg transition-colors duration-300 hover:bg-purple-50 dark:bg-gray-800 dark:hover:bg-purple-900 mt-5"
                     >
                       <div className="flex flex-row items-start mb-4 ">
-                        <div className="bg-primary/20 rounded-[10px] w-12 h-12 flex items-center justify-center">
-                          <span className="avatar avatar-lg bg-[var(--primaries)] text-white inline-flex items-center justify-center  w-7 h-7 rounded-[8px] ">
+                        <div className="bg-black/20 rounded-[10px] w-12 h-12 flex items-center justify-center">
+                          <span className="avatar avatar-lg bg-black text-white inline-flex items-center justify-center  w-7 h-7 rounded-[8px] ">
                             <i className="ri-questionnaire-line text-[1rem]"></i>
                           </span>
                         </div>
@@ -303,16 +304,18 @@ const CarpenterDashboard: React.FC = () => {
                         key={index}
                         className="xxl:col-span-3 xl:col-span-3 lg:col-span-6 md:col-span-6 sm:col-span-12 col-span-12"
                       >
-                        <ProductCard
-                          productImage={product.productImage}
-                          productName={product.productName}
-                          rewardPoints={product.rewardPoints}
-                          // rewardImage={product.rewardImage}
-                          onClick={() => handleRedeemClick(product.productName)} 
-                        />
+                         <ProductCard
+                      productImage={
+                        product.gift_product_images?.[0]?.gift_product_image || '/placeholder-image.png'
+                      }
+                      productName={product.gift_product_name}
+                      rewardPoints={product.points}
+                      onClick={() => handleRedeemClick(product.gift_product_name, product.points)}
+                    />
                       </div>
                     ))}
                   </div>
+                  
                 </div>
               </div>
             </div>

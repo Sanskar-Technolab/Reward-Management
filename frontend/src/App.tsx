@@ -37,7 +37,9 @@ import HelpAndSupport from './pages/carpenter/HelpAndSupport.tsx';
 import Announcement from './pages/carpenter/Announcements.tsx';
 import CustomerProfile from './pages/carpenter/CustomerProfile.tsx';
 import PointConversion from './pages/admin/transactions/PointsConversion.tsx';
-import QRRewardGuide from './pages/carpenter/QRRewardGuide.tsx';
+import QRRewardGuide from './pages/carpenter/LoginInstruction/QRScannerGuide.tsx';
+import QRGiftInstruction from './pages/carpenter/LoginInstruction/GiftInstruction.tsx'
+import RedeemPointGuide from './pages/carpenter/LoginInstruction/RedeemPointGuide.tsx';
 import GiftProduct from './pages/carpenter/GiftProduct/ViewProducts.tsx';
 import ProductDetail from './pages/carpenter/GiftProduct/ProductDetails.tsx';
 import ProductOrder from './pages/carpenter/GiftProduct/ProductOrder.tsx';
@@ -144,7 +146,9 @@ fetchWebsiteSettings();
       <>
         <Route path='/' element={<Login />} />
         <Route path='/qr-reward-guide' element={<QRRewardGuide />} />
+        <Route path='/reward-gift-guide' element={<QRGiftInstruction/>}/>
         <Route path='/customer-product' element={<CusromerProducts />} />
+        <Route path='/redeem-point-guide' element={<RedeemPointGuide/>}/>
         <Route path='/view-product-details/:product_id' element={<CustomerProductDetails/>} />
         <Route element={<AppLayout/>}>
         <Route path='/' element={<PrivateRoutes/>}>
