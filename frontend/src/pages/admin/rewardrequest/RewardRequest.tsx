@@ -49,7 +49,13 @@ const CarpenterRewardRequest: React.FC = () => {
     const [amount, setAmount] = useState<string>(''); 
 
     const { data: rewardrequestData } = useFrappeGetDocList<RewardRequest>('Redeem Request', {
-        fields: ['name', 'customer_id', 'total_points', 'current_point_status', 'redeemed_points', 'received_date', 'received_time', 'request_status', 'approved_on', 'approve_time', 'transection_id', 'amount']
+        fields: ['name', 'customer_id', 'total_points', 'current_point_status', 'redeemed_points', 'received_date', 'received_time', 'request_status', 'approved_on', 'approve_time', 'transection_id', 'amount'],
+         // limit_start: pageIndex * 10,
+         limit: 0,
+         orderBy: {
+             field: 'creation',
+             order: 'desc',
+         }
     });
 
     const isApproved = selectedRewardRequest?.request_status === 'Approved';

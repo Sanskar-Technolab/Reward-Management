@@ -57,7 +57,7 @@ const AddUserDashboard: React.FC = () => {
     React.useEffect(() => {
         document.title='Add User';
         if (showSuccessAlert) {
-            const timer = setTimeout(() =>{ setShowSuccessAlert(false); // Hide alert after 3 seconds
+            const timer = setTimeout(() =>{ setShowSuccessAlert(false); 
             window.location.reload(); }, 3000);
             return () => clearTimeout(timer);
         }

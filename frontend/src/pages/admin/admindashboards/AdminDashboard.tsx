@@ -2,8 +2,7 @@ import '../../../assets/css/style.css';
 import '../../../assets/css/pages/admindashboard.css';
 import React, { Fragment, useState, useEffect } from "react";
 import { useFrappeGetDocList, useFrappeGetCall } from 'frappe-react-sdk';
-// import TabSection from "../../../components/common/AdminTabSection/AdminTab"
-// import CustomerLoyaltyChart from "../../../components/common/AdminTabSection/CutomerAcquisitionChart"
+
 
 interface Carpenter {
     name: string;
@@ -169,13 +168,7 @@ const AdminDashboard: React.FC = () => {
                     </div>
                 </div>
             </div>
-            {/* <div className="mb-10">
-                <CustomerLoyaltyChart />
-            </div> */}
-           
-            {/* Tab Section */}
-            {/* <TabSection /> */}
-            {/* Table Section */}
+        
             <div className="grid grid-cols-12 gap-x-6 bg-white mt-5 rounded-lg shadow-lg">
                 <div className="xl:col-span-12 col-span-12">
                     <div className="">
