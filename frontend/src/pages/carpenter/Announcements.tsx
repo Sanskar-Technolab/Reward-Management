@@ -10,7 +10,12 @@ const Announcements = () => {
     // Fetch Announcements from the doctype
     const { data, error, isLoading } = useFrappeGetDocList<Announcement>('Announcements', {
         fields: ['name', 'title', 'subject', 'published_on', 'end_date'],
-        limit: 10, // Limit to 10 for testing
+         // limit_start: pageIndex * 10,
+         limit: 0,
+         orderBy: {
+             field: 'creation',
+             order: 'desc',
+         }
     });
 
     const [notifications, setNotifications] = useState<Announcement[]>([]);

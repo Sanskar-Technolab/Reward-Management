@@ -33,7 +33,13 @@ const CarpenterRegistration: React.FC = () => {
     const [fromDate, setFromDate] = useState<Date | null>(null);
     const [toDate, setToDate] = useState<Date | null>(null);
     const { data: carpenterregisterData } = useFrappeGetDocList<CarpenterRegistrations>('Customer Registration', {
-        fields: ['name', 'carpainter_id', 'carpainter_name', 'mobile_number', 'city', 'registration_date', 'status', 'approved_date']
+        fields: ['name', 'carpainter_id', 'carpainter_name', 'mobile_number', 'city', 'registration_date', 'status', 'approved_date'],
+         // limit_start: pageIndex * 10,
+         limit: 0,
+         orderBy: {
+             field: 'creation',
+             order: 'desc',
+         }
     });
 
 
@@ -298,7 +304,7 @@ const CarpenterRegistration: React.FC = () => {
                             <TableComponent<CarpenterRegistrations>
                                 columns={[
                                     { header: 'Registration ID', accessor: 'name' },
-                                    { header: 'Customer ID', accessor: 'carpainter_id' },
+                                    // { header: 'Customer ID', accessor: 'carpainter_id' },
                                     { header: 'Customer Name', accessor: 'carpainter_name' },
                                     { header: 'Mobile Number', accessor: 'mobile_number' },
                                     { header: 'City', accessor: 'city' },
