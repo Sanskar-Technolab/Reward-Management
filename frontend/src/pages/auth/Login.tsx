@@ -455,13 +455,13 @@ const Login = () => {
                 <div className="grid grid-cols-12 gap-4 b ">
                     <div className="xxl:col-span-4 xl:col-span-4 lg:col-span-4 md:col-span-3 sm:col-span-2"></div>
                     <div className="xxl:col-span-4 xl:col-span-4 lg:col-span-4 md:col-span-6 sm:col-span-8 col-span-12 ">
-
+                    <div className="p-8 box-shadow-md border border-defaultborder shadow-md rounded-[10px] bg-white ">
                         
-                            <div className="flex justify-center bg-[#D9D9D9] p-8 border border-b-[#B3B3B3] ">
+                            <div className="flex justify-center mb-8 ">
                                 {/* <img src={desktoplogo} alt="logo" className="w-28" /> */}
                                 <img src={logo } alt="logo" className="w-20" />
                             </div>
-                            <div className="p-8 bg-white">
+                           
                             <div className="text-center mb-5">
                                 <p className="text-lg font-semibold">
                                     {currentForm === "login" && "Login"}
