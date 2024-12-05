@@ -32,7 +32,13 @@ const CarpenterDetails: React.FC = () => {
     });
     
     const { data: carpenterData } = useFrappeGetDocList<Carpenter>('Customer', {
-        fields: ['name', 'full_name', 'city', 'mobile_number', 'total_points', 'current_points', 'redeem_points']
+        fields: ['name', 'full_name', 'city', 'mobile_number', 'total_points', 'current_points', 'redeem_points'],
+         // limit_start: pageIndex * 10,
+         limit: 0,
+         orderBy: {
+             field: 'creation',
+             order: 'desc',
+         }
     });
 
     useEffect(() => {

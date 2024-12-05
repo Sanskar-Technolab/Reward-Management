@@ -34,7 +34,13 @@ const ProductMaster: React.FC = () => {
     const [productToDelete, setProductToDelete] = useState<Product | null>(null);
     const [isConfirmDeleteModalOpen, setIsConfirmDeleteModalOpen] = useState(false);
     const { data: productsData, mutate: mutateProducts } = useFrappeGetDocList<Product>('Product', {
-        fields: ['name', 'product_name', 'category', 'reward_points', 'product_price']
+        fields: ['name', 'product_name', 'category', 'reward_points', 'product_price'],
+         // limit_start: pageIndex * 10,
+         limit: 0,
+         orderBy: {
+             field: 'creation',
+             order: 'desc',
+         }
     });
     // Fetch Product QR Data
     const { data: productQRData } = useFrappeGetDocList<Product>('Product QR', {

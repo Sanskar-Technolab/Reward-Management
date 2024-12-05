@@ -6,7 +6,6 @@ import TableBoxComponent from '../../components/ui/tables/tableboxheader';
 import React, { Fragment, useState, useEffect } from "react";
 
 import axios from 'axios';
-// import { API_KEY, API_SECRET, BASE_URL } from "../../utils/constants";
 
 interface Transaction {
     name: string,
@@ -22,7 +21,7 @@ interface Transaction {
 
 const BankingHistory: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage] = useState(5); // Number of items per page
+    const [itemsPerPage] = useState(5); 
     const [transactionData, setTransactionData] = useState<Transaction[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
