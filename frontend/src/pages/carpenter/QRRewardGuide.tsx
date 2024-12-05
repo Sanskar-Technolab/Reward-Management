@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 
 import axios from "axios";
-import SliderCard from "../../components/ui/slider/rewardslider"; // Import the new SliderCard component
+import SliderCard from "../../components/ui/slider/rewardslider"; 
 import "../../assets/css/style.css";
 import "../../assets/css/pages/qrrewardguide.css";
 
