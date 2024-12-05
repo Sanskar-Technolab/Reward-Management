@@ -75,7 +75,7 @@
     position: fixed;
     z-index: 9;
     display: flex;
-    height: 3.75rem;
+    height:4rem;
     width: 15rem;
     align-items: center;
     justify-content: center;
@@ -98,7 +98,7 @@
     position: fixed;
     z-index: 9;
     display: flex;
-    height: 3.75rem;
+    height: 4rem;
     width: 5rem;
     align-items: center;
     justify-content: center;

@@ -14,6 +14,8 @@ import { IconBuildingBank } from '@tabler/icons-react';
 import { IconCoins } from '@tabler/icons-react';
 import RedeemIcon from '@mui/icons-material/Redeem'; 
 import { IconHelpHexagon } from '@tabler/icons-react';
+import { IoMdContact } from "react-icons/io";
+
 
 
 import '../../../assets/css/sidebar.css';
@@ -144,5 +146,12 @@ export const SidebarData = [
     path: '/customer-announcement',
     icon: <MdCampaign className='sidebaricon'  />
   },
+  {
+    title: 'Contact',
+    path: '/contact-us',
+    icon: <IoMdContact className='sidebaricon'  />
+  },
+
+ 
   
 ];

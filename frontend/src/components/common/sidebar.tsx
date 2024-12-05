@@ -36,7 +36,7 @@ const Sidebar = ({ isSidebarActive }: any) => {
             return faqIndex !== -1 ? SidebarData.slice(0, faqIndex + 1) : SidebarData;
         } else if (carpenterrole === "Customer") {
             const startIndex = getItemIndex('Dashboard');
-            const endIndex = getItemIndex('Announcements');
+            const endIndex = getItemIndex('Contact');
             return startIndex !== -1 && endIndex !== -1 ? SidebarData.slice(startIndex, endIndex + 1) : [];
         } else {
             return SidebarData;
