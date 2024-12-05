@@ -170,9 +170,11 @@ const Header = ({ toggleSidebar, isSidebarActive }: any) => {
                                     onClick={toggleSidebar}
                                 >
                                     {isSidebarActive ? (
-                                        <IconX className="text-[rgb(var(--header-prime-color))]" />
+                                        // <IconX className="text-[rgb(var(--header-prime-color))]" />
+                                        <IconX className="text-black" />
                                     ) : (
-                                        <IconAlignLeft className="text-[rgb(var(--header-prime-color))]" />
+                                        // <IconAlignLeft className="text-[rgb(var(--header-prime-color))]" />
+                                        <IconAlignLeft className="text-black" />
                                     )}
                                 </Link>
                             </div>
@@ -199,10 +201,10 @@ const Header = ({ toggleSidebar, isSidebarActive }: any) => {
                                 <div className="header-element py-[1rem] md:px-[0.65rem] px-2">
                                     <button className="header-btn header-btn-search" onClick={toggleDropdown}>
                                         <div className="notification-icon-container relative">
-                                            <i className="bx bx-bell header-link-icon" style={{ color: 'rgb(83, 100, 133)' }}></i>
+                                            <i className="bx bx-bell header-link-icon" style={{ color: 'black' }}></i>
                                             {notificationCount > 0 && (
                                                 <span className="flex absolute h-5 w-5 -top-[0.25rem] end-0 -me-[0.6rem]">
-                                                    <span className="animate-slow-ping absolute inline-flex -top-[2.5px] -start-[2.5px] h-full w-full rounded-full bg-[var(--bg-secondary)]   opacity-75"></span>
+                                                    <span className="animate-slow-ping absolute inline-flex -top-[2.5px] -start-[2.5px] h-full w-full rounded-full bg-[var(--bg-secondary)] opacity-75"></span>
                                                     <span
                                                         className="relative inline-flex justify-center items-center rounded-full h-[14.7px] w-[14px]  bg-[var(--secondaries)]  text-[0.625rem] text-white"
                                                         id="notification-icon-badge"
@@ -241,7 +243,7 @@ const Header = ({ toggleSidebar, isSidebarActive }: any) => {
                                     <img className="inline-block rounded-full w-[30px] h-[30px]" src={UserImage} width="32" height="32" alt="Image Description" />
                                 </button>
                                 <div className="md:block hidden dropdown-profile cursor-pointer" onClick={handleDropdownToggle}>
-                                    <p className="font-semibold mb-0 pt-3 leading-none text-[#536485] text-[0.813rem] ">{username}</p>
+                                    <p className="font-semibold mb-0 pt-3 leading-none text-black text-[0.813rem] ">{username}</p>
                                 </div>
                                 <div
                                     className={`hs-dropdown-menu main-header-dropdown ti-dropdown-menu bg-white mt-3 fixed top-12 right-4 border-0 w-[10rem] p-0 border-defaultborder ${isDropdownVisible ? '' : 'hidden'}  pt-0 overflow-hidden header-profile-dropdown dropdown-menu-end`}

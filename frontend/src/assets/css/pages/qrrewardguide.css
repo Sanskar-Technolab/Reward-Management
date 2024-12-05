@@ -1,0 +1,55 @@
+/* styles.css */
+.wrapper {
+    padding: 20px;
+    text-align: center;
+  }
+  
+  .carousel .card {
+    margin: 10px;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  
+  .carousel .card-header img {
+    width: 100%;
+    border-bottom: 2px solid #ddd;
+  }
+  
+  .carousel .card-title {
+    font-size: 18px;
+    font-weight: bold;
+  }
+  
+  .carousel .card-text p {
+    font-size: 14px;
+    color: #555;
+  }
+
+.slick-slide img {
+   
+    border-radius: 10px ;   /* Keep aspect ratio intact */
+}
+
+.slick-dots li.slick-active .dot-custom {
+    background-color: #000;  /* Active dot color */
+}
+.dot-custom {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: #bbb;
+    cursor: pointer;
+}
+
+
+
+/* Additional styles if needed for responsiveness */
+@media (max-width: 768px) {
+    .slick-track {
+        width: 100%; /* For small screens, you may want the track to take full width */
+    }
+}
+
+  
+  
+
