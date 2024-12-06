@@ -5,5 +5,5 @@
 from frappe.tests.utils import FrappeTestCase
 
 
-class TestQRRewardGuide(FrappeTestCase):
+class TestLoginGuide(FrappeTestCase):
 	pass

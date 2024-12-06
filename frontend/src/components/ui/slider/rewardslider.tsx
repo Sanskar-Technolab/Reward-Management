@@ -1,7 +1,7 @@
 import { useRef } from 'react';
 import Slider from 'react-slick'; 
-import 'slick-carousel/slick/slick.css';
-import 'slick-carousel/slick/slick-theme.css';
+// import 'slick-carousel/slick/slick.css';
+// import 'slick-carousel/slick/slick-theme.css';
 
 const SliderCard = ({
     slides = [],
@@ -20,7 +20,7 @@ const SliderCard = ({
         arrows: false,
         dots: true,
         appendDots: dots => (
-            <div style={{ marginTop: '20px', ...dotStyles }}>
+            <div style={{ marginTop: '1px', ...dotStyles }}>
                 <ul> {dots} </ul>
             </div>
         ),
@@ -30,7 +30,7 @@ const SliderCard = ({
 
     return (
         <section
-            className={`relative pb-16 p-4 lg:max-w-[450px] md:max-w-[400px] sm:max-w-[350px] max-w-[250px] mx-auto ${containerClass}`}
+            className={`relative pb-10 p-4 lg:max-w-[450px] md:max-w-[400px] sm:max-w-[350px] max-w-[250px] mx-auto ${containerClass}`}
         >
             {/* React-Slick Slider */}
             <Slider
@@ -51,7 +51,7 @@ const SliderCard = ({
                                 className="w-full max-h-64 object-cover rounded-[10px]"
                             />
                             {/* Description */}
-                            <div className="text-center mt-4 px-4">
+                            <div className="text-center mt-4 px-4 ">
                                 <p
                                     className={`slide-text text-defaultsize text-black ${slideTextClass}`}
                                 >

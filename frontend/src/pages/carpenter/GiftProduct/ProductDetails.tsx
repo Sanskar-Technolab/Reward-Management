@@ -14,16 +14,21 @@ import { Notyf } from "notyf";
 import "notyf/notyf.min.css";
 import { useFrappeGetCall } from "frappe-react-sdk";
 
-const ProductDetails = () => {
-  const { productId } = useParams<{ productId: string }>(); // Extract the productId from the URL
-  const navigate = useNavigate();
 
-  const [products, setProducts] = useState<any[]>([]); // State for products
-  const [productImages, setProductImages] = useState<string[]>([]); // State for product images
-  const [currentProduct, setCurrentProduct] = useState<any>(null); // State for the current product
-  const [loading, setLoading] = useState<boolean>(true); // Loading state
-  const [error, setError] = useState<string>(""); // Error state
-  const [currentPoints, setCurrentPoints] = useState<number>(0); // State for current points of the carpenter
+const ProductDetails = () => {
+  // Extract the productId from the URL
+  const { productId } = useParams<{ productId: string }>();
+  const navigate = useNavigate();
+  // State for products
+  const [products, setProducts] = useState<any[]>([]);
+  // State for product images
+  const [productImages, setProductImages] = useState<string[]>([]);
+  // State for the current product
+  const [currentProduct, setCurrentProduct] = useState<any>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string>("");
+  // State for current points of the carpenter
+  const [currentPoints, setCurrentPoints] = useState<number>(0);
 
   const notyf = new Notyf({
     duration: 3000,
@@ -43,12 +48,14 @@ const ProductDetails = () => {
 
       if (Array.isArray(responseData) && responseData.length > 0) {
         const firstItem = responseData[0];
-        setCurrentPoints(firstItem.current_points || 0); // Now this will set the current points correctly
+        // Now this will set the current points correctly
+        setCurrentPoints(firstItem.current_points || 0);
       } else {
         setError("No customer data available.");
       }
     }
   }, [data, isLoading, apiError]);
+
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -63,20 +70,30 @@ const ProductDetails = () => {
           if (Array.isArray(productData) && productData.length > 0) {
             setProducts(productData);
 
-            // Extract images for the slider
-            const images = productData.map((product) => product.gift_product_images);
-            console.log("images", images);
+            // Extract images for the slider (flatten if necessary)
+            const images = productData.flatMap((product) =>
+              product.gift_product_images?.map((img: any) => img.gift_product_image) || []
+            );
+            console.log("Extracted Images:", images);
             setProductImages(images);
 
             // Find the product that matches the productId from the URL
             const matchedProduct = productData.find(
               (product) =>
                 product.gift_product_name.replace(/\s+/g, "-").toLowerCase() ===
-                productId?.toLowerCase() // Match gift_product_name with productId
+                productId?.toLowerCase()
             );
 
             if (matchedProduct) {
+              console.log("match product", matchedProduct);
+
               setCurrentProduct(matchedProduct);
+              console.log("match product image", matchedProduct.gift_product_images)
+              const matchedProductImages = matchedProduct.gift_product_images.map(
+                (img: any) => img.gift_product_image
+              );
+              // Pass images to the ProjectSlider component
+              setProductImages(matchedProductImages);
             } else {
               setError("Product not found.");
             }
@@ -94,7 +111,7 @@ const ProductDetails = () => {
     };
 
     fetchProducts();
-  }, [productId]); // Re-run when the productId changes
+  }, [productId]);
 
   if (loading) {
     return (
@@ -126,6 +143,8 @@ const ProductDetails = () => {
     );
   }
 
+
+
   const handleRedeemNowClick = (productName: string) => {
     const formattedProductName = productName.replace(/\s+/g, "-");
     navigate(`/product-order/${formattedProductName}`);
@@ -145,15 +164,32 @@ const ProductDetails = () => {
         activepagename="Products"
         mainpagename="Product Details"
       />
+  {/* {currentProduct.gift_product_images && currentProduct.gift_product_images.length > 0 ? (
+            <ProjectSlider
+              slides={currentProduct.gift_product_images.map((img: any) => ({
+                image: `${window.origin}${img.gift_product_image}`,
+              }))}
+              sliderSettings={{
+                dots: true,
+                infinite: true,
+                slidesToShow: 1,
+                slidesToScroll: 1,
+              }}
+            />
+          ) : (
+            <div>No images available</div>
+          )} */}
+
       <div className="grid grid-cols-12 gap-x-6 pb-10">
         <div className="xxl:col-span-12 xl:col-span-12 lg:col-span-12 col-span-12">
+          <div> <ProjectSlider images={productImages} />  </div>
           {/* Pass images for the slider */}
-          <ProjectSlider images={productImages} />
-          <div className="md:mt-5 mt-10">
+        
+          <div className="md:mt-10 mt-10">
             <div>
-              <p className="font-semibold text-[1.125rem] text-black dark:text-defaulttextcolor/70">
+              <span className="font-semibold text-[1.125rem] text-black dark:text-defaulttextcolor/70">
                 {currentProduct.gift_product_name}
-              </p>
+              </span>
               <p className="text-defaultsize text-defaulttextcolor">
                 {currentProduct.description}
               </p>
@@ -162,12 +198,14 @@ const ProductDetails = () => {
               <p className="font-semibold text-[16px] text-black dark:text-defaulttextcolor/70">
                 Specification
               </p>
-              <ul className="text-defaultsize text-defaulttextcolor list-disc pl-5">
-                <li>Lorem ipsum dolor sit amet consectetur.</li>
-                <li>Lorem ipsum dolor sit amet consectetur.</li>
-                <li>Lorem ipsum dolor sit amet consectetur.</li>
-              </ul>
+              <div
+                className="text-defaultsize text-defaulttextcolor"
+                dangerouslySetInnerHTML={{
+                  __html: currentProduct.gift_specification,
+                }}
+              />
             </div>
+
             <div>
               <p className="font-semibold text-[16px] text-black dark:text-defaulttextcolor/70 mt-5">
                 Details
@@ -184,7 +222,7 @@ const ProductDetails = () => {
                   alt="reward-icon"
                 />
                 <p className="text-[25.9px] text-black">
-                  {currentProduct.rewardPoints}
+                  {currentProduct.points}
                 </p>
               </div>
               <Button
@@ -218,9 +256,10 @@ const ProductDetails = () => {
                     className="xxl:col-span-3 xl:col-span-4 lg:col-span-6 md:col-span-6 sm:col-span-12 col-span-12"
                   >
                     <ProductCard
-                      product={product}
-                      points={product.rewardPoints}
-                      onClick={() => handleRedeemClick(product.gift_product_name)}
+                      productImage={product.gift_product_images?.[0]?.gift_product_image || '/placeholder-image.png'}
+                      productName={product.gift_product_name}
+                      rewardPoints={product.points}
+                      onClick={() => handleRedeemClick(product.gift_product_name, product.points)} // Pass pointsRequired as second argument
                     />
                   </div>
                 ))}

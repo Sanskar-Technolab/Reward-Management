@@ -26,10 +26,9 @@
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Product Id",
-   "options": "Product"
+   "options": "Gift Product"
   },
   {
-   "fetch_from": "product_id.product_name",
    "fieldname": "product_name",
    "fieldtype": "Data",
    "ignore_user_permissions": 1,
@@ -39,7 +38,6 @@
    "label": "Product Name"
   },
   {
-   "fetch_from": "product_id.product_image",
    "fieldname": "product_image",
    "fieldtype": "Attach Image",
    "label": "Product Image"
@@ -96,7 +94,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-12-04 13:12:10.832912",
+ "modified": "2024-12-06 13:02:00.359225",
  "modified_by": "Administrator",
  "module": "Reward Management",
  "name": "Product Order",
