@@ -1,16 +1,43 @@
 import "../../assets/css/header.css";
 import "../../assets/css/style.css";
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import Location from '../../assets/images/reward_management/Frame (1).png';
 import Contact from '../../assets/images/reward_management/Frame (3).png';
 import Website from '../../assets/images/reward_management/Frame (4).png';
 import Email from '../../assets/images/reward_management/Frame (2).png';
-
 import axios from "axios";
 const ContactUs = () => {
   const [logo, setLogo] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [companyDetails, setCompanyDetails] = useState({
+    address: "",
+    email: "",
+    website: "",
+    contacts: [],
+  });
   useEffect(() => {
+
+    const fetchAddress = async () => {
+      try {
+        const response = await axios.get(
+          "/api/method/reward_management.api.company_address.get_company_address"
+        );
+        if(response){
+          console.log("address data",response);
+        }
+        if (response && response.data && response.data.message) {
+          const { address, email, website, mobile_numbers } = response.data.message;
+          setCompanyDetails({
+            address: address || "N/A",
+            email: email || "N/A",
+            website: website || "N/A",
+            contacts: mobile_numbers || [],
+          });
+        }
+      } catch (error) {
+        console.error("Error fetching company address:", error);
+      }
+    };
     const fetchWebsiteSettings = async () => {
       try {
         const response = await axios.get(
@@ -47,7 +74,7 @@ const ContactUs = () => {
         setLoading(false);
       }
     };
-
+    fetchAddress();
     fetchWebsiteSettings();
   }, []);
   if (loading) {
@@ -71,7 +98,8 @@ const ContactUs = () => {
                 <div className="text-black text-md">Location</div>
                 </div>
                 <div className="pl-8 text-defaultsize text-defaulttextcolor mt-2 max-w-[350px]">
-                    <p>Lorem ipsum dolor sit amet consectetur. - 365601</p>
+                    {/* <p>Lorem ipsum dolor sit amet consectetur. - 365601</p> */}
+                    <p>{companyDetails.address}</p>
                 </div>
                 <div className="my-3 mx-5">
                     <hr className=" border border-[#BBB7B766]"/>
@@ -82,7 +110,8 @@ const ContactUs = () => {
                 <div className="text-black text-md">Email</div>
                 </div>
                 <div className="pl-8 text-defaultsize text-defaulttextcolor mt-2 max-w-[350px]">
-                    <p>Info@Dekaa.com</p>
+                    {/* <p>Info@Dekaa.com</p> */}
+                    <p>{companyDetails.email}</p>
                 </div>
                 <div className="my-3 mx-5">
                     <hr className=" border border-[#BBB7B766]"/>
@@ -93,8 +122,15 @@ const ContactUs = () => {
                 <div className="text-black text-md">Contact</div>
                 </div>
                 <div className="pl-8 text-defaultsize text-defaulttextcolor mt-2 max-w-[350px]">
-                    <p>+91 98765 43210</p>
-                    <p>+91 98765 43210</p>
+                    {/* <p>+91 98765 43210</p>
+                    <p>+91 98765 43210</p> */}
+                     {companyDetails.contacts.length > 0 ? (
+              companyDetails.contacts.map((contact, index) => (
+                <p key={index}>{contact}</p>
+              ))
+            ) : (
+              <p>No contact numbers available</p>
+            )}
                 </div>
                 <div className="my-3 mx-5">
                     <hr className=" border border-[#BBB7B766]"/>
@@ -105,7 +141,8 @@ const ContactUs = () => {
                 <div className="text-black text-md">Website</div>
                 </div>
                 <div className="pl-8 text-defaultsize text-defaulttextcolor mt-2 max-w-[350px] mb-2">
-                    <p>www.dekaa.com</p>
+                    {/* <p>www.dekaa.com</p> */}
+                    <p>{companyDetails.website}</p>
                 </div>
                
                 

@@ -1,0 +1,80 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "naming_series:",
+ "creation": "2024-12-09 10:34:00.785138",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "naming_series",
+  "gift_product_name",
+  "points",
+  "gift_detail",
+  "description",
+  "gift_product_image",
+  "gift_specification"
+ ],
+ "fields": [
+  {
+   "fieldname": "gift_product_name",
+   "fieldtype": "Data",
+   "label": "Gift Product Name"
+  },
+  {
+   "fieldname": "points",
+   "fieldtype": "Data",
+   "label": "Points"
+  },
+  {
+   "fieldname": "gift_detail",
+   "fieldtype": "Small Text",
+   "label": "Gift Detail"
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Small Text",
+   "label": "Description"
+  },
+  {
+   "fieldname": "gift_product_image",
+   "fieldtype": "Table",
+   "label": "Gift Product Image",
+   "options": "Product Gift Child Table"
+  },
+  {
+   "fieldname": "gift_specification",
+   "fieldtype": "Text Editor",
+   "label": "Gift Specification"
+  },
+  {
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "label": "Naming Series",
+   "options": "Gift.-.gift_product_name.-."
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2024-12-09 10:38:39.587561",
+ "modified_by": "Administrator",
+ "module": "Reward Management",
+ "name": "Gift Product",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
