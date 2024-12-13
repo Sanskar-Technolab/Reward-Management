@@ -1,4 +1,3 @@
-import React from "react";
 import Slider from "react-slick";
 import sliderimage from "../../../assets/images/reward_management/Frame 5.png";
 import "../../../assets/css/pages/projectslider.css";

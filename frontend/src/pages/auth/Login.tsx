@@ -446,7 +446,7 @@ const Login = () => {
         }
     }, [showSuccessAlert]);
     if (loading) {
-        return <div></div>; // Show loading message or spinner while fetching
+        return <div></div>; 
     }
 
     return (
@@ -479,7 +479,7 @@ const Login = () => {
                                 <Button onClick={() => setCurrentForm('login')} className={`flex-1 bg-white text-defaulttextcolor ${currentForm === 'login' ? 'border-b-2 border-primary text-primary' : ''}`}>
                                     Admin
                                 </Button>
-                                <Button onClick={() => setCurrentForm('register')} className={`flex-1 bg-white text-defaulttextcolor ${currentForm === 'register' ? 'border-b-2 border-primary text-primary' : ''}`}>
+                                <Button onClick={() => setCurrentForm('carpenterLogin')} className={`flex-1 bg-white text-defaulttextcolor ${currentForm === 'carpenterLogin' ? 'border-b-2 border-primary text-primary' : ''}`}>
                                     Customer
                                 </Button>
                             </div>
