@@ -72,7 +72,7 @@ const PointHistory: React.FC = () => {
         // Show Total points and Redeemed points in card
         const fetchUserPoints = async () => {
             try {
-                const response = await axios.get(`/api/method/reward_management.api.carpenter_master.show_  total_points`,{
+                const response = await axios.get(`/api/method/reward_management.api.carpenter_master.show_total_points`,{
                 });
                 const { redeem_points, current_points } = response.data.message; 
                 console.log("card data", response);
@@ -151,7 +151,7 @@ const PointHistory: React.FC = () => {
                                     <div className="grid grid-cols-12 xl:gap-y-0 gap-4">
                                         <div className="category-link xxl:col-span-6 xl:col-span-6 lg:col-span-6 md:col-span-6 sm:col-span-6 col-span-12 p-4 bg-white shadow-lg rounded-lg transition-colors duration-300 hover:bg-purple-50 dark:bg-gray-800 dark:hover:bg-purple-900">
                                             <div className="flex flex-row items-start mb-4">
-                                                <span className="avatar avatar-lg bg-[var(--primaries)] text-white inline-flex items-center justify-center w-12 h-12 rounded-sm mb-2 mr-3">
+                                                <span className="avatar avatar-lg bg-black text-white inline-flex items-center justify-center w-12 h-12 rounded-sm mb-2 mr-3">
                                                     <i className="ti ti-wallet text-[1.25rem]"></i>
                                                 </span>
                                                 <div className="flex flex-col items-start">
@@ -164,7 +164,7 @@ const PointHistory: React.FC = () => {
                                         </div>
                                         <div className="category-link xxl:col-span-6 xl:col-span-6 lg:col-span-6 md:col-span-6 sm:col-span-6 col-span-12 p-4 bg-white shadow-lg rounded-lg transition-colors duration-300 hover:bg-purple-50 dark:bg-gray-800 dark:hover:bg-purple-900">
                                             <div className="flex flex-row items-start mb-4">
-                                                <span className="avatar avatar-lg bg-[var(--primaries)] text-white inline-flex items-center justify-center w-12 h-12 rounded-sm mb-2 mr-3">
+                                                <span className="avatar avatar-lg bg-black text-white inline-flex items-center justify-center w-12 h-12 rounded-sm mb-2 mr-3">
                                                     <i className="ti ti-wallet text-[1.25rem]"></i>
                                                 </span>
                                                 <div className="flex flex-col items-start">

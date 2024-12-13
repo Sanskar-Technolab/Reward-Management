@@ -11,7 +11,8 @@
   "product_category",
   "earned_points",
   "date",
-  "earned_amount"
+  "earned_amount",
+  "product_image"
  ],
  "fields": [
   {
@@ -52,12 +53,19 @@
    "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Earned Amount"
+  },
+  {
+   "fetch_from": "product_name.product_image",
+   "fieldname": "product_image",
+   "fieldtype": "Attach",
+   "in_list_view": 1,
+   "label": "Product Image"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2024-10-21 18:42:48.963014",
+ "modified": "2024-12-12 19:51:45.944510",
  "modified_by": "Administrator",
  "module": "Reward Management",
  "name": "Customer Product Detail",

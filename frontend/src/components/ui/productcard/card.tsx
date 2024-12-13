@@ -14,7 +14,7 @@ export function ProductCard({ productImage, productName, rewardPoints, onClick }
         <img
           src={productImage}
           alt="card-image"
-          className="w-full object-cover"
+          className="w-full object-fill h-[200px]"
         />
       </CardHeader>
       <CardBody>

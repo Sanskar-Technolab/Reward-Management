@@ -1,6 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
+ "autoname": "naming_series:",
  "creation": "2024-12-04 13:06:35.080403",
  "doctype": "DocType",
  "engine": "InnoDB",
@@ -15,7 +16,8 @@
   "customer_id",
   "customer_email",
   "address",
-  "city"
+  "city",
+  "naming_series"
  ],
  "fields": [
   {
@@ -26,10 +28,9 @@
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Product Id",
-   "options": "Product"
+   "options": "Gift Product"
   },
   {
-   "fetch_from": "product_id.product_name",
    "fieldname": "product_name",
    "fieldtype": "Data",
    "ignore_user_permissions": 1,
@@ -39,7 +40,6 @@
    "label": "Product Name"
   },
   {
-   "fetch_from": "product_id.product_image",
    "fieldname": "product_image",
    "fieldtype": "Attach Image",
    "label": "Product Image"
@@ -92,11 +92,18 @@
   {
    "fieldname": "column_break_gqtc",
    "fieldtype": "Column Break"
+  },
+  {
+   "default": "Product-Order.-.#####",
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "label": "Naming Series",
+   "options": "Product-Order.-.#####"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-12-04 13:12:10.832912",
+ "modified": "2024-12-12 15:14:01.909625",
  "modified_by": "Administrator",
  "module": "Reward Management",
  "name": "Product Order",

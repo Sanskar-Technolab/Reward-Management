@@ -7,38 +7,51 @@
  "engine": "InnoDB",
  "field_order": [
   "naming_series",
+  "instruction_name",
   "instructions_image",
-  "instructions"
+  "image",
+  "description"
  ],
  "fields": [
   {
-   "fieldname": "instructions_image",
-   "fieldtype": "Attach Image",
-   "label": "Instructions Image"
-  },
-  {
-   "fieldname": "instructions",
-   "fieldtype": "Long Text",
-   "label": "Instructions"
-  },
-  {
-   "default": "QRRewardGuide.-.",
+   "default": "Login-Guide.-.#####",
    "fieldname": "naming_series",
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Naming Series",
-   "options": "QRRewardGuide.-.",
+   "options": "Login-Guide.-.#####",
    "reqd": 1
+  },
+  {
+   "fieldname": "instructions_image",
+   "fieldtype": "Table",
+   "hidden": 1,
+   "label": "Instructions Image",
+   "options": "Login Instruction Guide"
+  },
+  {
+   "fieldname": "instruction_name",
+   "fieldtype": "Data",
+   "label": "Instruction Name"
+  },
+  {
+   "fieldname": "image",
+   "fieldtype": "Attach Image",
+   "label": "Image"
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Small Text",
+   "label": "Description"
   }
  ],
- "image_field": "instructions_image",
  "index_web_pages_for_search": 1,
  "links": [],
  "make_attachments_public": 1,
- "modified": "2024-12-02 11:53:54.047087",
+ "modified": "2024-12-12 15:38:43.500953",
  "modified_by": "Administrator",
  "module": "Reward Management",
- "name": "QR Reward Guide",
+ "name": "Login Guide",
  "naming_rule": "By \"Naming Series\" field",
  "owner": "Administrator",
  "permissions": [
@@ -53,6 +66,15 @@
    "role": "System Manager",
    "share": 1,
    "write": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Guest",
+   "share": 1
   }
  ],
  "sort_field": "modified",
