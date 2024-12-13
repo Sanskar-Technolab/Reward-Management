@@ -246,3 +246,40 @@ def check_user_registration(mobile_number):
 #         print(f"{key}: {value}")
 
 #     return result
+
+@frappe.whitelist(allow_guest=True)
+def verify_otp_product_order(mobile_number, otp):
+    if not mobile_number or not otp:
+        return {'status': 'failed', 'message': 'Mobile number and OTP are required'}
+    
+    # Fetch the Mobile Verification document
+    otp_verification = frappe.get_all(
+        'Mobile Verification', 
+        filters={'mobile_number': mobile_number, 'otp': otp}, 
+        fields=["name", "mobile_number", "otp", "modified"], 
+        limit=1
+    )
+    
+    if otp_verification:
+        modified_time = otp_verification[0].get('modified')  # This is already a datetime object
+        time_diff = datetime.now() - modified_time
+
+        if time_diff <= timedelta(minutes=1):
+            # OTP is valid
+            return {
+                'status': 'success',
+                'message': 'OTP matched successfully',
+                'mobile_number': mobile_number
+            }
+        else:
+            return {
+                'status': 'failed',
+                'message': 'OTP expired. Please request a new one.',
+                'mobile_number': mobile_number
+            }
+    else:
+        return {
+            'status': 'failed',
+            'message': 'Invalid OTP. Please try again.',
+            'mobile_number': mobile_number
+        }

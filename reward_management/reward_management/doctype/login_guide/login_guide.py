@@ -5,5 +5,5 @@
 from frappe.model.document import Document
 
 
-class QRRewardGuide(Document):
+class LoginGuide(Document):
 	pass

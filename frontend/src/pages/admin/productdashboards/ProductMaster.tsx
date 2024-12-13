@@ -355,7 +355,7 @@ const ProductMaster: React.FC = () => {
                                                         pageNumber <= totalPages && (
                                                             <li className="page-item px-2" key={pageNumber}>
                                                                 <button
-                                                                    className={`page-link px-2 rounded-md ${currentPage === pageNumber ? 'text-white bg-blue-800' : 'bg-gray-200'}`}
+                                                                    className={`page-link px-2 rounded-md ${currentPage === pageNumber ? 'text-white bg-primary' : 'bg-gray-200'}`}
                                                                     onClick={() => handlePageChange(pageNumber)}
                                                                 >
                                                                     {pageNumber}
