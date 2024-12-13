@@ -12,6 +12,7 @@ import { useParams } from "react-router-dom";
 import RewardImage from "../../../assets/images/reward_management/Frame.png";
 import { Box, Text, Button } from "@radix-ui/themes";
 import MobileVerify from '../../../components/ui/models/VerifyMobile';
+import ProductOrderConfirm from '../../../components/ui/alerts/ProductOrderConfirm';
 
 const ProductOrder = () => {
     const [fullname, setFullname] = useState<string>("");
@@ -24,6 +25,7 @@ const ProductOrder = () => {
     const [currentProduct, setCurrentProduct] = useState<any>(null);
     const [generatedOtp, setGeneratedOtp] = useState(null);
     const [otp, setOtp] = useState(""); // State to store OTP
+    const [showConfirmOrder, setShowConfirmOrder] = useState<boolean>(false);
 
     const { productId } = useParams<{ productId: string }>();
     const { data, isLoading, error } = useFrappeGetCall(
@@ -56,7 +58,10 @@ const ProductOrder = () => {
 
             if (response.data.message.status === "success") {
                 notyf.success(response.data.message);
+
                 handleCancel();
+                setShowConfirmOrder(false);
+
             } else {
                 notyf.error(response.data.message);
             }
@@ -81,31 +86,6 @@ const ProductOrder = () => {
         setIsMobileVerifyOpen(false);
     };
 
-    // const openMobileVerify = async () => {
-    //   if(generatedOtp != userOtp){
-    //     console.log("otp not matched")
-
-    //   }else{
-    //     try {
-    //         const response = await axios.get(
-    //             `/api/method/reward_management.api.mobile_number.verify_otp_product_order`,
-    //             { params: { mobile_number: mobile, otp: userOtp } }
-    //         );
-    //         console.log("otp response",response)
-
-    //         if (response.data.message.status === "success") {
-    //             notyf.success("OTP verified successfully.");
-    //             setIsMobileVerifyOpen(false);
-    //             handleOrder();
-    //         } else {
-    //             notyf.error(response.data.message);
-    //         }
-    //     } catch (error) {
-    //         console.error("Error verifying OTP:", error);
-    //         notyf.error("Failed to verify OTP. Please try again.");
-    //     }
-    //   }
-    // };
     const openMobileVerify = async () => {
       console.log("Generated OTP:", generatedOtp);
       console.log("User-entered OTP:", otp);
@@ -126,8 +106,9 @@ const ProductOrder = () => {
   
           if (response.data.message.status === "success") {
               notyf.success("OTP verified successfully.");
+              setShowConfirmOrder(true);
               setIsMobileVerifyOpen(false);
-              handleOrder();
+              // handleOrder();
           } else {
               notyf.error(response.data.message);
           }
@@ -373,6 +354,21 @@ const ProductOrder = () => {
         {isMobileVerifyOpen && <MobileVerify onClose={closeMobileVerify} isOpen={false} mobileNumber={mobile} onVerify={openMobileVerify}
         otp={otp} // Pass OTP as prop
         setOtp={setOtp} reSendOtp={openMobile}/>} 
+
+{showConfirmOrder && currentProduct && (
+  <ProductOrderConfirm
+    onClose={() => setShowConfirmOrder(false)}
+    productImage={
+      currentProduct.gift_product_images?.[0]?.gift_product_image || ProductImage
+    }
+    productName={currentProduct.gift_product_name}
+    points={currentProduct.points}
+    rewardIcon={RewardImage} 
+    successMessage="Congratulate! you have successfully Redeemed 5,500 points. your product will be dispatched in next 7 days."
+    onContinue={handleOrder}
+  
+  />
+)}
       </>
     );
   };
