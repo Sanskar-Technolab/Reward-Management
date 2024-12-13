@@ -47,18 +47,20 @@
    "label": "Gift Specification"
   },
   {
+   "default": "Gift.-.gift_product_name.-.#####",
    "fieldname": "naming_series",
    "fieldtype": "Select",
    "label": "Naming Series",
-   "options": "Gift.-.gift_product_name.-."
+   "options": "Gift.-.gift_product_name.-.#####"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-12-09 10:38:39.587561",
+ "modified": "2024-12-12 15:15:23.797259",
  "modified_by": "Administrator",
  "module": "Reward Management",
  "name": "Gift Product",
+ "naming_rule": "By \"Naming Series\" field",
  "owner": "Administrator",
  "permissions": [
   {

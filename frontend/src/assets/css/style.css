@@ -129,17 +129,17 @@ html {
     --bg-pink: rgb(248, 232, 239);
     --bg-warning: rgb(240, 225, 197);
     --bg-success: rgba(218, 244, 236, 0.922);
-    --primaries: rgb(132, 90, 223);
+    /* --primaries: rgb(132, 90, 223); */
 
-    /* --primaries: rgb(0,0,0); */
+    --primaries: rgb(0,0,0);
     --secondaries: rgb(35, 183, 229);
     --pinkes: rgb(231 ,145, 188);
     --warninges: rgb(245 ,184 ,73);
     --successes: rgb(38 ,191, 148);
     --body-bg: rgb(240 241 247);
-    --primary: 132 90 223;
+    /* --primary: 132 90 223; */
     --black : 0 0 0;
-    /* --primary: 0 0 0; */
+    --primary: 0 0 0;
     --gray :rgba(217, 217, 217, 1);
     --primary-rgb: 132, 90, 223;
     --secondary: 35 183 229;

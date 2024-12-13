@@ -72,7 +72,7 @@ const PointHistory: React.FC = () => {
         // Show Total points and Redeemed points in card
         const fetchUserPoints = async () => {
             try {
-                const response = await axios.get(`/api/method/reward_management.api.carpenter_master.show_  total_points`,{
+                const response = await axios.get(`/api/method/reward_management.api.carpenter_master.show_total_points`,{
                 });
                 const { redeem_points, current_points } = response.data.message; 
                 console.log("card data", response);

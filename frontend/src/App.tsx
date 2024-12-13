@@ -14,6 +14,7 @@ import PrivateRoutes from './routes/private-routes';
 import AdminProfile from './pages/admin/admindashboards/AdminProfile';
 import AdminDashboard from './pages/admin/admindashboards/AdminDashboard.tsx';
 import ProductMaster from './pages/admin/productdashboards/ProductMaster.tsx';
+import GiftMaster from './pages/admin/giftdashboard/GiftMaster.tsx';
 import AddProduct from './pages/admin/productdashboards/Addproduct.tsx';
 import EditProduct from './pages/admin/productdashboards/EditProduct.tsx';
 import ProductQRHistory from './pages/admin/productdashboards/ProductQRHistory.tsx';
@@ -46,6 +47,7 @@ import ProductOrder from './pages/carpenter/GiftProduct/ProductOrder.tsx';
 import ProductCatalogue from './pages/carpenter/ProductCategory/ProductCatalogue.tsx';
 import CatalogueProduct from './pages/carpenter/ProductCategory/CatalogueProducts.tsx';
 import Contact from './pages/carpenter/ContactUs.tsx';
+import PointDetails from './pages/carpenter/PointDetails.tsx';
 
 function App() {
   const [isSidebarActive, setIsSidebarActive] = useState(false);
@@ -156,6 +158,7 @@ fetchWebsiteSettings();
           <Route path='/point-conversion' element= {<PointConversion/>} />
           <Route path='/admin-dashboard' element={<AdminDashboard />} />
           <Route path='/product-master' element={<ProductMaster />} />
+          <Route path='/gift-master' element={<GiftMaster />} />
           <Route path='/add-product' element={<AddProduct />}/>
           <Route path='/edit-product' element={<EditProduct />}/>
           <Route path='/product-qr-history' element={<ProductQRHistory />} />
@@ -183,7 +186,8 @@ fetchWebsiteSettings();
           <Route path='/product-order/:productId' element={<ProductOrder/>}/>
           <Route path='/product-catalogue' element={<ProductCatalogue/>}/>
           <Route path='/catalogue-products' element={<CatalogueProduct/>}/>
-           <Route path='/contact-us' element={<Contact/>}/>
+          <Route path='/contact-us' element={<Contact/>}/>
+          <Route path ='/point-details' element={<PointDetails/>}/>
           <Route path='*' element={<Navigate to="/" replace />} />
          
           

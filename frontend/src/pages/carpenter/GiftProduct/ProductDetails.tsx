@@ -1,7 +1,7 @@
 import "../../../assets/css/header.css";
 import "../../../assets/css/style.css";
 import Pageheader from "../../../components/common/pageheader/pageheader";
-import ProjectSlider from "../../../components/ui/slider/productdetailslider";
+// import ProjectSlider from "../../../components/ui/slider/productdetailslider";
 import RewardImage from "../../../assets/images/reward_management/Frame.png";
 import { Link, useParams } from "react-router-dom";
 import Arrow from "../../../assets/images/reward_management/arrow.png";
@@ -13,7 +13,11 @@ import { useEffect, useState } from "react";
 import { Notyf } from "notyf";
 import "notyf/notyf.min.css";
 import { useFrappeGetCall } from "frappe-react-sdk";
+import Slider from "react-slick";
 
+import "../../../assets/css/pages/projectslider.css";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 const ProductDetails = () => {
   // Extract the productId from the URL
@@ -144,17 +148,27 @@ const ProductDetails = () => {
   }
 
 
-
   const handleRedeemNowClick = (productName: string) => {
     const formattedProductName = productName.replace(/\s+/g, "-");
     navigate(`/product-order/${formattedProductName}`);
   };
 
-  const handleRedeemClick = (productName: string) => {
-    const formattedProductName = productName.replace(/\s+/g, "-");
-    navigate(`/product-details/${formattedProductName}`);
+  // Function to handle the redeem button click
+  const handleRedeemClick = (productName: any, pointsRequired: number) => {
+    if (currentPoints >= pointsRequired) {
+      const formattedProductName = productName.replace(/\s+/g, '-');
+      navigate(`/product-details/${formattedProductName}`);
+    } else {
+      notyf.error('You do not have sufficient points to redeem this product.');  // Show error notification
+    }
   };
-
+  const sliderSettings = {
+    dots: true,
+    infinite: false,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+  };
   return (
     <>
       <Pageheader
@@ -164,26 +178,30 @@ const ProductDetails = () => {
         activepagename="Products"
         mainpagename="Product Details"
       />
-  {/* {currentProduct.gift_product_images && currentProduct.gift_product_images.length > 0 ? (
-            <ProjectSlider
-              slides={currentProduct.gift_product_images.map((img: any) => ({
-                image: `${window.origin}${img.gift_product_image}`,
-              }))}
-              sliderSettings={{
-                dots: true,
-                infinite: true,
-                slidesToShow: 1,
-                slidesToScroll: 1,
-              }}
-            />
-          ) : (
-            <div>No images available</div>
-          )} */}
+ 
 
       <div className="grid grid-cols-12 gap-x-6 pb-10">
         <div className="xxl:col-span-12 xl:col-span-12 lg:col-span-12 col-span-12">
-          <div> <ProjectSlider images={productImages} />  </div>
-          {/* Pass images for the slider */}
+          {/* <div> <ProjectSlider images={productImages} />  </div>
+          Pass images for the slider */}
+          {/* Slider Section */}
+          <div className="relative mx-auto pb-4 mb-4">
+          {productImages.length > 0 ? (
+              <Slider {...sliderSettings}>
+                {productImages.map((image, index) => (
+                  <div key={index} className="px-2">
+                    <img
+                      src={image}
+                      alt={`Product Image ${index + 1}`}
+                      className="w-full lg:h-[450px] md:h-[300px] sm:h-[200px] object-fill"
+                    />
+                  </div>
+                ))}
+              </Slider>
+            ) : (
+              <div>No images available for this product.</div>
+            )}
+          </div>
         
           <div className="md:mt-10 mt-10">
             <div>

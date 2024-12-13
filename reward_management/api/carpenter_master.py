@@ -29,7 +29,7 @@ def get_carpainter_data():
             point_history = frappe.get_all(
                 "Customer Product Detail",
                 filters={"parent": carpainter["name"]}, 
-                fields=["earned_points", "date", "product_name", "product", "product_category"],
+                fields=["earned_points", "date", "product_name", "product", "product_category","product_image"],
                 order_by="creation desc"
             )
             

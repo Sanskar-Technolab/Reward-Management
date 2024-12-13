@@ -479,7 +479,7 @@ const Login = () => {
                                 <Button onClick={() => setCurrentForm('login')} className={`flex-1 bg-white text-defaulttextcolor ${currentForm === 'login' ? 'border-b-2 border-primary text-black font-bold' : ''}`}>
                                     Admin
                                 </Button>
-                                <Button onClick={() => setCurrentForm('register')} className={`flex-1 bg-white text-defaulttextcolor ${currentForm === 'register' ? 'border-b-2 border-primary text-black font-bold' : ''}`}>
+                                <Button onClick={() => setCurrentForm('carpenterLogin')} className={`flex-1 bg-white text-defaulttextcolor ${currentForm === 'carpenterLogin' ? 'border-b-2 border-primary text-black font-bold' : ''}`}>
                                     Customer
                                 </Button>
                             </div>

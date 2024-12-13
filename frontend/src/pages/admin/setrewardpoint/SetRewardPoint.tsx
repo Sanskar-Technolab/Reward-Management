@@ -131,7 +131,7 @@ const SetRewardPointsDashboard: React.FC = () => {
                                             <button
                                                 id='submitpoints'
                                                 type="submit"
-                                                className="ti-btn ti-btn-primary-full w-full"
+                                                className="ti-btn ti-btn-primary-full w-full bg-primary"
                                             >
                                                 Submit
                                             </button>

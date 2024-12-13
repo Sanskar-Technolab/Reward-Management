@@ -237,7 +237,7 @@ const TableComponent = <T,>({
                                 </li>
                                 <li className="page-item px-2">
                                     <button
-                                        className="page-link"
+                                        className="page-link "
                                         onClick={handlePrevPage}
                                         disabled={currentPage === 1}
                                     >
@@ -252,8 +252,8 @@ const TableComponent = <T,>({
                                         pageNumber <= totalPages && (
                                             <li className="page-item px-2" key={pageNumber}>
                                                 <button
-                                                    className={`page-link px-2 rounded-md ${currentPage === pageNumber
-                                                            ? "text-white bg-blue-800"
+                                                    className={`page-link  px-2 rounded-md ${currentPage === pageNumber
+                                                            ? "text-white bg-primary"
                                                             : "bg-gray-200"
                                                         }`}
                                                     onClick={() => handlePageChange(pageNumber)}
@@ -264,9 +264,9 @@ const TableComponent = <T,>({
                                         )
                                     );
                                 })}
-                                <li className="page-item px-2">
+                                <li className="page-item px-2 ">
                                     <button
-                                        className="page-link"
+                                        className="page-link "
                                         onClick={handleNextPage}
                                         disabled={currentPage === totalPages}
                                     >
