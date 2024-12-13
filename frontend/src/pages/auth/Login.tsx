@@ -463,6 +463,16 @@ const Login = () => {
                             </div>
                             
                             <div className="text-center mb-5 px-8 pt-5">
+
+                    <div className="p-8 box-shadow-md border border-defaultborder shadow-md rounded-[10px] bg-white ">
+                        
+                            <div className="flex justify-center mb-8 ">
+                                {/* <img src={desktoplogo} alt="logo" className="w-28" /> */}
+                                <img src={logo } alt="logo" className="w-20" />
+                            </div>
+                           
+                            <div className="text-center mb-5">
+
                                 <p className="text-lg font-semibold">
                                     {currentForm === "login" && "Login"}
                                     {currentForm === "register" && "Registration"}
