@@ -50,6 +50,7 @@ import Contact from './pages/carpenter/ContactUs.tsx';
 import PointDetails from './pages/carpenter/PointDetails.tsx';
 import CompanyAddress from './pages/admin/contactus/ContactUs.tsx';
 import ProductCatagory from './pages/admin/productcatalogue/ProductCatalogue.tsx';
+import Project from './pages/admin/projectdashboard/Projects.tsx';
 
 function App() {
   const [isSidebarActive, setIsSidebarActive] = useState(false);
@@ -159,6 +160,7 @@ fetchWebsiteSettings();
           <Route path='/admin-profile' element={<AdminProfile />} />
           <Route path='/point-conversion' element= {<PointConversion/>} />
           <Route path='/admin-dashboard' element={<AdminDashboard />} />
+          <Route path='/project' element={<Project/>} />
           <Route path='/product-master' element={<ProductMaster />} />
           <Route path='/gift-master' element={<GiftMaster />} />
           <Route path='/add-product' element={<AddProduct />}/>

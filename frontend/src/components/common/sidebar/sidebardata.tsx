@@ -33,6 +33,12 @@ export const SidebarData = [
 
   },
   {
+    title: 'Projects',
+    path: '/project',
+    icon: <AiIcons.AiFillHome className='sidebaricon' />,
+
+  },
+  {
     title: 'Product Dashboard',
     // path: '/admin-dashboard',
     icon: <AiFillProduct className='sidebaricon' />,
