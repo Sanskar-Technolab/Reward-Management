@@ -73,7 +73,7 @@ def show_total_points():
     
 # get logged carpenter data-------------  
     
-@frappe.whitelist()
+@frappe.whitelist(allow_guest=True)
 def get_customer_details():
     logged_in_user = frappe.session.user
     user_info = frappe.get_doc("User", logged_in_user)
