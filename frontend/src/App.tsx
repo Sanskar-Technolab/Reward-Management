@@ -48,6 +48,8 @@ import ProductCatalogue from './pages/carpenter/ProductCategory/ProductCatalogue
 import CatalogueProduct from './pages/carpenter/ProductCategory/CatalogueProducts.tsx';
 import Contact from './pages/carpenter/ContactUs.tsx';
 import PointDetails from './pages/carpenter/PointDetails.tsx';
+import CompanyAddress from './pages/admin/contactus/ContactUs.tsx';
+import ProductCatagory from './pages/admin/productcatalogue/ProductCatalogue.tsx';
 
 function App() {
   const [isSidebarActive, setIsSidebarActive] = useState(false);
@@ -170,6 +172,8 @@ fetchWebsiteSettings();
           <Route path='/announcement' element={<AdminAnnouncement />} />
           <Route path='/transaction-history' element={<TransactionHistory />} />
           <Route path='/frequently-asked-question' element={<FAQDashboard />} />
+          <Route path='/company-address' element={<CompanyAddress />} />
+          <Route path='/product-catagory' element={<ProductCatagory />} />
           <Route path='/add-user' element={<AddUserDashboard />} />
           <Route path='/set-reward-points' element={<SetRewardPoint/>} />
           <Route path='/notifications' element={<AdminNotifications/>}/>

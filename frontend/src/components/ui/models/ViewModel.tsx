@@ -42,7 +42,7 @@ const ViewModal: React.FC<ViewModalProps> = ({
     setEndDate,
 }) => {
     return (
-            <div className="    ">
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
                 <div className="bg-white rounded-lg shadow-lg w-full max-w-lg">
                     <div className="ti-modal-content flex flex-col h-full max-h-[80vh]">
                     <div className="ti-modal-header flex justify-between border-b p-4">

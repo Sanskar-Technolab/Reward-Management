@@ -1,7 +1,7 @@
 import frappe
 from frappe import _
 
-@frappe.whitelist()
+@frappe.whitelist(allow_guest=True)
 def get_redeem_request_details():
     try:
         logged_in_user = frappe.session.user
