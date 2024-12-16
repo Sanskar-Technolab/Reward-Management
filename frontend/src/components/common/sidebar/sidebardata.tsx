@@ -55,6 +55,11 @@ export const SidebarData = [
     ]
   },
   {
+    title: 'Product Catalogue',
+    path: '/product-catagory',
+    icon: <IconCoins className='sidebaricon'  />
+  },
+  {
     title: 'Customer Dashboard',
     // path: '/carpenter-dashboard',
     icon: <GrUserWorker className='sidebaricon'  />,
@@ -95,6 +100,7 @@ export const SidebarData = [
     path: '/set-reward-points',
     icon: <IconCoins className='sidebaricon'  />
   },
+ 
   // {
   //   title: 'Points Conversion Rate ',
   //   path: '/point-conversion',
@@ -104,6 +110,11 @@ export const SidebarData = [
     title: "FAQ's",
     path: '/frequently-asked-question',
     icon: <IoIcons.IoMdHelpCircle className='sidebaricon'  />
+  },
+  {
+    title: 'Set Company Address',
+    path: '/company-address',
+    icon: <IconCoins className='sidebaricon'  />
   },
   
   {

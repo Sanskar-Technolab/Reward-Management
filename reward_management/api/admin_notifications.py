@@ -3,7 +3,7 @@ from frappe import _
 from datetime import datetime
 
 
-@frappe.whitelist()
+@frappe.whitelist(allow_guest=True)
 def get_notifications_log():
     # Get the current user
     user = frappe.session.user
