@@ -166,7 +166,7 @@ def update_user_details():
 
     except frappe.DoesNotExistError:
         frappe.log_error(frappe.get_traceback(), _("User Not Found Error"))
-        return {"status": "error", "message": "User not found."}
+        return {"status": "error", "message": "User not found.","user":user.name,"new_user":new_email}
 
     except Exception as e:
         frappe.log_error(frappe.get_traceback(), _("API Error"))
