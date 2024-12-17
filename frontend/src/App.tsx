@@ -14,7 +14,9 @@ import PrivateRoutes from './routes/private-routes';
 import AdminProfile from './pages/admin/admindashboards/AdminProfile';
 import AdminDashboard from './pages/admin/admindashboards/AdminDashboard.tsx';
 import ProductMaster from './pages/admin/productdashboards/ProductMaster.tsx';
+import ProductOrders from './pages/admin/productorderdashboard/ProductOrder.tsx';
 import GiftMaster from './pages/admin/giftdashboard/GiftMaster.tsx';
+import AddGiftProduct from './pages/admin/giftdashboard/AddGiftProduct.tsx';
 import AddProduct from './pages/admin/productdashboards/Addproduct.tsx';
 import EditProduct from './pages/admin/productdashboards/EditProduct.tsx';
 import ProductQRHistory from './pages/admin/productdashboards/ProductQRHistory.tsx';
@@ -163,10 +165,12 @@ fetchWebsiteSettings();
           <Route path='/project' element={<Project/>} />
           <Route path='/product-master' element={<ProductMaster />} />
           <Route path='/gift-master' element={<GiftMaster />} />
+          <Route path='/add-gift-product' element={<AddGiftProduct />} />
           <Route path='/add-product' element={<AddProduct />}/>
           <Route path='/edit-product' element={<EditProduct />}/>
           <Route path='/product-qr-history' element={<ProductQRHistory />} />
           <Route path='/download-qr-code' element={<DownloadQRCode />} />
+          <Route path='/customer-product-orders' element={<ProductOrders />}/>
           <Route path='/carpenter-registration' element={<CarpenterRegistration />} />
           <Route path='/carpenter-details' element={<CarpenterDetails/>} />
           <Route path='/redeemption-request' element={<CarpenterRewardRequest />} />

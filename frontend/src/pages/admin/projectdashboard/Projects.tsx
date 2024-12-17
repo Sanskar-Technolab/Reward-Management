@@ -1,227 +1,314 @@
 import '../../../assets/css/style.css';
 import '../../../assets/css/pages/admindashboard.css';
 import Pageheader from '../../../components/common/pageheader/pageheader';
-import React, { useState ,useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import SuccessAlert from '../../../components/ui/alerts/SuccessAlert';
 import axios from 'axios';
-
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 const Project: React.FC = () => {
-    const [companyAddress, setCompanyAddress] = useState<string>('');
-    const [companyEmail, setCompanyEmail] = useState<string>('');
-    const [companyWebsite, setCompanyWebsite] = useState<string>('');
-    const [companyMobile, setCompanyMobile] = useState<string>('');
-    const [currentAddress, setCurrentAddress] = useState<string>('');
-    const [currentEmail, setCurrentEmail] = useState<string>('');
-    const [currentWebsite, setCurrentWebsite] = useState<string>('');
-    const [currentMobile, setCurrentMobile] = useState<string>('');
     const [showSuccessAlert, setShowSuccessAlert] = useState(false);
+    const [projectImages, setProjectImages] = useState<string[]>([]);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [showAddCatalogueForm, setShowAddCatalogueForm] = useState(false);
+    const [fileDetails, setFileDetails] = useState<{ url: string, name: string }[]>([]);
+    const [projectToEdit, setProjectToEdit] = useState<any>(null);
+    const [error, setError] = useState<string>('');
 
     useEffect(() => {
-        document.title = 'Company Address';
+        document.title = 'Projects';
 
         if (showSuccessAlert) {
             const timer = setTimeout(() => {
                 setShowSuccessAlert(false);
-                window.location.reload(); // Reload the page after hiding the alert
-            }, 3000); // Hide alert after 3 seconds
+                window.location.reload();
+            }, 3000);
             return () => clearTimeout(timer);
         }
-
-        // Fetch API function
-        const fetchAPI = async () => {
-            try {
-                const response = await axios.get(`/api/method/reward_management.api.company_address.get_company_address`);
-
-                if (response.data.message) {
-                    const data = response.data.message; 
-                    console.log("company data", response.data.message);
-
-                    // Set the fetched data to the state variables
-                    setCurrentAddress(data.address);
-                    setCurrentEmail(data.email || '');
-                    setCurrentWebsite(data.website || '');
-                    // setCurrentMobile(data.mobile_numbers || []); // Use the first mobile number if there are multiple
-                    setCurrentMobile(data.mobile_numbers[0] || '');  // If multiple mobile numbers, pick the first one
-
-                }
-            } catch (error) {
-                console.error('Error fetching company address:', error);
-            }
-        };
-
-        fetchAPI();
     }, [showSuccessAlert]);
 
-    // Set form fields to current data after fetching it
+    const handleAddNewProject = () => {
+        setProjectToEdit(null);
+        setShowAddCatalogueForm(true);
+    };
+
     useEffect(() => {
-       
-        if (currentAddress && currentEmail && currentWebsite && currentMobile) {
-            setCompanyAddress(currentAddress);
-            setCompanyEmail(currentEmail);
-            setCompanyWebsite(currentWebsite);
-            setCompanyMobile(currentMobile);
-        }
-    }, [currentAddress, currentEmail, currentWebsite, currentMobile]);
-
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-
-        if (!companyAddress || !companyEmail || !companyWebsite || !companyMobile) {
-            alert('All fields are required!');
-            return;
-        }
-        if (!companyMobile || companyMobile.length !== 10) {
-            alert('Please enter a valid 10-digit mobile number!');
-            return;
-        }
-
-        const data = {
-            address: companyAddress,
-            email: companyEmail,
-            website: companyWebsite,
-            mobile_number: companyMobile
+        const fetchInstructions = async () => {
+            try {
+                const response = await axios.get(
+                    "/api/method/reward_management.api.project.get_project"
+                );
+                if (response && response.data?.message?.images) {
+                    const images = response.data.message.images;
+                    setProjectImages(images);
+                }
+            } catch (error) {
+                console.error("Error fetching instructions:", error);
+            } finally {
+                setLoading(false);
+            }
         };
 
-        try {
-            const response = await axios.post('/api/resource/Company Address', data, {
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
+        fetchInstructions();
+    }, []);
 
-            if (response.status !== 200) {
-                throw new Error('Failed to update company address');
+    const handleCloseModal = () => {
+        setShowAddCatalogueForm(false);
+
+    };
+
+    // File input change handler
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const files = e.target.files;
+
+        if (files) {
+            const fileArray = Array.from(files);
+
+            // Check if the number of files is more than 10
+            if (fileArray.length + fileDetails.length > 10) {
+                setError('You can only select up to 10 images!');
+                return;
+            } else {
+                setError('');
             }
 
-            console.log('Updated Company Mobile:', companyMobile);
+            // Convert files to data URLs and store them
+            const newFileDetails = fileArray.map((file) => {
+                const reader = new FileReader();
+                return new Promise<{ url: string, name: string }>((resolve) => {
+                    reader.onload = (event) => {
+                        resolve({
+                            url: event.target?.result as string,
+                            name: file.name,
+                        });
+                    };
+                    reader.readAsDataURL(file);
+                });
+            });
 
-
-            setShowSuccessAlert(true);
-        } catch (error) {
-            console.error('Error submitting company address:', error);
-            alert('Failed to update company address.');
+            Promise.all(newFileDetails).then((newDetails) => {
+                setFileDetails((prevFiles) => [...prevFiles, ...newDetails]);
+            });
         }
-
-        console.log({
-            companyAddress,
-            companyEmail,
-            companyWebsite,
-            companyMobile,
-        });
     };
+
+    // Remove image handler
+    const handleRemoveImage = (indexToRemove: number) => {
+        setFileDetails((prevFiles) =>
+            prevFiles.filter((_, index) => index !== indexToRemove)
+        );
+    };
+
+    // Upload file function
+    const uploadFile = async (file: File) => {
+        const formData = new FormData();
+        formData.append("file", file, file.name);
+        formData.append("is_private", "0");
+        formData.append("folder", "");
+        formData.append("file_name", file.name);
+
+        try {
+            const response = await axios.post(`/api/method/upload_file`, formData, {
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "multipart/form-data",
+                },
+            });
+            if(response){
+                console.log("image upload response",response)
+            }
+            if (response.data.message && response.data.message.file_url) {
+                return response.data.message.file_url;
+            } else {
+                console.error("File URL not found in response:", response.data);
+                return null;
+            }
+        } catch (error) {
+            console.error("Error uploading file:", error);
+            return null;
+        }
+    };
+
+
+    const handleSubmit = async (event: React.FormEvent) => {
+        event.preventDefault();
+        const uploadedFileURLs: string[] = [];
+    
+        try {
+           
+            for (const fileDetail of fileDetails) {
+                const fileBlob = await fetch(fileDetail.url).then(res => res.blob());
+                const file = new File([fileBlob], fileDetail.name, { type: fileBlob.type });
+    
+                const fileURL = await uploadFile(file); 
+                if (fileURL) {
+                    uploadedFileURLs.push(fileURL);
+                }
+            }
+    
+            console.log("Uploaded File URLs:", uploadedFileURLs);
+    
+            const response = await axios.post(
+                '/api/method/reward_management.api.project.add_project',
+                { new_image_url: uploadedFileURLs }, 
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                    },
+                }
+            );
+    
+         
+            const result = response.data;
+    
+            if (result.message && result.message.status === 'success') {
+                console.log("API Response:", result.message.message); 
+                setShowSuccessAlert(true);
+                setFileDetails([]);                  
+                setShowAddCatalogueForm(false);
+
+
+            } else {
+                console.error("API Error:", result.message);
+                alert("Error updating project images: " + (result.message.message || "Unknown error."));
+            }
+        } catch (error) {
+            console.error("Error during file upload or API call:", error);
+            alert("An error occurred. Please try again.");
+        }
+    };
+    
 
     return (
         <>
             <Pageheader
-                currentpage={"Set Projects"}
+                currentpage={"Projects"}
                 activepage={"/project"}
-                activepagename="Set Projects"
+                activepagename="Projects"
             />
-    <div className="grid grid-cols-12 gap-x-6 p-6">
-                <div className="col-span-12 flex justify-center items-center">
-                    <div className="xl:col-span-3 col-span-12 bg-white mt-5 rounded-lg shadow-lg p-6">
-                        <div>
-                            <div className="box-header">
-                                <div className="box-title text-center text-[var(--primaries)] text-sm font-semibold">
-                                    Project
-                                </div>
-                            </div>
-                            <div className="box-body w-[400px] max-w-[400px]">
-                                <form onSubmit={handleSubmit}>
-                                    <div className="grid grid-cols-12 gap-4">
-                                        <div className="xl:col-span-12 col-span-12">
-                                            <label
-                                                htmlFor="companyAddress"
-                                                className="block text-defaulttextcolor text-xs font-medium mb-1"
-                                            >
-                                               Set Projects
-                                            </label>
-                                            <input
-                                                type="text"
-                                                id="companyAddress"
-                                                className="form-control w-full !rounded-md !bg-light text-defaulttextcolor text-xs font-medium"
-                                                placeholder="Enter company address"
-                                                value={companyAddress}
-                                                onChange={(e) => setCompanyAddress(e.target.value)}
-                                            />
-                                        </div>
-                                        <div className="xl:col-span-12 col-span-12">
-                                            <label
-                                                htmlFor="companyEmail"
-                                                className="block text-defaulttextcolor text-xs font-medium mb-1"
-                                            >
-                                                Company Email
-                                            </label>
-                                            <input
-                                                type="email"
-                                                id="companyEmail"
-                                                className="form-control w-full !rounded-md !bg-light text-defaulttextcolor text-xs font-medium"
-                                                placeholder="Enter company email"
-                                                value={companyEmail}
-                                                onChange={(e) => setCompanyEmail(e.target.value)}
-                                            />
-                                        </div>
-                                        <div className="xl:col-span-12 col-span-12">
-                                            <label
-                                                htmlFor="companyWebsite"
-                                                className="block text-defaulttextcolor text-xs font-medium mb-1"
-                                            >
-                                                Company Website
-                                            </label>
-                                            <input
-                                                type="text"
-                                                id="companyWebsite"
-                                                className="form-control w-full !rounded-md !bg-light text-defaulttextcolor text-xs font-medium"
-                                                placeholder="Enter company website"
-                                                value={companyWebsite}
-                                                onChange={(e) => setCompanyWebsite(e.target.value)}
-                                            />
-                                        </div>
-                                        <div className="xl:col-span-12 col-span-12">
-                                            <label
-                                                htmlFor="companyMobile"
-                                                className="block text-defaulttextcolor text-xs font-medium mb-1"
-                                            >
-                                                Company Mobile
-                                            </label>
-                                            <input
-                                                type="tel"
-                                                id="companyMobile"
-                                                className="form-control w-full !rounded-md !bg-light text-defaulttextcolor text-xs font-medium"
-                                                placeholder="Enter company mobile"
-                                                value={companyMobile}
-                                                onChange={(e) => setCompanyMobile(e.target.value)}
-                                            />
-                                        </div>
-                                        <div className="xl:col-span-12 col-span-12 text-center">
-                                            <button
-                                                type="submit"
-                                                className="ti-btn ti-btn-primary-full w-full bg-primary"
-                                            >
-                                                Submit
-                                            </button>
-                                        </div>
+            <div className="grid grid-cols-12 gap-x-6 p-6">
+                <div className="col-span-12 flex justify-between items-center">
+                    <h2 className="text-[var(--primaries)] text-xl font-semibold">Projects</h2>
+                    <button
+                        onClick={handleAddNewProject}
+                        className="ti-btn bg-primary text-white px-4 py-2 rounded-md"
+                    >
+                        Add New Project
+                    </button>
+                </div>
+                <div className="col-span-12 mt-6">
+                    <div className="bg-white rounded-lg shadow-lg p-6">
+                        <h3 className="text-center text-[var(--primaries)] text-lg font-semibold mb-4">
+                            Project Gallery
+                        </h3>
+                        {projectImages.length > 0 ? (
+                            <Slider 
+                            dots={true}
+                            infinite={true} 
+                            speed={500} 
+                            slidesToShow={1} 
+                            slidesToScroll={1} 
+                            autoplay={true} 
+                            autoplaySpeed={2000}                             
+                            pauseOnHover={true} 
+                            arrows={false}>
+                                {projectImages.map((image, index) => (
+                                    <div key={index} className="p-2">
+                                        <img
+                                            src={image}
+                                            alt={`Project ${index + 1}`}
+                                            className="w-full h-[500px] rounded-md"
+                                        />
                                     </div>
-                                </form>
-                            </div>
-                        </div>
+                                ))}
+                            </Slider>
+                        ) : (
+                            <p className="text-center text-defaulttextcolor text-sm">No projects to display.</p>
+                        )}
                     </div>
                 </div>
             </div>
+
+            {showAddCatalogueForm && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                    <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-lg">
+                        <div className="flex justify-between items-center border-b pb-2">
+                            <h6 className="text-primary font-semibold">
+                                {projectToEdit ? "Edit Project" : "Add Project"}
+                            </h6>
+                            <button onClick={handleCloseModal} className="text-defaulttextcolor">
+                                <i className="ri-close-line text-2xl"></i>
+                            </button>
+                        </div>
+                        <form onSubmit={handleSubmit} className="mt-4">
+                            <div>
+                                <label
+                                    htmlFor="file-upload"
+                                    className="block text-sm font-medium text-gray-700"
+                                >
+                                    Project Images
+                                </label>
+                                <input
+                                    type="file"
+                                    multiple
+                                    id="file-upload"
+                                    className="mt-1 block w-full p-2 border rounded-md"
+                                    onChange={handleFileChange}
+                                />
+                                {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
+                            </div>
+
+                            {/* Image Previews */}
+                            <div className="grid grid-cols-3 gap-5 mt-4">
+                                {fileDetails.map((file, index) => (
+                                    <div key={index} className="relative group">
+                                        <img
+                                            src={file.url}
+                                            alt={file.name}
+                                            className="w-full h-32 object-cover rounded-md"
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() => handleRemoveImage(index)}
+                                            className="absolute top-[-10px] right-[-10px] bg-red-600 text-primary p-1 rounded-full opacity-0 group-hover:opacity-100 transition"
+                                        >
+                                            <i className="ri-close-line text-primary text-lg font-bold "></i>
+                                        </button>
+                                    </div>
+                                ))}
+                            </div>
+
+                            <div className="mt-4 flex justify-end gap-2">
+                                <button
+                                    type="submit"
+                                    className="bg-primary text-white px-4 py-2 rounded-md"
+                                >
+                                    Submit
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={handleCloseModal}
+                                    className="bg-gray-300 px-4 py-2 rounded-md"
+                                >
+                                    Cancel
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
+
             {showSuccessAlert && (
                 <SuccessAlert
+                    message="Project added successfully!"
                     showButton={false}
-                    showCancleButton={false}
-                    showCollectButton={false}
-                    showAnotherButton={false}
-                    showMessagesecond={false}
-                    message="Company Address Set successfully!"
                 />
             )}
         </>
     );
 };
-    
 
 export default Project;

@@ -363,8 +363,8 @@ const AdminProfile = () => {
                                                 </div>
 
                                                 <div className="inline-flex">
-                                                    <button type="button" className="ti-btn ti-btn-primary bg-primary me-1" onClick={changeUserImage}>Change</button>
-                                                    <button type="button" className="bg-light ti-btn text-defaulttextcolor" onClick={removeUserImage}>Remove</button>
+                                                    <button type="button" className="ti-btn text-white bg-primary me-1" onClick={changeUserImage}>Change</button>
+                                                    <button type="button" className="bg-primary/20 ti-btn text-defaulttextcolor" onClick={removeUserImage}>Remove</button>
                                                 </div>
                                             </div>
                                             <h6 className="font-semibold mb-4 text-[1rem]">Profile </h6>
@@ -478,14 +478,14 @@ const AdminProfile = () => {
                                             </div>
                                             <div className='p-4 flex justify-end'>
                                                 <button
-                                                    className="ti-btn ti-btn-primary bg-primary me-3"
+                                                    className="ti-btn text-white bg-primary me-3"
                                                     onClick={update_user_details} // Call the update_user_details function on button click
                                                 >
                                                     Update profile
                                                 </button>
                                                 <button
                                                     type="button"
-                                                    className="bg-light ti-btn text-defaulttextcolor"
+                                                    className="bg-primary/20 ti-btn text-defaulttextcolor"
                                                     onClick={resetForm}
                                                 >
                                                     Cancel
@@ -537,7 +537,7 @@ const AdminProfile = () => {
                                                 </div>
                                             </div>
                                             <div className=' p-4 flex justify-end'>
-                                                <button className={`ti-btn ti-btn-primary bg-primary me-3 ${!passwordsMatch ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                                <button className={`ti-btn text-white bg-primary me-3 ${!passwordsMatch ? 'opacity-50 cursor-not-allowed' : ''}`}
                                                     onClick={savePassword}
                                                     disabled={!passwordsMatch}
                                                 // disabled={!passwordsMatch}

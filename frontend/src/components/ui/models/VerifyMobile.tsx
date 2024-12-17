@@ -86,13 +86,13 @@ const CreateVerifyMobile: React.FC<ModalProps> = ({
           <div className="flex justify-between">
             <button
               onClick={onClose}
-              className="px-4 py-2 w-[47%] bg-gray-200 text-defaultsize text-black rounded-[10px]"
+              className="px-4 py-2 w-[47%] bg-primary/20 text-defaultsize text-black rounded-[10px]"
             >
               Cancel
             </button>
             <button
               onClick={() => onVerify(otp)} // Pass OTP value when Verify button is clicked
-              className="px-4 py-2 w-[47%] bg-black text-defaultsize text-white rounded-[10px]"
+              className="px-4 py-2 w-[47%] bg-primary text-defaultsize text-white rounded-[10px]"
             >
               Verify
             </button>

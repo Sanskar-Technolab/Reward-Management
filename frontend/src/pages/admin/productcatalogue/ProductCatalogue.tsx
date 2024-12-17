@@ -1,12 +1,12 @@
-import '../../../assets/css/style.css';
-import '../../../assets/css/pages/admindashboard.css';
-import Pageheader from '../../../components/common/pageheader/pageheader';
-import TableComponent from '../../../components/ui/tables/tablecompnent';
-import TableBoxComponent from '../../../components/ui/tables/tableboxheader';
+import "../../../assets/css/style.css";
+import "../../../assets/css/pages/admindashboard.css";
+import Pageheader from "../../../components/common/pageheader/pageheader";
+import TableComponent from "../../../components/ui/tables/tablecompnent";
+import TableBoxComponent from "../../../components/ui/tables/tableboxheader";
 import React, { useState } from "react";
-import SuccessAlert from '../../../components/ui/alerts/SuccessAlert';
-import DangerAlert from '../../../components/ui/alerts/DangerAlert';
-import axios from 'axios';
+import SuccessAlert from "../../../components/ui/alerts/SuccessAlert";
+import DangerAlert from "../../../components/ui/alerts/DangerAlert";
+import axios from "axios";
 import { useFrappeGetDocList } from "frappe-react-sdk";
 
 interface ProductCategory {
@@ -18,35 +18,38 @@ interface ProductCategory {
 const ProductCatalogue: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(5);
-    const [productCatalogue, setProductCatalogue] = useState('');
+    const [productCatalogue, setProductCatalogue] = useState("");
     const [previews, setPreviews] = useState<string[]>([]);
     const [existingImages, setExistingImages] = useState<string[]>([]);
     const [showSuccessAlert, setShowSuccessAlert] = useState(false);
     const [files, setFiles] = useState<FileList | null>(null);
-    const [searchQuery, setSearchQuery] = useState('');
-    const [isConfirmDeleteModalOpen, setIsConfirmDeleteModalOpen] = useState(false);
-    const [alertMessage, setAlertMessage] = useState('');
+    const [searchQuery, setSearchQuery] = useState("");
+    const [isConfirmDeleteModalOpen, setIsConfirmDeleteModalOpen] =
+        useState(false);
+    const [alertMessage, setAlertMessage] = useState("");
     const [showAddCatalogueForm, setShowAddCatalogueForm] = useState(false);
-    const [productCategoryToDelete, setProductCategoryToDelete] = useState<ProductCategory | null>(null);
-    const [alertTitle, setAlertTitle] = useState('');
-    const [productCategoryToEdit, setProductCategoryToEdit] = useState<ProductCategory | null>(null);
-
+    const [productCategoryToDelete, setProductCategoryToDelete] =
+        useState<ProductCategory | null>(null);
+    const [alertTitle, setAlertTitle] = useState("");
+    const [productCategoryToEdit, setProductCategoryToEdit] =
+        useState<ProductCategory | null>(null);
 
     // Fetch the product categories
-    const { data: productcategoryData, mutate: mutateProductCategory, error } =
-        useFrappeGetDocList<ProductCategory>("Product Category", {
-            fields: ["name", "category_name", "catalogue_image"],
-        });
+    const {
+        data: productcategoryData,
+        mutate: mutateProductCategory,
+        error,
+    } = useFrappeGetDocList<ProductCategory>("Product Category", {
+        fields: ["name", "category_name", "catalogue_image"],
+    });
 
     // Filter data based on search query
     const filteredData = productcategoryData?.filter((item) =>
         item.category_name.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
-
-
     React.useEffect(() => {
-        document.title = 'Product Catagory'
+        document.title = "Product Catagory";
         if (showSuccessAlert) {
             const timer = setTimeout(() => {
                 setShowSuccessAlert(false);
@@ -82,8 +85,6 @@ const ProductCatalogue: React.FC = () => {
         }
     };
 
-
-
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         const fileUrls: string[] = [];
@@ -97,7 +98,8 @@ const ProductCatalogue: React.FC = () => {
             }
         }
 
-        const updatedProductImage = fileUrls.length > 0 ? fileUrls[0] : existingImages[0];
+        const updatedProductImage =
+            fileUrls.length > 0 ? fileUrls[0] : existingImages[0];
 
         const data = {
             category_name: productCatalogue,
@@ -107,17 +109,21 @@ const ProductCatalogue: React.FC = () => {
         try {
             if (productCategoryToEdit) {
                 // Edit existing product category
-                await axios.put(`/api/resource/Product Category/${productCategoryToEdit.name}`, data, {
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                });
-                setAlertTitle('Success');
-                setAlertMessage('Product Category updated successfully!');
-                 // Clear the input fields
-                 setProductCatalogue("");
-                 setPreviews([]); // Clear the file previews
-                 setExistingImages([]); // Clear any existing images
+                await axios.put(
+                    `/api/resource/Product Category/${productCategoryToEdit.name}`,
+                    data,
+                    {
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                    }
+                );
+                setAlertTitle("Success");
+                setAlertMessage("Product Category updated successfully!");
+                // Clear the input fields
+                setProductCatalogue("");
+                setPreviews([]); // Clear the file previews
+                setExistingImages([]); // Clear any existing images
             } else {
                 // Add new product category
                 await axios.post(`/api/resource/Product Category`, data, {
@@ -125,12 +131,12 @@ const ProductCatalogue: React.FC = () => {
                         "Content-Type": "application/json",
                     },
                 });
-                setAlertTitle('Success');
-                setAlertMessage('Product Category added successfully!');
+                setAlertTitle("Success");
+                setAlertMessage("Product Category added successfully!");
                 // Clear the input fields
                 setProductCatalogue("");
-                setPreviews([]); // Clear the file previews
-                setExistingImages([]); // Clear any existing images
+                setPreviews([]); 
+                setExistingImages([]); 
             }
 
             setShowSuccessAlert(true);
@@ -141,7 +147,6 @@ const ProductCatalogue: React.FC = () => {
             alert("An error occurred while submitting the form. Please try again.");
         }
     };
-
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const selectedFiles = e.target.files;
@@ -164,28 +169,30 @@ const ProductCatalogue: React.FC = () => {
         setShowAddCatalogueForm(true);
     };
 
-
     const confirmDelete = async () => {
         if (!productCategoryToDelete) return;
 
         try {
-            const response = await axios.delete(`/api/resource/Product Category/${productCategoryToDelete.name}`, {
-                headers: {
-                    'Content-Type': 'application/json',
+            const response = await axios.delete(
+                `/api/resource/Product Category/${productCategoryToDelete.name}`,
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
                 }
-            });
+            );
 
             console.log("delete response", response);
 
-            if (response.data.data === 'ok') {
-                setAlertMessage('Product Category deleted successfully!');
+            if (response.data.data === "ok") {
+                setAlertMessage("Product Category deleted successfully!");
                 setShowSuccessAlert(true);
                 setTimeout(() => setShowSuccessAlert(false), 3000);
                 setIsConfirmDeleteModalOpen(false);
-                mutateProductCategory(); // Refresh the product category list
+                mutateProductCategory();
             } else {
-                console.warn('Unexpected response:', response);
-                alert('Failed to delete Product Category. Please try again.');
+                console.warn("Unexpected response:", response);
+                alert("Failed to delete Product Category. Please try again.");
             }
         } catch (error) {
             if (error.response) {
@@ -194,23 +201,24 @@ const ProductCatalogue: React.FC = () => {
                     const exceptionMessage = error.response.data.exception;
 
                     // Check if the message contains 'LinkExistsError' and display the custom message
-                    if (exceptionMessage.includes('LinkExistsError')) {
-                        const linkedMessage = "This Product Category is linked with a Product. Please unlink it before deletion.";
+                    if (exceptionMessage.includes("LinkExistsError")) {
+                        const linkedMessage =
+                            "This Product Category is linked with a Product. Please unlink it before deletion.";
                         alert(linkedMessage);
                     } else {
                         alert(exceptionMessage);
                     }
                 } else {
-                    alert('Failed to delete Product Category. Please try again.');
+                    alert("Failed to delete Product Category. Please try again.");
                 }
             } else {
-                console.error('Error deleting Product Category:', error);
-                alert('Failed to delete Product Category. Please try again.');
+                console.error("Error deleting Product Category:", error);
+                alert("Failed to delete Product Category. Please try again.");
             }
         }
     };
     const handleCloseModal = () => {
-        setProductCategoryToEdit(null);  // Reset to Add Mode
+        setProductCategoryToEdit(null); 
         setShowAddCatalogueForm(false);
     };
 
@@ -223,7 +231,7 @@ const ProductCatalogue: React.FC = () => {
         <>
             <Pageheader
                 currentpage={"Product Catalogue"}
-                activepage={"/product-catalogue"}
+                activepage={"/product-catagory"}
                 activepagename="Product Catalogue"
             />
 
@@ -241,13 +249,12 @@ const ProductCatalogue: React.FC = () => {
                     />
 
                     <div className="box-body m-5">
-
                         <TableComponent<ProductCategory>
                             columns={[
-                                { header: 'Category Name', accessor: 'category_name' },
+                                { header: "Category Name", accessor: "category_name" },
                                 {
-                                    header: 'Image',
-                                    accessor: 'catalogue_image',
+                                    header: "Image",
+                                    accessor: "catalogue_image",
                                     render: (row) => (
                                         <img
                                             src={row.catalogue_image}
@@ -260,21 +267,24 @@ const ProductCatalogue: React.FC = () => {
                             data={filteredData || []}
                             currentPage={currentPage}
                             itemsPerPage={itemsPerPage}
-                            handlePrevPage={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                            handlePrevPage={() =>
+                                setCurrentPage((prev) => Math.max(prev - 1, 1))
+                            }
                             handleNextPage={() => setCurrentPage((prev) => prev + 1)}
                             handlePageChange={(page) => setCurrentPage(page)}
                             showProductQR={false}
                             showEdit={true}
-                            onEdit={handleEditProductCategory}  // Edit button handler
+                            onEdit={handleEditProductCategory} // Edit button handler
                             showDelete={true}
                             onDelete={handleDeleteProductCategory}
                             showView={false}
+                            columnStyles={{
+                                'Category Name': 'text-[var(--primaries)] font-semibold',
+                            }}
                         />
                     </div>
                 </div>
             </div>
-
-
 
             {showAddCatalogueForm && (
                 <div className="grid grid-cols-12 gap-x-6 p-6 fixed inset-0 z-50 items-center justify-center bg-black bg-opacity-50">
@@ -283,9 +293,15 @@ const ProductCatalogue: React.FC = () => {
                             <div className="box-header">
                                 <div className="ti-modal-header flex justify-between border-b p-4">
                                     <h6 className="modal-title text-1rem font-semibold text-primary">
-                                        {productCategoryToEdit ? "Edit Product Catalogue" : "Add Product Catalogue"}
+                                        {productCategoryToEdit
+                                            ? "Edit Product Catalogue"
+                                            : "Add Product Catalogue"}
                                     </h6>
-                                    <button onClick={handleCloseModal} type="button" className="text-1rem font-semibold text-defaulttextcolor">
+                                    <button
+                                        onClick={handleCloseModal}
+                                        type="button"
+                                        className="text-1rem font-semibold text-defaulttextcolor"
+                                    >
                                         <span className="sr-only">Close</span>
                                         <i className="ri-close-line"></i>
                                     </button>
@@ -306,10 +322,15 @@ const ProductCatalogue: React.FC = () => {
                                                 id="categoryName"
                                                 className="form-control w-full !rounded-md !bg-light text-defaulttextcolor text-xs font-medium"
                                                 placeholder="Enter Product Category"
-                                                value={productCatalogue || (productCategoryToEdit ? productCategoryToEdit.category_name : '')}
+                                                value={
+                                                    productCatalogue ||
+                                                    (productCategoryToEdit
+                                                        ? productCategoryToEdit.category_name
+                                                        : "")
+                                                }
                                                 onChange={(e) => setProductCatalogue(e.target.value)}
+                                                readOnly={!!productCategoryToEdit}
                                             />
-
                                         </div>
                                         <div className="xl:col-span-12 col-span-12">
                                             <label
@@ -344,12 +365,23 @@ const ProductCatalogue: React.FC = () => {
                                             </div>
                                         </div>
                                         <div className="xl:col-span-12 col-span-12 text-center">
-                                            <button
-                                                type="submit"
-                                                className="ti-btn ti-btn-primary-full w-full bg-primary"
-                                            >
-                                                {productCategoryToEdit ? "Update Category" : "Submit"}
-                                            </button>
+
+
+                                            <div className="flex justify-end">
+                                                <button
+                                                    type="submit"
+                                                    className="ti-btn ti-btn-primary-full bg-primary me-2"
+                                                >
+                                                    {productCategoryToEdit ? "Update Category" : "Submit"}
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    className="bg-primary/20 ti-btn text-defaulttextcolor"
+                                                    onClick={handleCloseModal}
+                                                >
+                                                    Cancel
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 </form>
@@ -358,8 +390,6 @@ const ProductCatalogue: React.FC = () => {
                     </div>
                 </div>
             )}
-
-
 
             {isConfirmDeleteModalOpen && (
                 <DangerAlert
@@ -382,11 +412,12 @@ const ProductCatalogue: React.FC = () => {
                     showMessagesecond={false}
                     message={alertMessage}
                     onClose={function (): void {
-                        throw new Error('Function not implemented.');
+                        throw new Error("Function not implemented.");
                     }}
                     onCancel={function (): void {
-                        throw new Error('Function not implemented.');
-                    }} />
+                        throw new Error("Function not implemented.");
+                    }}
+                />
             )}
         </>
     );

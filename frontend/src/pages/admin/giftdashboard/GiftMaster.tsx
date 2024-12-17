@@ -6,7 +6,13 @@ import TableBoxComponent from "../../../components/ui/tables/tableboxheader";
 import CreateQRCode from "../../../components/ui/models/CreateQRModel.tsx";
 import SuccessAlert from "../../../components/ui/alerts/SuccessAlert";
 import DangerAlert from "../../../components/ui/alerts/DangerAlert";
-import { PulseLoader } from "react-spinners";
+import TableComponent from '../../../components/ui/tables/tablecompnent';
+
+interface Gift {
+    name: string,
+    gift_product_name?: string,
+    points?: number
+}
 
 const ProductMaster: React.FC = () => {
     const [giftData, setGiftData] = useState<Gift[]>([]);
@@ -54,12 +60,19 @@ const ProductMaster: React.FC = () => {
         };
 
         fetchProducts();
-    }, []);
+        if (showSuccessAlert) {
+            const timer = setTimeout(() => {
+                setShowSuccessAlert(false);
+                // window.location.reload();
+            }, 3000);
+            return () => clearTimeout(timer);
+        }
+    }, [showSuccessAlert]);
 
     // Handle search filtering
     useEffect(() => {
         const filtered = giftData.filter((gift) =>
-            gift.gift_product_name.toLowerCase().includes(searchQuery.toLowerCase())
+            gift.gift_product_name?.toLowerCase().includes(searchQuery.toLowerCase())
         );
         setFilteredData(filtered);
     }, [searchQuery, giftData]);
@@ -81,9 +94,15 @@ const ProductMaster: React.FC = () => {
         setModalOpen(true);
     };
 
+    const handleEditGiftProduct = (item : Gift)=>{
+        setModalOpen(true);
+    }
+
     const closeModal = () => {
         setModalOpen(false);
         setSelectedProduct(null);
+        setShowSuccessAlert(false);
+
     };
 
     const handleDeleteProduct = (item: Gift) => {
@@ -91,22 +110,49 @@ const ProductMaster: React.FC = () => {
         setIsConfirmDeleteModalOpen(true);
     };
 
+
+
     const confirmDelete = async () => {
         if (productToDelete) {
             try {
-                await axios.delete(`/api/method/reward_management.api.gift_product.delete_product`, {
-                    data: { gift_id: productToDelete.name },
+                const response = await fetch(`/api/resource/Gift Product/${productToDelete.name}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
                 });
+    
+                if (!response.ok) {
+                    setIsConfirmDeleteModalOpen(false);
+                    // Check if the status is 417 or other errors
+                    const errorData = await response.json();
+                    console.error("Error Response: ", errorData);
+    
+                    // Show the error message from the response in the alert
+                    setAlertTitle("Error");
+                    setAlertMessage(errorData.exception || 'Failed to delete product');
+                    setShowSuccessAlert(true);
+                    return; // exit early if there was an error
+                }
+    
+                // Handle success case
                 setAlertTitle("Success");
                 setAlertMessage("Product deleted successfully!");
                 setShowSuccessAlert(true);
                 setGiftData(giftData.filter((gift) => gift.name !== productToDelete.name));
                 setIsConfirmDeleteModalOpen(false);
+    
             } catch (error) {
+                // Handle network or unexpected errors
                 console.error("Error deleting product:", error);
+                setAlertTitle("Error");
+                setAlertMessage('Error deleting product: ' + error.message);
+                setShowSuccessAlert(true);
             }
         }
     };
+    
+
 
     const cancelDelete = () => {
         setIsConfirmDeleteModalOpen(false);
@@ -115,7 +161,7 @@ const ProductMaster: React.FC = () => {
 
     return (
         <Fragment>
-            <Pageheader currentpage="Product Master" activepage="/product-master" activepagename="Product Master" />
+            <Pageheader currentpage="Gift Master" activepage="/gift-master" activepagename="Gift Master" />
             <div className="grid grid-cols-12 gap-x-6 bg-white mt-5 rounded-lg shadow-lg">
                 <div className="xl:col-span-12 col-span-12">
                     <TableBoxComponent
@@ -123,75 +169,52 @@ const ProductMaster: React.FC = () => {
                         onSearch={handleSearch}
                         buttonText="Add Gift"
                         showButton={true}
-                        onAddButtonClick={() => navigate("/add-gift")}
+                        onAddButtonClick={() => navigate("/add-gift-product")}
                     />
-                    <div className="box-body m-5">
-                        {loading ? (
-                            <PulseLoader />
-                        ) : error ? (
-                            <p className="text-red-500">{error}</p>
-                        ) : (
-                            <div className="table-responsive pt-2">
-                                <table className="table whitespace-nowrap min-w-full">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col" className="text-start p-3 text-sm text-defaulttextcolor font-semibold border border-gray-300">S.No</th>
-                                            <th className="text-start p-3 text-sm text-defaulttextcolor font-semibold border border-gray-300">Gift ID</th>
-                                            <th className="text-start p-3 text-sm text-defaulttextcolor font-semibold border border-gray-300">Gift Name</th>
-                                            <th className="text-start p-3 text-sm text-defaulttextcolor font-semibold border border-gray-300">Points</th>
-                                            <th className="text-start p-3 text-sm text-defaulttextcolor font-semibold border border-gray-300">Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {currentItems.map((gift, index) => (
-                                            <tr key={gift.name}>
-                                                <td className="p-3 text-defaultsize font-medium text-defaulttextcolor whitespace-nowrap border border-gray-300">{indexOfFirstItem + index + 1}</td>
-                                                <td className="p-3 text-defaultsize font-semibold text-[var(--primaries)] whitespace-nowrap border border-gray-300">{gift.name}</td>
-                                                <td className="p-3 text-defaultsize font-semibold text-[var(--primaries)] whitespace-nowrap border border-gray-300">{gift.gift_product_name}</td>
-                                                <td className="p-3 text-defaultsize font-semibold text-[var(--primaries)] whitespace-nowrap border border-gray-300"> {gift.points}</td>
-                                                <td className="p-3 text-defaultsize font-semibold text-[var(--primaries)] whitespace-nowrap border border-gray-300">
-                                                    <Link
-                                                        aria-label="Edit"
-                                                        to={`/edit-gift?gift=${encodeURIComponent(gift.name)}`}
-                                                        className="link-icon bg-[var(--bg-primary)] hover:bg-[var(--primaries)] py-2 px-[10px] rounded-full mr-2"
-                                                    >
-                                                        <i className="ri-edit-2-fill"></i>
-                                                    </Link>
-                                                    <Link
-                                                        aria-label="Delete"
-                                                        to="#"
-                                                        className={`link-icon bg-[var(--bg-primary)] hover:bg-[var(--primaries)] py-2 px-[10px] rounded-full mr-2 `}
-                                                        onClick={(e) => {
-                                                            handleDeleteProduct(gift); 
-                                                            
-                                                            
-                                                        }}
-                                                    >
-                                                        <i className="ri-delete-bin-line"></i>
-                                                    </Link>
 
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            </div>
-                        )}
-                        {/* Pagination */}
-                        <div>
-                            <button onClick={handlePrevPage} disabled={currentPage === 1}>
-                                Prev
-                            </button>
-                            <button onClick={handleNextPage} disabled={currentPage === totalPages}>
-                                Next
-                            </button>
-                        </div>
+                    <div className="box-body m-5">
+                        <TableComponent<Gift>
+                            columns={[
+                                { header: 'Gift ID', accessor: 'name' },
+                                { header: 'Gift Product Name', accessor: 'gift_product_name' },
+                                { header: 'Points', accessor: 'points' },
+                            ]}
+                            data={filteredData || []}
+                            currentPage={currentPage}
+                            itemsPerPage={itemsPerPage}
+                            handlePrevPage={handlePrevPage}
+                            handleNextPage={handleNextPage}
+                            handlePageChange={handlePageChange}
+                            showProductQR={false}
+                            showEdit={true}
+                            onEdit={handleEditGiftProduct}
+                            showDelete={true}
+                            onDelete={handleDeleteProduct}
+                            editHeader='Action'
+                            columnStyles={{
+                                'Gift ID': 'text-[var(--primaries)] font-semibold',
+                            }}
+                        />
                     </div>
                 </div>
             </div>
             {/* Modals and Alerts */}
-            {modalOpen && selectedProduct && <CreateQRCode isOpen={modalOpen} onClose={closeModal} />}
-            {showSuccessAlert && <SuccessAlert title={alertTitle} message={alertMessage} />}
+         
+            {showSuccessAlert && 
+            <SuccessAlert 
+                title={alertTitle}
+                message={alertMessage} showButton={false}
+                showCancleButton={false}
+                showCollectButton={false}
+                showAnotherButton={false}
+                showMessagesecond={false} 
+                onClose={function (): void {
+                    throw new Error("Function not implemented.");
+                } } 
+                onCancel={function (): void {
+                    throw new Error("Function not implemented.");
+                } }            />
+            }
             {isConfirmDeleteModalOpen && (
                 <DangerAlert
                     type="danger"

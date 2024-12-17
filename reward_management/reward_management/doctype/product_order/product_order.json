@@ -11,6 +11,7 @@
   "full_name",
   "mobile_number",
   "pincode",
+  "order_date",
   "column_break_gqtc",
   "product_name",
   "customer_id",
@@ -51,7 +52,6 @@
    "options": "Customer"
   },
   {
-   "fetch_from": "customer_id.full_name",
    "fieldname": "full_name",
    "fieldtype": "Data",
    "in_filter": 1,
@@ -60,7 +60,6 @@
    "label": "Full Name"
   },
   {
-   "fetch_from": "customer_id.email",
    "fieldname": "customer_email",
    "fieldtype": "Data",
    "in_filter": 1,
@@ -99,14 +98,22 @@
    "fieldtype": "Select",
    "label": "Naming Series",
    "options": "Product-Order.-.#####"
+  },
+  {
+   "fieldname": "order_date",
+   "fieldtype": "Date",
+   "label": "Order Date"
   }
  ],
+ "image_field": "product_image",
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-12-12 15:14:01.909625",
+ "make_attachments_public": 1,
+ "modified": "2024-12-17 16:21:57.360262",
  "modified_by": "Administrator",
  "module": "Reward Management",
  "name": "Product Order",
+ "naming_rule": "By \"Naming Series\" field",
  "owner": "Administrator",
  "permissions": [
   {

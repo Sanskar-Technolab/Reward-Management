@@ -15,6 +15,13 @@ import { IconCoins } from '@tabler/icons-react';
 import RedeemIcon from '@mui/icons-material/Redeem'; 
 import { IconHelpHexagon } from '@tabler/icons-react';
 import { IoMdContact } from "react-icons/io";
+// import { FaBorderAll } from "react-icons/fa6";
+import BusinessIcon from '@mui/icons-material/Business';
+// import CategoryIcon from '@mui/icons-material/Category';
+import { IconLibraryPhoto } from '@tabler/icons-react';
+import { IconLayoutKanban } from '@tabler/icons-react';
+import { IconGardenCart } from '@tabler/icons-react';
+import { IconGift } from '@tabler/icons-react';
 
 
 
@@ -35,7 +42,7 @@ export const SidebarData = [
   {
     title: 'Projects',
     path: '/project',
-    icon: <AiIcons.AiFillHome className='sidebaricon' />,
+    icon: <IconLayoutKanban className='sidebaricon' />,
 
   },
   {
@@ -60,10 +67,33 @@ export const SidebarData = [
       },
     ]
   },
+
+  {
+    title: 'Gift Dashboard',
+    // path: '/admin-dashboard',
+    icon: <IconGift className='sidebaricon' />,
+    iconClosed:<SlArrowRight style={iconStyle}  /> ,
+    iconOpened: <SlArrowDown style={iconStyle}  />,
+
+    subNav: [
+      {
+        title: 'Gift Master',
+        path: '/gift-master',
+        icon: <VscCircle />,
+        cName: 'sub-nav'
+      },
+    //   {
+    //     title: 'Product QR History',
+    // path: '/product-qr-history',
+    //     icon: <VscCircle />,
+    //     cName: 'sub-nav'
+    //   },
+    ]
+  },
   {
     title: 'Product Catalogue',
     path: '/product-catagory',
-    icon: <IconCoins className='sidebaricon'  />
+    icon: <IconLibraryPhoto className='sidebaricon'  />
   },
   {
     title: 'Customer Dashboard',
@@ -85,6 +115,11 @@ export const SidebarData = [
         icon: <VscCircle  />
       }
     ]
+  },
+  {
+    title: 'Products Order',
+    path: '/customer-product-orders',
+    icon: <IconGardenCart className='sidebaricon'  />
   },
   {
     title: 'Reward Request',
@@ -120,7 +155,7 @@ export const SidebarData = [
   {
     title: 'Set Company Address',
     path: '/company-address',
-    icon: <IconCoins className='sidebaricon'  />
+    icon: <BusinessIcon className='sidebaricon'  />
   },
   
   {

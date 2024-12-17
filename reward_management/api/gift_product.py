@@ -47,3 +47,37 @@ def get_gift_products():
             "status": "error", 
             "message": str(e)
         }
+
+# Add New Gift Product-------------
+@frappe.whitelist(allow_guest=True)
+def add_gift_product(new_image_url, giftproductName, giftproductDetails, giftproductDescription, points, giftproductSpecificaton):
+    # Ensure the input is a list for new_image_url
+    if not isinstance(new_image_url, list):
+        frappe.throw(_("The 'new_image_url' parameter must be an array of image URLs."))
+
+    # Create a new Gift Product document
+    gift_doc = frappe.get_doc({
+        "doctype": "Gift Product",
+        "gift_product_name": giftproductName,
+        "gift_detail": giftproductDetails,
+        "description": giftproductDescription,
+        "points": points,
+        "gift_specification": giftproductSpecificaton
+    })
+
+    # Append images to the gift_product_image child table
+    for image_url in new_image_url:
+        gift_doc.append("gift_product_image", {
+            "gift_product_image": image_url
+        })
+
+    # Save the document
+    gift_doc.insert()  # Insert a new document if it doesn't exist
+    frappe.db.commit()
+
+    return {
+        "status": "success",
+        "message": "Gift product added successfully",
+        "gift_product_name": giftproductName,
+        "updated_images": new_image_url
+    }
