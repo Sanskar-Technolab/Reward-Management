@@ -2,7 +2,7 @@ from __future__ import unicode_literals
 import frappe
 from datetime import datetime
 
-
+# Get Product QR Details from QR Images----------
 # @frappe.whitelist()
 # def get_product_details_from_qr(decode_text):
 #     try:
@@ -12,8 +12,8 @@ from datetime import datetime
 #             return {"error": "Invalid QR code format"}
         
 #         name = components[0]
-#         product_table_name = components[1]  # No need to strip yet, it should be a string
-#         product_qr_id = components[2]  # No need to strip yet, it should be a string
+#         product_table_name = components[1]
+#         product_qr_id = components[2]
 
 #         product_qr = frappe.get_doc("Product QR", name)
 #         print(f"Retrieved Product QR Document: {product_qr}")
@@ -46,10 +46,42 @@ from datetime import datetime
 #             if matched_row.scanned:
 #                 return {"error": "This QR code has already been scanned."}
 
+#             # Fetch the product_name
 #             product_name = frappe.get_value("Product", {"name": matched_row.product_table_name}, "product_name")
 #             if not product_name:
 #                 return {"error": "Product not found for the given product_table_name"}
 
+#             # Fetch payout_amount and reward_point from Reward Point Conversion Rate using product_name
+#             reward_point_conversion_rate = frappe.get_all(
+#                 "Reward Point Canversion Table",
+#                 filters={"product_name": product_name},  # Match with product_name
+#                 fields=["payout_amount", "reward_point", "from_date"],
+#                 order_by="idx desc",
+#                 limit=1
+#             )
+            
+#             if not reward_point_conversion_rate:
+#                 return {"error": "No reward point conversion rate found for this product"}
+
+#             payout_amount = reward_point_conversion_rate[-1].payout_amount
+#             reward_point = reward_point_conversion_rate[-1].reward_point
+#             # from_date = reward_point_conversion_rate[-1].from_date
+            
+#             # current_date_str = frappe.utils.nowdate()
+#             # current_date = datetime.strptime(current_date_str, "%Y-%m-%d").date()  
+
+
+#             # Check if the current date is greater than from_date
+#             # if current_date > from_date:
+#             #     return {"error": "Reward points covertion rate for this product have expired"}
+
+#             # Calculate earned_amount
+#             if reward_point and payout_amount:
+#                 earned_amount = (float(matched_row.points) / float(reward_point)) * float(payout_amount)
+#             else:
+#                 earned_amount = None
+
+#             # Return details only if the current date is not greater than from_date
 #             return {
 #                 "product_name": product_name,
 #                 "product_table_name": matched_row.product_table_name,
@@ -57,8 +89,11 @@ from datetime import datetime
 #                 "points": matched_row.points,
 #                 "qr_code_image": matched_row.qr_code_image,
 #                 "scanned": matched_row.scanned,
-#                 "row_number": row_number,  # Include the matched row number in the return data
-#                 "row_idx": matched_row.idx  # Include idx of the matched row
+#                 "row_number": row_number,
+#                 "row_idx": matched_row.idx,
+#                 "payout_amount": payout_amount,
+#                 "reward_point": reward_point,
+#                 "earned_amount": earned_amount
 #             }
 
 #         else:
@@ -67,6 +102,11 @@ from datetime import datetime
 #     except Exception as e:
 #         frappe.log_error(frappe.get_traceback(), f"Error in get_product_details_from_qr: {e}")
 #         return {"error": f"Server error: {e}"}
+
+
+
+
+
 
 @frappe.whitelist()
 def get_product_details_from_qr(decode_text):
@@ -124,29 +164,23 @@ def get_product_details_from_qr(decode_text):
                 order_by="idx desc",
                 limit=1
             )
-            
-            if not reward_point_conversion_rate:
-                return {"error": "No reward point conversion rate found for this product"}
 
-            payout_amount = reward_point_conversion_rate[-1].payout_amount
-            reward_point = reward_point_conversion_rate[-1].reward_point
-            from_date = reward_point_conversion_rate[-1].from_date
-            
-            current_date_str = frappe.utils.nowdate()
-            current_date = datetime.strptime(current_date_str, "%Y-%m-%d").date()  
+            payout_amount = None
+            reward_point = None
+            earned_amount = None
 
+            # Only calculate reward-related data if conversion rate is found
+            if reward_point_conversion_rate:
+                payout_amount = reward_point_conversion_rate[-1].payout_amount
+                reward_point = reward_point_conversion_rate[-1].reward_point
 
-            # Check if the current date is greater than from_date
-            if current_date > from_date:
-                return {"error": "Reward points covertion rate for this product have expired"}
+                # Calculate earned_amount if payout_amount and reward_point are available
+                if reward_point and payout_amount:
+                    earned_amount = (float(matched_row.points) / float(reward_point)) * float(payout_amount)
+                else:
+                    earned_amount = 0
 
-            # Calculate earned_amount
-            if reward_point and payout_amount:
-                earned_amount = (float(matched_row.points) / float(reward_point)) * float(payout_amount)
-            else:
-                earned_amount = None
-
-            # Return details only if the current date is not greater than from_date
+            # Return details including matching row data, even if reward point conversion rate is not found
             return {
                 "product_name": product_name,
                 "product_table_name": matched_row.product_table_name,
@@ -169,6 +203,8 @@ def get_product_details_from_qr(decode_text):
         return {"error": f"Server error: {e}"}
 
 
+
+# Update Product QR Scanned Table----------------
 @frappe.whitelist()
 def update_scanned_status(product_table_name, product_qr_id, carpenter_id):
     try:
@@ -252,6 +288,81 @@ def update_scanned_status(product_table_name, product_qr_id, carpenter_id):
         frappe.log_error(frappe.get_traceback(), f"Error in update_scanned_status: {e}")
         return {"error": f"Server error: {e}"}
 
+# @frappe.whitelist()
+# def get_product_details_from_qr_id(product_qr_id):
+#     try:
+#         if not product_qr_id:
+#             return {"error": "Product QR ID is required."}
+        
+#         # Use Frappe ORM to find the matching row in the child table
+#         product_qr_row = frappe.get_all(
+#             "Product QR Table",
+#             filters={"product_qr_id": product_qr_id},
+#             fields=["parent", "product_table_name", "product_qr_id", "points", "qr_code_image", "scanned", "idx"],
+#             limit=1
+#         )
+        
+#         if not product_qr_row:
+#             return {"error": "No Product QR details found for the given product_qr_id."}
+        
+#         matched_row = product_qr_row[0]
+
+#         # Check if already scanned
+#         if matched_row.get("scanned"):
+#             return {"message": "This Product QR has already been scanned."}
+
+#         # Fetch the Product QR document name
+#         product_qr_doc_name = matched_row.get("parent")
+
+#         # Fetch the product name
+#         product_name = frappe.get_value("Product", {"name": matched_row["product_table_name"]}, "product_name")
+#         if not product_name:
+#             return {"error": "Product not found for the given product_table_name"}
+
+#         # Fetch payout_amount and reward_point from Reward Point Conversion Rate
+#         reward_point_conversion_rate = frappe.get_all(
+#             "Reward Point Canversion Table",
+#             filters={"product_name": product_name},
+#             fields=["payout_amount", "reward_point", "from_date"],
+#             order_by="idx desc",
+#             limit=1
+#         )
+        
+#         if not reward_point_conversion_rate:
+#             return {"error": "No reward point conversion rate found for this product"}
+
+#         payout_amount = reward_point_conversion_rate[-1]["payout_amount"]
+#         reward_point = reward_point_conversion_rate[-1]["reward_point"]
+
+#         # Calculate earned_amount
+#         if reward_point and payout_amount:
+#             earned_amount = (float(matched_row["points"]) / float(reward_point)) * float(payout_amount)
+#         else:
+#             earned_amount = None
+
+#         # Return details
+#         return {
+#             "product_qr_doc_name": product_qr_doc_name,
+#             "product_name": product_name,
+#             "product_table_name": matched_row["product_table_name"],
+#             "product_qr_id": matched_row["product_qr_id"],
+#             "points": matched_row["points"],
+#             "qr_code_image": matched_row["qr_code_image"],
+#             "scanned": matched_row["scanned"],
+#             "row_idx": matched_row["idx"],
+#             "payout_amount": payout_amount,
+#             "reward_point": reward_point,
+#             "earned_amount": earned_amount
+#         }
+
+#     except Exception as e:
+#         frappe.log_error(frappe.get_traceback(), f"Error in get_product_details_from_qr_id: {e}")
+#         return {"error": f"Server error: {e}"}
+
+
+
+
+# Get QR Details From QE Code Number and if not added payment amount or payment amount table------------
 @frappe.whitelist()
 def get_product_details_from_qr_id(product_qr_id):
     try:
@@ -292,19 +403,22 @@ def get_product_details_from_qr_id(product_qr_id):
             limit=1
         )
         
-        if not reward_point_conversion_rate:
-            return {"error": "No reward point conversion rate found for this product"}
+        payout_amount = None
+        reward_point = None
+        earned_amount = None
 
-        payout_amount = reward_point_conversion_rate[-1]["payout_amount"]
-        reward_point = reward_point_conversion_rate[-1]["reward_point"]
+        # Only calculate reward-related data if conversion rate is found
+        if reward_point_conversion_rate:
+            payout_amount = reward_point_conversion_rate[-1]["payout_amount"]
+            reward_point = reward_point_conversion_rate[-1]["reward_point"]
 
-        # Calculate earned_amount
-        if reward_point and payout_amount:
-            earned_amount = (float(matched_row["points"]) / float(reward_point)) * float(payout_amount)
-        else:
-            earned_amount = None
+            # Calculate earned_amount if payout_amount and reward_point are available
+            if payout_amount and reward_point:
+                earned_amount = (float(matched_row["points"]) / float(reward_point)) * float(payout_amount)
+            else:
+                earned_amount = 0
 
-        # Return details
+        # Return details including matching row data
         return {
             "product_qr_doc_name": product_qr_doc_name,
             "product_name": product_name,
@@ -322,82 +436,3 @@ def get_product_details_from_qr_id(product_qr_id):
     except Exception as e:
         frappe.log_error(frappe.get_traceback(), f"Error in get_product_details_from_qr_id: {e}")
         return {"error": f"Server error: {e}"}
-
-
-# @frappe.whitelist()
-# def get_product_details_from_qr_id(product_qr_id):
-#     try:
-#         if not product_qr_id:
-#             return {"error": "Product QR ID is required."}
-        
-#         # Query the child table directly using frappe.db.sql to locate the matching row
-#         query = """
-#             SELECT
-#                 parent AS product_qr_doc_name,
-#                 product_table_name,
-#                 product_qr_id,
-#                 points,
-#                 qr_code_image,
-#                 scanned,
-#                 idx
-#             FROM
-#                 `tabProduct QR Table`
-#             WHERE
-#                 product_qr_id = %s
-#         """
-#         result = frappe.db.sql(query, product_qr_id, as_dict=True)
-
-#         if not result:
-#             return {"error": "No Product QR details found for the given product_qr_id."}
-        
-#         matched_row = result[0]
-
-#         # Fetch the Product QR document name
-#         product_qr_doc_name = matched_row.get("product_qr_doc_name")
-
-#         # Fetch the product name
-#         product_name = frappe.get_value("Product", {"name": matched_row["product_table_name"]}, "product_name")
-#         if not product_name:
-#             return {"error": "Product not found for the given product_table_name"}
-
-#         # Fetch payout_amount and reward_point from Reward Point Conversion Rate
-#         reward_point_conversion_rate = frappe.get_all(
-#             "Reward Point Canversion Table",
-#             filters={"product_name": product_name},
-#             fields=["payout_amount", "reward_point", "from_date"],
-#             order_by="idx desc",
-#             limit=1
-#         )
-        
-#         if not reward_point_conversion_rate:
-#             return {"error": "No reward point conversion rate found for this product"}
-
-#         payout_amount = reward_point_conversion_rate[-1].payout_amount
-#         reward_point = reward_point_conversion_rate[-1].reward_point
-        
-        
-
-#         # Calculate earned_amount
-#         if reward_point and payout_amount:
-#             earned_amount = (float(matched_row["points"]) / float(reward_point)) * float(payout_amount)
-#         else:
-#             earned_amount = None
-
-#         # Return details
-#         return {
-#             "product_qr_doc_name": product_qr_doc_name,
-#             "product_name": product_name,
-#             "product_table_name": matched_row["product_table_name"],
-#             "product_qr_id": matched_row["product_qr_id"],
-#             "points": matched_row["points"],
-#             "qr_code_image": matched_row["qr_code_image"],
-#             "scanned": matched_row["scanned"],
-#             "row_idx": matched_row["idx"],
-#             "payout_amount": payout_amount,
-#             "reward_point": reward_point,
-#             "earned_amount": earned_amount
-#         }
-
-#     except Exception as e:
-#         frappe.log_error(frappe.get_traceback(), f"Error in get_product_details_from_qr_id: {e}")
-#         return {"error": f"Server error: {e}"}

@@ -224,7 +224,7 @@ const QRScanner = () => {
       }
   
       if (data.message) {
-        console.log("API Response:", data);
+        console.log("API QR Response:", data);
         const productData = data.message;
   
         // Set product details

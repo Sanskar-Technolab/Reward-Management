@@ -518,7 +518,7 @@ const EditProduct: React.FC = () => {
                                         }`}
                                     onClick={() => handleTabChange("addProduct")}
                                 >
-                                    Add Product
+                                    Edit Product
                                 </button>
                                 <button
                                     className={`text-defaulttextcolor dark:text-defaulttextcolor/70 py-2 px-3 text-[0.75rem] font-medium rounded-[5px] hover:text-primary ${activeTab === "pointConversion"

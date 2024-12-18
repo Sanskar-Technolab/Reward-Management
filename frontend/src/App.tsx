@@ -17,6 +17,7 @@ import ProductMaster from './pages/admin/productdashboards/ProductMaster.tsx';
 import ProductOrders from './pages/admin/productorderdashboard/ProductOrder.tsx';
 import GiftMaster from './pages/admin/giftdashboard/GiftMaster.tsx';
 import AddGiftProduct from './pages/admin/giftdashboard/AddGiftProduct.tsx';
+import EditGiftProduct from './pages/admin/giftdashboard/EditGiftProduct.tsx';
 import AddProduct from './pages/admin/productdashboards/Addproduct.tsx';
 import EditProduct from './pages/admin/productdashboards/EditProduct.tsx';
 import ProductQRHistory from './pages/admin/productdashboards/ProductQRHistory.tsx';
@@ -166,6 +167,7 @@ fetchWebsiteSettings();
           <Route path='/product-master' element={<ProductMaster />} />
           <Route path='/gift-master' element={<GiftMaster />} />
           <Route path='/add-gift-product' element={<AddGiftProduct />} />
+          <Route path='/edit-gift-product/:giftId' element={<EditGiftProduct />} />
           <Route path='/add-product' element={<AddProduct />}/>
           <Route path='/edit-product' element={<EditProduct />}/>
           <Route path='/product-qr-history' element={<ProductQRHistory />} />

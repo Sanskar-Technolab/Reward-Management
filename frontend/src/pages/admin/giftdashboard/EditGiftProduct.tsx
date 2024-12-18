@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import Pageheader from '../../../components/common/pageheader/pageheader';
 import SunEditor from 'suneditor-react';
-import { useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import 'suneditor/dist/css/suneditor.min.css';
+
 import SuccessAlert from '../../../components/ui/alerts/SuccessAlert';
 import '../../../assets/css/style.css';
 import '../../../assets/css/pages/admindashboard.css';
-import { useFrappeGetDocList, useFrappePostCall } from 'frappe-react-sdk';
 import axios from 'axios';
 
-const AddGiftProduct: React.FC = () => {
+const EditGiftProduct: React.FC = () => {
     const [files, setFiles] = useState<File[]>([]);
     const [fileDetails, setFileDetails] = useState<{ url: string, name: string }[]>([]);
     const [giftproductName, setGiftProductName] = useState('');
@@ -17,9 +17,12 @@ const AddGiftProduct: React.FC = () => {
     const [giftproductDetails, setGiftProductDetails] = useState('');
     const [giftproductDescription, setGiftProductDescription] = useState('');
     const [giftproductSpecificaton, setGiftProductSpecificaton] = useState('');
+    const [existingImages, setExistingImages] = useState<string[]>([]);
+
     const [showSuccessAlert, setShowSuccessAlert] = useState(false);
     const [error, setError] = useState('');
     const navigate = useNavigate();
+    const { giftproductId } = useParams<{ giftproductId: string }>();
 
     const resetForm = () => {
         setFiles([]);
@@ -31,8 +34,67 @@ const AddGiftProduct: React.FC = () => {
         setGiftProductSpecificaton('');
     };
 
+    const location = useLocation();
+
     useEffect(() => {
-        document.title = 'Add Gift Product';
+        document.title = 'Edit Gift Product';
+
+        // console.log("Current location: ", location);
+
+        // Extract gift product ID from pathname
+        const pathSegments = location.pathname.split('/');
+        const giftProductId = pathSegments[pathSegments.length - 1];
+
+        // console.log("Extracted Gift Product ID:", giftProductId);
+        const fetchGiftProducts = async () => {
+            try {
+                const response = await axios.get(
+                    `/api/method/reward_management.api.gift_product.get_url_gift_products?url_name=${giftProductId}`
+                );
+                const productData = response.data.message?.data;
+
+                if (response.data.message?.status === "success" && productData) {
+                    const matchedProduct = productData.find(
+                        (product: { name: string }) =>
+                            product.name
+                                .replace(/\s+/g, "%20")
+                                .toLowerCase() === giftProductId?.toLowerCase()
+                    );
+
+                    if (matchedProduct) {
+                        console.log("matched gift", matchedProduct)
+                        // Set state with the matched product data
+                        setGiftProductName(matchedProduct.gift_product_name);
+                        setPoints(matchedProduct.points);
+                        setGiftProductDetails(matchedProduct.gift_detail);
+                        setGiftProductDescription(matchedProduct.description);
+                        setGiftProductSpecificaton(matchedProduct.gift_specification);
+
+                        // Set file URLs if available
+                        if (matchedProduct.gift_product_image && matchedProduct.gift_product_image.length > 0) {
+                            const imageDetails = matchedProduct.gift_product_image.map((url: string) => ({
+                                url: url,
+                                name: url.split('/').pop() || ''
+                            }));
+                            setExistingImages(imageDetails);
+                        }
+                    } else {
+                        console.error("No matching product found.");
+                    }
+                } else {
+                    console.error("Failed to fetch product data.");
+                }
+            } catch (err) {
+                console.error("Error fetching gift products:", err);
+            }
+        };
+
+        if (giftProductId) {
+            fetchGiftProducts();
+        } else {
+            console.error("Gift Product ID is missing.");
+        }
+
 
         if (showSuccessAlert) {
             const timer = setTimeout(() => {
@@ -41,52 +103,48 @@ const AddGiftProduct: React.FC = () => {
             }, 3000);
             return () => clearTimeout(timer);
         }
-    }, [showSuccessAlert, navigate]);
+    }, [showSuccessAlert, navigate, location]);
 
-   
- // Handle file selection
- const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const files = e.target.files;
 
-    if (files) {
-        const fileArray = Array.from(files);
+        if (files) {
+            const fileArray = Array.from(files);
 
-        if (fileArray.length + fileDetails.length > 10) {
-            setError('You can only select up to 10 images!');
-            return;
-        } else {
-            setError('');
-        }
+            if (fileArray.length + fileDetails.length > 10) {
+                setError('You can only select up to 10 images!');
+                return;
+            } else {
+                setError('');
+            }
 
-        const newFileDetails = fileArray.map((file) => {
-            const reader = new FileReader();
-            return new Promise<{ url: string, name: string }>((resolve) => {
-                reader.onload = (event) => {
-                    resolve({
-                        url: event.target?.result as string,
-                        name: file.name,
-                    });
-                };
-                reader.readAsDataURL(file);
+            const newFileDetails = fileArray.map((file) => {
+                const reader = new FileReader();
+                return new Promise<{ url: string, name: string }>((resolve) => {
+                    reader.onload = (event) => {
+                        resolve({
+                            url: event.target?.result as string,
+                            name: file.name,
+                        });
+                    };
+                    reader.readAsDataURL(file);
+                });
             });
-        });
 
-        Promise.all(newFileDetails).then((newDetails) => {
-            setFileDetails((prevFiles) => [...prevFiles, ...newDetails]);
-        });
-    }
-};
+            Promise.all(newFileDetails).then((newDetails) => {
+                setFileDetails((prevFiles) => [...prevFiles, ...newDetails]);
+            });
+        }
+    };
 
-// Handle file removal
-const handleRemoveImage = (indexToRemove: number) => {
-    setFileDetails((prevFiles) =>
-        prevFiles.filter((_, index) => index !== indexToRemove)
-    );
-};
+    const handleRemoveImage = (indexToRemove: number) => {
+        setFileDetails((prevFiles) =>
+            prevFiles.filter((_, index) => index !== indexToRemove)
+        );
+    };
 
-
-      // Upload file function
-      const uploadFile = async (file: File) => {
+    // Upload file function
+    const uploadFile = async (file: File) => {
         const formData = new FormData();
         formData.append("file", file, file.name);
         formData.append("is_private", "0");
@@ -100,8 +158,8 @@ const handleRemoveImage = (indexToRemove: number) => {
                     "Content-Type": "multipart/form-data",
                 },
             });
-            if(response){
-                console.log("image upload response",response)
+            if (response) {
+                console.log("image upload response", response)
             }
             if (response.data.message && response.data.message.file_url) {
                 return response.data.message.file_url;
@@ -118,58 +176,48 @@ const handleRemoveImage = (indexToRemove: number) => {
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
         const uploadedFileURLs: string[] = [];
-    
+
         try {
             // Upload each file and collect the URLs
             for (const fileDetail of fileDetails) {
                 const fileBlob = await fetch(fileDetail.url).then(res => res.blob());
                 const file = new File([fileBlob], fileDetail.name, { type: fileBlob.type });
-    
+
                 // Assuming `uploadFile` is a function that returns the URL after uploading the file
-                const fileURL = await uploadFile(file); 
+                const fileURL = await uploadFile(file);
                 if (fileURL) {
                     uploadedFileURLs.push(fileURL);
                 }
             }
-    
+
             console.log("Uploaded File URLs:", uploadedFileURLs);
-    
+
             // Prepare data for the API call
-            const giftProductData = {
-                new_image_url: uploadedFileURLs,
-                giftproductName: giftproductName,  
-                giftproductDetails: giftproductDetails,  
-                giftproductDescription: giftproductDescription,  
-                points: points, 
-                giftproductSpecificaton: giftproductSpecificaton 
-            };
-    
-            // Make the API call to add a new gift product
-            const response = await axios.post('/api/method/reward_management.api.gift_product.add_gift_product', giftProductData);
-            if(response){
-                console.log("gift post response",response)
-            }
-    
-            // Check if the response was successful
-            if (response.status === 200) {
-                setShowSuccessAlert(true);
-                resetForm();  // Reset the form after successful submission
-            }
+            // const giftProductData = {
+            //     new_image_url: uploadedFileURLs,
+            //     giftproductName: giftproductName,  
+            //     giftproductDetails: giftproductDetails,  
+            //     giftproductDescription: giftproductDescription,  
+            //     points: points, 
+            //     giftproductSpecificaton: giftproductSpecificaton 
+            // };
+
+
         } catch (err) {
             setError('Something went wrong. Please try again later.');
             console.error('Error:', err);
         }
     };
-    
+
 
     return (
         <>
             <Pageheader
-                currentpage={"Add Gift Product"}
+                currentpage={"Edit Gift Product"}
                 activepage={"/gift-master"}
-                mainpage={"/add-gift-product"}
+                mainpage={"/edit-gift-product"}
                 activepagename="Gift Master"
-                mainpagename="Add Gift Product"
+                mainpagename="Edit Gift Product"
             />
             <div className="grid grid-cols-12 gap-6 bg-white mt-5 rounded-lg shadow-lg">
                 <div className="xl:col-span-12 col-span-12">
@@ -188,7 +236,7 @@ const handleRemoveImage = (indexToRemove: number) => {
                                                     placeholder="Name"
                                                     value={giftproductName}
                                                     onChange={(e) => setGiftProductName(e.target.value)}
-                                                    required
+                                                    readOnly
                                                 />
                                             </div>
                                             <div className="xl:col-span-12 col-span-12">
@@ -251,11 +299,12 @@ const handleRemoveImage = (indexToRemove: number) => {
                                                 </div>
                                             </div>
                                         </div>
+                                       
                                         <div>
                                             <div className="xl:col-span-12 col-span-12">
                                                 <label
                                                     htmlFor="file-upload"
-                                                    className="block text-sm font-medium text-gray-700"
+                                                    className="block text-sm font-semibold text-defaulttextcolor"
                                                 >
                                                     Gift Images
                                                 </label>
@@ -271,59 +320,47 @@ const handleRemoveImage = (indexToRemove: number) => {
 
                                             {/* Image Previews */}
                                             <div className="grid grid-cols-3 gap-5 my-4">
-                                                    {fileDetails.map((file, index) => (
-                                                        <div key={index} className="relative group">
+                                                {fileDetails.length > 0 ? (
+                                                    fileDetails.map((file, index) => (
+                                                        <div key={index} className="image-preview">
                                                             <img
                                                                 src={file.url}
-                                                                alt={file.name}
-                                                                className="w-full h-32 object-contain rounded-md"
+                                                                alt={`Gift Product Image ${index + 1}`}
+                                                                className="w-full h-auto rounded-lg"
                                                             />
                                                             <button
                                                                 type="button"
+                                                                className="remove-image-btn"
                                                                 onClick={() => handleRemoveImage(index)}
-                                                                className="absolute top-[-10px] right-[-10px] bg-red-600 text-primary p-1 rounded-full opacity-0 group-hover:opacity-100 transition"
                                                             >
-                                                                <i className="ri-close-line text-primary text-lg font-bold "></i>
+                                                                Remove
                                                             </button>
                                                         </div>
-                                                    ))}
-                                                </div>
+                                                    ))
+                                                ) : (
+                                                    <p className='text-defaultsize text-defaulttextcolor'>No images uploaded yet.</p>
+                                                )}
+                                            </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-
-                                <div className="px-6 py-4 border-t dark:border-defaultborder sm:flex justify-end">
-                                    <button type="submit" className="ti-btn bg-primary text-white !font-medium m-1">
-                                        Add Gift <i className="bi bi-plus-lg ms-2"></i>
-                                    </button>
+                                <div className="form-group text-center">
                                     <button
-                                        type="button"
-                                        className="ti-btn ti-btn-success bg-primary/20 ti-btn text-defaulttextcolor !font-medium m-1"
-                                        onClick={resetForm}
+                                        type="submit"
+                                        className="btn btn-primary text-white w-full py-2"
                                     >
-                                        Cancel
+                                        Save
                                     </button>
                                 </div>
-                            </div>
                         </form>
-
-                        {showSuccessAlert && (
-                            <SuccessAlert
-                                showButton={false}
-                                showCancleButton={false}
-                                showCollectButton={false}
-                                showAnotherButton={false}
-                                showMessagesecond={false}
-                                message="New Product Added successfully!"
-                                onClose={() => { }}
-                                onCancel={() => { }}
-                            />
-                        )}
                     </div>
                 </div>
             </div>
+
+            {showSuccessAlert && <SuccessAlert message="Gift Product updated successfully!" />}
         </>
     );
 };
 
-export default AddGiftProduct;
+export default EditGiftProduct;

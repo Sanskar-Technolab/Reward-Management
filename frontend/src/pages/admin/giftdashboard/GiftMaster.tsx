@@ -19,8 +19,8 @@ const ProductMaster: React.FC = () => {
     const [filteredData, setFilteredData] = useState<Gift[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(5);
-    const [modalOpen, setModalOpen] = useState(false);
-    const [selectedProduct, setSelectedProduct] = useState<Gift | null>(null);
+    // const [modalOpen, setModalOpen] = useState(false);
+    // const [selectedProduct, setSelectedProduct] = useState<Gift | null>(null);
     const [showSuccessAlert, setShowSuccessAlert] = useState(false);
     const [loading, setLoading] = useState(false);
     const [alertMessage, setAlertMessage] = useState("");
@@ -89,21 +89,28 @@ const ProductMaster: React.FC = () => {
 
     const handleSearch = (value: string) => setSearchQuery(value);
 
-    const openModal = (product: Gift) => {
-        setSelectedProduct(product);
-        setModalOpen(true);
+    // const openModal = (product: Gift) => {
+    //     setSelectedProduct(product);
+    //     setModalOpen(true);
+    // };
+
+    const handleEditGiftProduct = (item: Gift) => {
+        navigate(`/edit-gift-product/${encodeURIComponent(item.name)}`);
     };
+    
+    
+    // const handleEditGiftProduct = (item: Gift) => {
+        
+    //     const giftId = item.name.replace(/\s+/g, '_');
+       
+    //     navigate(`/edit-gift-product/${giftId}`);
+    // };
+    // const closeModal = () => {
+    //     setModalOpen(false);
+    //     setSelectedProduct(null);
+    //     setShowSuccessAlert(false);
 
-    const handleEditGiftProduct = (item : Gift)=>{
-        setModalOpen(true);
-    }
-
-    const closeModal = () => {
-        setModalOpen(false);
-        setSelectedProduct(null);
-        setShowSuccessAlert(false);
-
-    };
+    // };
 
     const handleDeleteProduct = (item: Gift) => {
         setProductToDelete(item);
