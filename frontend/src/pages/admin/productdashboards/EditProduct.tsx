@@ -286,6 +286,8 @@ const EditProduct: React.FC = () => {
 
     const handleCloseModal = () => {
         setShowAddCategoryModal(false);
+        setShowAddRowModal(false);
+        // console.log("first")
     };
 
 
@@ -516,7 +518,7 @@ const EditProduct: React.FC = () => {
                                         }`}
                                     onClick={() => handleTabChange("addProduct")}
                                 >
-                                    Add Product
+                                    Edit Product
                                 </button>
                                 <button
                                     className={`text-defaulttextcolor dark:text-defaulttextcolor/70 py-2 px-3 text-[0.75rem] font-medium rounded-[5px] hover:text-primary ${activeTab === "pointConversion"
@@ -645,7 +647,7 @@ const EditProduct: React.FC = () => {
                                                             </select>
                                                             <button
                                                                 type="button"
-                                                                className="ti-btn ti-btn-primary bg-primary p-3 rounded-[0.5rem]"
+                                                                className="ti-btn text-white bg-primary p-3 rounded-[0.5rem]"
                                                                 onClick={() => setShowAddCategoryModal(true)}
                                                             >
                                                                 <i className="fas fa-plus" />
@@ -767,17 +769,17 @@ const EditProduct: React.FC = () => {
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className="flex justify-end gap-3 mt-6">
+                                        <div className="flex justify-end gap-2 mt-6">
                                             <button
                                                 type="button"
-                                                className="ti-btn ti-btn-success bg-defaulttextcolor ti-btn text-white !font-medium m-1"
+                                                className="ti-btn ti-btn-success bg-primary/20 ti-btn text-defaulttextcolor !font-medium m-1"
                                                 onClick={resetForm}
                                             >
                                                 Cancel
                                             </button>
                                             <button
                                                 type="submit"
-                                                className="ti-btn ti-btn-primary !font-medium m-1"
+                                                className="ti-btn bg-primary text-white !font-medium m-1"
                                             >
                                                 Edit Product
                                             </button>
@@ -826,7 +828,7 @@ const EditProduct: React.FC = () => {
                                     />
                                     <button
                                         onClick={handleAddRow}
-                                        className="ti-btn ti-btn-primary bg-primary mt-3"
+                                        className="ti-btn bg-primary/20 mt-3"
                                     >
                                         Add Row
                                     </button>
@@ -859,13 +861,13 @@ const EditProduct: React.FC = () => {
                                             />
                                             <div className="border-t border-defaultborder p-4 flex justify-end ">
                                                 <button
-                                                    className="ti-btn ti-btn-primary bg-primary me-3"
+                                                    className="ti-btn bg-primary text-white me-3"
                                                     onClick={handleAddCategory}
                                                 >
                                                     Save
                                                 </button>
                                                 <button
-                                                    className="bg-defaulttextcolor ti-btn text-white"
+                                                    className="bg-primary/20 ti-btn text-defaulttextcolor"
                                                     onClick={handleCloseModal}
                                                 >
                                                     Cancel

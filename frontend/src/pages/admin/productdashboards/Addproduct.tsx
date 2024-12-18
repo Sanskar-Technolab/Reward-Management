@@ -335,7 +335,7 @@ const AddProduct: React.FC = () => {
                                                             </select>
                                                             <button
                                                                 type="button"
-                                                                className="ti-btn ti-btn-primary bg-primary p-3 rounded-[0.5rem]"
+                                                                className="ti-btn text-white bg-primary p-3 rounded-[0.5rem]"
                                                                 onClick={() => setShowAddCategoryModal(true)}
                                                             >
                                                                 <i className="fas fa-plus" />
@@ -423,12 +423,12 @@ const AddProduct: React.FC = () => {
                                         <div className="px-6  py-4 border-t  dark:border-defaultborder sm:flex justify-end">
                                             <button
                                                 type="submit"
-                                                className="ti-btn ti-btn-primary !font-medium m-1">
+                                                className="ti-btn bg-primary text-white !font-medium m-1">
                                                 Add Product<i className="bi bi-plus-lg ms-2"></i>
                                             </button>
                                             <button
                                                 type="button"
-                                                className="ti-btn ti-btn-success bg-defaulttextcolor ti-btn text-white !font-medium m-1"
+                                                className="ti-btn ti-btn-success bg-primary/20 ti-btn text-defaulttextcolor !font-medium m-1"
                                                 onClick={resetForm}
                                             >
                                                 Cancel

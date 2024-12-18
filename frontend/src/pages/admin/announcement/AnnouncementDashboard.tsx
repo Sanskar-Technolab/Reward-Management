@@ -53,7 +53,7 @@ const AnnouncementDashboard: React.FC = () => {
                 setShowSuccessAlert(false);
                 // window.location.reload();
             }, 3000); 
-            return () => clearTimeout(timer); // Cleanup timeout on component unmount
+            return () => clearTimeout(timer);
         }
     }, [showSuccessAlert]);
 

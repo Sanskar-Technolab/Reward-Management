@@ -23,7 +23,7 @@ const SetContactUs: React.FC = () => {
             const timer = setTimeout(() => {
                 setShowSuccessAlert(false);
                 window.location.reload(); // Reload the page after hiding the alert
-            }, 3000); // Hide alert after 3 seconds
+            }, 3000);
             return () => clearTimeout(timer);
         }
 
@@ -40,8 +40,8 @@ const SetContactUs: React.FC = () => {
                     setCurrentAddress(data.address);
                     setCurrentEmail(data.email || '');
                     setCurrentWebsite(data.website || '');
-                    // setCurrentMobile(data.mobile_numbers || []); // Use the first mobile number if there are multiple
-                    setCurrentMobile(data.mobile_numbers[0] || '');  // If multiple mobile numbers, pick the first one
+                    // setCurrentMobile(data.mobile_numbers || []); 
+                    setCurrentMobile(data.mobile_numbers[0] || '');  
 
                 }
             } catch (error) {
@@ -114,7 +114,7 @@ const SetContactUs: React.FC = () => {
         <>
             <Pageheader
                 currentpage={"Set Company Address"}
-                activepage={"/contact-us"}
+                activepage={"/company-address"}
                 activepagename="Set Company Address"
             />
             <div className="grid grid-cols-12 gap-x-6 p-6">
