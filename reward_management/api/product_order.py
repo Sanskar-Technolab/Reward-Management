@@ -70,7 +70,7 @@ def update_product_order(product_name, order_status, name, gift_points):
             return {"status": "error", "message": "Product Order not found"}
 
         # Set received_date to the current datetime
-        current_datetime = now_datetime()  # Fetch current datetime
+        current_datetime = now_datetime()
 
         # Update the Product Order with the new values
         order.product_name = product_name
