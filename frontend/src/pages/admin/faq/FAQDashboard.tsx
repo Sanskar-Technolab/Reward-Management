@@ -402,14 +402,14 @@ const FAQDashboard: React.FC = () => {
                                     <div className="flex justify-end">
                                         <button
                                             type="button"
-                                            className="ti-btn  bg-primary/20 me-2 text-black"
+                                            className="ti-btn  bg-primary me-2 text-white"
                                             onClick={handleSubmit}
                                         >
                                             Save
                                         </button>
                                         <button
                                             type="button"
-                                            className="bg-defaulttextcolor ti-btn text-white"
+                                            className="bg-primary/20 ti-btn text-defaulttextcolor"
                                             onClick={handleCloseModal}
                                         >
                                             Cancel

@@ -1,6 +1,9 @@
 import frappe
 from frappe.model.document import Document
-from frappe import _  # Make sure to import _ for translations
+from frappe import _ 
+from datetime import datetime
+from frappe.utils import nowdate
+
 
 # Create New Product Order --------------
 @frappe.whitelist(allow_guest=True)
@@ -25,12 +28,13 @@ def create_new_product_order(product_name, fullname, city, mobile, pincode, addr
         product_order.customer_id = customer_id
         product_order.product_id = product_id
         product_order.product_name = product_name
-        product_order.fullname = fullname
+        product_order.full_name = fullname
         product_order.city = city
         product_order.mobile_number = mobile
         product_order.pincode = pincode
         product_order.address = address
         product_order.customer_email = email
+        product_order.order_date = nowdate()
         
         # Save the document
         product_order.insert(ignore_permissions=True)

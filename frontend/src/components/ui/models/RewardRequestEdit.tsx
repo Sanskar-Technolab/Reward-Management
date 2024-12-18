@@ -131,10 +131,10 @@ const RewardRequestEdit: React.FC<ViewModalProps> = ({
                            )}
                     </div>
                     <div className='border-t border-defaultborder p-4 flex justify-end'>
-                        <button onClick={onSubmit} className="ti-btn ti-btn-primary bg-primary me-3">Submit</button>
+                        <button onClick={onSubmit} className="ti-btn text-white bg-primary me-3">Submit</button>
                         <button
                             type="button"
-                            className="bg-defaulttextcolor ti-btn text-white"
+                            className="bg-primary/20 ti-btn"
                             onClick={onCancel}
                         >
                             Cancel

@@ -229,7 +229,7 @@ const AdminDashboard: React.FC = () => {
                                                     {Array.from({ length: totalPages }, (_, index) => (
                                                         <li className="page-item px-2" key={index + 1}>
                                                             <button
-                                                                className={`page-link px-2 rounded-md ${currentPage === index + 1 ? 'text-white bg-blue-800' : 'bg-gray-200'}`}
+                                                                className={`page-link px-2 rounded-md ${currentPage === index + 1 ? 'text-white bg-primary' : 'bg-gray-200'}`}
                                                                 onClick={() => handlePageChange(index + 1)}
                                                             >
                                                                 {index + 1}
