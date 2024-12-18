@@ -46,7 +46,6 @@
    "label": "Gift Specification"
   },
   {
-   "default": "Gift.-.{{gift_product_name}}.-.YYYY.-.",
    "fieldname": "naming_series",
    "fieldtype": "Select",
    "in_list_view": 1,
@@ -57,7 +56,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-12-18 09:51:54.567367",
+ "modified": "2024-12-18 15:35:16.100721",
  "modified_by": "Administrator",
  "module": "Reward Management",
  "name": "Gift Product",
