@@ -5,6 +5,10 @@ import TableComponent from '../../../components/ui/tables/tablecompnent';
 import TableBoxComponent from '../../../components/ui/tables/tableboxheader';
 import React, { Fragment, useState, useEffect } from "react";
 import { useFrappeGetDocList } from 'frappe-react-sdk';
+import SuccessAlert from '../../../components/ui/alerts/SuccessAlert';
+import EditModalComponent from '../../../components/ui/models/ProductOrderRequestEdit';
+import axios from 'axios';
+
 
 interface ProductOrder {
     name: string;
@@ -19,6 +23,11 @@ interface ProductOrder {
     address?: string;
     city?: string;
     order_date?: string;
+    gift_points?:number;
+    order_status?:string;
+    order_time?:string;
+    approved_date?:string;
+    approved_time?:string;
 }
 
 const ProductOrder: React.FC = () => {
@@ -27,13 +36,26 @@ const ProductOrder: React.FC = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [fromDate, setFromDate] = useState<Date | null>(null);
     const [toDate, setToDate] = useState<Date | null>(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [showSuccessAlert, setShowSuccessAlert] = useState(false);
+    const [selectedOrderRequest, setSelectedOrderRequest] = useState<ProductOrder | null>(null); 
+
 
     useEffect(() => {
         document.title = 'Product Order';
-    }, []);
+        if (showSuccessAlert) {
+            const timer = setTimeout(() => {
+                setShowSuccessAlert(false);
+                window.location.reload(); 
+            }, 3000); 
+            return () => clearTimeout(timer);
+        }
+    }, [showSuccessAlert]);
+
+
 
     const { data: orderData, error } = useFrappeGetDocList<ProductOrder>('Product Order', {
-        fields: ['name', 'product_id', 'product_image', 'mobile_number', 'full_name', 'pincode', 'product_name', 'customer_id', 'customer_email', 'address', 'city', 'order_date'],
+        fields: ['name', 'product_id', 'product_image', 'mobile_number', 'full_name', 'pincode', 'product_name', 'customer_id', 'customer_email', 'address', 'city', 'order_date','gift_points','order_status'],
         orderBy: {
             field: 'creation',
             order: 'desc',
@@ -134,6 +156,65 @@ const ProductOrder: React.FC = () => {
         return isWithinDateRange && matchesSearchQuery;
     });
 
+
+   
+    // handle edit modal----
+    const handleEdit = (orderRequest: ProductOrder) => {
+        setSelectedOrderRequest(orderRequest);
+        setIsModalOpen(true);
+    };
+
+    const handleCloseModal = () => {
+        setIsModalOpen(false);
+    }
+    
+    const handleSubmit = async () => {
+        console.log('Submit clicked');
+        if (!selectedOrderRequest) return;
+    
+        // Get current date and time
+        const now = new Date();
+        const currentDate = now.toISOString().split('T')[0]; // Format: YYYY-MM-DD
+        const currentTime = now.toISOString().split('T')[1].split('.')[0]; // Format: HH:MM:SS
+    
+        // Prepare the data for the API request
+        const data = {
+            name: selectedOrderRequest.name,
+            approved_on: currentDate,
+            approve_time: currentTime,
+            order_id: selectedOrderRequest.name,
+            product_name: selectedOrderRequest.product_name,
+            order_status: selectedOrderRequest.order_status,
+            gift_points: selectedOrderRequest.gift_points,
+        };
+    
+        try {
+            // Make the PUT request to update the Product Order
+            const response = await axios.put(`/api/method/reward_management.api.product_order.update_product_order`, data);
+    
+            if (response.status === 200) {
+                console.log("Product Order updated successfully");
+    
+                // Show success alert and close modal
+                setShowSuccessAlert(true);
+                handleCloseModal();
+            } else {
+                console.error("Failed to update Product Order Request:", response.data);
+                alert('Failed to update Product Order Request.');
+            }
+        } catch (error) {
+            console.error("Error:", error.message || error);
+            alert('An error occurred while updating the Product Order Request.');
+        }
+    };
+    
+
+    const handleCancel = () => {
+        console.log('Cancel clicked');
+        setIsModalOpen(false); 
+    }
+
+
     return (
         <Fragment>
             <Pageheader
@@ -146,7 +227,7 @@ const ProductOrder: React.FC = () => {
                 <div className="xl:col-span-12 col-span-12">
                     <div className="">
                         <TableBoxComponent
-                            title="Customer Order History"
+                            title="Customer Product Order"
                             onSearch={handleSearch}
                             onAddButtonClick={handleAddProductClick}
                             buttonText="Add Announcement"
@@ -161,16 +242,21 @@ const ProductOrder: React.FC = () => {
                                 columns={[
                                     { header: 'Order ID', accessor: 'name' },
                                     { header: 'Product Id', accessor: 'product_id' },
+                                    { header: 'Product Name', accessor: 'product_name' },
+                                    { header: 'Product Points', accessor: 'gift_points' },
                                     { header: 'Customer ID', accessor: 'customer_id' },
+                                    { header: 'Customer Name', accessor: 'full_name' },
                                     { header: 'Mobile Number', accessor: 'mobile_number' },
-                                    { header: 'City', accessor: 'city' },
+                                    
                                     { header: 'Email', accessor: 'customer_email' },
                                     { header: 'Address', accessor: 'address' },
-                                    { header: 'Product Name', accessor: 'product_name' },
-                                    { header: 'Customer Name', accessor: 'full_name' },
+                                    { header: 'City', accessor: 'city' },
+                                   
+                                   
                                     // { header: 'Product Image', accessor: 'product_image_display' },
 
                                     { header: 'Order Date', accessor: 'order_date' },
+                                    { header: 'Product Status', accessor: 'order_status' },
                                 ]}
                                 data={filteredData || []}
                                 currentPage={currentPage}
@@ -179,9 +265,10 @@ const ProductOrder: React.FC = () => {
                                 handleNextPage={handleNextPage}
                                 handlePageChange={handlePageChange}
                                 showProductQR={false}
-                                showEdit={false}
+                                showEdit={true}
+                                onEdit={handleEdit}
+                                editHeader="Update"
                                 showDelete={false}
-                                editHeader='Action'
                                 columnStyles={{
                                     'Transaction ID': 'text-[var(--primaries)] font-semibold',
                                 }}
@@ -192,6 +279,44 @@ const ProductOrder: React.FC = () => {
                     </div>
                 </div>
             </div>
+            {isModalOpen && selectedOrderRequest && (
+                <EditModalComponent
+                    title="Edit Product Order"
+                    orderLevel="Order ID"
+                    productnameLevel="Product Name"
+                    giftpointLevel="Points"
+                    statusLabel="Order Status"
+                    orderId={selectedOrderRequest.name}
+                    productName={selectedOrderRequest.product_name || ''}
+                    giftPoint={selectedOrderRequest.gift_points || 0}
+                    status={selectedOrderRequest.order_status || ''}
+                    setOrderId={(value) => setSelectedOrderRequest(prev => ({ ...prev, name: value }))}
+                    setProductName={(value) => setSelectedOrderRequest(prev => ({ ...prev, product_name: value }))}
+                    setGiftPoint={(value) => setSelectedOrderRequest(prev => ({ ...prev, gift_points: value }))}
+                    setStatus={(value) => setSelectedOrderRequest(prev => ({ ...prev, order_status: value }))}
+                    onClose={handleCloseModal}
+                    onSubmit={handleSubmit}
+                    onCancel={handleCancel}               
+                    />
+            )}
+
+
+            {showSuccessAlert && (
+                <SuccessAlert
+                    showButton={false}
+                    showCancleButton={false}
+                    showCollectButton={false}
+                    showAnotherButton={false}
+                    showMessagesecond={false}
+                    message="Product Order Update successfully!" 
+                    onClose={function (): void {
+                        throw new Error('Function not implemented.');
+                    } } 
+                    onCancel={function (): void {
+                        throw new Error('Function not implemented.');
+                    } }                
+                    />
+            )}
         </Fragment>
     );
 };

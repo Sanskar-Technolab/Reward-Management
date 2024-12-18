@@ -7,12 +7,17 @@
  "engine": "InnoDB",
  "field_order": [
   "product_name",
-  "product",
-  "product_category",
-  "earned_points",
-  "date",
   "earned_amount",
-  "product_image"
+  "product_category",
+  "gift_id",
+  "gift_product_name",
+  "deduct_gift_points",
+  "column_break_txof",
+  "product",
+  "earned_points",
+  "product_image",
+  "date",
+  "gift_image"
  ],
  "fields": [
   {
@@ -60,12 +65,45 @@
    "fieldtype": "Attach",
    "in_list_view": 1,
    "label": "Product Image"
+  },
+  {
+   "fieldname": "gift_id",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Gift ID",
+   "options": "Gift Product"
+  },
+  {
+   "fetch_from": "gift_id.gift_product_name",
+   "fieldname": "gift_product_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Gift Product Name"
+  },
+  {
+   "fetch_from": "gift_id.points",
+   "fieldname": "deduct_gift_points",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Deduct Gift Points"
+  },
+  {
+   "fieldname": "column_break_txof",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "gift_image",
+   "fieldtype": "Attach",
+   "label": "Gift Image"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2024-12-12 19:51:45.944510",
+ "modified": "2024-12-18 17:39:15.363654",
  "modified_by": "Administrator",
  "module": "Reward Management",
  "name": "Customer Product Detail",

@@ -1,8 +1,11 @@
 import frappe
 from frappe.model.document import Document
 from frappe import _ 
-from datetime import datetime
+# from datetime import datetime
+# from frappe.utils import nowdate
+from frappe.utils import now_datetime
 from frappe.utils import nowdate
+
 
 
 # Create New Product Order --------------
@@ -34,7 +37,14 @@ def create_new_product_order(product_name, fullname, city, mobile, pincode, addr
         product_order.pincode = pincode
         product_order.address = address
         product_order.customer_email = email
-        product_order.order_date = nowdate()
+        # Set received_date to the current datetime
+        current_datetime = now_datetime()
+        product_order.order_date = current_datetime.date()
+        product_order.order_time = current_datetime.time().strftime('%H:%M:%S')
+        product_order.order_status = "Pending"
+        product_order.approved_time = " "
+        
+
         
         # Save the document
         product_order.insert(ignore_permissions=True)
@@ -46,3 +56,60 @@ def create_new_product_order(product_name, fullname, city, mobile, pincode, addr
         # Log error and raise exception
         frappe.log_error(f"Error creating product order: {str(e)}")
         return {"status": "error", "message": _("Failed to create product order. Please try again later.")}
+
+
+
+# Update Product Order And Deduct Points from Customer Account amd Add Product Order History into Point History Table-----
+@frappe.whitelist(allow_guest=True)
+def update_product_order(product_name, order_status, name, gift_points):
+    try:
+        # Fetch product order to ensure it exists
+        order = frappe.get_doc("Product Order", name)
+
+        if not order:
+            return {"status": "error", "message": "Product Order not found"}
+
+        # Set received_date to the current datetime
+        current_datetime = now_datetime()  # Fetch current datetime
+
+        # Update the Product Order with the new values
+        order.product_name = product_name
+        order.order_status = order_status
+        order.gift_points = gift_points
+        order.approved_date = current_datetime.date()  # Extract date
+        order.approved_time = current_datetime.strftime('%H:%M:%S')  # Extract time in HH:MM:SS format
+
+        # Save the updated Product Order
+        order.save()
+
+        # If order is approved, update the customer's points
+        if order_status == "Approved":
+            # Fetch the Customer record associated with the order
+            customer = frappe.get_doc("Customer", order.customer_id)
+
+            # Deduct points from the customer's current points and add to redeemed points
+            customer.current_points = customer.current_points - gift_points
+            customer.redeem_points = (customer.redeem_points or 0) + gift_points
+            
+            # Add points to point_history child table
+            customer.append("point_history", {
+                "gift_id":order.product_id ,
+                "gift_product_name": order.product_name,
+                "deduct_gift_points": order.gift_points,
+                "date": nowdate()
+            })
+
+
+            # Save the customer record
+            customer.save(ignore_permissions=True)
+
+            # Commit the transaction
+            frappe.db.commit()
+
+        return {"status": "success", "message": "Product Order updated and points deducted successfully"}
+
+    except Exception as e:
+        frappe.log_error(frappe.get_traceback(), "update_product_order Error")
+        return {"status": "error", "message": str(e)}
+
+

@@ -1,59 +1,44 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 
 interface ViewModalProps {
     title: string;
-    questionLabel: string;
-    answerLabel: string;
+    orderLevel: string;
+    productnameLevel: string;
+    giftpointLevel : string;
     statusLabel: string;
-    transactionIdLabel: string;
-    amountLabel: string;
-    question: string;
-    answer: string;
+    orderId: string;
+    productName: string;
+    giftPoint : number;
     status: string;
-    transactionId: string;
-    amount: string;
     onClose: () => void;
     onSubmit: () => void;
     onCancel: () => void;
-    setQuestion: (value: string) => void;
-    setAnswer: (value: string) => void;
+    setOrderId: (value: string) => void;
+    setProductName: (value: string) => void;
+    setGiftPoint:(value: number)=> void;
     setStatus: (value: string) => void;
-    setTransactionId: (value: string) => void;
-    setAmount: (value: string) => void;
-    showTransactionId: boolean;
-    showAmount: boolean;
+   
 }
 
-const RewardRequestEdit: React.FC<ViewModalProps> = ({
+const ProductOrderRequestEdit: React.FC<ViewModalProps> = ({
     title,
-    questionLabel,
-    answerLabel,
+    orderLevel,
+    productnameLevel,
+    giftpointLevel,
     statusLabel,
-    transactionIdLabel,
-    amountLabel,
-    question,
-    answer,
+    giftPoint,
+    orderId,
+    productName,
     status,
-    transactionId,
-    amount,
     onClose,
     onSubmit,
     onCancel,
-    setQuestion,
-    setAnswer,
+    setOrderId,
+    setProductName,
+    setGiftPoint,
     setStatus,
-    setTransactionId,
-    setAmount,
-    showTransactionId,
-    showAmount
-}) => {
   
-    useEffect(() => {
-        if (showAmount) {
-            // Fetch amount logic could go here if not done in parent
-            // Assuming you might want to fetch based on some other condition
-        }
-    }, [showAmount]);
+}) => {
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
@@ -68,25 +53,37 @@ const RewardRequestEdit: React.FC<ViewModalProps> = ({
                     </div>
                     <div className='p-4 overflow-auto flex-1'>
                         <div className="xl:col-span-12 col-span-12 mb-4">
-                            <label htmlFor="question" className="form-label text-sm text-defaulttextcolor font-semibold">{questionLabel}</label>
+                            <label htmlFor="orderid" className="form-label text-sm text-defaulttextcolor font-semibold">{orderLevel}</label>
                             <input
                                 className="form-control w-full rounded-5px border border-[#dadada] form-control-light mt-2 text-sm"
                                 placeholder="Enter your question here"
-                                id="question"
-                                value={question}
-                                onChange={(e) => setQuestion(e.target.value)}
+                                id="orderid"
+                                value={orderId}
+                                onChange={(e) => setOrderId(e.target.value)}
                                 readOnly
                             />
                         </div>
                         <div className="xl:col-span-12 col-span-12 mb-4">
-                            <label htmlFor="answer" className="form-label text-sm text-defaulttextcolor font-semibold">{answerLabel}</label>
+                            <label htmlFor="productname" className="form-label text-sm text-defaulttextcolor font-semibold">{productnameLevel}</label>
                             <input
                                 type="text"
                                 className="form-control w-full rounded-5px border border-[#dadada] form-control-light mt-2 text-sm"
                                 placeholder="Enter your answer here"
-                                id="answer"
-                                value={answer}
-                                onChange={(e) => setAnswer(e.target.value)}
+                                id="productname"
+                                value={productName}
+                                onChange={(e) => setProductName(e.target.value)}
+                                readOnly
+                            />
+                        </div>
+                        <div className="xl:col-span-12 col-span-12 mb-4">
+                            <label htmlFor="giftpoint" className="form-label text-sm text-defaulttextcolor font-semibold">{giftpointLevel}</label>
+                            <input
+                                type="text"
+                                className="form-control w-full rounded-5px border border-[#dadada] form-control-light mt-2 text-sm"
+                                placeholder="Enter your answer here"
+                                id="giftpoint"
+                                value={giftPoint}
+                                onChange={(e) => setGiftPoint(e.target.value)}
                                 readOnly
                             />
                         </div>
@@ -103,32 +100,7 @@ const RewardRequestEdit: React.FC<ViewModalProps> = ({
                                 <option value="Cancel">Cancel</option>
                             </select>
                         </div>
-                        {showTransactionId && (
-                        <div className="xl:col-span-12 col-span-12 mb-4">
-                            <label htmlFor="transactionid" className="form-label text-sm text-defaulttextcolor font-semibold">{transactionIdLabel}</label>
-                            <input
-                                type="text"
-                                className="form-control w-full rounded-5px border border-[#dadada] form-control-light mt-2 text-sm"
-                                placeholder="Enter Transaction ID here"
-                                id="transactionid"
-                                value={transactionId}
-                                onChange={(e) => setTransactionId(e.target.value)}
-                            />
-                        </div>
-                         )}
-                         {showAmount && (
-                        <div className="xl:col-span-12 col-span-12 mb-4">
-                            <label htmlFor="amount" className="form-label text-sm text-defaulttextcolor font-semibold">{amountLabel}</label>
-                            <input
-                                type="text"
-                                className="form-control w-full rounded-5px border border-[#dadada] form-control-light mt-2 text-sm"
-                                placeholder="Enter Amount here"
-                                id="amount"
-                                value={amount}
-                                onChange={(e) => setAmount(e.target.value)}
-                            />
-                        </div>
-                           )}
+                        
                     </div>
                     <div className='border-t border-defaultborder p-4 flex justify-end'>
                         <button onClick={onSubmit} className="ti-btn text-white bg-primary me-3">Submit</button>
@@ -146,4 +118,4 @@ const RewardRequestEdit: React.FC<ViewModalProps> = ({
     );
 };
 
-export default RewardRequestEdit;
+export default ProductOrderRequestEdit;
