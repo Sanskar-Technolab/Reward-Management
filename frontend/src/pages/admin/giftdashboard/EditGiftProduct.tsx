@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Pageheader from '../../../components/common/pageheader/pageheader';
 import SunEditor from 'suneditor-react';
-import { useParams, useNavigate, useLocation } from "react-router-dom";
+import {useNavigate, useLocation } from "react-router-dom";
 import 'suneditor/dist/css/suneditor.min.css';
 
 import SuccessAlert from '../../../components/ui/alerts/SuccessAlert';
@@ -18,28 +18,19 @@ const EditGiftProduct: React.FC = () => {
     const [giftproductDescription, setGiftProductDescription] = useState('');
     const [giftproductSpecificaton, setGiftProductSpecificaton] = useState('');
     const [existingImages, setExistingImages] = useState<string[]>([]);
+    const [showExistingImages, setShowExistingImages] = useState(true);
+
 
     const [showSuccessAlert, setShowSuccessAlert] = useState(false);
     const [error, setError] = useState('');
     const navigate = useNavigate();
-    const { giftproductId } = useParams<{ giftproductId: string }>();
 
-    const resetForm = () => {
-        setFiles([]);
-        setFileDetails([]);
-        setGiftProductName('');
-        setPoints('');
-        setGiftProductDetails('');
-        setGiftProductDescription('');
-        setGiftProductSpecificaton('');
-    };
+
 
     const location = useLocation();
 
     useEffect(() => {
         document.title = 'Edit Gift Product';
-
-        // console.log("Current location: ", location);
 
         // Extract gift product ID from pathname
         const pathSegments = location.pathname.split('/');
@@ -71,10 +62,10 @@ const EditGiftProduct: React.FC = () => {
                         setGiftProductSpecificaton(matchedProduct.gift_specification);
 
                         // Set file URLs if available
-                        if (matchedProduct.gift_product_image && matchedProduct.gift_product_image.length > 0) {
-                            const imageDetails = matchedProduct.gift_product_image.map((url: string) => ({
-                                url: url,
-                                name: url.split('/').pop() || ''
+                        if (matchedProduct.gift_product_images && matchedProduct.gift_product_images.length > 0) {
+                            const imageDetails = matchedProduct.gift_product_images.map((image: { gift_product_image: string }) => ({
+                                url: image.gift_product_image,
+                                name: image.gift_product_image.split('/').pop() || ''
                             }));
                             setExistingImages(imageDetails);
                         }
@@ -105,7 +96,17 @@ const EditGiftProduct: React.FC = () => {
         }
     }, [showSuccessAlert, navigate, location]);
 
+    // Handle file removal
+const handleRemoveImage = (indexToRemove: number) => {
+    setFileDetails((prevFiles) =>
+        prevFiles.filter((_, index) => index !== indexToRemove)
+    );
+};
+
+
+    // Handle file selection
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+
         const files = e.target.files;
 
         if (files) {
@@ -134,13 +135,10 @@ const EditGiftProduct: React.FC = () => {
             Promise.all(newFileDetails).then((newDetails) => {
                 setFileDetails((prevFiles) => [...prevFiles, ...newDetails]);
             });
-        }
-    };
 
-    const handleRemoveImage = (indexToRemove: number) => {
-        setFileDetails((prevFiles) =>
-            prevFiles.filter((_, index) => index !== indexToRemove)
-        );
+            setShowExistingImages(false);
+
+        }
     };
 
     // Upload file function
@@ -191,22 +189,37 @@ const EditGiftProduct: React.FC = () => {
             }
 
             console.log("Uploaded File URLs:", uploadedFileURLs);
-
+    
             // Prepare data for the API call
-            // const giftProductData = {
-            //     new_image_url: uploadedFileURLs,
-            //     giftproductName: giftproductName,  
-            //     giftproductDetails: giftproductDetails,  
-            //     giftproductDescription: giftproductDescription,  
-            //     points: points, 
-            //     giftproductSpecificaton: giftproductSpecificaton 
-            // };
+            const giftProductData = {
+                new_image_url: uploadedFileURLs,
+                giftproductName: giftproductName,  
+                giftproductDetails: giftproductDetails,  
+                giftproductDescription: giftproductDescription,  
+                points: points, 
+                giftproductSpecificaton: giftproductSpecificaton 
+            };
 
 
-        } catch (err) {
-            setError('Something went wrong. Please try again later.');
-            console.error('Error:', err);
+        // Make the API call to add a new gift product
+        const response = await axios.put('/api/method/reward_management.api.gift_product.update_gift_product', giftProductData);
+        if(response){
+            console.log("gift post response",response)
         }
+
+        // Check if the response was successful
+        if (response.status === 200) {
+            setShowSuccessAlert(true);
+            resetForm();  // Reset the form after successful submission
+        }
+    } catch (err) {
+        setError('Something went wrong. Please try again later.');
+        console.error('Error:', err);
+    }
+};
+
+    const resetForm = () => {
+        window.location.reload();
     };
 
 
@@ -299,7 +312,6 @@ const EditGiftProduct: React.FC = () => {
                                                 </div>
                                             </div>
                                         </div>
-                                       
                                         <div>
                                             <div className="xl:col-span-12 col-span-12">
                                                 <label
@@ -318,47 +330,66 @@ const EditGiftProduct: React.FC = () => {
                                                 {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
                                             </div>
 
-                                            {/* Image Previews */}
-                                            <div className="grid grid-cols-3 gap-5 my-4">
-                                                {fileDetails.length > 0 ? (
-                                                    fileDetails.map((file, index) => (
-                                                        <div key={index} className="image-preview">
+                                            {/* Image Upload Section */}
+                                            {showExistingImages && existingImages.length > 0 && (
+                                                <div className="grid grid-cols-3 gap-5 my-4">
+                                                    {existingImages.map((image, index) => (
+                                                        <div key={index} className="image-preview relative group">
+                                                            <img
+                                                                src={image.url}
+                                                                alt={image.name}
+                                                                className="w-full h-32 object-contain rounded-md"
+                                                            />
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            )}
+
+                                            {/* New file selection preview */}
+                                            {fileDetails.length > 0 && (
+                                                <div className="grid grid-cols-3 gap-5 my-4">
+                                                    {fileDetails.map((file, index) => (
+                                                        <div key={index} className="relative group">
                                                             <img
                                                                 src={file.url}
-                                                                alt={`Gift Product Image ${index + 1}`}
-                                                                className="w-full h-auto rounded-lg"
+                                                                alt={file.name}
+                                                                className="w-full h-32 object-contain rounded-md"
                                                             />
                                                             <button
                                                                 type="button"
-                                                                className="remove-image-btn"
                                                                 onClick={() => handleRemoveImage(index)}
+                                                                className="absolute top-[-10px] right-[-10px] bg-red-600 text-primary p-1 rounded-full opacity-0 group-hover:opacity-100 transition"
                                                             >
-                                                                Remove
+                                                                <i className="ri-close-line text-primary text-lg font-bold "></i>
                                                             </button>
                                                         </div>
-                                                    ))
-                                                ) : (
-                                                    <p className='text-defaultsize text-defaulttextcolor'>No images uploaded yet.</p>
-                                                )}
-                                            </div>
-                                            </div>
+                                                    ))}
+                                                </div>
+                                            )}
                                         </div>
+
+
                                     </div>
                                 </div>
-                                <div className="form-group text-center">
+                            </div>
+                            <div className="px-6 py-4 border-t dark:border-defaultborder sm:flex justify-end">
+                                    <button type="submit" className="ti-btn bg-primary text-white !font-medium m-1">
+                                        Edit Gift <i className="bi bi-plus-lg ms-2"></i>
+                                    </button>
                                     <button
-                                        type="submit"
-                                        className="btn btn-primary text-white w-full py-2"
+                                        type="button"
+                                        className="ti-btn ti-btn-success bg-primary/20 ti-btn text-defaulttextcolor !font-medium m-1"
+                                        onClick={resetForm}
                                     >
-                                        Save
+                                        Cancel
                                     </button>
                                 </div>
-                        </form>
-                    </div>
-                </div>
+                </form>
             </div>
+        </div >
+            </div >
 
-            {showSuccessAlert && <SuccessAlert message="Gift Product updated successfully!" />}
+    { showSuccessAlert && <SuccessAlert message="Gift Product updated successfully!" />}
         </>
     );
 };

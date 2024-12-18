@@ -83,7 +83,7 @@ def add_gift_product(new_image_url, giftproductName, giftproductDetails, giftpro
     }
 
 
-# gert match url gift details------
+# get match url gift details------
 @frappe.whitelist(allow_guest=True)
 def get_url_gift_products(url_name):
     try:
@@ -131,3 +131,72 @@ def get_url_gift_products(url_name):
             "status": "error", 
             "message": str(e)
         }
+        
+        
+        
+@frappe.whitelist(allow_guest=True)
+def update_gift_product(new_image_url, giftproductName, giftproductDetails, giftproductDescription, points, giftproductSpecificaton):
+    # Ensure the input is a list for new_image_url
+    if not isinstance(new_image_url, list):
+        frappe.throw(_("The 'new_image_url' parameter must be an array of image URLs."))
+
+    # Fetch the existing Gift Product document by name
+    gift_doc = frappe.get_all("Gift Product", filters={"gift_product_name": giftproductName}, fields=["name"])
+
+    if gift_doc:
+        # If the document exists, get the first match
+        gift_doc = frappe.get_doc("Gift Product", gift_doc[0].name)
+        
+        # Update fields
+        gift_doc.gift_detail = giftproductDetails
+        gift_doc.description = giftproductDescription
+        gift_doc.points = points
+        gift_doc.gift_specification = giftproductSpecificaton
+        
+        # Clear existing images before appending new ones
+        gift_doc.set("gift_product_image", [])
+        
+        # Append new images
+        for image_url in new_image_url:
+            gift_doc.append("gift_product_image", {
+                "gift_product_image": image_url
+            })
+
+        # Save the updated document
+        gift_doc.save()
+        frappe.db.commit()
+
+        return {
+            "status": "success",
+            "message": "Gift product updated successfully",
+            "gift_product_name": giftproductName,
+            "updated_images": new_image_url
+        }
+    else:
+        # If no matching document exists, create a new one
+        gift_doc = frappe.get_doc({
+            "doctype": "Gift Product",
+            "gift_product_name": giftproductName,
+            "gift_detail": giftproductDetails,
+            "description": giftproductDescription,
+            "points": points,
+            "gift_specification": giftproductSpecificaton
+        })
+
+        # Append images to the gift_product_image child table
+        for image_url in new_image_url:
+            gift_doc.append("gift_product_image", {
+                "gift_product_image": image_url
+            })
+
+        # Save the new document
+        gift_doc.insert()
+        frappe.db.commit()
+
+        return {
+            "status": "success",
+            "message": "Gift product added successfully",
+            "gift_product_name": giftproductName,
+            "updated_images": new_image_url
+        }
+

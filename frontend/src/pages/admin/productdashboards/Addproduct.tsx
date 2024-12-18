@@ -190,29 +190,6 @@ const AddProduct: React.FC = () => {
 
     };
 
-
-    // const [activeTab, setActiveTab] = useState('addProduct'); // State for managing tabs
-    // // Other states: productName, productPrice, etc.
-
-    // const handleTabChange = (tab) => {
-    //     setActiveTab(tab); // Change active tab
-    // };
-
-
-    // const totalPages = Math.ceil(filteredData.length / itemsPerPage);
-
-    // const handlePrevPage = () => {
-    //     if (currentPage > 1) setCurrentPage(currentPage - 1);
-    // };
-
-    // const handleNextPage = () => {
-    //     if (currentPage < totalPages) setCurrentPage(currentPage + 1);
-    // };
-
-    // const handlePageChange = (pageNumber: number) => {
-    //     setCurrentPage(pageNumber);
-    // };
-
     return (
         <>
             <Pageheader
@@ -228,22 +205,7 @@ const AddProduct: React.FC = () => {
                 <div className="xl:col-span-12 col-span-12">
                     <div className="">
                         <div className="box-body add-products !p-0">
-                            {/* Tab Buttons */}
-                            {/* <div className="flex justify-evenly border-b mb-6 gap-4 font-semibold text-sm p-5">
-                                <button
-                                    className={`flex-1 bg-white text-defaulttextcolor tab-button ${activeTab === 'addProduct' ? 'border-b-2 border-primary text-primary' : ''}`}
-                                    onClick={() => handleTabChange('addProduct')}
-                                >
-                                    Add Product
-                                </button>
-                                <button
-                                    className={`flex-1 bg-white text-defaulttextcolor tab-button ${activeTab === 'pointConversion' ? 'border-b-2 border-primary text-primary' : ''}`}
-                                    onClick={() => handleTabChange('pointConversion')}
-                                >
-                                    Point Conversion
-                                </button>
-                            </div>
-                            {activeTab === 'addProduct' && ( */}
+                           
                                 <form onSubmit={handleSubmit}>
                                     <div className="p-6">
                                         <div className="grid grid-cols-12 md:gap-x-[3rem] gap-0">

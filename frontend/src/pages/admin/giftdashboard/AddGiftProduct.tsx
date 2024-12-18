@@ -132,7 +132,7 @@ const handleRemoveImage = (indexToRemove: number) => {
                 }
             }
     
-            console.log("Uploaded File URLs:", uploadedFileURLs);
+            // console.log("Uploaded File URLs:", uploadedFileURLs);
     
             // Prepare data for the API call
             const giftProductData = {
