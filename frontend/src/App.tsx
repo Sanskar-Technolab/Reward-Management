@@ -14,7 +14,10 @@ import PrivateRoutes from './routes/private-routes';
 import AdminProfile from './pages/admin/admindashboards/AdminProfile';
 import AdminDashboard from './pages/admin/admindashboards/AdminDashboard.tsx';
 import ProductMaster from './pages/admin/productdashboards/ProductMaster.tsx';
+import ProductOrders from './pages/admin/productorderdashboard/ProductOrder.tsx';
 import GiftMaster from './pages/admin/giftdashboard/GiftMaster.tsx';
+import AddGiftProduct from './pages/admin/giftdashboard/AddGiftProduct.tsx';
+import EditGiftProduct from './pages/admin/giftdashboard/EditGiftProduct.tsx';
 import AddProduct from './pages/admin/productdashboards/Addproduct.tsx';
 import EditProduct from './pages/admin/productdashboards/EditProduct.tsx';
 import ProductQRHistory from './pages/admin/productdashboards/ProductQRHistory.tsx';
@@ -50,6 +53,7 @@ import Contact from './pages/carpenter/ContactUs.tsx';
 import PointDetails from './pages/carpenter/PointDetails.tsx';
 import CompanyAddress from './pages/admin/contactus/ContactUs.tsx';
 import ProductCatagory from './pages/admin/productcatalogue/ProductCatalogue.tsx';
+import Project from './pages/admin/projectdashboard/Projects.tsx';
 
 function App() {
   const [isSidebarActive, setIsSidebarActive] = useState(false);
@@ -159,12 +163,16 @@ fetchWebsiteSettings();
           <Route path='/admin-profile' element={<AdminProfile />} />
           <Route path='/point-conversion' element= {<PointConversion/>} />
           <Route path='/admin-dashboard' element={<AdminDashboard />} />
+          <Route path='/project' element={<Project/>} />
           <Route path='/product-master' element={<ProductMaster />} />
           <Route path='/gift-master' element={<GiftMaster />} />
+          <Route path='/add-gift-product' element={<AddGiftProduct />} />
+          <Route path='/edit-gift-product/:giftId' element={<EditGiftProduct />} />
           <Route path='/add-product' element={<AddProduct />}/>
           <Route path='/edit-product' element={<EditProduct />}/>
           <Route path='/product-qr-history' element={<ProductQRHistory />} />
           <Route path='/download-qr-code' element={<DownloadQRCode />} />
+          <Route path='/customer-product-orders' element={<ProductOrders />}/>
           <Route path='/carpenter-registration' element={<CarpenterRegistration />} />
           <Route path='/carpenter-details' element={<CarpenterDetails/>} />
           <Route path='/redeemption-request' element={<CarpenterRewardRequest />} />

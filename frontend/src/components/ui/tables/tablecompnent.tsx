@@ -64,7 +64,8 @@ const TableComponent = <T,>({
     const currentItems = data.slice(indexOfFirstItem, indexOfLastItem);
     const totalPages = Math.ceil(data.length / itemsPerPage);
     return (
-        <div className="table-responsive pt-2 overflow-y-auto ">
+        <div>
+        <div className="table-responsive pt-2 overflow-y-auto">
             <table className="table whitespace-nowrap min-w-full">
                 <thead>
                     <tr>
@@ -149,7 +150,7 @@ const TableComponent = <T,>({
                                     {showEdit && (
                                         <button
                                             onClick={() => onEdit?.(item)}
-                                            className="link-icon bg-[var(--bg-primary)] hover:bg-[var(--primaries)] py-2 px-[10px] rounded-full mr-2"
+                                            className="link-icon bg-[var(--bg-primary)] hover:bg-[var(--primaries)] py-[6px] px-[10px] rounded-full mr-2"
                                         >
                                             <i className={iconsConfig.editIcon || "ri-edit-line"}></i>
                                         </button>
@@ -157,7 +158,7 @@ const TableComponent = <T,>({
                                     {showDelete && (
                                         <button
                                             onClick={() => onDelete?.(item)}
-                                            className="link-icon bg-[var(--bg-primary)] hover:bg-[var(--primaries)] py-2 px-[10px] rounded-full mr-2"
+                                            className="link-icon bg-[var(--bg-primary)] hover:bg-[var(--primaries)] py-[6px] px-[10px] rounded-full mr-2"
                                         >
                                             <i
                                                 className={
@@ -169,7 +170,7 @@ const TableComponent = <T,>({
                                     {showView && (
                                         <button
                                             onClick={() => onView?.(item)}
-                                            className="link-icon bg-[var(--bg-primary)] hover:bg-[var(--primaries)] py-2 px-[10px] rounded-full mr-2"
+                                            className="link-icon bg-[var(--bg-primary)] hover:bg-[var(--primaries)] py-[6px] px-[10px] rounded-full mr-2"
                                         >
                                             <i
                                                 className={iconsConfig.viewIcon || "ti ti-eye-check"}
@@ -182,6 +183,7 @@ const TableComponent = <T,>({
                     ))}
                 </tbody>
             </table>
+         </div>
 
             <div className="box-footer p-4 border-t">
                 <div className="sm:flex items-center">
@@ -288,6 +290,7 @@ const TableComponent = <T,>({
                 </div>
             </div>
         </div>
+        
     );
 };
 

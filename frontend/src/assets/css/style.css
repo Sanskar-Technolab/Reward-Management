@@ -124,7 +124,8 @@ html {
 :root {
     --body-bg: rgb(240 241 247);
     --primary-btn: 132 90 223;
-    --bg-primary: rgba(132, 90, 223, 0.102);
+    /* --bg-primary: rgba(132, 90, 223, 0.102); */
+     --bg-primary: rgba(238, 238, 238, 1);
     --bg-secondary: rgb(207 250 254);
     --bg-pink: rgb(248, 232, 239);
     --bg-warning: rgb(240, 225, 197);
