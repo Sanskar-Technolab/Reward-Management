@@ -18,6 +18,8 @@ const AddLoginInstruction = () => {
   const [error, setError] = useState<string>('');
   const [imageDescription, setImageDescription] = useState('');
   const [showAddInstructionForm, setShowAddInstructionForm] = useState(false);
+  const [imageAddDescription, setImageAddDescription] = useState('');
+
 
 
   useEffect(() => {
@@ -176,6 +178,7 @@ const AddLoginInstruction = () => {
 
   const handleCloseModal = () => {
     setInstructionToEdit(null);
+    setShowAddInstructionForm(false);
     setImageDescription('');
     setFileDetails([]);
   };
@@ -185,11 +188,53 @@ const AddLoginInstruction = () => {
   }
 
   const handleAddNewGuide = () => {
+    
     setInstructionToEdit(null);
     setShowAddInstructionForm(true);
   };
 
-
+  const handleAddSubmit = async (event) => {
+    console.log("first");
+    event.preventDefault(); // Prevent default form submission
+    const uploadedFileURLs = [];
+  
+    try {
+      for (const fileDetail of fileDetails) {
+        const fileBlob = await fetch(fileDetail.url).then(res => res.blob());
+        const file = new File([fileBlob], fileDetail.name, { type: fileBlob.type });
+        const fileURL = await uploadFile(file);
+        if (fileURL) {
+          uploadedFileURLs.push(fileURL);
+        }
+      }
+  
+      const data = {
+        new_image_url: uploadedFileURLs,
+        image_description: [imageAddDescription], // assuming `imageAddDescription` is the description for images
+      };
+  
+      const response = await axios.post('/api/method/reward_management.api.login_instructions.add_new_instruction', data, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+      });
+  
+      const result = response.data;
+  
+      if (result.message && result.message.status === 'success') {
+        setShowSuccessAlert(true);
+        setFileDetails([]); // Clear file details after success
+        setImageDescription(''); // Clear description field after success
+      } else {
+        alert("Error updating instructions: " + (result.message.message || "Unknown error."));
+      }
+    } catch (error) {
+      console.error("Error during file upload or API call:", error);
+      alert("An error occurred. Please try again.");
+    }
+  };
+  
   return (
     <>
       <Pageheader
@@ -205,6 +250,7 @@ const AddLoginInstruction = () => {
 
         <div className="col-span-12 mt-6">
           <div className="bg-white rounded-lg shadow-lg p-6 ">
+            <div className="col-span-12 flex justify-between items-center">
             <h3 className="text-center text-[var(--primaries)] text-lg font-semibold mb-4">
               Instructions Gallery
             </h3>
@@ -214,6 +260,7 @@ const AddLoginInstruction = () => {
           >
             Add New Instructions
           </button>
+          </div>
 
             <div className="relative pb-10 p-10 mx-auto">
               <Slider {...sliderSettings} ref={sliderRef}>
@@ -237,6 +284,86 @@ const AddLoginInstruction = () => {
           </div>
         </div>
       </div>
+
+      {showAddInstructionForm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-lg">
+            <div className="flex justify-between items-center border-b pb-2">
+              <h6 className="text-primary font-semibold">
+                Edit Instructions
+              </h6>
+              <button onClick={handleCloseModal} className="text-defaulttextcolor">
+                <i className="ri-close-line text-2xl"></i>
+              </button>
+            </div>
+            <form onSubmit={handleAddSubmit} className="mt-4">
+              <div>
+                <label htmlFor="file-upload" className="block text-sm text-defaulttextcolor font-semibold">
+                  Instruction Images
+                </label>
+                <input
+                  type="file"
+                  multiple
+                  id="file-upload"
+                  className="mt-1 block w-full p-2 border rounded-md"
+                  onChange={handleFileChange}
+                />
+                {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
+              </div>
+
+              <div className="grid grid-cols-3 gap-5 mt-4">
+                {fileDetails.map((file, index) => (
+                  <div key={index} className="relative group">
+                    <img
+                      src={file.url}
+                      alt={file.name}
+                      className="w-full h-28 object-contain rounded-lg"
+                    />
+                    <button
+                      onClick={() => handleRemoveImage(index)}
+                      className="absolute top-[-10px] right-[-10px] bg-red-600 text-primary p-1 rounded-full opacity-0 group-hover:opacity-100 transition"
+                    >
+                       <i className="ri-close-line text-primary text-lg font-bold "></i>
+                    </button>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-4">
+                <label
+                  htmlFor="image-description"
+                  className="block text-sm text-defaulttextcolor font-semibold"
+                >
+                  Image Description
+                </label>
+                <textarea
+                  id="image-description"
+                  className="mt-1 p-2 w-full border-defaultborder rounded-md"
+                  value={imageAddDescription}
+                  onChange={(e) => setImageAddDescription(e.target.value)}
+                />
+              </div>
+
+              <div className="mt-4 flex justify-end gap-2">
+                <button
+                  type="submit"
+                  className="bg-primary text-white px-6 py-2 rounded-md"
+                >
+                  Add Instruction
+                </button>
+                <button
+                  type="button"
+                  onClick={handleCloseModal}
+                  className="bg-gray-300 px-4 py-2 rounded-md"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
 
       {instructionToEdit && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">

@@ -12,6 +12,9 @@ interface PointHistoryItem {
     product_name: string;
     product: string;
     product_category: string;
+    gift_product_name:string;
+    deduct_gift_points:number;
+
 }
 
 // interface Carpenter {
@@ -201,6 +204,8 @@ const PointHistory: React.FC = () => {
                                     { header: 'Product Category', accessor: 'product_category' },
                                     { header: 'Earned Points', accessor: 'earned_points' },
                                     { header: 'Date', accessor: 'date' },
+                                    { header: 'Gift Name', accessor: 'gift_product_name' },
+                                    { header: 'Deduct Points', accessor: 'deduct_gift_points' },
                                 ]}
                                 data={filteredData}
                                 currentPage={currentPage}
