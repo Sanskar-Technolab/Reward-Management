@@ -407,7 +407,7 @@ const ProductMaster: React.FC = () => {
             )}
             {loading && (
                 <div className="fixed inset-0 flex items-center justify-center bg-gray-200 bg-opacity-75 z-50">
-                    <PulseLoader color="#845ADF" loading={loading} size={15} />
+                    <PulseLoader color="#09090C" loading={loading} size={15} />
                 </div>
             )}
 
