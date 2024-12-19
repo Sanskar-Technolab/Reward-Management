@@ -96,9 +96,9 @@ def get_instructions():
     return response
 
 
-# ADD or UPDATE INSTRUCTIONS--------
+# # ADD or UPDATE INSTRUCTIONS--------
 @frappe.whitelist(allow_guest=True)
-def add_update_instructions(new_image_url, image_description):
+def add_new_instruction(new_image_url, image_description):
     # Ensure the inputs are lists
     if not isinstance(new_image_url, list):
         frappe.throw("The 'new_image_url' parameter must be an array of image URLs.")
@@ -116,10 +116,7 @@ def add_update_instructions(new_image_url, image_description):
     except frappe.DoesNotExistError:
         frappe.throw("The 'Login Instruction' document does not exist.")
 
-    # Clear existing child table rows
-    instruction_doc.set("instruction_table", [])  # Reset the child table
-
-    # Append new rows to the child table
+    # Append new rows to the child table without clearing the existing ones
     for image_url, description in zip(new_image_url, image_description):
         instruction_doc.append("instruction_table", {
             "guide_image": image_url,
@@ -132,7 +129,49 @@ def add_update_instructions(new_image_url, image_description):
 
     return {
         "status": "success",
-        "message": "Instruction images and descriptions updated successfully",
-        "updated_images": new_image_url,
-        "updated_descriptions": image_description
+        "message": "New instruction images and descriptions added successfully",
+        "added_images": new_image_url,
+        "added_descriptions": image_description
+    }
+
+
+@frappe.whitelist(allow_guest=True)
+def add_update_instructions(selected_images, selected_descriptions):
+    # Validate inputs
+    if not isinstance(selected_images, list):
+        frappe.throw("The 'selected_images' parameter must be a list of image URLs.")
+    
+    if not isinstance(selected_descriptions, list):
+        frappe.throw("The 'selected_descriptions' parameter must be a list of descriptions.")
+
+    if len(selected_images) != len(selected_descriptions):
+        frappe.throw("The number of images and descriptions must match.")
+
+    # Fetch the parent document
+    instruction_doc = frappe.get_doc("Login Instruction", "Login Instruction")
+    
+    # Update only selected images and descriptions
+    for idx, (image_url, description) in enumerate(zip(selected_images, selected_descriptions)):
+        if idx < len(instruction_doc.instruction_table):
+            # Update existing child rows
+            instruction_doc.instruction_table[idx].update({
+                "guide_image": image_url,
+                "image_description": description
+            })
+        else:
+            # Append new rows if more data is provided
+            instruction_doc.append("instruction_table", {
+                "guide_image": image_url,
+                "image_description": description
+            })
+
+    # Save changes
+    instruction_doc.save(ignore_permissions=True)
+    frappe.db.commit()
+
+    return {
+        "status": "success",
+        "message": "Selected instructions updated successfully",
+        "updated_images": selected_images,
+        "updated_descriptions": selected_descriptions
     }
