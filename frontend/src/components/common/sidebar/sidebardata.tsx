@@ -150,11 +150,6 @@ export const SidebarData = [
   //   icon: <IconCashRegister className='sidebaricon'  />
   // },
   {
-    title: "FAQ's",
-    path: '/frequently-asked-question',
-    icon: <IoIcons.IoMdHelpCircle className='sidebaricon'  />
-  },
-  {
     title: 'Set Company Address',
     path: '/company-address',
     icon: <BusinessIcon className='sidebaricon'  />
@@ -164,6 +159,12 @@ export const SidebarData = [
     path: '/add-login-instructions',
     icon: <SiSimplelogin className='sidebaricon'  />
   },
+  {
+    title: "FAQ's",
+    path: '/frequently-asked-question',
+    icon: <IoIcons.IoMdHelpCircle className='sidebaricon'  />
+  },
+  
   {
     title: 'Add User',
     path: '/add-user',
