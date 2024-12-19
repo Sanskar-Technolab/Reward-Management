@@ -180,6 +180,10 @@ const Project: React.FC = () => {
             alert("An error occurred. Please try again.");
         }
     };
+
+    if (loading) {
+        return <div className="text-center">Loading...</div>;
+      }
     
 
     return (

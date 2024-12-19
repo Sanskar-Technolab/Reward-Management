@@ -5,18 +5,20 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
-  "section_break_qqoy"
+  "instruction_table"
  ],
  "fields": [
   {
-   "fieldname": "section_break_qqoy",
-   "fieldtype": "Section Break"
+   "fieldname": "instruction_table",
+   "fieldtype": "Table",
+   "label": "Instruction Table",
+   "options": "Login Instruction Guide"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2024-12-12 15:19:20.884144",
+ "modified": "2024-12-19 10:26:03.967354",
  "modified_by": "Administrator",
  "module": "Reward Management",
  "name": "Login Instruction",

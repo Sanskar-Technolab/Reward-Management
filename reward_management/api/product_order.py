@@ -42,7 +42,7 @@ def create_new_product_order(product_name, fullname, city, mobile, pincode, addr
         product_order.order_date = current_datetime.date()
         product_order.order_time = current_datetime.time().strftime('%H:%M:%S')
         product_order.order_status = "Pending"
-        product_order.approved_time = " "
+        product_order.approved_time = ""
         
 
         
