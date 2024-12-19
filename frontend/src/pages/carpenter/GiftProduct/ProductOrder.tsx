@@ -356,19 +356,16 @@ const ProductOrder = () => {
         setOtp={setOtp} reSendOtp={openMobile}/>} 
 
 {showConfirmOrder && currentProduct && (
-  <ProductOrderConfirm
-    onClose={() => setShowConfirmOrder(false)}
-    productImage={
-      currentProduct.gift_product_images?.[0]?.gift_product_image || ProductImage
-    }
-    productName={currentProduct.gift_product_name}
-    points={currentProduct.points}
-    rewardIcon={RewardImage} 
-    successMessage="Congratulate! you have successfully Redeemed 5,500 points. your product will be dispatched in next 7 days."
-    onContinue={handleOrder}
-  
-  />
-)}
+                <ProductOrderConfirm
+                    onClose={() => setShowConfirmOrder(false)}
+                    productImage={currentProduct.gift_product_images?.[0]?.gift_product_image || ProductImage}
+                    productName={currentProduct.gift_product_name}
+                    points={currentProduct.points}
+                    rewardIcon={RewardImage}
+                    successMessage={`Congratulate! You have successfully Redeemed ${currentProduct.points} points. Your product will be dispatched in the next 7 days.`}
+                    onContinue={handleOrder}
+                />
+            )}
       </>
     );
   };

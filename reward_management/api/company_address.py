@@ -7,6 +7,7 @@ def get_company_address():
     company_address = frappe.db.get_single_value("Company Address", "address")
     company_email = frappe.db.get_single_value("Company Address", "email")
     company_website = frappe.db.get_single_value("Company Address", "website")
+    about_company = frappe.db.get_single_value("Company Address","about_company")
     
     # Fetch child table data
     company_mobile_data = frappe.get_all(
@@ -20,6 +21,7 @@ def get_company_address():
         "address": company_address,
         "email": company_email,
         "website": company_website,
+        "about_company":about_company,
         "mobile_numbers": [entry["mobile_number"] for entry in company_mobile_data]
     }
     

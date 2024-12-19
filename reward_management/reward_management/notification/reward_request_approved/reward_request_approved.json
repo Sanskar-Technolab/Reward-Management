@@ -1,19 +1,19 @@
 {
  "attach_print": 0,
  "channel": "System Notification",
- "condition": "doc.request_status==\"Approved\"",
+ "condition": "doc.order_status==\"Approved\"",
  "creation": "2024-09-04 10:25:37.823379",
  "days_in_advance": 0,
  "docstatus": 0,
  "doctype": "Notification",
- "document_type": "Redeem Request",
+ "document_type": "Product Order",
  "enabled": 0,
  "event": "Value Change",
  "idx": 0,
  "is_standard": 1,
- "message": "<p><a href=\"../../rewards/redeem-request\">Your request for <strong>{{doc.redeemed_points}}</strong> points redemption has been approved!</a></p>\n",
+ "message": "<p>Your request for <strong>{{doc.product_name}}</strong> for {{doc.gift_points}} points has been approved!</p>\n",
  "message_type": "HTML",
- "modified": "2024-09-06 11:15:04.496453",
+ "modified": "2024-12-19 13:20:33.699118",
  "modified_by": "Administrator",
  "module": "Reward Management",
  "name": "Reward Request Approved",
@@ -25,6 +25,6 @@
  ],
  "send_system_notification": 0,
  "send_to_all_assignees": 0,
- "subject": "Reward Request Approved",
- "value_changed": "request_status"
+ "subject": "Product Order Request Approved",
+ "value_changed": "order_status"
 }

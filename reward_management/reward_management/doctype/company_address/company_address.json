@@ -8,7 +8,8 @@
   "address",
   "email",
   "website",
-  "mobile"
+  "mobile",
+  "about_company"
  ],
  "fields": [
   {
@@ -31,12 +32,17 @@
    "fieldtype": "Table",
    "label": "Mobile",
    "options": "Company Mobile Child"
+  },
+  {
+   "fieldname": "about_company",
+   "fieldtype": "Long Text",
+   "label": "About Company"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2024-12-09 12:01:36.207371",
+ "modified": "2024-12-19 12:07:21.758387",
  "modified_by": "Administrator",
  "module": "Reward Management",
  "name": "Company Address",

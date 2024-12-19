@@ -54,14 +54,12 @@ const MySwiper = () => {
         const response = await axios.get(
           "/api/method/reward_management.api.login_instructions.get_instructions"
         );
+        if (response) {
+          console.log("instruction response", response)
+        }
 
-        if (
-          response &&
-          response.data &&
-          response.data.message &&
-          response.data.message.status === "success"
-        ) {
-          setInstructions(response.data.message.data);
+        if (response && response.data && response.data.message && response.data.message.instructions) {
+          setInstructions(response.data.message.instructions);
         } else {
           console.error("Failed to fetch instructions or no data available.");
         }
@@ -84,6 +82,7 @@ const MySwiper = () => {
     slidesToShow: 1,
     slidesToScroll: 1,
     afterChange: (current) => setCurrentSlideIndex(current),
+    initialSlide: 0, // Start at the first slide
   };
 
   const handleNext = () => {
@@ -118,14 +117,18 @@ const MySwiper = () => {
                   {instructions.map((instruction, index) => (
                     <div key={index}>
                       <img
-                        src={`${window.origin}${instruction.image}`}
-                        alt={instruction.instruction_name}
+                        src={`${window.origin}${instruction.guide_image}`}
+                        alt={instruction.image_description}
                         className="w-full"
                       />
-                      <p className="text-center mt-4">{instruction.description}</p>
+                      <div className="pt-5">
+                        <p className="text-center mt-4">{instruction.image_description}</p>
+                      </div>
                     </div>
                   ))}
                 </Slider>
+
+
               </div>
 
               {/* Bottom Navigation Buttons */}

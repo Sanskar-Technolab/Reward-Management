@@ -22,6 +22,8 @@ import { IconLibraryPhoto } from '@tabler/icons-react';
 import { IconLayoutKanban } from '@tabler/icons-react';
 import { IconGardenCart } from '@tabler/icons-react';
 import { IconGift } from '@tabler/icons-react';
+import { SiSimplelogin } from "react-icons/si";
+
 
 
 
@@ -157,7 +159,11 @@ export const SidebarData = [
     path: '/company-address',
     icon: <BusinessIcon className='sidebaricon'  />
   },
-  
+  {
+    title: 'Set Login Instructions',
+    path: '/add-login-instructions',
+    icon: <SiSimplelogin className='sidebaricon'  />
+  },
   {
     title: 'Add User',
     path: '/add-user',

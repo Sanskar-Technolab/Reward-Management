@@ -64,10 +64,12 @@ def show_total_points():
         if carpainter:
             return carpainter[0]  # Return the first match
         else:
-            frappe.throw(_("Carpainter not found for this user"))
+            return {"success":False,"message":"Customer not found for this user"}
+
+            # frappe.throw(_("Carpainter not found for this user"))
     except Exception as e:
         frappe.log_error(f"Error in show_total_points: {str(e)}")
-        return {"error": str(e)}
+        return {"success":False,"error": str(e)}
   
   
     
@@ -83,7 +85,9 @@ def get_customer_details():
     if customer:
         return customer[0]  # Return the first match
     else:
-        frappe.throw(_("Customer not found for this email"))
+        return {"success": False,"message":"Customer not found for this email"}
+
+        # frappe.throw(_("Customer not found for this email"))
         
         
         
@@ -100,12 +104,15 @@ def update_customer_points(points):
         # Convert points to integer
         points = int(points)
     except ValueError:
-        frappe.throw(_("Invalid points value"))
+            return {"success": False,"message":"Invalid points value"}
+
+        # frappe.throw(_("Invalid points value"))
 
     # Fetch the customer record using the mobile number
     customer = frappe.get_list("Customer", filters={'mobile_number': user_mobile_no}, fields=['name', 'total_points','current_points'])
     if not customer:
-        frappe.throw(_("Customer not found"))
+         return {"success": False,"message":"Customer not found"}
+        # frappe.throw(_("Customer not found"))
 
     # Assuming there's only one customer with this mobile number
     customer_doc = frappe.get_doc("Customer", customer[0].name)
@@ -132,7 +139,9 @@ def update_carpainter_points(product_name, points,earned_amount):
         carpainter = frappe.get_list("Customer", filters={'mobile_number': user_mobile_no}, fields=['name'])
 
         if not carpainter:
-            frappe.throw(_("Carpainter not found"))
+            return {"success": False,"message":"Customer not found"}
+
+            # frappe.throw(_("Carpainter not found"))
 
         # Assuming there's only one Carpainter with this mobile number
         carpainter_doc = frappe.get_doc("Customer", carpainter[0].name)
@@ -153,5 +162,5 @@ def update_carpainter_points(product_name, points,earned_amount):
 
     except Exception as e:
         frappe.log_error(frappe.get_traceback(), f"Error in update_carpainter_points: {e}")
-        return {"error": f"Server error: {e}"}
+        return {"success":False,"error": f"Server error: {e}"}
 
