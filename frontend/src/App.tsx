@@ -30,6 +30,7 @@ import AdminAnnouncement from './pages/admin/announcement/AnnouncementDashboard.
 import TransactionHistory from './pages/admin/transactions/TransactionHistroy.tsx';
 import FAQDashboard from './pages/admin/faq/FAQDashboard.tsx';
 import AddUserDashboard from './pages/admin/admindashboards/AddUser.tsx';
+import AddLoginInstructions from './pages/admin/loginInstructions/AddLoginInstruction.tsx';
 import SetRewardPoint from './pages/admin/setrewardpoint/SetRewardPoint.tsx';
 import AdminNotifications from './pages/admin/notificationdashboard/adminnotifications.tsx'
 import CarpenterDashboard from './pages/carpenter/CarpenterDashboard.tsx';
@@ -181,6 +182,8 @@ fetchWebsiteSettings();
           <Route path='/transaction-history' element={<TransactionHistory />} />
           <Route path='/frequently-asked-question' element={<FAQDashboard />} />
           <Route path='/company-address' element={<CompanyAddress />} />
+          <Route path='/add-login-instructions' element={<AddLoginInstructions />} />
+
           <Route path='/product-catagory' element={<ProductCatagory />} />
           <Route path='/add-user' element={<AddUserDashboard />} />
           <Route path='/set-reward-points' element={<SetRewardPoint/>} />

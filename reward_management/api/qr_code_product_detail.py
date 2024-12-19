@@ -107,7 +107,7 @@ from datetime import datetime
 
 
 
-
+# Get Scanned QR Details------
 @frappe.whitelist()
 def get_product_details_from_qr(decode_text):
     try:
@@ -124,7 +124,7 @@ def get_product_details_from_qr(decode_text):
         print(f"Retrieved Product QR Document: {product_qr}")
 
         if not product_qr:
-            return {"error": "Product QR document not found"}
+            return {"success":False,"error": "Product QR document not found"}
 
         matched_row = None
         row_number = 0  # Initialize row number
@@ -149,12 +149,12 @@ def get_product_details_from_qr(decode_text):
 
         if matched_row:
             if matched_row.scanned:
-                return {"error": "This QR code has already been scanned."}
+                return {"success":False,"error": "This QR code has already been scanned."}
 
             # Fetch the product_name
             product_name = frappe.get_value("Product", {"name": matched_row.product_table_name}, "product_name")
             if not product_name:
-                return {"error": "Product not found for the given product_table_name"}
+                return {"success": False,"error": "Product not found for the given product_table_name"}
 
             # Fetch payout_amount and reward_point from Reward Point Conversion Rate using product_name
             reward_point_conversion_rate = frappe.get_all(
@@ -182,6 +182,8 @@ def get_product_details_from_qr(decode_text):
 
             # Return details including matching row data, even if reward point conversion rate is not found
             return {
+                "message": "Succesfully Get QR Code Details",
+                "success": True,
                 "product_name": product_name,
                 "product_table_name": matched_row.product_table_name,
                 "product_qr_id": matched_row.product_qr_id,
@@ -196,7 +198,7 @@ def get_product_details_from_qr(decode_text):
             }
 
         else:
-            return {"error": "No matching product_table_name and product_qr_id found in the Product QR document"}
+            return {"success": False,"error": "No matching product_table_name and product_qr_id found in the Product QR document"}
 
     except Exception as e:
         frappe.log_error(frappe.get_traceback(), f"Error in get_product_details_from_qr: {e}")
@@ -226,12 +228,12 @@ def update_scanned_status(product_table_name, product_qr_id, carpenter_id):
                     
                     # Check if QR code has already been scanned
                     if row.get('scanned'):
-                        return {"error": "This QR code has already been scanned."}
+                        return {"success": False,"error": "This QR code has already been scanned."}
                     
                     # Fetch product_name from Product document based on product_table_name
                     product_name = frappe.get_value("Product", {"name": product_table_name}, "product_name")
                     if not product_name:
-                        return {"error": "Product not found for the given product_table_name"}
+                        return {"success": False,"error": "Product not found for the given product_table_name"}
 
                     # Fetch Reward Point Conversion Rate (including from_date)
                     reward_point_conversion_rate = frappe.get_all(
@@ -277,11 +279,11 @@ def update_scanned_status(product_table_name, product_qr_id, carpenter_id):
                     continue
 
             # If no matching Product QR document found
-            return {"error": "No matching product_table_name and product_qr_id found in any Product QR document"}
+            return {"success": False,"error": "No matching product_table_name and product_qr_id found in any Product QR document"}
 
         else:
             # If no Product QR documents found
-            return {"error": "No Product QR documents found"}
+            return {"success": False,"error": "No Product QR documents found"}
 
     except Exception as e:
         # Handle any exceptions and log errors
@@ -378,13 +380,13 @@ def get_product_details_from_qr_id(product_qr_id):
         )
         
         if not product_qr_row:
-            return {"error": "No Product QR details found for the given product_qr_id."}
+            return {"success": False,"error": "No Product QR details found for the given product_qr_id."}
         
         matched_row = product_qr_row[0]
 
         # Check if already scanned
         if matched_row.get("scanned"):
-            return {"message": "This Product QR has already been scanned."}
+            return {"success": False,"message": "This Product QR has already been scanned."}
 
         # Fetch the Product QR document name
         product_qr_doc_name = matched_row.get("parent")
@@ -392,7 +394,7 @@ def get_product_details_from_qr_id(product_qr_id):
         # Fetch the product name
         product_name = frappe.get_value("Product", {"name": matched_row["product_table_name"]}, "product_name")
         if not product_name:
-            return {"error": "Product not found for the given product_table_name"}
+            return {"success": False,"error": "Product not found for the given product_table_name"}
 
         # Fetch payout_amount and reward_point from Reward Point Conversion Rate
         reward_point_conversion_rate = frappe.get_all(
@@ -420,6 +422,8 @@ def get_product_details_from_qr_id(product_qr_id):
 
         # Return details including matching row data
         return {
+            "success": True,
+            "message": "Succesfully Get QR Code Image Details",
             "product_qr_doc_name": product_qr_doc_name,
             "product_name": product_name,
             "product_table_name": matched_row["product_table_name"],
