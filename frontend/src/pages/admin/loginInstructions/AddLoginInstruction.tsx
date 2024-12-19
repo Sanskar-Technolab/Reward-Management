@@ -13,11 +13,12 @@ const AddLoginInstruction = () => {
   const [loading, setLoading] = useState(true);
   const sliderRef = useRef(null);
   const [showSuccessAlert, setShowSuccessAlert] = useState(false);
-  const [showAddInstructionForm, setShowAddInstructionForm] = useState(false);
   const [fileDetails, setFileDetails] = useState<{ url: string, name: string }[]>([]);
   const [instructionToEdit, setInstructionToEdit] = useState<any>(null);
   const [error, setError] = useState<string>('');
   const [imageDescription, setImageDescription] = useState('');
+  const [showAddInstructionForm, setShowAddInstructionForm] = useState(false);
+
 
   useEffect(() => {
     document.title = 'Instructions';
@@ -53,8 +54,6 @@ const AddLoginInstruction = () => {
   const sliderSettings = {
     dots: true,
     infinite: true,
-    // autoplay: true,
-    // autoplaySpeed: 2000,
     pauseOnHover: true,
     arrows: false,
     speed: 500,
@@ -96,7 +95,7 @@ const AddLoginInstruction = () => {
 
   const handleRemoveImage = (indexToRemove: number) => {
     setFileDetails((prevFiles) =>
-      prevFiles.filter((_, index) => index !== indexToRemove)
+        prevFiles.filter((_, index) => index !== indexToRemove)
     );
   };
 
@@ -141,15 +140,11 @@ const AddLoginInstruction = () => {
       }
 
       const data = {
-        new_image_url: uploadedFileURLs,
-        image_description: imageDescription,
+        selected_images: uploadedFileURLs,
+        selected_descriptions: [imageDescription],
       };
 
-      const apiMethod = instructionToEdit
-        ? '/api/method/reward_management.api.project.update_instruction'
-        : '/api/method/reward_management.api.project.add_update_instructions';
-
-      const response = await axios.post(apiMethod, data, {
+      const response = await axios.post('/api/method/reward_management.api.login_instructions.add_update_instructions', data, {
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
@@ -161,10 +156,9 @@ const AddLoginInstruction = () => {
       if (result.message && result.message.status === 'success') {
         setShowSuccessAlert(true);
         setFileDetails([]);
-        setShowAddInstructionForm(false);
         setImageDescription('');
       } else {
-        alert("Error updating project images: " + (result.message.message || "Unknown error."));
+        alert("Error updating instructions: " + (result.message.message || "Unknown error."));
       }
     } catch (error) {
       console.error("Error during file upload or API call:", error);
@@ -172,20 +166,16 @@ const AddLoginInstruction = () => {
     }
   };
 
-  const handleAddNewGuide = () => {
-    setInstructionToEdit(null);
-    setShowAddInstructionForm(true);
-  };
-
   const handleEditGuide = (instruction: any) => {
     setInstructionToEdit(instruction);
     setImageDescription(instruction.image_description);
     setFileDetails([{ url: instruction.guide_image, name: instruction.guide_image.split('/').pop() }]);
-    setShowAddInstructionForm(true);
-  };
+    setShowAddInstructionForm(false);
+
+  }
 
   const handleCloseModal = () => {
-    setShowAddInstructionForm(false);
+    setInstructionToEdit(null);
     setImageDescription('');
     setFileDetails([]);
   };
@@ -193,6 +183,12 @@ const AddLoginInstruction = () => {
   if (loading) {
     return <div className="text-center">Loading...</div>;
   }
+
+  const handleAddNewGuide = () => {
+    setInstructionToEdit(null);
+    setShowAddInstructionForm(true);
+  };
+
 
   return (
     <>
@@ -205,25 +201,25 @@ const AddLoginInstruction = () => {
       <div className="grid grid-cols-12 gap-x-6 p-6">
         <div className="col-span-12 flex justify-between items-center">
           <h2 className="text-[var(--primaries)] text-xl font-semibold">Instructions</h2>
-          <button
+        </div>
+
+        <div className="col-span-12 mt-6">
+          <div className="bg-white rounded-lg shadow-lg p-6 ">
+            <h3 className="text-center text-[var(--primaries)] text-lg font-semibold mb-4">
+              Instructions Gallery
+            </h3>
+            <button
             onClick={handleAddNewGuide}
             className="ti-btn bg-primary text-white px-4 py-2 rounded-md"
           >
             Add New Instructions
           </button>
-        </div>
-
-        <div className="col-span-12 mt-6">
-          <div className="bg-white rounded-lg shadow-lg p-6">
-            <h3 className="text-center text-[var(--primaries)] text-lg font-semibold mb-4">
-              Instructions Gallery
-            </h3>
 
             <div className="relative pb-10 p-10 mx-auto">
               <Slider {...sliderSettings} ref={sliderRef}>
                 {instructions.map((instruction, index) => (
                   <div key={index} className={index === 0 ? "first-slide" : ""}>
-                    <div className="pt-5 text-sm text-defaulttextcolor flex justify-end ">
+                    <div className="pt-5 text-sm text-defaulttextcolor flex justify-end pb-5 mx-[10px] ">
                       <button onClick={() => handleEditGuide(instruction)} className="ti-btn bg-primary text-white px-5 py-2 rounded-md">Edit</button>
                     </div>
                     <img
@@ -234,7 +230,6 @@ const AddLoginInstruction = () => {
                     <div className="pt-5">
                       <p className="text-center mt-4">{instruction.image_description}</p>
                     </div>
-
                   </div>
                 ))}
               </Slider>
@@ -243,12 +238,12 @@ const AddLoginInstruction = () => {
         </div>
       </div>
 
-      {showAddInstructionForm && (
+      {instructionToEdit && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-lg">
             <div className="flex justify-between items-center border-b pb-2">
               <h6 className="text-primary font-semibold">
-                {instructionToEdit ? "Edit Instructions" : "Add Instructions"}
+                Edit Instructions
               </h6>
               <button onClick={handleCloseModal} className="text-defaulttextcolor">
                 <i className="ri-close-line text-2xl"></i>
@@ -269,20 +264,19 @@ const AddLoginInstruction = () => {
                 {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
               </div>
 
-              {/* Image Previews */}
               <div className="grid grid-cols-3 gap-5 mt-4">
                 {fileDetails.map((file, index) => (
                   <div key={index} className="relative group">
                     <img
                       src={file.url}
                       alt={file.name}
-                      className="w-full h-28 object-cover rounded-lg"
+                      className="w-full h-28 object-contain rounded-lg"
                     />
                     <button
                       onClick={() => handleRemoveImage(index)}
-                      className="absolute top-2 right-2 text-white text-xl font-bold"
+                      className="absolute top-[-10px] right-[-10px] bg-red-600 text-primary p-1 rounded-full opacity-0 group-hover:opacity-100 transition"
                     >
-                      ×
+                       <i className="ri-close-line text-primary text-lg font-bold "></i>
                     </button>
                   </div>
                 ))}
@@ -308,7 +302,7 @@ const AddLoginInstruction = () => {
                   type="submit"
                   className="bg-primary text-white px-6 py-2 rounded-md"
                 >
-                  {instructionToEdit ? "Update Instruction" : "Add Instruction"}
+                  Update Instruction
                 </button>
                 <button
                   type="button"
@@ -323,9 +317,17 @@ const AddLoginInstruction = () => {
         </div>
       )}
 
-      {showSuccessAlert && <SuccessAlert />}
+      {showSuccessAlert && <SuccessAlert 
+      message={""} 
+      onClose={function (): void {
+        throw new Error("Function not implemented.");
+      } } 
+      onCancel={function (): void {
+        throw new Error("Function not implemented.");
+      } } />}
     </>
   );
 };
+
 
 export default AddLoginInstruction;
