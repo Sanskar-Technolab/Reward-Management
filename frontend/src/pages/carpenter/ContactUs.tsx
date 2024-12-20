@@ -14,6 +14,7 @@ const ContactUs = () => {
     email: "",
     website: "",
     contacts: [],
+    about_company : "",
   });
   useEffect(() => {
 
@@ -26,12 +27,13 @@ const ContactUs = () => {
           console.log("address data",response);
         }
         if (response && response.data && response.data.message) {
-          const { address, email, website, mobile_numbers } = response.data.message;
+          const { address, email, website, mobile_numbers ,about_company} = response.data.message;
           setCompanyDetails({
-            address: address || "N/A",
-            email: email || "N/A",
-            website: website || "N/A",
+            address: address || "",
+            email: email || "",
+            website: website || "",
             contacts: mobile_numbers || [],
+            about_company : about_company || "",
           });
         }
       } catch (error) {
@@ -88,7 +90,7 @@ const ContactUs = () => {
           <img src={logo} alt="logo" className="" />
         </div>
         <div className=" flex justify-center">
-            <p className="w-[500px] max-w-[500px] text-defaultsize text-black text-center">Lorem ipsum dolor sit amet consectetur. Sit sed auctor libero morbi.Lorem ipsum dolor sit amet consectetur. Sit sed auctor libero morbi. </p>
+            <p className="w-[500px] max-w-[500px] text-defaultsize text-black text-center">{companyDetails.about_company} </p>
         </div>
         <div className="flex justify-center  mt-12">
             <div className=" w-[500px] bg-[#F0F0F0]  border border-defaultborder rounded-[15px] shadow-md p-5">

@@ -64,6 +64,76 @@ def update_registration_request_status(registration_id, status):
         frappe.log_error(frappe.get_traceback(), _("Error in update_registration_request_status"))
         frappe.throw(_("Failed to update registration request status: {0}").format(str(e)))
 
+
+
+# @frappe.whitelist(allow_guest=True)
+# def update_registration_request_status(registration_id, status):
+#     try:
+#         # Fetch the registration document
+#         registration = frappe.get_doc("Customer Registration", registration_id)
+        
+#         if status == "Approved":
+#             # Check if a User with the same mobile number exists
+#             existing_user = frappe.get_value("User", {"mobile_no": registration.mobile_number}, "name")
+            
+#             if not existing_user:
+#                 # Create a new User
+#                 user = frappe.new_doc("User")
+#                 user.first_name = registration.first_name
+#                 user.last_name = registration.last_name
+#                 user.full_name = f"{registration.first_name} {registration.last_name}"
+#                 user.email = f"{registration.mobile_number}@gmail.com"
+#                 user.mobile_no = registration.mobile_number
+#                 user.location = registration.city
+#                 user.role_profile_name = "Customer"  # Assign role
+                
+#                 # Save the User document
+#                 user.insert(ignore_permissions=True)
+                
+#                 # Log the new User details
+#                 user_dict = user.as_dict()
+#                 user_details = "\n".join([f"{key}: {value}" for key, value in user_dict.items()])
+#                 frappe.logger().info(f"New User Details:\n{user_details}")
+                
+#                 # Create a new Carpainter document
+#                 new_carpainter = frappe.new_doc("Customer")
+#                 new_carpainter.first_name = registration.first_name
+#                 new_carpainter.last_name = registration.last_name
+#                 new_carpainter.full_name = registration.carpainter_name
+#                 new_carpainter.email = f"{registration.mobile_number}@gmail.com"
+#                 new_carpainter.mobile_number = registration.mobile_number
+#                 new_carpainter.city = registration.city
+                
+#                 # Insert the new Carpainter document
+#                 new_carpainter.insert()
+                
+#                 # Log the newly created Carpainter details
+#                 carpainter_dict = new_carpainter.as_dict()
+#                 carpainter_details = "\n".join([f"{key}: {value}" for key, value in carpainter_dict.items()])
+#                 frappe.logger().info(f"New Customer Details:\n{carpainter_details}")
+#             else:
+#                 return {
+#                     "status": "error",
+#                     "message": _("User with mobile number {0} already exists.").format(registration.mobile_number)
+#                 }
+        
+#         # Commit the transaction
+#         frappe.db.commit()
+        
+#         return {
+#             "status": "success",
+#             "message": _("Registration request status updated successfully.")
+#         }
+    
+#     except Exception as e:
+#         # Log the error and return a detailed response
+#         frappe.log_error(frappe.get_traceback(), _("Error in update_registration_request_status"))
+#         return {
+#             "status": "error",
+#             "message": _("Failed to update registration request status: {0}").format(str(e))
+#         }
+
+
 # @frappe.whitelist(allow_guest=True)
 # def update_registration_request_status(registration_id, status):
 #     try:

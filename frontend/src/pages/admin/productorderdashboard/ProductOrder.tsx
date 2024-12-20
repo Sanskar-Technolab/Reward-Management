@@ -99,23 +99,29 @@ const ProductOrder: React.FC = () => {
         console.log("Add Product button clicked");
     };
 
-    const formatDate = (dateString: string) => {
-        const date = new Date(dateString);
-        const day = String(date.getDate()).padStart(2, '0');
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const year = date.getFullYear();
-        return `${day}-${month}-${year}`;
+    // const formatDate = (dateString: string) => {
+    //     const date = new Date(dateString);
+    //     const day = String(date.getDate()).padStart(2, '0');
+    //     const month = String(date.getMonth() + 1).padStart(2, '0');
+    //     const year = date.getFullYear();
+    //     return `${day}-${month}-${year}`;
+    // };
+
+    // const formattedProductOrderData = orderData?.map(order => ({
+    //     ...order,
+    //     transfer_date: order.order_date ? formatDate(order.order_date) : '',
+    //     // product_image_display: order.product_image ? (
+    //     //     <img src={order.product_image} alt="Product" style={{ width: '100px', height: 'auto' }} />
+    //     // ) : (
+    //     //     'No Image' 
+    //     // ),
+    // })) || [];
+
+    const formatDateToMySQL = (dateString: string) => {
+        const [year, month, day] = dateString.split('-').map(Number);
+        return `${day.toString().padStart(2, '0')}-${month.toString().padStart(2, '0')}-${year}`;
     };
 
-    const formattedProductOrderData = orderData?.map(order => ({
-        ...order,
-        transfer_date: order.order_date ? formatDate(order.order_date) : '',
-        // product_image_display: order.product_image ? (
-        //     <img src={order.product_image} alt="Product" style={{ width: '100px', height: 'auto' }} />
-        // ) : (
-        //     'No Image' 
-        // ),
-    })) || [];
     
 
     const parseDateString = (dateString: string): Date | null => {
@@ -134,10 +140,27 @@ const ProductOrder: React.FC = () => {
         return new Date(year, month, day);
     };
 
+    // const formatDateToISO = (dateString: string) => {
+    //     const date = new Date(dateString);
+    //     const year = date.getFullYear();
+    //     const month = (`0${date.getMonth() + 1}`).slice(-2);
+    //     const day = (`0${date.getDate()}`).slice(-2);
+    //     return `${year}-${month}-${day}`;
+    // };
+    
+
+
+    const formattedProductOrderData = orderData?.map(order => ({
+        ...order,
+        order_date: order.order_date ? formatDateToMySQL(order.order_date) : '',
+        approved_date: order.approved_date ? formatDateToMySQL(order.approved_date) : '',
+    })) || [];
+
+
     const filteredData = formattedProductOrderData.filter(order => {
         const query = searchQuery.toLowerCase();
 
-        const orderDateString = order.transfer_date;
+        const orderDateString = order.order_date;
         const isDateValid = typeof orderDateString === 'string' && orderDateString.trim() !== '';
         const orderDate = isDateValid ? parseDateString(orderDateString) : null;
 
@@ -151,6 +174,11 @@ const ProductOrder: React.FC = () => {
             (order.mobile_number && order.mobile_number.toLowerCase().includes(query)) ||
             (order.product_name && order.product_name.toLowerCase().includes(query)) ||
             (order.customer_id && order.customer_id.toLowerCase().includes(query)) ||
+            (order.order_date && order.order_date.toLowerCase().includes(query))||
+            (order.order_status && order.order_status.toLowerCase().includes(query))||
+            (order.gift_points && order.gift_points.toString().includes(query))||
+            (order.address && order.address.toLowerCase().includes(query))||
+            (order.city && order.city.toLowerCase().includes(query))||
             (order.customer_email && order.customer_email.toLowerCase().includes(query));
 
         return isWithinDateRange && matchesSearchQuery;

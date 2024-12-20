@@ -190,9 +190,9 @@ const SetContactUs: React.FC = () => {
             <div className="grid grid-cols-12 gap-x-6 p-6">
                 <div className="col-span-12 flex justify-center items-center">
                     <div className="xl:col-span-3 col-span-12 bg-white mt-5 rounded-lg shadow-lg p-6">
-                        <div>
-                            <div className="box-header">
-                                <div className="box-title text-center text-[var(--primaries)] text-sm font-semibold">
+                        <div className=''>
+                            <div className="box-header ">
+                                <div className="box-title text-center text-1rem font-semibold text-primary">
                                     Set Company Address
                                 </div>
                             </div>
@@ -202,7 +202,7 @@ const SetContactUs: React.FC = () => {
                                         <div className="xl:col-span-12 col-span-12">
                                             <label
                                                 htmlFor="companyAddress"
-                                                className="block text-defaulttextcolor text-xs font-medium mb-1"
+                                                className="block text-sm text-defaulttextcolor font-semibold mb-1"
                                             >
                                                 Company Address
                                             </label>
@@ -218,7 +218,7 @@ const SetContactUs: React.FC = () => {
                                         <div className="xl:col-span-12 col-span-12">
                                             <label
                                                 htmlFor="companyEmail"
-                                                className="block text-defaulttextcolor text-xs font-medium mb-1"
+                                                className="block text-sm text-defaulttextcolor font-semibold mb-1"
                                             >
                                                 Company Email
                                             </label>
@@ -234,7 +234,7 @@ const SetContactUs: React.FC = () => {
                                         <div className="xl:col-span-12 col-span-12">
                                             <label
                                                 htmlFor="companyWebsite"
-                                                className="block text-defaulttextcolor text-xs font-medium mb-1"
+                                                className="block text-sm text-defaulttextcolor font-semibold mb-1"
                                             >
                                                 Company Website
                                             </label>
@@ -251,7 +251,7 @@ const SetContactUs: React.FC = () => {
                                             <div className="xl:col-span-12 col-span-12" key={index}>
                                                 <label
                                                     htmlFor={`companyMobile${index}`}
-                                                    className="block text-defaulttextcolor text-xs font-medium mb-1"
+                                                    className="block text-sm text-defaulttextcolor font-semibold mb-1"
                                                 >
                                                     Company Mobile {index + 1}
                                                 </label>
@@ -289,7 +289,7 @@ const SetContactUs: React.FC = () => {
                                          <div className="xl:col-span-12 col-span-12">
                                             <label
                                                 htmlFor="companyAboutUs"
-                                                className="block text-defaulttextcolor text-xs font-medium mb-1"
+                                                className="block text-sm text-defaulttextcolor font-semibold mb-1"
                                             >
                                                 About Us
                                             </label>
@@ -312,7 +312,7 @@ const SetContactUs: React.FC = () => {
                                                 type="submit"
                                                 className="ti-btn text-defaulttextcolor w-full bg-primary/20"
                                             >
-                                                cancel
+                                                Cancel
                                             </button>
                                         </div>
                                     </div>

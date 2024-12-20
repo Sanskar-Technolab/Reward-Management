@@ -287,17 +287,18 @@ const AddLoginInstruction = () => {
 
       {showAddInstructionForm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-lg">
-            <div className="flex justify-between items-center border-b pb-2">
+          <div className="bg-white rounded-lg shadow-lg  w-full max-w-lg">
+            <div className="flex justify-between items-center border-b border-defaultborder pb-2 p-4">
               <h6 className="text-primary font-semibold">
-                Edit Instructions
+                Add Instructions
               </h6>
               <button onClick={handleCloseModal} className="text-defaulttextcolor">
                 <i className="ri-close-line text-2xl"></i>
               </button>
             </div>
             <form onSubmit={handleAddSubmit} className="mt-4">
-              <div>
+              <div className="p-4">
+              <div className="">
                 <label htmlFor="file-upload" className="block text-sm text-defaulttextcolor font-semibold">
                   Instruction Images
                 </label>
@@ -305,7 +306,7 @@ const AddLoginInstruction = () => {
                   type="file"
                   multiple
                   id="file-upload"
-                  className="mt-1 block w-full p-2 border rounded-md"
+                  className="mt-1 block w-full p-2 border border-[#dadada] rounded-md"
                   onChange={handleFileChange}
                 />
                 {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
@@ -338,13 +339,14 @@ const AddLoginInstruction = () => {
                 </label>
                 <textarea
                   id="image-description"
-                  className="mt-1 p-2 w-full border-defaultborder rounded-md"
+                  className="mt-1 p-2 w-full border border-[#dadada] rounded-md"
                   value={imageAddDescription}
                   onChange={(e) => setImageAddDescription(e.target.value)}
                 />
               </div>
+              </div>
 
-              <div className="mt-4 flex justify-end gap-2">
+              <div className="mt-4 flex justify-end gap-2 border-t border-defaultborder p-4">
                 <button
                   type="submit"
                   className="bg-primary text-white px-6 py-2 rounded-md"
@@ -367,8 +369,8 @@ const AddLoginInstruction = () => {
 
       {instructionToEdit && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-lg">
-            <div className="flex justify-between items-center border-b pb-2">
+          <div className="bg-white rounded-lg shadow-lg w-full max-w-lg">
+            <div className="flex justify-between items-center border-b pb-2 p-4">
               <h6 className="text-primary font-semibold">
                 Edit Instructions
               </h6>
@@ -377,6 +379,7 @@ const AddLoginInstruction = () => {
               </button>
             </div>
             <form onSubmit={handleSubmit} className="mt-4">
+              <div className="p-4">
               <div>
                 <label htmlFor="file-upload" className="block text-sm text-defaulttextcolor font-semibold">
                   Instruction Images
@@ -385,7 +388,7 @@ const AddLoginInstruction = () => {
                   type="file"
                   multiple
                   id="file-upload"
-                  className="mt-1 block w-full p-2 border rounded-md"
+                  className="mt-1 block w-full p-2 border border-[#dadada] rounded-md"
                   onChange={handleFileChange}
                 />
                 {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
@@ -418,13 +421,14 @@ const AddLoginInstruction = () => {
                 </label>
                 <textarea
                   id="image-description"
-                  className="mt-1 p-2 w-full border-defaultborder rounded-md"
+                  className="mt-1 p-2 w-full border border-[#dadada] rounded-md"
                   value={imageDescription}
                   onChange={(e) => setImageDescription(e.target.value)}
                 />
               </div>
+              </div>
 
-              <div className="mt-4 flex justify-end gap-2">
+              <div className="mt-4 flex justify-end gap-2 border-t border-defaultborder p-4">
                 <button
                   type="submit"
                   className="bg-primary text-white px-6 py-2 rounded-md"
