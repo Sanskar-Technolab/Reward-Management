@@ -116,7 +116,7 @@ const FAQDashboard: React.FC = () => {
             question,
             answer,
             status: "Active",
-            created_date: new Date().toISOString().split('T')[0],
+            // created_date: new Date().toISOString().split('T')[0],
         };
 
         try {

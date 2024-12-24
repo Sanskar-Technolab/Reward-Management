@@ -1,7 +1,9 @@
 import { Fragment, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Pageheader from '../../components/common/pageheader/pageheader';
-import { TfiAnnouncement } from "react-icons/tfi";
+// import { TfiAnnouncement } from "react-icons/tfi";
+import { MdCampaign } from "react-icons/md";
+
 import { useFrappeGetDocList } from 'frappe-react-sdk';
 import '../../assets/css/header.css';
 import '../../assets/css/style.css';
@@ -75,8 +77,8 @@ const Announcements = () => {
                                             <Link to="#">
                                                 <div className="flex items-start mt-0 flex-wrap">
                                                     <div className="inline-flex justify-center items-center w-[2.5rem] h-[2.5rem] leading-[2.5rem] text-[0.8rem] rounded-full">
-                                                        <span className="avatar avatar-md online me-4 avatar-rounded rounded-full bg-primary/10 p-2">
-                                                            <TfiAnnouncement className="text-md " />
+                                                        <span className="avatar avatar-md online me-4 avatar-rounded rounded-full bg-primary text-white p-1">
+                                                            <MdCampaign className="text-lg" />
                                                         </span>
                                                     </div>
                                                     <div className="flex-grow">

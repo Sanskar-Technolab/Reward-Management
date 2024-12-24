@@ -3,7 +3,7 @@ import "../../../assets/css/pages/admindashboard.css";
 import Pageheader from "../../../components/common/pageheader/pageheader";
 import TableComponent from "../../../components/ui/tables/tablecompnent";
 import TableBoxComponent from "../../../components/ui/tables/tableboxheader";
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import SuccessAlert from "../../../components/ui/alerts/SuccessAlert";
 import DangerAlert from "../../../components/ui/alerts/DangerAlert";
 import axios from "axios";
@@ -17,7 +17,7 @@ interface ProductCategory {
 
 const ProductCatalogue: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage] = useState(5);
+    const [itemsPerPage] = useState(10);
     const [productCatalogue, setProductCatalogue] = useState("");
     const [previews, setPreviews] = useState<string[]>([]);
     const [existingImages, setExistingImages] = useState<string[]>([]);
@@ -33,20 +33,27 @@ const ProductCatalogue: React.FC = () => {
     const [alertTitle, setAlertTitle] = useState("");
     const [productCategoryToEdit, setProductCategoryToEdit] =
         useState<ProductCategory | null>(null);
+        const [filteredData, setFilteredData] = useState<ProductCategory[]>([]);
+
 
     // Fetch the product categories
-    const {
-        data: productcategoryData,
-        mutate: mutateProductCategory,
-        error,
-    } = useFrappeGetDocList<ProductCategory>("Product Category", {
+    const { data: productcategoryData, mutate: mutateProductCategory } =
+    useFrappeGetDocList<ProductCategory>("Product Category", {
         fields: ["name", "category_name", "catalogue_image"],
     });
 
-    // Filter data based on search query
-    const filteredData = productcategoryData?.filter((item) =>
-        item.category_name.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+    const handleSearch = (value: string) => setSearchQuery(value);
+
+
+  
+    useEffect(() => {
+        if (productcategoryData) {
+            const filteredData = productcategoryData.filter((item) =>
+                item.category_name.toLowerCase().includes(searchQuery.toLowerCase())
+            );
+            setFilteredData(filteredData);
+        }
+    }, [searchQuery, productcategoryData]);
 
     React.useEffect(() => {
         document.title = "Product Catagory";
@@ -122,8 +129,10 @@ const ProductCatalogue: React.FC = () => {
                 setAlertMessage("Product Category updated successfully!");
                 // Clear the input fields
                 setProductCatalogue("");
-                setPreviews([]); // Clear the file previews
-                setExistingImages([]); // Clear any existing images
+                // Clear the file previews
+                setPreviews([]); 
+                // Clear any existing images
+                setExistingImages([]); 
             } else {
                 // Add new product category
                 await axios.post(`/api/resource/Product Category`, data, {
@@ -239,7 +248,7 @@ const ProductCatalogue: React.FC = () => {
                 <div className="xl:col-span-12 col-span-12">
                     <TableBoxComponent
                         title="Product Catalogue"
-                        onSearch={(e) => setSearchQuery(e.target.value)}
+                        onSearch={handleSearch}
                         onAddButtonClick={() => setShowAddCatalogueForm(true)}
                         buttonText="Add Product Catalogue"
                         showButton={true}
@@ -287,9 +296,9 @@ const ProductCatalogue: React.FC = () => {
             </div>
 
             {showAddCatalogueForm && (
-                <div className="grid grid-cols-12 gap-x-6 p-6 fixed inset-0 z-50 items-center justify-center bg-black bg-opacity-50">
-                    <div className="col-span-12 flex justify-center items-center">
-                        <div className="xl:col-span-3 col-span-12 bg-white mt-5 rounded-lg shadow-lg p-6">
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                    <div className="bg-white rounded-lg shadow-lg w-full max-w-lg">
+                        <div className="ti-modal-content flex flex-col h-full max-h-[80vh]">
                             <div className="box-header">
                                 <div className="ti-modal-header flex justify-between border-b p-4">
                                     <h6 className="modal-title text-1rem font-semibold text-primary">
@@ -307,20 +316,21 @@ const ProductCatalogue: React.FC = () => {
                                     </button>
                                 </div>
                             </div>
-                            <div className="box-body w-[400px] max-w-[400px]">
+                           
                                 <form onSubmit={handleSubmit}>
+                                <div className="p-4 overflow-auto flex-1">
                                     <div className="grid grid-cols-12 gap-4">
                                         <div className="xl:col-span-12 col-span-12">
                                             <label
                                                 htmlFor="categoryName"
-                                                className="block text-defaulttextcolor text-xs font-medium mb-1"
+                                                className="block text-sm text-defaulttextcolor font-semibold mb-1"
                                             >
                                                 Product Category
                                             </label>
                                             <input
                                                 type="text"
                                                 id="categoryName"
-                                                className="form-control w-full !rounded-md !bg-light text-defaulttextcolor text-xs font-medium"
+                                                className="form-control w-full rounded-md text-defaulttextcolor text-sm border border-[#dadada]"
                                                 placeholder="Enter Product Category"
                                                 value={
                                                     productCatalogue ||
@@ -335,14 +345,14 @@ const ProductCatalogue: React.FC = () => {
                                         <div className="xl:col-span-12 col-span-12">
                                             <label
                                                 htmlFor="product-images-add"
-                                                className="block text-defaulttextcolor text-xs font-medium mb-1"
+                                                className="block text-sm font-semibold text-defaulttextcolor mb-1"
                                             >
                                                 Category Image
                                             </label>
                                             <input
                                                 type="file"
                                                 multiple
-                                                className="form-control w-full !rounded-md !bg-light text-defaulttextcolor text-xs font-medium p-2 border border-[#949eb7]"
+                                                className="form-control w-full rounded-md text-defaulttextcolor text-sm font-medium p-2 border border-[#dadada]"
                                                 id="product-images-add"
                                                 onChange={handleFileChange}
                                             />
@@ -364,7 +374,10 @@ const ProductCatalogue: React.FC = () => {
                                                 )}
                                             </div>
                                         </div>
-                                        <div className="xl:col-span-12 col-span-12 text-center">
+                                        </div>
+                                        </div>
+                                        
+                                        <div className="xl:col-span-12 col-span-12 text-center border-t p-4 border-defaultborder">
 
 
                                             <div className="flex justify-end">
@@ -382,10 +395,11 @@ const ProductCatalogue: React.FC = () => {
                                                     Cancel
                                                 </button>
                                             </div>
-                                        </div>
+                                        
                                     </div>
+
                                 </form>
-                            </div>
+                         
                         </div>
                     </div>
                 </div>

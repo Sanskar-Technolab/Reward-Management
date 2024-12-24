@@ -155,7 +155,7 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({ isOpen, tog
                         </div>
                         <div className="p-4">
                             <div className="grid">
-                                <Link to='/notifications' className="ti-btn ti-btn-primary-full !m-0 w-full p-2">View All</Link>
+                                <Link to='/notifications' className="ti-btn bg-primary text-white w-full !m-0 w-full p-2">View All</Link>
                             </div>
                         </div>
                         </div>

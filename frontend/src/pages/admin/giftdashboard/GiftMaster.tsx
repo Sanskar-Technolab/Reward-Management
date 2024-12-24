@@ -18,7 +18,7 @@ const ProductMaster: React.FC = () => {
     const [giftData, setGiftData] = useState<Gift[]>([]);
     const [filteredData, setFilteredData] = useState<Gift[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage] = useState(5);
+    const [itemsPerPage] = useState(10);
     // const [modalOpen, setModalOpen] = useState(false);
     // const [selectedProduct, setSelectedProduct] = useState<Gift | null>(null);
     const [showSuccessAlert, setShowSuccessAlert] = useState(false);
@@ -72,7 +72,15 @@ const ProductMaster: React.FC = () => {
     // Handle search filtering
     useEffect(() => {
         const filtered = giftData.filter((gift) =>
-            gift.gift_product_name?.toLowerCase().includes(searchQuery.toLowerCase())
+        {
+            const query = searchQuery.toLowerCase();
+            return (
+                gift.gift_product_name?.toLowerCase().includes(query) ||
+                gift.name?.toLowerCase().includes(query) ||
+                gift.points?.toString().includes(query) // Convert points to string for comparison
+            );
+        }
+            
         );
         setFilteredData(filtered);
     }, [searchQuery, giftData]);
@@ -225,7 +233,7 @@ const ProductMaster: React.FC = () => {
             {isConfirmDeleteModalOpen && (
                 <DangerAlert
                     type="danger"
-                    message="Are you sure you want to delete this product?"
+                    message="Are you sure you want to delete this gift product?"
                     onConfirm={confirmDelete}
                     onDismiss={cancelDelete}
                 />

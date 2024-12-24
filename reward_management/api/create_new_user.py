@@ -4,37 +4,90 @@ from frappe.model.document import Document
 
 
 # check register user before registration
+
 @frappe.whitelist(allow_guest=True)
 def check_registered_user(mobile_number):
     try:
-        # Check if the mobile number exists in User document (matching the 'mobile_no' field)
+        # Check if the Carpainter already exists in Customer Registration
+        existing_carpainter = frappe.db.get_value(
+            "Customer Registration",
+            {"mobile_number": mobile_number,"status":"Pending"},
+            ["name", "status"],
+            as_dict=True
+        )
+
+        if existing_carpainter:
+            if existing_carpainter["status"] == "Pending":
+                return {
+                    "approved":False,
+                    "registered": True,
+                    "status": "failed",
+                    "message": "Your registration request is pending admin approval. You will be able to log in once the request is approved."
+                }
+
+        # Check if the mobile number exists in the User document
         user_info = frappe.get_value(
-            "User",  
-            {"mobile_no": mobile_number},  
+            "User",
+            {"mobile_no": mobile_number},
             ["name", "email"],
-            as_dict=True  
+            as_dict=True
         )
 
         if user_info:
             # If user exists with the provided mobile number
             return {
                 "registered": True,
+                "approved":True,
                 "message": "User is already registered. Please login to your account."
             }
-        else:
-            # If no user exists with the provided mobile number
-            return {
-                "registered": False,
-                "message": "Mobile number not registered. Please register to continue."
-            }
+
+        # If no user or carpainter registration exists for the mobile number
+        return {
+            "registered": False,
+            "approved":False,
+            "message": "Mobile number not registered. Please register to continue."
+        }
 
     except Exception as e:
         # Log any exceptions that occur
         frappe.log_error(f"Error in check_registered_user: {str(e)}")
         return {
+            "approved":False,
             "registered": False,
-            "message": f"An error occurred: {str(e)}"  
+            "message": f"An error occurred: {str(e)}"
         }
+
+# @frappe.whitelist(allow_guest=True)
+# def check_registered_user(mobile_number):
+#     try:
+#         # Check if the mobile number exists in User document (matching the 'mobile_no' field)
+#         user_info = frappe.get_value(
+#             "User",  
+#             {"mobile_no": mobile_number},  
+#             ["name", "email"],
+#             as_dict=True  
+#         )
+
+#         if user_info:
+#             # If user exists with the provided mobile number
+#             return {
+#                 "registered": True,
+#                 "message": "User is already registered. Please login to your account."
+#             }
+#         else:
+#             # If no user exists with the provided mobile number
+#             return {
+#                 "registered": False,
+#                 "message": "Mobile number not registered. Please register to continue."
+#             }
+
+#     except Exception as e:
+#         # Log any exceptions that occur
+#         frappe.log_error(f"Error in check_registered_user: {str(e)}")
+#         return {
+#             "registered": False,
+#             "message": f"An error occurred: {str(e)}"  
+#         }
 
 
 # # check user registration login time

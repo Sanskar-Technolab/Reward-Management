@@ -138,7 +138,11 @@ useEffect(() => {
 
   const sliderSettings = {
     dots: true,
-    infinite: false,
+    infinite: true,
+    autoplay:true,
+    autoplaySpeed:2000,                            
+    pauseOnHover:true, 
+    arrows:false,
     speed: 500,
     slidesToShow: 1,
     slidesToScroll: 1,

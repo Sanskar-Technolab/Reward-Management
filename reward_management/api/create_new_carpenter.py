@@ -62,7 +62,23 @@ def create_new_carpainters(firstname, lastname, city, mobile):
         carpainter_by_mobile = frappe.db.exists("Customer", {"mobile_number": mobile})
 
         if carpainter_by_mobile:
-            return {"status": "failed", "message": "Carpenter already exists. Please login into your account."}
+            return {"success":False,"status": "failed", "message": "Carpenter already exists. Please login into your account."}
+        
+        
+        
+        existing_carpainter = frappe.db.get_value("Customer Registration", 
+                                                  {"mobile_number": mobile , "status":"Pending"}, 
+                                                  ["name", "status"], 
+                                                  as_dict=True)
+
+        if existing_carpainter:
+            if existing_carpainter["status"] == "Pending":
+                return {
+                    "success":False,
+                    "status": "failed", 
+                    "message": "Your registration request is pending admin approval. You will be able to log in once the request is approved."
+                }
+           
 
         # Create full_name by combining first_name and last_name
         full_name = f"{firstname} {lastname}"
@@ -92,7 +108,7 @@ def create_new_carpainters(firstname, lastname, city, mobile):
         # Call function to create users for all Approved Carpainters
         # create_users_for_approved_carpainters()
 
-        return {"status": "success", "message": "Carpainter and Carpainter Registration created successfully"}
+        return {"success":True,"status": "success", "message": "Registration submitted successfully. Your account will be activated after admin approval"}
     except Exception as e:
         frappe.logger().error(f"Error creating Carpainter or Carpainter Registration: {str(e)}")
         return {"status": "failed", "message": str(e)}

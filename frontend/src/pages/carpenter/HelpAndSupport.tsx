@@ -75,8 +75,8 @@ const Faqs = () => {
             <div className="xl:col-span-12 col-span-12">
               <div className="">
                 <div className="box-header">
-                  <div className="box-title text-[.9375rem] text-defaulttextcolor font-bold p-[1.25rem] ">
-                    General Topics ?
+                  <div className="box-title text-[1rem] text-defaulttextcolor font-bold p-[1.2rem] ">
+                  Help
                   </div>
                   <hr />
                 </div>
@@ -86,14 +86,14 @@ const Faqs = () => {
                   {faqData.map((faq, index) => (
         <div
           key={faq.name}
-          className="hs-accordion overflow-hidden border -mt-px first:rounded-t-sm last:rounded-b-sm dark:bg-bgdark dark:border-white/10"
+          className="hs-accordion overflow-hidden border border-primary/20 bg-primary/5 first:rounded-t-sm last:rounded-b-sm dark:bg-bgdark dark:border-white/10"
           id={`hs-accordion-heading-${index}`}
         >
           <button
             className={`group py-4 px-5 inline-flex items-center justify-between gap-x-3 w-full font-semibold text-start transition ${
               expandedIndex === index
-                ? 'text-primary bg-primary/10 dark:text-primary'  // Active styles
-                : 'text-gray-800 hover:text-gray-500 dark:text-gray-200 dark:hover:text-white/80'  // Inactive styles
+                ? 'text-primary bg-primary/20 dark:text-primary'  // Active styles
+                : 'text-gray-primary hover:text-primary dark:primary dark:hover:text-white/80'  // Inactive styles
             }`}
             aria-controls={`hs-accordion-collapse-${index}`}
             type="button"
@@ -101,7 +101,7 @@ const Faqs = () => {
           >
             {faq.question}
             <svg
-              className={`w-3 h-3 text-gray-600 group-hover:text-gray-500 dark:text-[#8c9097] ${expandedIndex === index ? 'hidden' : 'block'}`}
+              className={`w-3 h-3 text-primary group-hover:text-primary dark:text-primary ${expandedIndex === index ? 'hidden' : 'block'}`}
               width="16"
               height="16"
               viewBox="0 0 16 16"
@@ -116,7 +116,7 @@ const Faqs = () => {
               />
             </svg>
             <svg
-              className={`w-3 h-3 text-gray-600 group-hover:text-gray-500 dark:text-[#8c9097] ${expandedIndex === index ? 'block' : 'hidden'}`}
+              className={`w-3 h-3 text-primary group-hover:text-primary dark:text-primary ${expandedIndex === index ? 'block' : 'hidden'}`}
               width="16"
               height="16"
               viewBox="0 0 16 16"

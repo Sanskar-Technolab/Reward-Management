@@ -135,6 +135,10 @@ const Login = () => {
                 headers: { 'Content-Type': 'application/json' }
             });
 
+            if(response){
+                console.log("registration response",response)
+            }
+
             return response.data;
         } catch (error) {
             console.error('Error during carpainter registration:', error);
@@ -241,7 +245,7 @@ const Login = () => {
             console.log("Check Response Data:", checkResponse.data);
 
             // If the mobile number is not registered, show OTP input field
-            if (checkResponse.data.message.registered === false) {
+            if (checkResponse.data.message.registered === false && checkResponse.data.message.approved === false) {
                 // Generate OTP for unregistered user
                 const response = await axios.post(
                     `/api/method/reward_management.api.mobile_number.generate_or_update_otp`,
