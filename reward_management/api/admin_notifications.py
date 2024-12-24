@@ -17,8 +17,8 @@ def get_notifications_log():
             # Fetch notifications for any of the admin users
             notifications = frappe.get_all(
                 "Notification Log",
-                filters={"for_user": ["in", admin_users]},  # Filter for any admin user
-                fields=["name", "subject", "email_content", "document_type", "for_user", "creation"]
+                filters={"for_user": ["in", admin_users],"read": 0},  # Filter for any admin user
+                fields=["name", "subject", "email_content", "document_type", "for_user", "creation","read"]
             )
             
             if notifications:
@@ -32,8 +32,8 @@ def get_notifications_log():
                     # Fetch notifications specifically for that first admin user
                     notifications = frappe.get_all(
                         "Notification Log",
-                        filters={"for_user": first_admin_with_notifications},
-                        fields=["name", "subject", "email_content", "document_type", "for_user", "creation"]
+                        filters={"for_user": first_admin_with_notifications,"read": 0},
+                        fields=["name", "subject", "email_content", "document_type", "for_user", "creation","read"]
                     )
                 
                 return notifications
@@ -45,13 +45,33 @@ def get_notifications_log():
         # Fetch notifications for the logged-in user
         notifications = frappe.get_all(
             "Notification Log",
-            filters={"for_user": user},
-            fields=["name", "subject", "email_content", "document_type", "for_user", "creation"]
+            filters={"for_user": user,"read": 0},
+            fields=["name", "subject", "email_content", "document_type", "for_user", "creation","read"]
         )
 
         return notifications
 
-
+# Notification Updatetion for read notifications----
+@frappe.whitelist(allow_guest=True)
+def mark_notification_as_read(name, read):
+    try:
+        # Fetch the Notification Log document by its name (ID)
+        notification = frappe.get_doc("Notification Log", name)
+        
+        # Check if the notification exists
+        if notification:
+            # Update the 'read' field with the passed value
+            notification.read = read
+            notification.save() 
+            frappe.db.commit()  
+            return {"success":True,"status": "success", "message": "Notification marked as read."}
+        else:
+            return {"success":False,"status": "error", "message": "Notification not found."}
+    except Exception as e:
+        frappe.log_error(frappe.get_traceback(), "Error marking notification as read")
+        return {"success":False,"status": "error", "message": str(e)}
+    
+# show notifications----
 @frappe.whitelist()
 def show_notification_data():
     # Fetch all notifications from the Notification Log doctype
@@ -125,9 +145,9 @@ def send_customer_product_order_approved_notification(doc, method=None):
             'subject': 'Product Order Request Approved',
             'type': 'Alert',
             'email_content': f"""
-                <p>{customer.full_name},</p>
-                <p>Your request for <strong>{doc.product_name}</strong> order has been approved!</p>
-                <p><strong>{doc.gift_points}</strong> points have been deducted.</p>
+            {customer.full_name},</br>
+            Your request for <strong>{doc.product_name}</strong> order has been approved!</br>
+            <strong>{doc.gift_points}</strong> points have been deducted.
             """,
             'document_type': 'Product Order',
             'document_name': doc.name
@@ -187,8 +207,8 @@ def send_customer_reward_points_earn_notification(doc, method=None):
         'subject': 'Reward Points Earned',
         'type': 'Alert',
         'email_content': f"""
-            <p>{customer.full_name},</p>
-            <p>You have earned <strong>{earned_points}</strong> points for the product <strong>{product_name}</strong>!</p>
+        {customer.full_name},</br>
+        You have earned <strong>{earned_points}</strong> points for the product <strong>{product_name}</strong>!
         """,
         'document_type': 'Customer',
         'document_name': doc.name

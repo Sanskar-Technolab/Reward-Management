@@ -209,7 +209,10 @@ def add_category(productCategory):
         productcategory.insert(ignore_permissions=True)
 
         # Return success message
-        return {"success": True, "message": _("Product Category added successfully.")}
+        return {"success": True, "message":"Product Category added successfully.",
+                 "category_name": productcategory.category_name,
+                 "category_id": productcategory.name  
+        }
 
     except Exception as e:
         # Log error and raise exception

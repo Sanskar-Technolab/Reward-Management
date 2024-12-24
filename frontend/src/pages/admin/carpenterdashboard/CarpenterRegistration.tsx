@@ -13,7 +13,7 @@ import { PulseLoader } from 'react-spinners';
 
 interface CarpenterRegistrations {
     name: string;
-    carpainter_id?: string;
+    // carpainter_id?: string;
     carpainter_name?: string;
     mobile_number?: string;
     city?: string;
@@ -33,7 +33,7 @@ const CarpenterRegistration: React.FC = () => {
     const [fromDate, setFromDate] = useState<Date | null>(null);
     const [toDate, setToDate] = useState<Date | null>(null);
     const { data: carpenterregisterData } = useFrappeGetDocList<CarpenterRegistrations>('Customer Registration', {
-        fields: ['name', 'carpainter_id', 'carpainter_name', 'mobile_number', 'city', 'registration_date', 'status', 'approved_date'],
+        fields: ['name', 'carpainter_name', 'mobile_number', 'city', 'registration_date', 'status', 'approved_date'],
          // limit_start: pageIndex * 10,
          limit: 0,
          orderBy: {
@@ -260,7 +260,7 @@ const CarpenterRegistration: React.FC = () => {
             isWithinDateRange &&
             (
                 (transaction.name && transaction.name.toLowerCase().includes(query)) ||
-                (transaction.carpainter_id && transaction.carpainter_id.toLowerCase().includes(query)) ||
+                // (transaction.carpainter_id && transaction.carpainter_id.toLowerCase().includes(query)) ||
                 (transaction.carpainter_name && transaction.carpainter_name.toLowerCase().includes(query)) ||
                 (transaction.mobile_number && transaction.mobile_number.toLowerCase().includes(query)) ||
                 (transaction.city && transaction.city.toLowerCase().includes(query)) ||
@@ -361,7 +361,7 @@ const CarpenterRegistration: React.FC = () => {
 
             {loading && (
                 <div className="fixed inset-0 flex items-center justify-center bg-gray-200 bg-opacity-75 z-50">
-                    <PulseLoader color="#845ADF" loading={loading} size={15} />
+                    <PulseLoader color="#09090C" loading={loading} size={15} />
                 </div>
             )}
 

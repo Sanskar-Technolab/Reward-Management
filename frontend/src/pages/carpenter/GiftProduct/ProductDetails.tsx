@@ -165,6 +165,10 @@ const ProductDetails = () => {
   const sliderSettings = {
     dots: true,
     infinite: false,
+    autoplay:true,
+    autoplaySpeed : 2000,
+    pushOnHover : true,
+    arrows:false,
     speed: 500,
     slidesToShow: 1,
     slidesToScroll: 1,
@@ -193,7 +197,7 @@ const ProductDetails = () => {
                     <img
                       src={image}
                       alt={`Product Image ${index + 1}`}
-                      className="w-full lg:h-[450px] md:h-[300px] sm:h-[200px] object-fill"
+                      className="w-full  lg:h-[450px] md:h-[300px] sm:h-[200px] object-fill"
                     />
                   </div>
                 ))}

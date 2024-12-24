@@ -12,6 +12,9 @@ interface PointHistoryItem {
     product_name: string;
     product: string;
     product_category: string;
+    gift_product_name:string;
+    deduct_gift_points:number;
+
 }
 
 // interface Carpenter {
@@ -89,10 +92,25 @@ const PointHistory: React.FC = () => {
 
     // Filter data based on search query
     useEffect(() => {
-        const filtered = carpenterData.filter(item => 
-            Object.values(item).some(value => 
-                value.toString().toLowerCase().includes(searchQuery.toLowerCase())
-            )
+        const filtered = carpenterData.filter(item => {
+            const query = searchQuery.toLowerCase();
+            const matchesSearchQuery =
+            (item.product && item.product.toLowerCase().includes(query)) ||
+            (item.product_name && item.product_name.toLowerCase().includes(query)) ||
+
+            (item.product_category && item.product_category.toLowerCase().includes(query)) ||
+
+            (item.gift_product_name && item.gift_product_name.toLowerCase().includes(query)) ||
+            (item.earned_points && item.earned_points.toString().includes(query)) ||
+
+            (item.deduct_gift_points && item.deduct_gift_points.toString().includes(query)) ;
+
+
+        return  matchesSearchQuery;
+
+
+
+        }
         );
         setFilteredData(filtered);
     }, [searchQuery, carpenterData]);
@@ -118,7 +136,7 @@ const PointHistory: React.FC = () => {
 
     // Handle table search
     const handleSearch = (value: string) => {
-        setSearchQuery(value); // Update search query
+        setSearchQuery(value); 
         setCurrentPage(1);
         console.log("Search value:", value);
     };
@@ -201,6 +219,8 @@ const PointHistory: React.FC = () => {
                                     { header: 'Product Category', accessor: 'product_category' },
                                     { header: 'Earned Points', accessor: 'earned_points' },
                                     { header: 'Date', accessor: 'date' },
+                                    { header: 'Gift Name', accessor: 'gift_product_name' },
+                                    { header: 'Deduct Points', accessor: 'deduct_gift_points' },
                                 ]}
                                 data={filteredData}
                                 currentPage={currentPage}

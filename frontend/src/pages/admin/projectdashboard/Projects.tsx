@@ -237,21 +237,25 @@ const Project: React.FC = () => {
             </div>
 
             {showAddCatalogueForm && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-                    <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-lg">
-                        <div className="flex justify-between items-center border-b pb-2">
-                            <h6 className="text-primary font-semibold">
+                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                    <div className="bg-white rounded-lg shadow-lg w-full max-w-lg">
+                    <div className="ti-modal-content flex flex-col h-full max-h-[80vh]">
+                        <div className="ti-modal-header flex justify-between border-b p-4">
+                            <h6 className="modal-title text-1rem font-semibold text-primary">
                                 {projectToEdit ? "Edit Project" : "Add Project"}
                             </h6>
-                            <button onClick={handleCloseModal} className="text-defaulttextcolor">
-                                <i className="ri-close-line text-2xl"></i>
+                            <button onClick={handleCloseModal} className="text-lg font-semibold text-defaulttextcolor">
+                            <span className="sr-only">Close</span>
+                                <i className="ri-close-line "></i>
                             </button>
                         </div>
-                        <form onSubmit={handleSubmit} className="mt-4">
-                            <div>
+                        
+                        <form onSubmit={handleSubmit} className="">
+                        <div className='p-4 overflow-auto flex-1'>
+                            <div className=''>
                                 <label
                                     htmlFor="file-upload"
-                                    className="block text-sm font-medium text-gray-700"
+                                    className="block text-sm text-defaulttextcolor font-semibold"
                                 >
                                     Project Images
                                 </label>
@@ -259,7 +263,7 @@ const Project: React.FC = () => {
                                     type="file"
                                     multiple
                                     id="file-upload"
-                                    className="mt-1 block w-full p-2 border rounded-md"
+                                    className="mt-1 block w-full p-2 border border-defaultborder rounded-md"
                                     onChange={handleFileChange}
                                 />
                                 {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
@@ -272,7 +276,7 @@ const Project: React.FC = () => {
                                         <img
                                             src={file.url}
                                             alt={file.name}
-                                            className="w-full h-32 object-cover rounded-md"
+                                            className="w-full h-32 object-contain rounded-md"
                                         />
                                         <button
                                             type="button"
@@ -284,8 +288,9 @@ const Project: React.FC = () => {
                                     </div>
                                 ))}
                             </div>
+                            </div>
 
-                            <div className="mt-4 flex justify-end gap-2">
+                            <div className="border-t border-defaultborder p-4 flex justify-end gap-2">
                                 <button
                                     type="submit"
                                     className="bg-primary text-white px-4 py-2 rounded-md"
@@ -300,7 +305,9 @@ const Project: React.FC = () => {
                                     Cancel
                                 </button>
                             </div>
+
                         </form>
+                        </div>
                     </div>
                 </div>
             )}

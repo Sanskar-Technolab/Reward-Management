@@ -255,7 +255,7 @@ const handleRemoveImage = (indexToRemove: number) => {
                                             <div className="xl:col-span-12 col-span-12">
                                                 <label
                                                     htmlFor="file-upload"
-                                                    className="block text-sm font-medium text-gray-700"
+                                                    className="block text-sm font-semibold text-defaulttextcolor"
                                                 >
                                                     Gift Images
                                                 </label>

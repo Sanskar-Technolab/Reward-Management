@@ -7,7 +7,6 @@
  "engine": "InnoDB",
  "field_order": [
   "naming_series",
-  "carpainter_id",
   "carpainter_name",
   "mobile_number",
   "city",
@@ -27,13 +26,6 @@
    "fieldtype": "Select",
    "label": "Naming Series",
    "options": "Customer-Registration.-.YYYY.-.MM.-."
-  },
-  {
-   "fieldname": "carpainter_id",
-   "fieldtype": "Link",
-   "hidden": 1,
-   "label": "Customer ID",
-   "options": "Customer"
   },
   {
    "fieldname": "carpainter_name",
@@ -93,7 +85,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-12-16 09:31:08.331510",
+ "modified": "2024-12-20 16:24:33.165676",
  "modified_by": "Administrator",
  "module": "Reward Management",
  "name": "Customer Registration",

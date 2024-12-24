@@ -124,7 +124,7 @@ def get_product_details_from_qr(decode_text):
         print(f"Retrieved Product QR Document: {product_qr}")
 
         if not product_qr:
-            return {"success":False,"error": "Product QR document not found"}
+            return {"success":False,"error": "Product QR  not found"}
 
         matched_row = None
         row_number = 0  # Initialize row number
@@ -182,7 +182,7 @@ def get_product_details_from_qr(decode_text):
 
             # Return details including matching row data, even if reward point conversion rate is not found
             return {
-                "message": "Succesfully Get QR Code Details",
+                "message": "QR code scanned successfully",
                 "success": True,
                 "product_name": product_name,
                 "product_table_name": matched_row.product_table_name,
@@ -270,7 +270,8 @@ def update_scanned_status(product_table_name, product_qr_id, carpenter_id):
                     frappe.db.commit()
 
                     return {
-                        "message": "Scanned status, carpenter id, and earned amount updated successfully",
+                        "message": " QR code scanned successfully.",
+                        "status":"update successfully",
                         "success": True,
                         "earned_amount": earned_amount  # Return earned amount
                     }
@@ -283,7 +284,7 @@ def update_scanned_status(product_table_name, product_qr_id, carpenter_id):
 
         else:
             # If no Product QR documents found
-            return {"success": False,"error": "No Product QR documents found"}
+            return {"success": False,"error": "No Product QR found"}
 
     except Exception as e:
         # Handle any exceptions and log errors
