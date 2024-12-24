@@ -82,7 +82,7 @@ def show_notification_data():
 
     return notifications
 
-
+# send system notification for customer account approved
 @frappe.whitelist()
 def send_system_notification(doc, method=None):
     # doc is the document that triggered the hook
