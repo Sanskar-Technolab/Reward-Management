@@ -16,19 +16,22 @@ const CatalogueProducts = () => {
       try {
         const response = await axios.get(`/api/method/reward_management.api.carpenter_master.get_carpainter_data`);
         console.log("Product data:", response.data);
-
-        const data = response.data.message.data; // Access the 'data' array from the response
+// Access the 'data' array from the response
+        const data = response.data.message.data; 
         console.log("Table data:", data);
 
         // Ensure data is an array before setting state
         if (Array.isArray(data)) {
-          setProducts(data); // Save product data to state
+          // Save product data to state
+          setProducts(data); 
         } else {
-          setProducts([]); // Default to empty array if the data is not an array
+          // Default to empty array if the data is not an array
+          setProducts([]); 
         }
       } catch (error) {
         console.error("Error fetching product data:", error);
-        setProducts([]); // Handle error by setting an empty array
+        // Handle error by setting an empty array
+        setProducts([]); 
       }
     };
 

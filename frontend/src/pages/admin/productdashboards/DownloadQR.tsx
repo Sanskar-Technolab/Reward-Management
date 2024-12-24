@@ -36,7 +36,12 @@ const DownloadQRCode: React.FC = () => {
     const [itemsPerPage] = useState(5);
     const navigate = useNavigate();
     const urlParams = new URLSearchParams(window.location.search);
-    const productName = urlParams.get('product');
+    const productName = urlParams.get('product');   
+    const [filteredData, setFilteredData] = useState<DownloadProductQRCode[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [fromDate, setFromDate] = useState<Date | null>(null);
+  const [toDate, setToDate] = useState<Date | null>(null);
+
 
     useEffect(() => {
         document.title = 'Download QR';
@@ -75,6 +80,37 @@ const DownloadQRCode: React.FC = () => {
         fetchData();
     }, [productName]);
 
+
+// table filter logic-------------
+    useEffect(() => {
+    
+        const filtered = data
+          ?.map((item) => ({
+            ...item,
+            generated_date: item.generated_date ? item.generated_date: "",
+          }))
+          .filter((item) => {
+            const query = searchQuery.toLowerCase();
+            const matchesSearchQuery =
+              (item.product_name && item.product_name.toLowerCase().includes(query)) ||
+              (item.points && item.points.toString().includes(query)) ||
+              (item.generated_time && item.generated_time.toString().includes(query))||
+              (item.total_product && item.total_product.toString().includes(query));
+    
+            const fromDateMatch = fromDate
+              ? new Date(item.generated_date || "") >= new Date(fromDate)
+              : true;
+            const toDateMatch = toDate
+              ? new Date(item.generated_date || "") <= new Date(toDate)
+              : true;
+    
+            return matchesSearchQuery && fromDateMatch && toDateMatch;
+          });
+    
+        setFilteredData(filtered);
+      }, [data, searchQuery, fromDate, toDate]);
+    
+
     const totalPages = Math.ceil(data.length / itemsPerPage);
 
     const handlePrevPage = () => {
@@ -94,13 +130,22 @@ const DownloadQRCode: React.FC = () => {
     };
 
     const handleSearch = (value: string) => {
-        console.log("Search value:", value);
-    };
+        setSearchQuery(value);
+        setCurrentPage(1);
+      };
 
     const handleAddProductClick = () => {
         console.log("Back button clicked");
         navigate('/product-master');
     };
+
+    const handleDateFilter = (from: Date | null, to: Date | null) => {
+        setFromDate(from);
+        setToDate(to);
+        setCurrentPage(1);
+      };
+    
+      if (error) return <div>Error: {error}</div>;
 
     // download and create pdf for qr images---------
     // const handleDownloadQR = async (row: DownloadProductQRCode) => {
@@ -236,6 +281,9 @@ const DownloadQRCode: React.FC = () => {
                             onAddButtonClick={handleAddProductClick}
                             buttonText="Back"
                             showButton={true}
+                            showFromDate={true}
+                            showToDate={true}
+                            onDateFilter={handleDateFilter}
                             icon="ri-arrow-left-line"
                         />
 
@@ -248,7 +296,11 @@ const DownloadQRCode: React.FC = () => {
                                     { header: 'Generated Time', accessor: 'generated_time' },
                                     { header: 'Total QR', accessor: 'total_product' },
                                 ]}
-                                data={data}
+                                // data={data}
+                                data={filteredData.slice(
+                                    (currentPage - 1) * itemsPerPage,
+                                    currentPage * itemsPerPage
+                                  )}
                                 currentPage={currentPage}
                                 itemsPerPage={itemsPerPage}
                                 handlePrevPage={handlePrevPage}

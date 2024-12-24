@@ -124,8 +124,10 @@ def get_company_address():
 #         # Log error for debugging
 #         frappe.log_error(frappe.get_traceback(), "add_or_update_company_address")
 #         return {'status': 'error', 'message': f'An error occurred: {str(e)}'}
+
+
 @frappe.whitelist(allow_guest=True)
-def add_or_update_company_address(address, email, website, mobile_numbers):
+def add_or_update_company_address(address, email, website, mobile_numbers, about_company):
     try:
         # Check if the company address already exists (Assuming it's a single doctype)
         company_address_doc = frappe.db.get_single_value("Company Address", "address")
@@ -136,21 +138,18 @@ def add_or_update_company_address(address, email, website, mobile_numbers):
             company_address_doc.address = address
             company_address_doc.email = email
             company_address_doc.website = website
+            company_address_doc.about_company = about_company  # Update About Us if applicable
+
+            # Clear existing mobile numbers before adding new ones
+            company_address_doc.set("mobile", [])
 
             # Filter out mobile numbers that are not 10 digits
             valid_mobiles = [mobile for mobile in mobile_numbers if len(mobile) == 10]
 
             if valid_mobiles:
-                # Check if any mobile numbers are already in the child table
-                existing_mobiles = [entry.mobile_number for entry in company_address_doc.mobile]
-
-                # Filter out already existing mobile numbers
-                new_mobiles = [mobile for mobile in valid_mobiles if mobile not in existing_mobiles]
-
-                if new_mobiles:
-                    # Combine all the valid new mobile numbers into a single entry in the child table
-                    mobile_entry = {"mobile_number": ", ".join(new_mobiles)}
-                    company_address_doc.append("mobile", mobile_entry)
+                # Iterate over each valid mobile and add them to the child table as separate entries
+                for mobile in valid_mobiles:
+                    company_address_doc.append("mobile", {"mobile_number": mobile})
 
             company_address_doc.save(ignore_permissions=True)
 
@@ -162,16 +161,17 @@ def add_or_update_company_address(address, email, website, mobile_numbers):
                 'doctype': 'Company Address',
                 'address': address,
                 'email': email,
-                'website': website
+                'website': website,
+                'about_company': about_company  # Add About Us if applicable
             })
 
             # Filter out mobile numbers that are not 10 digits
             valid_mobiles = [mobile for mobile in mobile_numbers if len(mobile) == 10]
 
             if valid_mobiles:
-                # Add the valid mobile numbers to the child table as a single entry
-                mobile_entry = {"mobile_number": ", ".join(valid_mobiles)}
-                new_address_doc.append("mobile", mobile_entry)
+                # Add each valid mobile number to the child table as separate entries
+                for mobile in valid_mobiles:
+                    new_address_doc.append("mobile", {"mobile_number": mobile})
 
             new_address_doc.insert(ignore_permissions=True)
 
