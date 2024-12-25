@@ -1,7 +1,7 @@
 import frappe
 from frappe import _
 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def get_redeem_request():
     redeem_requests = frappe.get_all("Redeem Request", fields=["name", "customer_id", "redeemed_points", "current_point_status", "total_points", "approve_time", "received_time", "request_status", "received_date", "approved_on", "amount", "transection_id"])
     

@@ -242,7 +242,7 @@ const Login = () => {
             );
 
             // Log the response to inspect its structure
-            console.log("Check Response Data:", checkResponse.data);
+            console.log("Check Response Data:", checkResponse)
 
             // If the mobile number is not registered, show OTP input field
             if (checkResponse.data.message.registered === false && checkResponse.data.message.approved === false) {
@@ -320,10 +320,11 @@ const Login = () => {
         const checkResponse = await axios.get(`/api/method/reward_management.api.create_new_user.check_user_registration`, {
             params: { mobile_number: mobilenumber },
         });
+        console.log("login response data",checkResponse)
 
         localStorage.setItem('carpenterrole', checkResponse.data.message.role_profile_name);
 
-        if (checkResponse.data.message && checkResponse.data.message.registered) {
+        if (checkResponse.data.message && checkResponse.data.message.registered && checkResponse.data.message.approved) {
             // Call the OTP generation API
             const otpResponse = await axios.post(`/api/method/reward_management.api.mobile_number.generate_or_update_otp`, {
                 mobile_number: mobilenumber
@@ -345,7 +346,7 @@ const Login = () => {
                 setLoginError('Failed to send OTP. Please try again.');
             }
         } else {
-            setLoginError('User not registered. Please register first.');
+            setLoginError(checkResponse.data.message.message);
         }
     } catch (error) {
         console.error('Error handling login OTP:', error);

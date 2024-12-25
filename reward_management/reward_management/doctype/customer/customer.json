@@ -23,10 +23,11 @@
  ],
  "fields": [
   {
+   "default": "Customer.-.{{full_name}}.-.YYYY.-.#####",
    "fieldname": "naming_series",
    "fieldtype": "Select",
    "label": "Naming Series",
-   "options": "{{full_name}}.-.YYYY.-.#####"
+   "options": "Customer.-.{{full_name}}.-.YYYY.-.#####"
   },
   {
    "fieldname": "first_name",
@@ -108,7 +109,7 @@
  "image_field": "image",
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-09-16 14:57:44.471736",
+ "modified": "2024-12-25 16:30:33.820844",
  "modified_by": "Administrator",
  "module": "Reward Management",
  "name": "Customer",

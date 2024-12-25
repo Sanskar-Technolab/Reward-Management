@@ -10,6 +10,8 @@ import SunEditor from 'suneditor-react';
 import 'suneditor/dist/css/suneditor.min.css';
 import SuccessAlert from '../../../components/ui/alerts/SuccessAlert';
 import DangerAlert from '../../../components/ui/alerts/DangerAlert';
+import axios from 'axios';
+
 
 
 interface FAQ {
@@ -106,62 +108,64 @@ const FAQDashboard: React.FC = () => {
         event.preventDefault();
         console.log("Question:", question);
         console.log("Answer:", answer);
-
+    
         if (!answer || !question) {
             alert("Please enter a valid question and answer.");
             return;
         }
-
-        const data = {
+    
+        // Data structure for POST (creating new FAQ)
+        const addData = {
             question,
             answer,
             status: "Active",
-            // created_date: new Date().toISOString().split('T')[0],
+            created_date: new Date().toISOString().split('T')[0], // Assuming you want to set created_date for POST
         };
-
+    
+        // Data structure for PUT (updating existing FAQ)
+        const updateData = {
+            question,
+            answer,
+            status: "Active",
+            
+        };
+    
         try {
             let response;
             if (selectedFAQ) {
                 // Update existing FAQ
-                response = await fetch(`/api/resource/FAQ/${selectedFAQ.name}`, {
-                    method: 'PUT',
+                response = await axios.put(`/api/resource/FAQ/${selectedFAQ.name}`, updateData, {
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify(data),
                 });
             } else {
                 // Add new FAQ
-                response = await fetch('/api/resource/FAQ', {
-                    method: 'POST',
+                response = await axios.post('/api/resource/FAQ', addData, {
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify(data),
                 });
             }
-
-            if (!response.ok) {
+    
+            if (response.status !== 200) {
                 throw new Error('Network response was not ok');
             }
-
+    
             setShowSuccessAlert(true);
             setAlertMessage(selectedFAQ ? 'FAQ updated successfully!' : 'FAQ created successfully!');
             setAlertTitle('Success');
-
-
-            // alert(selectedFAQ ? 'FAQ updated successfully!' : 'FAQ created successfully!');
+    
             setQuestion('');
-
             setAnswer('');
             handleCloseModal();
-
+    
         } catch (error) {
             console.error('Error:', error);
             alert('Failed to save FAQ.');
         }
     };
-
+    
     const handleDeleteFAQ = (item: FAQ) => {
         setFaqToDelete(item);
         setIsConfirmDeleteModalOpen(true);
@@ -170,18 +174,18 @@ const FAQDashboard: React.FC = () => {
     const confirmDelete = async () => {
         if (faqToDelete) {
             try {
-                const response = await fetch(`/api/resource/FAQ/${faqToDelete.name}`, {
-                    method: 'DELETE',
+                const response = await axios.delete(`/api/resource/FAQ/${faqToDelete.name}`, {
                     headers: {
                         'Content-Type': 'application/json',
                     }
                 });
-
-                if (!response.ok) {
-                    const responseData = await response.json();
-                    throw new Error(`Error: ${responseData.message || response.statusText}`);
+    
+                // Check if response status is 200 (success) or 202 (accepted)
+                if (response.status !== 200 && response.status !== 202) {
+                    throw new Error(`Error: ${response.data.message || response.statusText}`);
                 }
-
+    
+                // If status is 200 or 202, assume the FAQ is successfully deleted
                 setFaqData(prevData => prevData.filter(faq => faq.name !== faqToDelete.name));
                 setAlertTitle('FAQ Deleted');
                 setAlertMessage('FAQ deleted successfully!');
@@ -194,6 +198,7 @@ const FAQDashboard: React.FC = () => {
         setIsConfirmDeleteModalOpen(false);
         setFaqToDelete(null);
     };
+    
 
     const cancelDelete = () => {
         setIsConfirmDeleteModalOpen(false);

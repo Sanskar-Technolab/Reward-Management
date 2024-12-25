@@ -45,14 +45,14 @@ from frappe.utils import nowdate
 #         frappe.logger().error(f"Error fetching Carpainter Registrations: {str(e)}")
 #         return {"status": "failed", "message": str(e)}
   
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def get_carpainter_data(user):
     try:
         # Fetch user information
         user_info = frappe.get_doc("User", user)
 
         if not user_info:
-            return {"status": "failed", "message": "User not found."}
+            return {"success":False,"status": "failed", "message": "User not found."}
 
         # Prepare user data
         user_data = {
@@ -67,7 +67,7 @@ def get_carpainter_data(user):
         user_mobile_no = user_info.mobile_no
 
         if not user_mobile_no:
-            return {"status": "failed", "message": "Mobile number not found for user."}
+            return {"success":False,"status": "failed", "message": "Mobile number not found for user."}
 
         # Fetch carpainter/customer details
         carpainters = frappe.get_list(
@@ -117,18 +117,19 @@ def get_carpainter_data(user):
 
         # Return combined response
         return {
+            "success":True,
             "status": "success",
             "login_user_data": user_data,
             "carpainter_data": carpainter_data
         }
 
     except Exception as e:
-        frappe.logger().error(f"Error in get_carpainter_data: {str(e)}")
-        return {"status": "failed", "message": str(e)}
+        frappe.logger().error(f"Error in carpenter data: {str(e)}")
+        return {"success":False,"status": "failed", "message": str(e)}
 
     
 # Show Total Points and Available Points------ 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def show_total_points():
     try:
         # Get logged-in user's email
@@ -141,7 +142,10 @@ def show_total_points():
                                     fields=["name", "total_points", "redeem_points","current_points"])
 
         if carpainter:
-            return carpainter[0]  # Return the first match
+            carpenter_data =carpainter[0]
+            return {
+                "success":True,
+                "message":carpenter_data}
         else:
             return {"success":False,"message":"Customer not found for this user"}
 
@@ -153,7 +157,7 @@ def show_total_points():
   
     
 # get logged carpenter data-------------  
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def get_customer_details():
     logged_in_user = frappe.session.user
     user_info = frappe.get_doc("User", logged_in_user)
@@ -170,6 +174,7 @@ def get_customer_details():
     if customer:
         customer_data = customer[0]  # Get the first match
         return {
+            "success":True,
             "name": customer_data.get("name"),
             "total_points": customer_data.get("total_points"),
             "mobile_number": customer_data.get("mobile_number"),
@@ -233,7 +238,9 @@ def update_customer_points(points):
     customer_doc.current_points += points
     customer_doc.save()
 
-    return {"success": True}
+    return {"success": True,
+            "message":"update customer points successfully."
+            }
 
 
 
@@ -273,9 +280,10 @@ def update_carpainter_points(product_name, points,earned_amount):
         # Save the Carpainter document
         carpainter_doc.save()
 
-        return {"success": True}
+        return {"success": True,
+                "message":"Customer Point Update Successfully."}
 
     except Exception as e:
-        frappe.log_error(frappe.get_traceback(), f"Error in update_carpainter_points: {e}")
+        frappe.log_error(frappe.get_traceback(), f"Error in Updating Customer Points: {e}")
         return {"success":False,"error": f"Server error: {e}"}
 

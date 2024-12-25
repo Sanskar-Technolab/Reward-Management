@@ -1,7 +1,6 @@
 import "../../assets/css/style.css";
 import React, { Fragment, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { useFrappeGetCall } from "frappe-react-sdk";
 // import ProjectSlider from "../../components/ui/slider/projectslider";
 import Arrow from "../../assets/images/reward_management/arrow.png";
 import ProductCard from "../../components/ui/productcard/card";

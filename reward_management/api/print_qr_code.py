@@ -9,7 +9,7 @@ import hashlib
 from datetime import datetime
 
 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def print_qr_code():
     # Fetch fields from the Product QR document
     qr_docs = frappe.get_all("Product QR", fields=["name", "product_name", "quantity"])
@@ -30,7 +30,7 @@ def print_qr_code():
 
 
 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def create_product_qr(product_name, quantity):
     try:
         # Check if a Product QR document already exists for the given product_name
@@ -57,20 +57,42 @@ def create_product_qr(product_name, quantity):
         current_time = format_datetime(current_datetime, "HH:mm:ss")
         
         # Fetch reward_points from Product master
-        product_details = frappe.get_doc("Product", product_name)  # Assuming product_name is the unique identifier
-        reward_points = product_details.reward_points if product_details else 0  # Default to 0 if not found
+        # Assuming product_name is the unique identifier
+        product_details = frappe.get_doc("Product", product_name)  
+        # Default to 0 if not found
+        reward_points = product_details.reward_points if product_details else 0  
         
         # Add new rows based on the quantity requested
         for i in range(quantity):
             child_row = product_qr_doc.append("qr_table", {})
 
-            # Generate a unique 8-digit numeric hash value
+            # # Generate a unique 8-digit numeric hash value
             hash_input = f"{timestamp_value}_{product_name}_{i}"  
-            product_qr_id = int(hashlib.md5(hash_input.encode()).hexdigest(), 16) % 100000000  
-            child_row.product_qr_id = f"{product_qr_id:08d}" 
+            product_qr_id = int(hashlib.md5(hash_input.encode()).hexdigest(), 16) % 100000000 
+            formated_qr_id = f"{product_qr_id:8d}" 
+            child_row.product_qr_id =formated_qr_id
             child_row.product_table_name = product_name  
             child_row.generated_date = current_date  
             child_row.generated_time = current_time
+            
+            # Generate a unique numeric hash value
+            # hash_input = f"{timestamp_value}_{product_name}_{i}"
+            # product_qr_id = int(hashlib.md5(hash_input.encode()).hexdigest(), 16) % 100000000
+
+            # # Ensure the hash does not start with zero
+            # while str(product_qr_id).startswith("0"):
+            #     # Regenerate the hash input by appending an extra character or incrementing
+            #     hash_input += "1"
+            #     product_qr_id = int(hashlib.md5(hash_input.encode()).hexdigest(), 16) % 100000000
+
+            # # Format the QR ID to always have 8 digits
+            # formatted_qr_id = f"{product_qr_id:8d}"
+
+            # # Assign the formatted QR ID to the child row
+            # child_row.product_qr_id = formatted_qr_id
+            # child_row.product_table_name = product_name
+            # child_row.generated_date = current_date
+            # child_row.generated_time = current_time
 
             # Set the points value from the Product master
             child_row.points = reward_points  # Set points from the product master
@@ -127,7 +149,7 @@ def create_product_qr(product_name, quantity):
 
         
 # show qr-code-images------- 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def print_qr_code_images(product_name):
     try:
         qr_images = []
@@ -183,7 +205,7 @@ def print_qr_code_images(product_name):
 
 
 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def get_product_by_name(productName):
     if not productName:
         return {"message": "Product name is required."}

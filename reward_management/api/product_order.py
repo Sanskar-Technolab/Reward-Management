@@ -9,7 +9,7 @@ from frappe.utils import nowdate
 
 
 # Create New Product Order --------------
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def create_new_product_order(product_name, fullname, city, mobile, pincode, address, email):
     try:
         # Fetch product_id from product_name
@@ -60,7 +60,7 @@ def create_new_product_order(product_name, fullname, city, mobile, pincode, addr
 
 
 # Update Product Order And Deduct Points from Customer Account amd Add Product Order History into Point History Table-----
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def update_product_order(product_name, order_status, name, gift_points):
     try:
         # Fetch product order to ensure it exists
