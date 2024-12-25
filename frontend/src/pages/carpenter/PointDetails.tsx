@@ -4,6 +4,7 @@ import Pageheader from "../../components/common/pageheader/pageheader";
 import { useState, useEffect } from "react";
 import axios from 'axios';
 import PointImage from "../../assets/images/reward_management/Frame.png";
+
 const CatalogueProducts = () => {
   // State to hold product data
   const [products, setProducts] = useState<any[]>([]);
@@ -12,30 +13,45 @@ const CatalogueProducts = () => {
   useEffect(() => {
     document.title = 'Points Details';
 
-    const fetchProductData = async () => {
+    const fetchUserData = async () => {
       try {
-        const response = await axios.get(`/api/method/reward_management.api.carpenter_master.get_carpainter_data`);
-        console.log("Product data:", response.data);
-// Access the 'data' array from the response
-        const data = response.data.message.data; 
-        console.log("Table data:", data);
-
-        // Ensure data is an array before setting state
-        if (Array.isArray(data)) {
-          // Save product data to state
-          setProducts(data); 
-        } else {
-          // Default to empty array if the data is not an array
-          setProducts([]); 
+        const response = await axios.get('/api/method/frappe.auth.get_logged_user');
+        const loggedInUser = response.data.message; // Get logged-in user name
+        console.log("Logged in user:", loggedInUser);
+  
+        if (loggedInUser) {
+          await fetchProductData(loggedInUser); // Pass the user to the carpenter data API
         }
       } catch (error) {
-        console.error("Error fetching product data:", error);
-        // Handle error by setting an empty array
-        setProducts([]); 
+        console.error("Error fetching logged user data:", error);
       }
     };
 
-    fetchProductData();
+    const fetchProductData = async (loggedInUser: any) => {
+      try {
+        const response = await axios.get('/api/method/reward_management.api.carpenter_master.get_carpainter_data', {
+          params: { user: loggedInUser },
+        });
+
+        console.log("Product data:", response.data);
+        const carpainterData = response.data.message.carpainter_data;
+        
+        if (Array.isArray(carpainterData) && carpainterData.length > 0) {
+          const pointHistory = carpainterData[0]?.point_history || [];
+          
+          // Filter and map only items with valid product details
+          const validProducts = pointHistory.filter((item: any) => item.product_name && item.product_image);
+          setProducts(validProducts);
+        } else {
+          setProducts([]);
+        }
+      } catch (error) {
+        console.error("Error fetching product data:", error);
+        setProducts([]);
+      }
+    };
+
+    fetchUserData();
   }, []);
 
   return (
@@ -51,30 +67,22 @@ const CatalogueProducts = () => {
             {products.length > 0 ? (
               products.map((product, index) => (
                 <div key={index} className="flex flex-col p-4 ">
-                  {product.point_history && product.point_history.length > 0 ? (
-                    product.point_history.map((item, subIndex) => (
-                      <div key={subIndex} className="">
-                        {/* Product Image */}
-                        <img
-                          src={item.product_image}
-                          alt={item.product_name}
-                          className="w-full h-40 rounded-[10px]"
-                        />
-                        
-                        {/* Product Name and Points */}
-                        <div className="mt-3 text-start">
-                          <h3 className="text-lg font-semibold text-black">{item.product_name}</h3>
-                          <div className="flex">
-                          <p className="text-sm text-[#464646] pr-1">Points</p>
-                          <img src={PointImage} className="pr-1 w-5 h-5"></img>
-                          <p className="text-sm text-blacpk">{item.earned_points}</p>
-                          </div>
-                        </div>
-                      </div>
-                    ))
-                  ) : (
-                    <p className="text-center text-gray-700">No point history available.</p>
-                  )}
+                  {/* Product Image */}
+                  <img
+                    src={product.product_image}
+                    alt={product.product_name}
+                    className="w-full h-40 rounded-[10px]"
+                  />
+                  
+                  {/* Product Name and Points */}
+                  <div className="mt-3 text-start">
+                    <h3 className="text-lg font-semibold text-black">{product.product_name}</h3>
+                    <div className="flex">
+                      <p className="text-sm text-[#464646] pr-1">Points</p>
+                      <img src={PointImage} className="pr-1 w-5 h-5" alt="Points Icon" />
+                      <p className="text-sm text-black">{product.earned_points}</p>
+                    </div>
+                  </div>
                 </div>
               ))
             ) : (

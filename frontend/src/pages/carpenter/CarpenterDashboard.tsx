@@ -24,9 +24,6 @@ const CarpenterDashboard: React.FC = () => {
   const [currentSlideIndex, setCurrentSlideIndex] = useState<number>(0);
   const [instructions, setInstructions] = useState<any[]>([]); 
   const navigate = useNavigate(); 
-  const { data, isLoading, error } = useFrappeGetCall(
-    "reward_management.api.carpenter_master.get_carpainter_data"
-  );
 
     // Initialize Notyf for notifications
     const notyf = new Notyf({
@@ -67,55 +64,83 @@ useEffect(() => {
 }, []);
 
 
-  useEffect(() => {
+useEffect(() => {
+  document.title = "Customer Dashboard";
 
-    const fetchProducts = async () => {
-      try {
-        const response = await axios.get('/api/method/reward_management.api.gift_product.get_gift_products');
-        console.log("Full Response:", response); 
-        const productData = response.data.message.data;
-        console.log("gift data",productData)
-  
-        if (response.data.message.status === 'success') {
-          if (Array.isArray(productData) && productData.length > 0) {
-            setProducts(productData);
-          } else {
-            setError('No products available.');
-          }
+  const fetchProducts = async () => {
+    try {
+      const response = await axios.get('/api/method/reward_management.api.gift_product.get_gift_products');
+      console.log("Full Response:", response); 
+      const productData = response.data.message.data;
+      console.log("Gift data", productData);
+
+      if (response.data.message.status === 'success') {
+        if (Array.isArray(productData) && productData.length > 0) {
+          setProducts(productData);
         } else {
-          setError('API returned an error status.');
+          setError('No products available.');
         }
-      } catch (err) {
-        setError(err.message || 'Failed to fetch products.');
-      } finally {
-        setLoading(false);
-      }
-    };
-  
-    fetchProducts();
-    document.title = "Customer Dashboard";
-    if (!isLoading && !error && data) {
-      const responseData = data.message.data;
-      console.log("Table Data:", responseData);
-
-      if (Array.isArray(responseData) && responseData.length > 0) {
-        const firstItem = responseData[0];
-        setRedeemPoints(firstItem.redeem_points || 0);
-        setTotalPoints(firstItem.total_points || 0);
-        setCurrentPoints(firstItem.current_points || 0);
       } else {
-        console.log("No data available");
+        setError('API returned an error status.');
       }
-
+    } catch (err) {
+      setError(err.message || 'Failed to fetch products.');
+    } finally {
       setLoading(false);
     }
+  };
 
-    if (error) {
-      console.error("Error fetching data:", error);
-      setError("Error fetching data");
-      setLoading(false);
+  const fetchCarpenterData = async (loggedInUser:any) => {
+    try {
+      const response = await axios.get('/api/method/reward_management.api.carpenter_master.get_carpainter_data', {
+        params: { user: loggedInUser },
+      });
+  
+      if (response) {
+        console.log("Customer response", response);
+      }
+  
+      // Adjust the path to access carpainter data correctly
+      const carpainterData = response.data.message.carpainter_data;
+  
+      console.log("Fetched Carpenter Data:", carpainterData);
+  
+      if (Array.isArray(carpainterData) && carpainterData.length > 0) {
+        const firstCarpenter = carpainterData[0]; // Access the first carpenter's data
+        console.log("First Carpenter:", firstCarpenter);
+  
+        // Ensure the fields exist before accessing them
+        setRedeemPoints(firstCarpenter.redeem_points || 0);
+        setTotalPoints(firstCarpenter.total_points || 0);
+        setCurrentPoints(firstCarpenter.current_points || 0);
+      } else {
+        console.warn("No carpenter data found.");
+      }
+    } catch (error) {
+      console.error("Error fetching carpenter data:", error);
+      setError("Failed to fetch carpenter data.");
     }
-  }, [data, isLoading, error]);
+  };
+  
+  const fetchUserData = async () => {
+    try {
+      const response = await axios.get('/api/method/frappe.auth.get_logged_user');
+      const loggedInUser = response.data.message; // Get logged-in user name
+      console.log("Logged in user:", loggedInUser);
+
+      if (loggedInUser) {
+        await fetchCarpenterData(loggedInUser); // Pass the user to the carpenter data API
+      }
+    } catch (error) {
+      console.error("Error fetching logged user data:", error);
+      setError("Failed to fetch user data.");
+    }
+  };
+
+
+  fetchProducts();
+  fetchUserData();
+}, []);
 
   if (loading) {
     return <div>Loading...</div>;

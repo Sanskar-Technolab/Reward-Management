@@ -60,7 +60,7 @@ def get_project():
 def add_project(new_image_url):
     # Ensure the input is a list
     if not isinstance(new_image_url, list):
-        frappe.throw(_("The 'new_image_url' parameter must be an array of image URLs."))
+        frappe.throw(("The 'new_image_url' parameter must be an array of image URLs."))
 
     # Fetch the parent document
     try:
