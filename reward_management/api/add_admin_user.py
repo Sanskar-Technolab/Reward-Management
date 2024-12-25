@@ -24,7 +24,7 @@ def get_users():
     return users
 
 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def create_admin_user(first_name, last_name, email, mobile_no, password, username):
     # Check for existing email
     if frappe.get_value("User", {"email": email}):
@@ -56,7 +56,7 @@ def create_admin_user(first_name, last_name, email, mobile_no, password, usernam
 
 # Get User Doctype Data 
 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def get_user_details(name):
     try:
         # Fetch specific fields from User document based on email

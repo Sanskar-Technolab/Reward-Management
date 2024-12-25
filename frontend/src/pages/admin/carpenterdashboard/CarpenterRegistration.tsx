@@ -30,6 +30,8 @@ const CarpenterRegistration: React.FC = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [showSuccessAlert, setShowSuccessAlert] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [alertMessage, setAlertMessage] = useState('');
+    const [alertTitle, setAlertTitle] = useState('');
     const [fromDate, setFromDate] = useState<Date | null>(null);
     const [toDate, setToDate] = useState<Date | null>(null);
     const { data: carpenterregisterData } = useFrappeGetDocList<CarpenterRegistrations>('Customer Registration', {
@@ -138,12 +140,15 @@ const CarpenterRegistration: React.FC = () => {
 
                 if (updatedCarpenter.status?.toLowerCase() === 'approved') {
                     await updateRegistrationStatus(updatedCarpenter.name, updatedCarpenter.status);
+                } else if (updatedCarpenter.status?.toLowerCase() === 'cancel'){
+                    await cancelRegistrationStatus(updatedCarpenter.name, updatedCarpenter.status);
                 }
 
                 // alert('Customer Registration Request updated successfully!');
                 handleCloseModal();
-            } else {
-                console.error("Failed to update customer Registration Request:", response.data);
+            }
+            else {
+                console.error("Failed to cancel customer Registration Request:", response.data);
                 alert('Failed to update Customer Registration Request.');
             }
         } catch (error) {
@@ -178,6 +183,8 @@ const CarpenterRegistration: React.FC = () => {
                 console.log("Registration request status updated successfully and create a new user");
                 // Set the success alert and trigger page reload
                 setShowSuccessAlert(true);
+                setAlertMessage('Registration Request Approved Successsfully!!!');
+                setAlertTitle('Success');
             } else {
                 console.error("Failed to update registration request status and new user creating: ", response.data.message);
                 alert('Failed to update registration request status and user .');
@@ -192,11 +199,43 @@ const CarpenterRegistration: React.FC = () => {
         }
     };
 
-    // const handleStatusUpdate = async (carpenter: CarpenterRegistrations) => {
-    //     if (carpenter.status?.toLowerCase() === 'approved') {
-    //         await updateRegistrationStatus(carpenter.name, carpenter.status);
-    //     }
-    // };
+
+
+    // Function to call the API for delete  a  user
+    const cancelRegistrationStatus = async (registrationId: string, status: string) => {
+        try {
+            const response = await axios.post(`/api/method/reward_management.api.carpenter_registration.cancel_customer_registration`, {
+                registration_id: registrationId,
+                status: status
+            }, {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            console.log("delete response",response)
+    
+            if (response.data.message.status === "success") {
+                console.log("Registration request status updated successfully and user/customer deleted.");
+                // Set the success alert and trigger page reload
+                setShowSuccessAlert(true);
+                setAlertMessage('Registration Request Canceled Successsfully!!!');
+                setAlertTitle('Success');
+            } else {
+                console.error("Failed to update registration request status and delete user/customer: ", response.data.message);
+                alert('Failed to update registration request status and delete user/customer.');
+            }
+        } catch (error) {
+            console.error("Error details:", {
+                message: error.message,
+                response: error.response?.data,
+                stack: error.stack,
+            });
+            alert('An error occurred while updating the registration request status.');
+        }
+    };
+    
+
+   
 
 
 
@@ -355,7 +394,9 @@ const CarpenterRegistration: React.FC = () => {
                     showCollectButton={false}
                     showAnotherButton={false}
                     showMessagesecond={false}
-                    message="Customer Registration Approved successfully!"
+                    title={alertTitle}
+                    message={alertMessage}
+                    // message="Customer Registration Approved successfully!"
                 />
             )}
 

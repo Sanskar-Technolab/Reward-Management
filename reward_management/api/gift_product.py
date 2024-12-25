@@ -49,7 +49,7 @@ def get_gift_products():
         }
 
 # Add New Gift Product-------------
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def add_gift_product(new_image_url, giftproductName, giftproductDetails, giftproductDescription, points, giftproductSpecificaton):
     # Ensure the input is a list for new_image_url
     if not isinstance(new_image_url, list):
@@ -84,7 +84,7 @@ def add_gift_product(new_image_url, giftproductName, giftproductDetails, giftpro
 
 
 # get match url gift details------
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def get_url_gift_products(url_name):
     try:
         # Fetch gift product where `name` matches `url_name`
@@ -134,7 +134,7 @@ def get_url_gift_products(url_name):
         
         
         
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def update_gift_product(new_image_url, giftproductName, giftproductDetails, giftproductDescription, points, giftproductSpecificaton):
     # Ensure the input is a list for new_image_url
     if not isinstance(new_image_url, list):

@@ -1,7 +1,7 @@
 import frappe
 from frappe.model.document import Document
 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def get_company_address():
     # Fetch fields from the single doctype
     company_address = frappe.db.get_single_value("Company Address", "address")
@@ -126,7 +126,7 @@ def get_company_address():
 #         return {'status': 'error', 'message': f'An error occurred: {str(e)}'}
 
 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def add_or_update_company_address(address, email, website, mobile_numbers, about_company):
     try:
         # Check if the company address already exists (Assuming it's a single doctype)

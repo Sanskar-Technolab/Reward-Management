@@ -21,7 +21,7 @@ def get_customer_details():
         
         
 # Example backend logic to redeem points
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def redeem_points(customer_email, points_to_redeem):
     customer = frappe.get_doc("Customer", {"email": customer_email})
     
@@ -36,7 +36,7 @@ def redeem_points(customer_email, points_to_redeem):
 
 
 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def create_redeem_request(customer_id, redeemed_points):
     try:
         # Fetch current point status for the customer

@@ -3,7 +3,7 @@ from frappe.model.document import Document
 
 
 # get current project details
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def get_project():
     
     # Fetch child table data
@@ -56,7 +56,7 @@ def get_project():
 #     return {"status": "success", "message": "Project images updated successfully"}
 
 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def add_project(new_image_url):
     # Ensure the input is a list
     if not isinstance(new_image_url, list):

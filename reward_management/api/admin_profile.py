@@ -5,7 +5,7 @@ from frappe import _
 
 
 # user details-----
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def get_users():
     try:
         users = frappe.get_all("User", fields=["name", "email", "mobile_no", "user_image","new_password"])
@@ -23,7 +23,7 @@ def get_users():
 
 # Get User Doctype Data 
 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def get_user_details(name):
     try:
         # Fetch specific fields from User document based on email

@@ -1,7 +1,7 @@
 import frappe
 from frappe import _
 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def get_redeem_points():
     # Fetch maximum and minimum points from your custom doctype
     redeem_setup = frappe.get_single('Redeemption Points Setup')  # Replace with your doctype name

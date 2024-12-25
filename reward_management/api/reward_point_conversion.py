@@ -1,7 +1,7 @@
 import frappe
 from frappe import _
 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def get_reward_point_to_money():
     # Fetch Reward Points and Payout Amount  from your custom doctype
     points_conversion = frappe.get_single('Reward Points to Money')  
