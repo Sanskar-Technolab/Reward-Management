@@ -7,46 +7,125 @@ from frappe.utils import nowdate
 
 
 # get carpainter data with child table------
-
-@frappe.whitelist(allow_guest=True)
-def get_carpainter_data():
-    try:
-        logged_in_user = frappe.session.user
-        user_info = frappe.get_doc("User", logged_in_user)
-        user_mobile_no = user_info.mobile_no
+# @frappe.whitelist(allow_guest=True)
+# def get_carpainter_data():
+#     try:
+#         logged_in_user = frappe.session.user
+#         user_info = frappe.get_doc("User", logged_in_user)
+#         user_mobile_no = user_info.mobile_no
         
-        if not user_mobile_no:
-            return {"status": "failed", "message": "Mobile number not found for logged-in user."}
+#         if not user_mobile_no:
+#             return {"status": "failed", "message": "Mobile number not found for logged-in user."}
 
+#         carpainters = frappe.get_list(
+#             "Customer",
+#             filters={"mobile_number": user_mobile_no},
+#             fields=["name", "first_name", "full_name", "last_name", "city", "total_points", "mobile_number", "current_points", "redeem_points", "email"]
+#         )
+
+#         for carpainter in carpainters:
+#             # Fetch child table data for each Carpainter
+#             point_history = frappe.get_all(
+#                 "Customer Product Detail",
+#                 filters={"parent": carpainter["name"]}, 
+#                 fields=["earned_points", "date", "product_name", "product", "product_category","product_image","gift_id","gift_product_name","deduct_gift_points"],
+#                 order_by="creation desc"
+#             )
+            
+#             # Format the date for each entry in point_history
+#             for point in point_history:
+#                 if point.get('date'):
+#                     point['date'] = frappe.utils.formatdate(point['date'], 'dd-MM-yyyy')
+            
+#             carpainter["point_history"] = point_history
+
+#         return {"status": "success", "data": carpainters}
+    
+#     except Exception as e:
+#         frappe.logger().error(f"Error fetching Carpainter Registrations: {str(e)}")
+#         return {"status": "failed", "message": str(e)}
+  
+@frappe.whitelist(allow_guest=True)
+def get_carpainter_data(user):
+    try:
+        # Fetch user information
+        user_info = frappe.get_doc("User", user)
+
+        if not user_info:
+            return {"status": "failed", "message": "User not found."}
+
+        # Prepare user data
+        user_data = {
+            "name": user_info.name,
+            "email": user_info.email,
+            "full_name": user_info.full_name,
+            "mobile_no": user_info.mobile_no,
+            "role": [role.role for role in user_info.roles]  # Extract role names
+        }
+
+        # Extract mobile number from user
+        user_mobile_no = user_info.mobile_no
+
+        if not user_mobile_no:
+            return {"status": "failed", "message": "Mobile number not found for user."}
+
+        # Fetch carpainter/customer details
         carpainters = frappe.get_list(
             "Customer",
             filters={"mobile_number": user_mobile_no},
-            fields=["name", "first_name", "full_name", "last_name", "city", "total_points", "mobile_number", "current_points", "redeem_points", "email"]
+            fields=[
+                "name", "first_name", "full_name", "last_name", "city", "total_points",
+                "mobile_number", "current_points", "redeem_points", "email"
+            ]
         )
 
+        carpainter_data = []
+
+        # Process carpainter data
         for carpainter in carpainters:
-            # Fetch child table data for each Carpainter
+            carpainter_fields = {
+                "name": carpainter["name"],
+                "first_name": carpainter["first_name"],
+                "full_name": carpainter["full_name"],
+                "last_name": carpainter["last_name"],
+                "city": carpainter["city"],
+                "total_points": carpainter["total_points"],
+                "mobile_number": carpainter["mobile_number"],
+                "current_points": carpainter["current_points"],
+                "redeem_points": carpainter["redeem_points"],
+                "email": carpainter["email"],
+            }
+
+            # Fetch child table data (point history)
             point_history = frappe.get_all(
                 "Customer Product Detail",
                 filters={"parent": carpainter["name"]}, 
-                fields=["earned_points", "date", "product_name", "product", "product_category","product_image","gift_id","gift_product_name","deduct_gift_points"],
+                fields=[
+                    "earned_points", "date", "product_name", "product", "product_category",
+                    "product_image", "gift_id", "gift_product_name", "deduct_gift_points"
+                ],
                 order_by="creation desc"
             )
-            
-            # Format the date for each entry in point_history
+
+            # Format date in point history
             for point in point_history:
                 if point.get('date'):
                     point['date'] = frappe.utils.formatdate(point['date'], 'dd-MM-yyyy')
-            
-            carpainter["point_history"] = point_history
 
-        return {"status": "success", "data": carpainters}
-    
+            carpainter_fields["point_history"] = point_history
+            carpainter_data.append(carpainter_fields)
+
+        # Return combined response
+        return {
+            "status": "success",
+            "login_user_data": user_data,
+            "carpainter_data": carpainter_data
+        }
+
     except Exception as e:
-        frappe.logger().error(f"Error fetching Carpainter Registrations: {str(e)}")
+        frappe.logger().error(f"Error in get_carpainter_data: {str(e)}")
         return {"status": "failed", "message": str(e)}
-  
-  
+
     
 # Show Total Points and Available Points------ 
 @frappe.whitelist(allow_guest=True)
@@ -74,20 +153,52 @@ def show_total_points():
   
     
 # get logged carpenter data-------------  
-    
 @frappe.whitelist(allow_guest=True)
 def get_customer_details():
     logged_in_user = frappe.session.user
     user_info = frappe.get_doc("User", logged_in_user)
     user_mobile_no = user_info.mobile_no
-    # Fetch Customer document based on the email
-    customer = frappe.get_all("Customer", filters={"mobile_number": user_mobile_no}, fields=["name", "total_points","mobile_number","current_points","redeem_points","city","first_name","full_name","last_name"])
+    
+    # Fetch Customer document based on the mobile number
+    customer = frappe.get_all(
+        "Customer",
+        filters={"mobile_number": user_mobile_no},
+        fields=["name", "total_points", "mobile_number", "current_points", 
+                "redeem_points", "city", "first_name", "full_name", "last_name"]
+    )
+    
     if customer:
-        return customer[0]  # Return the first match
+        customer_data = customer[0]  # Get the first match
+        return {
+            "name": customer_data.get("name"),
+            "total_points": customer_data.get("total_points"),
+            "mobile_number": customer_data.get("mobile_number"),
+            "current_points": customer_data.get("current_points"),
+            "redeem_points": customer_data.get("redeem_points"),
+            "city": customer_data.get("city"),
+            "first_name": customer_data.get("first_name"),
+            "full_name": customer_data.get("full_name"),
+            "last_name": customer_data.get("last_name"),
+        }
     else:
-        return {"success": False,"message":"Customer not found for this email"}
+        return {"success": False, "message": "Customer not found for this mobile number"}
+
+    
+# @frappe.whitelist(allow_guest=True)
+# def get_customer_details():
+#     logged_in_user = frappe.session.user
+#     user_info = frappe.get_doc("User", logged_in_user)
+#     user_mobile_no = user_info.mobile_no
+#     # Fetch Customer document based on the email
+#     customer = frappe.get_all("Customer", filters={"mobile_number": user_mobile_no}, fields=["name", "total_points","mobile_number","current_points","redeem_points","city","first_name","full_name","last_name"])
+#     if customer:
+#         return customer[0]  # Return the first match
+#     else:
+#         return {"success": False,"message":"Customer not found for this email"}
 
         # frappe.throw(_("Customer not found for this email"))
+        
+        
         
         
         

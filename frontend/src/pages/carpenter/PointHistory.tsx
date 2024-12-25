@@ -34,6 +34,8 @@ interface PointHistoryItem {
 const PointHistory: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(5); // Number of items per page
+    const [carpenterInfo, setCarpenterInfo] = useState<Partial<Carpenter>>({});
+
     const [carpenterData, setCarpenterData] = useState<PointHistoryItem[]>([]);
     const [filteredData, setFilteredData] = useState<PointHistoryItem[]>([]);
     const [loading, setLoading] = useState(true);
@@ -44,30 +46,49 @@ const PointHistory: React.FC = () => {
 
     useEffect(() => {
         document.title='Point History';
-        const fetchCarpenterData = async () => {
+
+        const fetchUserData = async () => {
             try {
-                const response = await axios.get(`/api/method/reward_management.api.carpenter_master.get_carpainter_data`,{
+              const response = await axios.get('/api/method/frappe.auth.get_logged_user');
+              const loggedInUser = response.data.message; // Get logged-in user name
+              console.log("Logged in user:", loggedInUser);
+        
+              if (loggedInUser) {
+                await fetchCarpenterData(loggedInUser); // Pass the user to the carpenter data API
+              }
+            } catch (error) {
+              console.error("Error fetching logged user data:", error);
+            }
+          };
+          const fetchCarpenterData = async (loggedInUser: string) => {
+            try {
+                const response = await axios.get('/api/method/reward_management.api.carpenter_master.get_carpainter_data', {
+                    params: { user: loggedInUser },
                 });
                 console.log("Carpenter data:", response);
 
-                const data = response.data.message;
-                console.log("Table data:", data);
+                const data = response.data.message?.carpainter_data[0];
+                if (data) {
+                    setCarpenterInfo({
+                        city: data.city,
+                        current_points: data.current_points,
+                        email: data.email,
+                        full_name: data.full_name,
+                        mobile_number: data.mobile_number,
+                        total_points: data.total_points,
+                        redeem_points: data.redeem_points,
+                    });
 
-                if (data && data.data && Array.isArray(data.data) && data.data.length > 0) {
-                    const pointHistory = data.data[0].point_history;
-                    if (Array.isArray(pointHistory)) {
-                        setCarpenterData(pointHistory);
-                        setFilteredData(pointHistory);
-                    } else {
-                        setError("Unexpected response format: 'point_history' is not an array");
-                    }
+                    const pointHistory = data.point_history || [];
+                    setCarpenterData(pointHistory);
+                    setFilteredData(pointHistory);
                 } else {
-                    setError("Unexpected response format or empty data");
+                    setError("No carpenter data found.");
                 }
 
                 setLoading(false);
             } catch (error) {
-                setError("Error fetching data");
+                setError("Error fetching carpenter data.");
                 setLoading(false);
             }
         };
@@ -86,7 +107,7 @@ const PointHistory: React.FC = () => {
             }
         };
 
-        fetchCarpenterData();
+        fetchUserData();
         fetchUserPoints();
     }, []);
 
@@ -96,14 +117,11 @@ const PointHistory: React.FC = () => {
             const query = searchQuery.toLowerCase();
             const matchesSearchQuery =
             (item.product && item.product.toLowerCase().includes(query)) ||
-            (item.product_name && item.product_name.toLowerCase().includes(query)) ||
-
-            (item.product_category && item.product_category.toLowerCase().includes(query)) ||
-
-            (item.gift_product_name && item.gift_product_name.toLowerCase().includes(query)) ||
-            (item.earned_points && item.earned_points.toString().includes(query)) ||
-
-            (item.deduct_gift_points && item.deduct_gift_points.toString().includes(query)) ;
+                (item.product_name && item.product_name.toLowerCase().includes(query)) ||
+                (item.product_category && item.product_category.toLowerCase().includes(query)) ||
+                (item.gift_product_name && item.gift_product_name.toLowerCase().includes(query)) ||
+                (item.earned_points && item.earned_points.toString().includes(query)) ||
+                (item.deduct_gift_points && item.deduct_gift_points.toString().includes(query));
 
 
         return  matchesSearchQuery;
