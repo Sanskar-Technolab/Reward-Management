@@ -3,7 +3,7 @@ from frappe import _
 from frappe.utils import now, format_datetime
 from frappe.utils.file_manager import save_file
 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def get_all_products():
     try:
         # Fetch all products
@@ -50,7 +50,7 @@ def get_all_products():
         
         
 # show product details and images 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def get_all_products_data():
     try:
         # Fetch all products
@@ -92,7 +92,7 @@ def get_all_products_data():
         frappe.throw(_("Error fetching products: {0}").format(str(e)))
 
 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def update_product(product_id, product_name, reward_points):
     try:
         # Fetch the product by its name (which is the `name` field)
@@ -114,7 +114,7 @@ def update_product(product_id, product_name, reward_points):
     
     
 # Product total count 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def total_product():
     # Fetch count of customers from database
     total_products = frappe.db.count("Product")
@@ -172,13 +172,13 @@ def get_five_new_products():
         
 
 # find match product_name product qr list----
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def get_all_product_qr():
     # Fetch all Product QR documents
     product_qr_docs = frappe.get_all("Product QR", fields=["name", "product_name"])
     return product_qr_docs
 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def get_product_details(product_id):
     if not product_id:
         frappe.throw(_("Product ID is required"))
@@ -199,7 +199,7 @@ def get_product_details(product_id):
     return {"message": product_details}
 
 # Add New Category ------
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def add_category(productCategory):
     try:
         productcategory=frappe.new_doc("Product Category")
@@ -220,7 +220,7 @@ def add_category(productCategory):
         frappe.throw(_("Failed to add product category. Please try again later."))
 
 # Add New Product--------
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def add_product(productName, productPrice, rewardPoints, discription, rewardAmount, pointReward, productCategory, productImage=None):
     try:
         # Create a new instance of the Product document
@@ -262,7 +262,7 @@ def add_product(productName, productPrice, rewardPoints, discription, rewardAmou
         frappe.throw(_("Failed to add product. Please try again later."))
 
 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def upload_file():
     try:
         # Example: Retrieving file from FormData
@@ -288,7 +288,7 @@ def upload_file():
 
 
 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def get_tableproduct_detail(product_id=None):
     if not product_id:
         frappe.throw(_("Product ID is required"))
@@ -337,7 +337,7 @@ def get_tableproduct_detail(product_id=None):
         
 # customer product details cards-----------
 # Edit Product Details API-------
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def get_product_detail(product_id):
     if not product_id:
         frappe.throw(_("Product ID is required"))
