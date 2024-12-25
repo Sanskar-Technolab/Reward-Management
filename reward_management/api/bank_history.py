@@ -1,7 +1,7 @@
 import frappe
 from frappe import _
 
-@frappe.whitelist(allow_guest=True) 
+@frappe.whitelist() 
 def get_bank_history_details():
     try:
         logged_in_user = frappe.session.user

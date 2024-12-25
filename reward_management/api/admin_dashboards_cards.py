@@ -2,7 +2,7 @@ import frappe
 from frappe import _
 
 #total redemptions count 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def count_redemptions():
     # Fetch count of customers from database
     total_redemptions = frappe.db.count("Redeem Request", filters={"request_status": "Approved"})
@@ -10,7 +10,7 @@ def count_redemptions():
     return total_redemptions
 
 #total redeem request count 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def count_redeem_request():
     # Fetch count of customers from database
     total_redeem_request = frappe.db.count("Redeem Request", filters={"request_status": "Pending"})
@@ -19,7 +19,7 @@ def count_redeem_request():
 
 
 # count total qr code points-------
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def total_points_of_qr_code():
     # Fetch fields from the Product QR document
     qr_docs = frappe.get_all("Product QR", fields=["name", "product_name", "quantity"])
@@ -44,7 +44,7 @@ def total_points_of_qr_code():
 
 
 # count total scanned point for all over carpainters----
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def get_total_points_data():
     try:
         carpainters = frappe.get_list(
@@ -73,7 +73,7 @@ def get_total_points_data():
 
 
 #count total registered customer   
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def count_total_customers():
     # Fetch count of customers from database with status "Approved"
     total_customers = frappe.db.count("Customer Registration", filters={"status": "Approved"})
@@ -81,7 +81,7 @@ def count_total_customers():
 
 
 # Product total count 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def total_product():
     # Fetch count of customers from database
     total_products = frappe.db.count("Product")

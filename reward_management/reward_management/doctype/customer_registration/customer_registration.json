@@ -21,11 +21,11 @@
  ],
  "fields": [
   {
-   "default": "Customer-Registration.-.YYYY.-.MM.-.",
+   "default": "Customer-Registration.-.YYYY.-.MM.-.#####",
    "fieldname": "naming_series",
    "fieldtype": "Select",
    "label": "Naming Series",
-   "options": "Customer-Registration.-.YYYY.-.MM.-."
+   "options": "Customer-Registration.-.YYYY.-.MM.-.#####"
   },
   {
    "fieldname": "carpainter_name",
@@ -85,7 +85,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-12-20 16:24:33.165676",
+ "modified": "2024-12-25 13:52:26.701956",
  "modified_by": "Administrator",
  "module": "Reward Management",
  "name": "Customer Registration",

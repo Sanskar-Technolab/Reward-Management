@@ -9,7 +9,7 @@ from frappe.utils import get_request_session
 
 
 # user details-----
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def get_users():
     try:
         users = frappe.get_all("User", fields=["name", "email", "mobile_no", "user_image"])
@@ -27,7 +27,7 @@ def get_users():
 
 # Get User Doctype Data 
 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def get_user_details(name):
     try:
         # Fetch specific fields from User document based on email
@@ -58,7 +58,7 @@ def get_user_details(name):
 
 
 # update user profile and id--------
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def update_user_details():
     try:
         user_data = frappe.form_dict
@@ -223,7 +223,7 @@ def get_customer_details():
         frappe.throw(_("Customer not found for this email"))
         
 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def update_user_image(name, new_image_url):
     try:
         # Fetch User document based on name
@@ -261,7 +261,7 @@ def update_user_image(name, new_image_url):
         
     
 # Remove user Profile 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def remove_user_image(name):
     try:
         # Fetch User document based on name
@@ -298,7 +298,7 @@ def remove_user_image(name):
 
 
 # Get Gender Doctype list-----
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def get_all_gender():
     try:
         genders = frappe.get_list("Gender", filters={}, fields=["name"])
