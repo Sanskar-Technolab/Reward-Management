@@ -1,12 +1,11 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "format:Customer-Registration-{YYYY}-{MM}-{#####}",
+ "autoname": "naming_series:",
  "creation": "2024-07-30 17:28:03.503986",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
-  "naming_series",
   "carpainter_name",
   "mobile_number",
   "city",
@@ -17,16 +16,10 @@
   "approved_date",
   "approved_time",
   "first_name",
-  "last_name"
+  "last_name",
+  "naming_series"
  ],
  "fields": [
-  {
-   "default": "Customer-Registration.-.YYYY.-.MM.-.#####",
-   "fieldname": "naming_series",
-   "fieldtype": "Select",
-   "label": "Naming Series",
-   "options": "Customer-Registration.-.YYYY.-.MM.-.#####"
-  },
   {
    "fieldname": "carpainter_name",
    "fieldtype": "Data",
@@ -81,15 +74,22 @@
    "fieldname": "last_name",
    "fieldtype": "Data",
    "label": "Last Name"
+  },
+  {
+   "default": "Customer-Registration.-.YYYY.-.MM.-.",
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "label": "Naming Series",
+   "options": "Customer-Registration.-.YYYY.-.MM.-."
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-12-26 09:47:34.598454",
+ "modified": "2024-12-26 17:44:41.704503",
  "modified_by": "Administrator",
  "module": "Reward Management",
  "name": "Customer Registration",
- "naming_rule": "Expression",
+ "naming_rule": "By \"Naming Series\" field",
  "owner": "Administrator",
  "permissions": [
   {
