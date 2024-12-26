@@ -10,7 +10,8 @@
   "gift_detail",
   "description",
   "gift_product_image",
-  "gift_specification"
+  "gift_specification",
+  "naming_series"
  ],
  "fields": [
   {
@@ -43,11 +44,18 @@
    "fieldname": "gift_specification",
    "fieldtype": "Text Editor",
    "label": "Gift Specification"
+  },
+  {
+   "default": "Gift.-.{gift_product_name}.-.YYYY.-.",
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "label": "Naming Series",
+   "options": "Gift.-.{gift_product_name}.-.YYYY.-."
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-12-26 09:55:28.152840",
+ "modified": "2024-12-26 17:56:16.515101",
  "modified_by": "Administrator",
  "module": "Reward Management",
  "name": "Gift Product",
