@@ -1,7 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "naming_series:",
+ "autoname": "format:MOB-{mobile_number}-{#####}",
  "creation": "2024-07-30 17:34:43.322921",
  "doctype": "DocType",
  "engine": "InnoDB",
@@ -34,11 +34,11 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-08-21 15:11:27.612731",
+ "modified": "2024-12-26 09:45:56.647246",
  "modified_by": "Administrator",
  "module": "Reward Management",
  "name": "Mobile Verification",
- "naming_rule": "By \"Naming Series\" field",
+ "naming_rule": "Expression",
  "owner": "Administrator",
  "permissions": [
   {

@@ -59,7 +59,7 @@ const QRScanner = () => {
           const customer = carpenterResponse.data.message;
           console.log("Customer Name:", customer.name);
           console.log("Total Points:", customer.total_points);
-          setCarpenterData(customer); // Save the customer data to state
+          setCarpenterData(customer); 
         } else {
           console.error("Error fetching carpenter data:", carpenterResponse.error);
         }
@@ -75,6 +75,8 @@ const QRScanner = () => {
           const productResponse = await axios.get(`/api/method/reward_management.api.qr_code_product_detail.get_product_details_from_qr`, {
             params: { decode_text: decodedText },
           });
+        // console.log("data",productResponse)
+
 
           if (productResponse.data.message?.error) {
             const errorMessage = productResponse.data.message.error;
@@ -94,14 +96,14 @@ const QRScanner = () => {
             );
             setIsError(false);
             setCarpenterData(productData);
-            setShowAlert(true); // Ensure to show the alert for success as well
+            setShowAlert(true);
           }
         } catch (error) {
           console.error("Error fetching product details:", error);
-          setAlertTitle("Error"); // Add title for consistency
+          setAlertTitle("Error"); 
           setAlertMessage("Error fetching product details. Please try again.");
           setIsError(true);
-          setShowAlert(true); // Ensure to show the alert
+          setShowAlert(true); 
         }
       };
 

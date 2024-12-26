@@ -196,6 +196,8 @@ def update_registration_request_status(registration_id, status):
 #         frappe.log_error(frappe.get_traceback(), _("Error in update_registration_request_status"))
 #         frappe.throw(_("Failed to update registration request status: {0}").format(str(e)))
 
+
+# cancel request-----
 @frappe.whitelist()
 def cancel_customer_registration(registration_id, status):
     try:
@@ -203,36 +205,66 @@ def cancel_customer_registration(registration_id, status):
         registration = frappe.get_doc("Customer Registration", registration_id)
 
         if status == "Cancel":
-            # If status is "Cancel", find and delete the associated User and Customer (if they exist)
+            # Update the status or perform any other necessary logic
+            registration.status = "Cancel"  # Assuming 'status' field exists
+            registration.save()
 
-            # Deleting User if it exists
-            existing_user = frappe.get_value("User", {"mobile_no": registration.mobile_number}, "name")
-            if existing_user:
-                user = frappe.get_doc("User", existing_user)
-                user.delete()
-                frappe.logger().info(f"Deleted User: {user.name}")
-
-            # Deleting Customer if it exists
-            existing_customer = frappe.get_value("Customer", {"mobile_number": registration.mobile_number}, "name")
-            if existing_customer:
-                customer = frappe.get_doc("Customer", existing_customer)
-                customer.delete()
-                frappe.logger().info(f"Deleted Customer: {customer.name}")
-
-            # Return success message after deletion
             return {
                 "status": "success",
-                "message": ("User and Customer deleted successfully due to cancellation.")
+                "message": "Registration request status cancelled successfully."
             }
-
-        # Commit the transaction
-        frappe.db.commit()
-
-        return {"status": "success", "message": ("Registration request status updated successfully.")}
-
-    except Exception as e:
-        frappe.log_error(frappe.get_traceback(), ("Error in cancel_customer_registration"))
+        
+        # If the status is not "Cancel", return appropriate message
         return {
             "status": "fail",
-            "message": ("Failed to update registration request status: {0}").format(str(e))
+            "message": "Invalid status provided."
         }
+
+    except Exception as e:
+        frappe.log_error(frappe.get_traceback(), "Error in cancel_customer_registration")
+        return {
+            "status": "fail",
+            "message": f"Failed to update registration request status: {str(e)}"
+        }
+
+
+# @frappe.whitelist()
+# def cancel_customer_registration(registration_id, status):
+#     try:
+#         # Fetch the registration document
+#         registration = frappe.get_doc("Customer Registration", registration_id)
+
+#         if status == "Cancel":
+#             # If status is "Cancel", find and delete the associated User and Customer (if they exist)
+
+#             # Deleting User if it exists
+#             existing_user = frappe.get_value("User", {"mobile_no": registration.mobile_number}, "name")
+#             if existing_user:
+#                 user = frappe.get_doc("User", existing_user)
+#                 user.delete()
+#                 frappe.logger().info(f"Deleted User: {user.name}")
+
+#             # Deleting Customer if it exists
+#             existing_customer = frappe.get_value("Customer", {"mobile_number": registration.mobile_number}, "name")
+#             if existing_customer:
+#                 customer = frappe.get_doc("Customer", existing_customer)
+#                 customer.delete()
+#                 frappe.logger().info(f"Deleted Customer: {customer.name}")
+
+#             # Return success message after deletion
+#             return {
+#                 "status": "success",
+#                 "message": ("User and Customer deleted successfully due to cancellation.")
+#             }
+
+#         # Commit the transaction
+#         frappe.db.commit()
+
+#         return {"status": "success", "message": ("Registration request status updated successfully.")}
+
+#     except Exception as e:
+#         frappe.log_error(frappe.get_traceback(), ("Error in cancel_customer_registration"))
+#         return {
+#             "status": "fail",
+#             "message": ("Failed to update registration request status: {0}").format(str(e))
+#         }

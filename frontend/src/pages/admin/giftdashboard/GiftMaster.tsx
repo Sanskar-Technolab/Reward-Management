@@ -141,7 +141,7 @@ const ProductMaster: React.FC = () => {
                     setIsConfirmDeleteModalOpen(false);
                     // Check if the status is 417 or other errors
                     const errorData = await response.json();
-                    console.error("Error Response: ", errorData);
+                    console.error("Error: ", errorData);
     
                     // Show the error message from the response in the alert
                     setAlertTitle("Error");

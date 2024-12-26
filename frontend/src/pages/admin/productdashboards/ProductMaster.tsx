@@ -272,9 +272,6 @@ const ProductMaster: React.FC = () => {
                                                                 e.preventDefault();
                                                                 handleDeleteProduct(product);
                                                             }
-                                                            // else {
-                                                            //     // Implement delete functionality here
-                                                            // }
                                                         }}
                                                     >
                                                         <i className="ri-delete-bin-line"></i>
