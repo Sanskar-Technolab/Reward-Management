@@ -88,13 +88,12 @@ def create_new_carpainters(firstname, lastname, city, mobile):
             "doctype": "Customer Registration",
             "first_name": firstname,
             "last_name": lastname,
-            "carpainter_name": full_name,  # Set full_name here
+            "carpainter_name": full_name, 
             "city": city,
             "mobile_number": mobile,
-            "status": "Pending",  # Set status to "Pending"
-            "registration_date": frappe.utils.now_datetime().strftime('%Y-%m-%d'),  # Set registration_date to the current date
-            "registration_time": frappe.utils.now_datetime().strftime('%H:%M:%S'),# Set registration_date to the current datetime
-            "approved_time": ""
+            "status": "Pending", 
+            "registration_date": frappe.utils.now_datetime().strftime('%Y-%m-%d'),  
+            "registration_time": frappe.utils.now_datetime().strftime('%H:%M:%S'),
         })
         carpenter_new_ragistration.insert()
 

@@ -3,11 +3,13 @@ import "../../../assets/css/pages/admindashboard.css";
 import Pageheader from "../../../components/common/pageheader/pageheader";
 import TableComponent from "../../../components/ui/tables/tablecompnent";
 import TableBoxComponent from "../../../components/ui/tables/tableboxheader";
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import SuccessAlert from "../../../components/ui/alerts/SuccessAlert";
 import DangerAlert from "../../../components/ui/alerts/DangerAlert";
 import axios from "axios";
 import { useFrappeGetDocList } from "frappe-react-sdk";
+import { Notyf } from 'notyf';
+import 'notyf/notyf.min.css';
 
 interface ProductCategory {
     name: string;
@@ -33,19 +35,30 @@ const ProductCatalogue: React.FC = () => {
     const [alertTitle, setAlertTitle] = useState("");
     const [productCategoryToEdit, setProductCategoryToEdit] =
         useState<ProductCategory | null>(null);
-        const [filteredData, setFilteredData] = useState<ProductCategory[]>([]);
+    const [filteredData, setFilteredData] = useState<ProductCategory[]>([]);
+
+
+
+
+    const notyf = new Notyf({
+        position: {
+            x: 'right',
+            y: 'top',
+        },
+        duration: 3000, 
+    });
 
 
     // Fetch the product categories
     const { data: productcategoryData, mutate: mutateProductCategory } =
-    useFrappeGetDocList<ProductCategory>("Product Category", {
-        fields: ["name", "category_name", "catalogue_image"],
-    });
+        useFrappeGetDocList<ProductCategory>("Product Category", {
+            fields: ["name", "category_name", "catalogue_image"],
+        });
 
     const handleSearch = (value: string) => setSearchQuery(value);
 
 
-  
+
     useEffect(() => {
         if (productcategoryData) {
             const filteredData = productcategoryData.filter((item) =>
@@ -130,9 +143,9 @@ const ProductCatalogue: React.FC = () => {
                 // Clear the input fields
                 setProductCatalogue("");
                 // Clear the file previews
-                setPreviews([]); 
+                setPreviews([]);
                 // Clear any existing images
-                setExistingImages([]); 
+                setExistingImages([]);
             } else {
                 // Add new product category
                 await axios.post(`/api/resource/Product Category`, data, {
@@ -144,8 +157,8 @@ const ProductCatalogue: React.FC = () => {
                 setAlertMessage("Product Category added successfully!");
                 // Clear the input fields
                 setProductCatalogue("");
-                setPreviews([]); 
-                setExistingImages([]); 
+                setPreviews([]);
+                setExistingImages([]);
             }
 
             setShowSuccessAlert(true);
@@ -213,9 +226,11 @@ const ProductCatalogue: React.FC = () => {
                     if (exceptionMessage.includes("LinkExistsError")) {
                         const linkedMessage =
                             "This Product Category is linked with a Product. Please unlink it before deletion.";
-                        alert(linkedMessage);
+                        // alert(linkedMessage);
+                        notyf.error(linkedMessage);
                     } else {
-                        alert(exceptionMessage);
+                        // alert(exceptionMessage);
+                        notyf.error(exceptionMessage);
                     }
                 } else {
                     alert("Failed to delete Product Category. Please try again.");
@@ -227,7 +242,7 @@ const ProductCatalogue: React.FC = () => {
         }
     };
     const handleCloseModal = () => {
-        setProductCategoryToEdit(null); 
+        setProductCategoryToEdit(null);
         setShowAddCatalogueForm(false);
     };
 
@@ -316,8 +331,8 @@ const ProductCatalogue: React.FC = () => {
                                     </button>
                                 </div>
                             </div>
-                           
-                                <form onSubmit={handleSubmit}>
+
+                            <form onSubmit={handleSubmit}>
                                 <div className="p-4 overflow-auto flex-1">
                                     <div className="grid grid-cols-12 gap-4">
                                         <div className="xl:col-span-12 col-span-12">
@@ -374,32 +389,32 @@ const ProductCatalogue: React.FC = () => {
                                                 )}
                                             </div>
                                         </div>
-                                        </div>
-                                        </div>
-                                        
-                                        <div className="xl:col-span-12 col-span-12 text-center border-t p-4 border-defaultborder">
+                                    </div>
+                                </div>
+
+                                <div className="xl:col-span-12 col-span-12 text-center border-t p-4 border-defaultborder">
 
 
-                                            <div className="flex justify-end">
-                                                <button
-                                                    type="submit"
-                                                    className="ti-btn ti-btn-primary-full bg-primary me-2"
-                                                >
-                                                    {productCategoryToEdit ? "Update Category" : "Submit"}
-                                                </button>
-                                                <button
-                                                    type="button"
-                                                    className="bg-primary/20 ti-btn text-defaulttextcolor"
-                                                    onClick={handleCloseModal}
-                                                >
-                                                    Cancel
-                                                </button>
-                                            </div>
-                                        
+                                    <div className="flex justify-end">
+                                        <button
+                                            type="submit"
+                                            className="ti-btn ti-btn-primary-full bg-primary me-2"
+                                        >
+                                            {productCategoryToEdit ? "Update Category" : "Submit"}
+                                        </button>
+                                        <button
+                                            type="button"
+                                            className="bg-primary/20 ti-btn text-defaulttextcolor"
+                                            onClick={handleCloseModal}
+                                        >
+                                            Cancel
+                                        </button>
                                     </div>
 
-                                </form>
-                         
+                                </div>
+
+                            </form>
+
                         </div>
                     </div>
                 </div>

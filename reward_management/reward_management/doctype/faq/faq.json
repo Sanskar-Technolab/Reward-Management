@@ -1,7 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "naming_series:",
+ "autoname": "format:FAQ-{MM}-{YYYY}-{#####}",
  "creation": "2024-07-30 17:03:46.304006",
  "default_view": "List",
  "doctype": "DocType",
@@ -48,11 +48,11 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-08-21 15:11:27.160326",
+ "modified": "2024-12-26 09:46:50.270626",
  "modified_by": "Administrator",
  "module": "Reward Management",
  "name": "FAQ",
- "naming_rule": "By \"Naming Series\" field",
+ "naming_rule": "Expression",
  "owner": "Administrator",
  "permissions": [
   {

@@ -21,30 +21,59 @@ def check_registered_user(mobile_number):
                 return {
                     "approved":False,
                     "registered": True,
+                    "activate":False,
                     "status": "failed",
                     "message": "Your registration request is pending admin approval. You will be able to log in once the request is approved."
                 }
 
         # Check if the mobile number exists in the User document
+        
+         # Step 3: Check if the mobile number exists in User document
         user_info = frappe.get_value(
             "User",
             {"mobile_no": mobile_number},
-            ["name", "email"],
+            ["name", "full_name", "email", "role_profile_name"],
             as_dict=True
         )
 
         if user_info:
-            # If user exists with the provided mobile number
-            return {
-                "registered": True,
-                "approved":True,
-                "message": "User is already registered. Please login to your account."
-            }
+            if user_info:
+                 # If user is found, check for the matching carpenter with the same mobile number
+                carpenter_info = frappe.get_value(
+                    "Customer",  
+                    {"mobile_number": mobile_number},
+                    ["name", "full_name","full_name", "email", "enabled"],
+                    as_dict=True
+                )
+
+                if carpenter_info:
+                    # If carpenter is found, check if the account is enabled
+                    if carpenter_info["enabled"]:
+                        # Carpenter exists and is enabled
+                        return {
+                            "approved": True,
+                            "registered": True,
+                            "activate":True,
+                            "message": "User is already registered. Please login to your account.",
+                            "full_name": user_info.get("full_name"),
+                            "email": user_info.get("email"),
+                            "username": user_info.get("name"),
+                            "role_profile_name": user_info.get("role_profile_name"),
+                        }
+                    else:
+                        # Carpenter exists but the account is disabled
+                        return {
+                            "activate":False,
+                            "registered": True,
+                            "approved":True,
+                            "message": "Your account is deactivated. Please contact the admin."
+                        }
 
         # If no user or carpainter registration exists for the mobile number
         return {
             "registered": False,
             "approved":False,
+            "activate":False,
             "message": "Mobile number not registered. Please register to continue."
         }
 
@@ -186,6 +215,7 @@ def check_user_registration(mobile_number):
                 return {
                     "approved": False,
                     "registered": True,
+                    "activate":False,
                     "status": "failed",
                     "message": "Your registration request is pending admin approval. You will be able to log in once the request is approved."
                 }
@@ -194,8 +224,9 @@ def check_user_registration(mobile_number):
                 return {
                     "approved": False,
                     "registered": False,
+                    "activate":False,
                     "status": "failed",
-                    "message": "Your registration request has been cancelled. Please contact support for assistance."
+                    "message": "Your registration request has been cancelled. To proceed, please complete the registration process again."
                 }
          
            
@@ -211,16 +242,36 @@ def check_user_registration(mobile_number):
         if existing_verification:
             # If the mobile number is found in the Mobile Verification document
             if user_info:
-                # If user exists, return user information
-                return {
-                    "approved": True,
-                    "registered": True,
-                    "message": "User is registered.",
-                    # "full_name": user_info.get("full_name"),
-                    # "email": user_info.get("email"),
-                    # "username": user_info.get("name"),
-                    "role_profile_name": user_info.get("role_profile_name")
-                }
+                 # If user is found, check for the matching carpenter with the same mobile number
+                carpenter_info = frappe.get_value(
+                    "Customer",  
+                    {"mobile_number": mobile_number},
+                    ["name", "full_name","full_name", "email", "enabled"],
+                    as_dict=True
+                )
+
+                if carpenter_info:
+                    # If carpenter is found, check if the account is enabled
+                    if carpenter_info["enabled"]:
+                        # Carpenter exists and is enabled
+                        return {
+                            "approved": True,
+                            "registered": True,
+                            "activate":True,
+                            "message": "Carpenter is already registered. Login Successfull.",
+                            "full_name": user_info.get("full_name"),
+                            "email": user_info.get("email"),
+                            "username": user_info.get("name"),
+                            "role_profile_name": user_info.get("role_profile_name"),
+                        }
+                    else:
+                        # Carpenter exists but the account is disabled
+                        return {
+                            "activate":False,
+                            "registered": False,
+                            "message": "Your account is deactivated. Please contact the admin."
+                        }
+            
             else:
                 # If only Mobile Verification exists and not User
                 return {

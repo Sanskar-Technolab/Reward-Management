@@ -53,7 +53,7 @@ const PointCollectedAlert: React.FC<PointCollectedAlertProps> = ({
                         {showPointCollectButton && onPointCollect && (
                             <button
                                 type="button"
-                                className="ti-btn ti-btn-primary bg-primary text-white font-medium py-2 px-4 rounded transition-all duration-300"
+                                className="ti-btn bg-primary text-white font-medium py-2 px-4 rounded transition-all duration-300"
                                 onClick={onPointCollect}
                             >
                                 {collectButtonLabel} {/* Use collectButtonLabel here */}

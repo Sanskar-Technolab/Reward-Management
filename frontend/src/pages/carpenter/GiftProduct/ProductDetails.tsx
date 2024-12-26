@@ -12,7 +12,6 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Notyf } from "notyf";
 import "notyf/notyf.min.css";
-// import { useFrappeGetCall } from "frappe-react-sdk";
 import Slider from "react-slick";
 
 import "../../../assets/css/pages/projectslider.css";

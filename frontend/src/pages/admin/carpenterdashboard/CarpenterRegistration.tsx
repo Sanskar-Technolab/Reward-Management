@@ -24,7 +24,7 @@ interface CarpenterRegistrations {
 
 const CarpenterRegistration: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage] = useState(5); 
+    const [itemsPerPage] = useState(5);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [selectedCarpenter, setSelectedCarpenter] = useState<CarpenterRegistrations | null>(null);
     const [searchQuery, setSearchQuery] = useState('');
@@ -36,22 +36,22 @@ const CarpenterRegistration: React.FC = () => {
     const [toDate, setToDate] = useState<Date | null>(null);
     const { data: carpenterregisterData } = useFrappeGetDocList<CarpenterRegistrations>('Customer Registration', {
         fields: ['name', 'carpainter_name', 'mobile_number', 'city', 'registration_date', 'status', 'approved_date'],
-         // limit_start: pageIndex * 10,
-         limit: 0,
-         orderBy: {
-             field: 'creation',
-             order: 'desc',
-         }
+        // limit_start: pageIndex * 10,
+        limit: 0,
+        orderBy: {
+            field: 'creation',
+            order: 'desc',
+        }
     });
 
 
     useEffect(() => {
-        document.title='Customer Registration';
+        document.title = 'Customer Registration';
         if (showSuccessAlert) {
             const timer = setTimeout(() => {
                 setShowSuccessAlert(false);
-                window.location.reload(); 
-            }, 3000); 
+                window.location.reload();
+            }, 3000);
             return () => clearTimeout(timer);
         }
     }, [showSuccessAlert]);
@@ -75,7 +75,7 @@ const CarpenterRegistration: React.FC = () => {
     };
 
     const handleSearch = (value: string) => {
-        setSearchQuery(value); 
+        setSearchQuery(value);
         setCurrentPage(1);
         console.log("Search value:", value);
     };
@@ -140,7 +140,7 @@ const CarpenterRegistration: React.FC = () => {
 
                 if (updatedCarpenter.status?.toLowerCase() === 'approved') {
                     await updateRegistrationStatus(updatedCarpenter.name, updatedCarpenter.status);
-                } else if (updatedCarpenter.status?.toLowerCase() === 'cancel'){
+                } else if (updatedCarpenter.status?.toLowerCase() === 'cancel') {
                     await cancelRegistrationStatus(updatedCarpenter.name, updatedCarpenter.status);
                 }
 
@@ -158,7 +158,7 @@ const CarpenterRegistration: React.FC = () => {
                 stack: error.stack,
             });
             alert('An error occurred while updating the Registration Request.');
-            
+
         }
         finally {
             setLoading(false); // Set loading to false
@@ -189,7 +189,7 @@ const CarpenterRegistration: React.FC = () => {
                 console.error("Failed to update registration request status and new user creating: ", response.data.message);
                 alert('Failed to update registration request status and user .');
             }
-        } catch (error:any) {
+        } catch (error: any) {
             console.error("Error details:", {
                 message: error.message,
                 response: error.response?.data,
@@ -212,10 +212,10 @@ const CarpenterRegistration: React.FC = () => {
                     'Content-Type': 'application/json',
                 },
             });
-            console.log("delete response",response)
-    
+            console.log("delete response", response)
+
             if (response.data.message.status === "success") {
-                console.log("Registration request status updated successfully and user/customer deleted.");
+                console.log("Registration request status updated successfully and cancel request successfully.");
                 // Set the success alert and trigger page reload
                 setShowSuccessAlert(true);
                 setAlertMessage('Registration Request Canceled Successsfully!!!');
@@ -233,9 +233,9 @@ const CarpenterRegistration: React.FC = () => {
             alert('An error occurred while updating the registration request status.');
         }
     };
-    
 
-   
+
+
 
 
 
@@ -259,7 +259,7 @@ const CarpenterRegistration: React.FC = () => {
             return null;
         }
         const day = parseInt(parts[0], 10);
-        const month = parseInt(parts[1], 10) - 1; 
+        const month = parseInt(parts[1], 10) - 1;
         const year = parseInt(parts[2], 10);
         return new Date(year, month, day);
     };
@@ -273,28 +273,28 @@ const CarpenterRegistration: React.FC = () => {
     // Adjusted filtering logic to include all columns
     const filteredData = formattedCarpenterRegistrationData.filter(transaction => {
         const query = searchQuery.toLowerCase();
-    
+
         // Parse registration_date for filtering
         const registrationDateString = transaction.registration_date;
         const registrationDate = parseDateString(registrationDateString);
-        
+
         // Parse approved_date for filtering
         const approvedDateString = transaction.approved_date;
         const approvedDate = parseDateString(approvedDateString);
-        
+
         // Check if the registration_date is within the selected date range
-        const isRegistrationDateInRange = 
+        const isRegistrationDateInRange =
             (!fromDate || (registrationDate && registrationDate >= fromDate)) &&
             (!toDate || (registrationDate && registrationDate <= toDate));
-    
+
         // Check if the approved_date is within the selected date range
-        const isApprovedDateInRange = 
+        const isApprovedDateInRange =
             (!fromDate || (approvedDate && approvedDate >= fromDate)) &&
             (!toDate || (approvedDate && approvedDate <= toDate));
-    
+
         // Check if either date falls within the selected date range
         const isWithinDateRange = isRegistrationDateInRange || isApprovedDateInRange;
-    
+
         return (
             isWithinDateRange &&
             (
@@ -307,23 +307,25 @@ const CarpenterRegistration: React.FC = () => {
             )
         );
     });
-    
+
 
     const handleCancel = () => {
         console.log("Edit cancelled");
         handleCloseModal();
     };
 
+
+
     return (
         <Fragment>
-             <Pageheader 
-                currentpage={"Customer Registration"} 
-                activepage={"/carpenter-registration"} 
-               
-                activepagename='Customer Dashboard' 
-               
+            <Pageheader
+                currentpage={"Customer Registration"}
+                activepage={"/carpenter-registration"}
+
+                activepagename='Customer Dashboard'
+
             />
-          
+
 
             <div className="grid grid-cols-12 gap-x-6 bg-white mt-5 rounded-lg shadow-lg">
                 <div className="xl:col-span-12 col-span-12">
@@ -333,7 +335,7 @@ const CarpenterRegistration: React.FC = () => {
                             onSearch={handleSearch}
                             onAddButtonClick={handleAddProductClick}
                             buttonText="Add New Product"
-                            showButton={false} 
+                            showButton={false}
                             showFromDate={true}
                             showToDate={true}
                             onDateFilter={handleDateFilter}
@@ -360,6 +362,9 @@ const CarpenterRegistration: React.FC = () => {
                                 showProductQR={false}
                                 showEdit={true}
                                 onEdit={handleEdit}
+                                iconsDisabled={{
+                                    edit: (item) => item.status === 'Approved' || item.status === 'Cancel' , // Disable edit if status is inactive
+                                }}
                                 editHeader="Update"
                                 columnStyles={{
                                     'Registration ID': 'text-[var(--primaries)] font-semibold', // Example style for QR ID column
@@ -396,7 +401,7 @@ const CarpenterRegistration: React.FC = () => {
                     showMessagesecond={false}
                     title={alertTitle}
                     message={alertMessage}
-                    // message="Customer Registration Approved successfully!"
+                // message="Customer Registration Approved successfully!"
                 />
             )}
 

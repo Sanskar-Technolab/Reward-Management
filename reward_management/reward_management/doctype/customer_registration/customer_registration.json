@@ -1,7 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "naming_series:",
+ "autoname": "format:Customer-Registration-{YYYY}-{MM}-{#####}",
  "creation": "2024-07-30 17:28:03.503986",
  "doctype": "DocType",
  "engine": "InnoDB",
@@ -85,11 +85,11 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-12-25 13:52:26.701956",
+ "modified": "2024-12-26 09:47:34.598454",
  "modified_by": "Administrator",
  "module": "Reward Management",
  "name": "Customer Registration",
- "naming_rule": "By \"Naming Series\" field",
+ "naming_rule": "Expression",
  "owner": "Administrator",
  "permissions": [
   {
