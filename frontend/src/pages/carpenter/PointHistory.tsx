@@ -98,7 +98,7 @@ const PointHistory: React.FC = () => {
             try {
                 const response = await axios.get(`/api/method/reward_management.api.carpenter_master.show_total_points`,{
                 });
-                const { redeem_points, current_points } = response.data.message; 
+                const { redeem_points, current_points } = response.data.message.message; 
                 console.log("card data", response);
                 setRedeemPoints(redeem_points);
                 setTotalPoints(current_points);

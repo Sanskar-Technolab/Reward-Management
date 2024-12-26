@@ -1,7 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "naming_series:",
+ "autoname": "format:Bank-History-{YYYY}-{MM}-{#####}",
  "creation": "2024-07-30 17:49:51.792479",
  "doctype": "DocType",
  "engine": "InnoDB",
@@ -93,11 +93,11 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-09-11 16:48:46.897301",
+ "modified": "2024-12-26 09:50:30.130307",
  "modified_by": "Administrator",
  "module": "Reward Management",
  "name": "Bank Balance",
- "naming_rule": "By \"Naming Series\" field",
+ "naming_rule": "Expression",
  "owner": "Administrator",
  "permissions": [
   {

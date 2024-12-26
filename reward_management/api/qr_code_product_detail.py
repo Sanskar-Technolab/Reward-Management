@@ -107,7 +107,7 @@ from datetime import datetime
 
 
 
-# Get Scanned QR Details------
+# Get Scanned QR From QR Images Details------
 @frappe.whitelist()
 def get_product_details_from_qr(decode_text):
     try:
@@ -149,7 +149,7 @@ def get_product_details_from_qr(decode_text):
 
         if matched_row:
             if matched_row.scanned:
-                return {"success":False,"error": "This QR code has already been scanned."}
+                return {"success":False,"error": "This QR code already scanned."}
 
             # Fetch the product_name
             product_name = frappe.get_value("Product", {"name": matched_row.product_table_name}, "product_name")

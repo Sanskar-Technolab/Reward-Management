@@ -245,7 +245,7 @@ const Login = () => {
             console.log("Check Response Data:", checkResponse)
 
             // If the mobile number is not registered, show OTP input field
-            if (checkResponse.data.message.registered === false && checkResponse.data.message.approved === false) {
+            if (checkResponse.data.message.registered === false && checkResponse.data.message.approved === false && checkResponse.data.message.activate === false) {
                 // Generate OTP for unregistered user
                 const response = await axios.post(
                     `/api/method/reward_management.api.mobile_number.generate_or_update_otp`,
@@ -324,7 +324,7 @@ const Login = () => {
 
         localStorage.setItem('carpenterrole', checkResponse.data.message.role_profile_name);
 
-        if (checkResponse.data.message && checkResponse.data.message.registered && checkResponse.data.message.approved) {
+        if (checkResponse.data.message && checkResponse.data.message.registered && checkResponse.data.message.approved && checkResponse.data.message.activate) {
             // Call the OTP generation API
             const otpResponse = await axios.post(`/api/method/reward_management.api.mobile_number.generate_or_update_otp`, {
                 mobile_number: mobilenumber

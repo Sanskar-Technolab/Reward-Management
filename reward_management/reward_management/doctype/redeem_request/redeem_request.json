@@ -1,7 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "naming_series:",
+ "autoname": "format:Redeem-Request-{YYYY}-{#####}",
  "creation": "2024-07-30 17:47:37.675696",
  "doctype": "DocType",
  "engine": "InnoDB",
@@ -121,11 +121,11 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-10-18 16:44:40.972491",
+ "modified": "2024-12-26 09:49:48.892907",
  "modified_by": "Administrator",
  "module": "Reward Management",
  "name": "Redeem Request",
- "naming_rule": "By \"Naming Series\" field",
+ "naming_rule": "Expression",
  "owner": "Administrator",
  "permissions": [
   {

@@ -1,11 +1,10 @@
 {
  "actions": [],
- "autoname": "naming_series:",
+ "autoname": "format:Gift-{gift_product_name}-{YYYY}-{#####}",
  "creation": "2024-12-09 10:34:00.785138",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
-  "naming_series",
   "gift_product_name",
   "points",
   "gift_detail",
@@ -44,23 +43,15 @@
    "fieldname": "gift_specification",
    "fieldtype": "Text Editor",
    "label": "Gift Specification"
-  },
-  {
-   "fieldname": "naming_series",
-   "fieldtype": "Select",
-   "in_list_view": 1,
-   "label": "Naming Series",
-   "options": "Gift.-.{{gift_product_name}}.-.YYYY.-.",
-   "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-12-18 15:35:16.100721",
+ "modified": "2024-12-26 09:55:28.152840",
  "modified_by": "Administrator",
  "module": "Reward Management",
  "name": "Gift Product",
- "naming_rule": "By \"Naming Series\" field",
+ "naming_rule": "Expression",
  "owner": "Administrator",
  "permissions": [
   {

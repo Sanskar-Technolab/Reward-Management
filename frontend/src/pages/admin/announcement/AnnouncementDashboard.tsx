@@ -42,7 +42,11 @@ const AnnouncementDashboard: React.FC = () => {
     const [toDate, setToDate] = useState<Date | null>(null);
 
     const { data: announcementsData, mutate: mutateAnnouncements } = useFrappeGetDocList<Announcements>('Announcements', {
-        fields: ['name', 'title', 'subject', 'published_on', 'end_date']
+        fields: ['name', 'title', 'subject', 'published_on', 'end_date'],
+        orderBy: {
+            field: 'published_on',
+            order: 'desc',
+        }
     });
 
 

@@ -1,11 +1,12 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "naming_series:",
+ "autoname": "format:Customer-{full_name}-{YYYY}-{#####}",
  "creation": "2024-07-30 17:07:26.446256",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
+  "enabled",
   "naming_series",
   "first_name",
   "last_name",
@@ -104,16 +105,22 @@
    "fieldname": "image",
    "fieldtype": "Attach Image",
    "label": "image"
+  },
+  {
+   "default": "1",
+   "fieldname": "enabled",
+   "fieldtype": "Check",
+   "label": "Enabled"
   }
  ],
  "image_field": "image",
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-12-25 16:30:33.820844",
+ "modified": "2024-12-26 14:05:58.650857",
  "modified_by": "Administrator",
  "module": "Reward Management",
  "name": "Customer",
- "naming_rule": "By \"Naming Series\" field",
+ "naming_rule": "Expression",
  "owner": "Administrator",
  "permissions": [
   {
