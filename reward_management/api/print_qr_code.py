@@ -67,32 +67,30 @@ def create_product_qr(product_name, quantity):
             child_row = product_qr_doc.append("qr_table", {})
 
             # # Generate a unique 8-digit numeric hash value
-            hash_input = f"{timestamp_value}_{product_name}_{i}"  
-            product_qr_id = int(hashlib.md5(hash_input.encode()).hexdigest(), 16) % 100000000 
-            formated_qr_id = f"{product_qr_id:8d}" 
-            child_row.product_qr_id =formated_qr_id
-            child_row.product_table_name = product_name  
-            child_row.generated_date = current_date  
-            child_row.generated_time = current_time
+            # hash_input = f"{timestamp_value}_{product_name}_{i}"  
+            # product_qr_id = int(hashlib.md5(hash_input.encode()).hexdigest(), 16) % 100000000 
+            # formated_qr_id = f"{product_qr_id:8d}" 
+            # child_row.product_qr_id =formated_qr_id
+            # child_row.product_table_name = product_name  
+            # child_row.generated_date = current_date  
+            # child_row.generated_time = current_time
             
             # Generate a unique numeric hash value
-            # hash_input = f"{timestamp_value}_{product_name}_{i}"
-            # product_qr_id = int(hashlib.md5(hash_input.encode()).hexdigest(), 16) % 100000000
+                    
+            hash_input = f"{timestamp_value}_{product_name}_{i}"
+            product_qr_id = int(hashlib.md5(hash_input.encode()).hexdigest(), 16) % 100000000
 
-            # # Ensure the hash does not start with zero
-            # while str(product_qr_id).startswith("0"):
-            #     # Regenerate the hash input by appending an extra character or incrementing
-            #     hash_input += "1"
-            #     product_qr_id = int(hashlib.md5(hash_input.encode()).hexdigest(), 16) % 100000000
+            # Ensure the hash does not start with zero
+            while str(product_qr_id).startswith("0"):
+                # Regenerate the hash by modifying the input
+                hash_input += "_1"
+                product_qr_id = int(hashlib.md5(hash_input.encode()).hexdigest(), 16) % 100000000
 
-            # # Format the QR ID to always have 8 digits
-            # formatted_qr_id = f"{product_qr_id:8d}"
-
-            # # Assign the formatted QR ID to the child row
-            # child_row.product_qr_id = formatted_qr_id
-            # child_row.product_table_name = product_name
-            # child_row.generated_date = current_date
-            # child_row.generated_time = current_time
+            # Assign the QR ID directly (without leading zeroes or spaces)
+            child_row.product_qr_id = str(product_qr_id)  # Direct assignment as a string
+            child_row.product_table_name = product_name
+            child_row.generated_date = current_date
+            child_row.generated_time = current_time
 
             # Set the points value from the Product master
             child_row.points = reward_points  # Set points from the product master

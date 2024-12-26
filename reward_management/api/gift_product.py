@@ -7,7 +7,7 @@ def get_gift_products():
         # Fetch all gift products
         gift_products = frappe.get_all(
             "Gift Product", 
-            fields=["name", "gift_product_name", "points", "gift_detail","description","gift_specification"]
+            fields=["name", "gift_product_name", "points", "gift_detail","description","gift_specification"], order_by="creation desc"
         )
         
         if gift_products:

@@ -1,7 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "naming_series:",
+ "autoname": "format:ANN-{YYYY}-{MM}-{#####}",
  "creation": "2024-07-30 17:09:47.436688",
  "doctype": "DocType",
  "engine": "InnoDB",
@@ -52,11 +52,11 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-09-03 17:18:17.996112",
+ "modified": "2024-12-26 09:37:02.106790",
  "modified_by": "Administrator",
  "module": "Reward Management",
  "name": "Announcements",
- "naming_rule": "By \"Naming Series\" field",
+ "naming_rule": "Expression",
  "owner": "Administrator",
  "permissions": [
   {

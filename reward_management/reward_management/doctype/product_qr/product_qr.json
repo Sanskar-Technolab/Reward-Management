@@ -1,7 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "naming_series:",
+ "autoname": "format:Product-QR-{YYYY}-{#####}",
  "creation": "2024-07-30 17:51:28.289333",
  "doctype": "DocType",
  "engine": "InnoDB",
@@ -43,11 +43,11 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-10-09 17:45:57.644043",
+ "modified": "2024-12-26 10:21:24.188807",
  "modified_by": "Administrator",
  "module": "Reward Management",
  "name": "Product QR",
- "naming_rule": "By \"Naming Series\" field",
+ "naming_rule": "Expression",
  "owner": "Administrator",
  "permissions": [
   {
