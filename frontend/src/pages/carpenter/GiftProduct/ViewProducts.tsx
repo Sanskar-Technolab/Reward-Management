@@ -52,6 +52,35 @@ const ViewProduct = () => {
       }
     };
 
+      // Fetch products from the API
+      const fetchProducts = async (loggedInUser:any) => {
+        try {
+          const response = await axios.get(
+            "/api/method/reward_management.api.gift_product.get_filtered_gift_products",
+            { params: { user: loggedInUser } }
+          );
+
+          // console.log("response",response)
+          const productData = response.data.message.filtered_gift_products;
+          // console.log("Fetched Gift Products:", productData);
+
+          if (response.data.message.status === 'success') {
+            if (Array.isArray(productData) && productData.length > 0) {
+              setProducts(productData);
+            } else {
+              setError('No products available.');
+            }
+          } else {
+            setError('API returned an error status.');
+          }
+        } catch (err) {
+          setError(err.message || 'Failed to fetch products.');
+        } finally {
+          setLoading(false);
+        }
+      };
+  
+
     const fetchUserData = async () => {
       try {
         const response = await axios.get('/api/method/frappe.auth.get_logged_user');
@@ -60,6 +89,8 @@ const ViewProduct = () => {
 
         if (loggedInUser) {
           await fetchCarpenterData(loggedInUser);
+          await fetchProducts(loggedInUser);
+
         } else {
           setError('No logged-in user found.');
         }
@@ -69,36 +100,14 @@ const ViewProduct = () => {
       }
     };
 
-    // Fetch products from the API
-    const fetchProducts = async () => {
-      try {
-        const response = await axios.get('/api/method/reward_management.api.gift_product.get_gift_products');
-        const productData = response.data.message.data;
-        console.log("Fetched Products:", productData);
-
-        if (response.data.message.status === 'success') {
-          if (Array.isArray(productData) && productData.length > 0) {
-            setProducts(productData);
-          } else {
-            setError('No products available.');
-          }
-        } else {
-          setError('API returned an error status.');
-        }
-      } catch (err) {
-        setError(err.message || 'Failed to fetch products.');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProducts();
+  
+    // fetchProducts();
     fetchUserData();
 
   }, []);
 
   // Handle the redeem button click
-  const handleRedeemClick = (productName, pointsRequired) => {
+  const handleRedeemClick = (productName:any, pointsRequired:any) => {
     if (currentPoints >= pointsRequired) {
       const formattedProductName = productName.replace(/\s+/g, '-');
       navigate(`/product-details/${formattedProductName}`);
