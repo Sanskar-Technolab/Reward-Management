@@ -24,14 +24,12 @@ const ProductOrder = () => {
     const [isMobileVerifyOpen, setIsMobileVerifyOpen] = useState<boolean>(false);
     const [currentProduct, setCurrentProduct] = useState<any>(null);
     const [generatedOtp, setGeneratedOtp] = useState(null);
-    const [otp, setOtp] = useState(""); // State to store OTP
+    const [otp, setOtp] = useState("");
     const [showConfirmOrder, setShowConfirmOrder] = useState<boolean>(false);
     const [error, setError] = useState<string>("");
 
     const { productId } = useParams<{ productId: string }>();
-    // const { data, isLoading, error } = useFrappeGetCall(
-    //     "reward_management.api.carpenter_master.get_carpainter_data"
-    // );
+
     const notyf = new Notyf({
         duration: 3000,
         position: { x: "center", y: "top" },
@@ -198,7 +196,7 @@ const ProductOrder = () => {
 
                 if (response.data.message.status === "success") {
                     const matchedProduct = productData.find(
-                        (product) =>
+                        (product:any) =>
                             product.gift_product_name
                                 .replace(/\s+/g, "-")
                                 .toLowerCase() === productId?.toLowerCase()
@@ -237,7 +235,7 @@ const ProductOrder = () => {
       <>
         <Pageheader
           currentpage="Product Order"
-          activepage={`/product-details/${productId}`} // Correctly format the dynamic URL
+          activepage={`/product-details/${productId}`} 
           mainpage="/product-order"
           activepagename="Product Details"
           mainpagename="Product Order"

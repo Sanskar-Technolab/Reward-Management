@@ -1,7 +1,7 @@
 import frappe
 from frappe.model.document import Document
 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def get_gift_products():
     try:
         # Fetch all gift products
@@ -199,4 +199,73 @@ def update_gift_product(new_image_url, giftproductName, giftproductDetails, gift
             "gift_product_name": giftproductName,
             "updated_images": new_image_url
         }
+        
+        
+# get all gift details and remove customer redeemed gift  ----------
+@frappe.whitelist()
+def get_filtered_gift_products(user):
+    try:
+        # Step 1: Fetch user information
+        user_info = frappe.get_doc("User", user)
+        if not user_info:
+            return {"success": False, "status": "failed", "message": "User not found."}
 
+        user_data = {
+            "name": user_info.name,
+            "email": user_info.email,
+            "full_name": user_info.full_name,
+            "mobile_no": user_info.mobile_no,
+            "role": [role.role for role in user_info.roles]  
+        }
+
+        user_mobile_no = user_info.mobile_no
+        if not user_mobile_no:
+            return {"success": False, "status": "failed", "message": "Mobile number not found for user."}
+
+        # Step 2: Fetch customer details
+        customers = frappe.get_list(
+            "Customer",
+            filters={"mobile_number": user_mobile_no},
+            fields=["name"]
+        )
+
+        # Collect all gift IDs associated with this user
+        excluded_gift_ids = set()
+        for customer in customers:
+            point_history = frappe.get_all(
+                "Customer Product Detail",
+                filters={"parent": customer["name"]},
+                fields=["gift_id"]
+            )
+            excluded_gift_ids.update(point.get("gift_id") for point in point_history if point.get("gift_id"))
+
+        # Step 3: Fetch all gift products and filter out excluded ones
+        gift_products = frappe.get_all(
+            "Gift Product",
+            fields=["name", "gift_product_name", "points", "gift_detail", "description", "gift_specification"],
+            order_by="creation desc"
+        )
+
+        filtered_gift_products = []
+        for product in gift_products:
+            if product["name"] not in excluded_gift_ids:
+                # Fetch related child table records for non-excluded products
+                gift_product_images = frappe.get_all(
+                    "Product Gift Child Table",
+                    filters={"parent": product.get("name")},
+                    fields=["gift_product_image"]
+                )
+                product["gift_product_images"] = gift_product_images
+                filtered_gift_products.append(product)
+
+        # Return combined result
+        return {
+            "success": True,
+            "status": "success",
+            "login_user_data": user_data,
+            "filtered_gift_products": filtered_gift_products
+        }
+
+    except Exception as e:
+        frappe.log_error(frappe.get_traceback(), "Get Filtered Gift Products Error")
+        return {"success": False, "status": "failed", "message": str(e)}

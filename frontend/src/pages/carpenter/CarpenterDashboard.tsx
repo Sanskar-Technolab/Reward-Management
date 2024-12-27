@@ -1,7 +1,6 @@
 import "../../assets/css/style.css";
 import React, { Fragment, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-// import ProjectSlider from "../../components/ui/slider/projectslider";
 import Arrow from "../../assets/images/reward_management/arrow.png";
 import ProductCard from "../../components/ui/productcard/card";
 import axios from 'axios';
@@ -66,11 +65,45 @@ useEffect(() => {
 useEffect(() => {
   document.title = "Customer Dashboard";
 
-  const fetchProducts = async () => {
+
+
+  const fetchCarpenterData = async (loggedInUser:any) => {
     try {
-      const response = await axios.get('/api/method/reward_management.api.gift_product.get_gift_products');
+      const response = await axios.get('/api/method/reward_management.api.carpenter_master.get_carpainter_data', {
+        params: { user: loggedInUser },
+      });
+  
+      if (response) {
+        console.log("Customer response", response);
+      }
+
+      const carpainterData = response.data.message.carpainter_data;
+  
+      console.log("Fetched Carpenter Data:", carpainterData);
+  
+      if (Array.isArray(carpainterData) && carpainterData.length > 0) {
+        const firstCarpenter = carpainterData[0];
+        console.log("First Carpenter:", firstCarpenter);
+  
+      //  set get data-----
+        setRedeemPoints(firstCarpenter.redeem_points || 0);
+        setTotalPoints(firstCarpenter.total_points || 0);
+        setCurrentPoints(firstCarpenter.current_points || 0);
+      } else {
+        console.log("No carpenter data found.");
+      }
+    } catch (error) {
+      console.error("Error fetching carpenter data:", error);
+      setError("Failed to fetch carpenter data.");
+    }
+  };
+  const fetchProducts = async (loggedInUser:any) => {
+    try {
+      const response = await axios.get('/api/method/reward_management.api.gift_product.get_filtered_gift_products',
+        { params: { user: loggedInUser } }
+      );
       console.log("Full Response:", response); 
-      const productData = response.data.message.data;
+      const productData = response.data.message.filtered_gift_products;
       console.log("Gift data", productData);
 
       if (response.data.message.status === 'success') {
@@ -88,47 +121,16 @@ useEffect(() => {
       setLoading(false);
     }
   };
-
-  const fetchCarpenterData = async (loggedInUser:any) => {
-    try {
-      const response = await axios.get('/api/method/reward_management.api.carpenter_master.get_carpainter_data', {
-        params: { user: loggedInUser },
-      });
-  
-      if (response) {
-        console.log("Customer response", response);
-      }
-  
-      // Adjust the path to access carpainter data correctly
-      const carpainterData = response.data.message.carpainter_data;
-  
-      console.log("Fetched Carpenter Data:", carpainterData);
-  
-      if (Array.isArray(carpainterData) && carpainterData.length > 0) {
-        const firstCarpenter = carpainterData[0]; // Access the first carpenter's data
-        console.log("First Carpenter:", firstCarpenter);
-  
-        // Ensure the fields exist before accessing them
-        setRedeemPoints(firstCarpenter.redeem_points || 0);
-        setTotalPoints(firstCarpenter.total_points || 0);
-        setCurrentPoints(firstCarpenter.current_points || 0);
-      } else {
-        console.warn("No carpenter data found.");
-      }
-    } catch (error) {
-      console.error("Error fetching carpenter data:", error);
-      setError("Failed to fetch carpenter data.");
-    }
-  };
   
   const fetchUserData = async () => {
     try {
       const response = await axios.get('/api/method/frappe.auth.get_logged_user');
-      const loggedInUser = response.data.message; // Get logged-in user name
+      const loggedInUser = response.data.message;
       console.log("Logged in user:", loggedInUser);
 
       if (loggedInUser) {
-        await fetchCarpenterData(loggedInUser); // Pass the user to the carpenter data API
+        await fetchCarpenterData(loggedInUser);
+        await fetchProducts(loggedInUser);
       }
     } catch (error) {
       console.error("Error fetching logged user data:", error);
@@ -137,7 +139,7 @@ useEffect(() => {
   };
 
 
-  fetchProducts();
+  // fetchProducts();
   fetchUserData();
 }, []);
 
@@ -149,7 +151,7 @@ useEffect(() => {
     return <div>{isError}</div>;
   }
 
-   // Function to handle the redeem button click
+   // handle the redeem button click
    const handleRedeemClick = (productName: any, pointsRequired: number) => {
     if (currentPoints >= pointsRequired) {
       const formattedProductName = productName.replace(/\s+/g, '-');
@@ -184,7 +186,7 @@ useEffect(() => {
           </p>
         </div>
       </div>
-      {/* <ProjectSlider />  */}
+     
       <div className="relative  mx-auto pb-4 mb-4">
     {/* Show loading spinner */}
     {loading && <div>Loading...</div>}
