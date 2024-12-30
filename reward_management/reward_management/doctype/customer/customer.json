@@ -68,19 +68,19 @@
   },
   {
    "fieldname": "total_points",
-   "fieldtype": "Int",
+   "fieldtype": "Float",
    "label": "Total Points"
   },
   {
    "fieldname": "current_points",
-   "fieldtype": "Int",
+   "fieldtype": "Float",
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Current Points"
   },
   {
    "fieldname": "redeem_points",
-   "fieldtype": "Int",
+   "fieldtype": "Float",
    "label": "Redeem Points"
   },
   {
@@ -116,7 +116,7 @@
  "image_field": "image",
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-12-26 14:05:58.650857",
+ "modified": "2024-12-30 16:13:41.046428",
  "modified_by": "Administrator",
  "module": "Reward Management",
  "name": "Customer",

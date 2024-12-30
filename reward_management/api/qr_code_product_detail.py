@@ -365,7 +365,7 @@ def update_scanned_status(product_table_name, product_qr_id, carpenter_id):
 
 
 
-# Get QR Details From QE Code Number and if not added payment amount or payment amount table------------
+# Get QR Details From QR Code Number and if not added payment amount or payment amount table------------
 @frappe.whitelist()
 def get_product_details_from_qr_id(product_qr_id):
     try:
@@ -412,14 +412,17 @@ def get_product_details_from_qr_id(product_qr_id):
 
         # Only calculate reward-related data if conversion rate is found
         if reward_point_conversion_rate:
-            payout_amount = reward_point_conversion_rate[-1]["payout_amount"]
-            reward_point = reward_point_conversion_rate[-1]["reward_point"]
+            payout_amount = reward_point_conversion_rate[-1].payout_amount
+            reward_point = reward_point_conversion_rate[-1].reward_point
+            # payout_amount = reward_point_conversion_rate[-1]["payout_amount"]
+            # reward_point = reward_point_conversion_rate[-1]["reward_point"]
 
             # Calculate earned_amount if payout_amount and reward_point are available
             if payout_amount and reward_point:
-                earned_amount = (float(matched_row["points"]) / float(reward_point)) * float(payout_amount)
+                earned_amount =(float(matched_row['points']) / float(reward_point)) * float(payout_amount) 
+                # (float(matched_row["points"]) / float(reward_point)) * float(payout_amount)
             else:
-                earned_amount = 0
+                earned_amount = 0.0
 
         # Return details including matching row data
         return {

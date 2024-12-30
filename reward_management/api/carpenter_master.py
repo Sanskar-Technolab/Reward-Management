@@ -254,8 +254,8 @@ def update_carpainter_points(product_name, points,earned_amount):
         user_mobile_no = user_info.mobile_no
         
            # Ensure points and earned_amount are of correct type (int or float)
-        points = int(points)  # or int(points) depending on your needs
-        earned_amount = int(earned_amount)
+        points = float(points)  # or float(points) depending on your needs
+        earned_amount = float(earned_amount)
 
         # Fetch the Carpainter record using the mobile number
         carpainter = frappe.get_list("Customer", filters={'mobile_number': user_mobile_no}, fields=['name'])

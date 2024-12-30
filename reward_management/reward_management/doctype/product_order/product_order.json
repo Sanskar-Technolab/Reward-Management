@@ -133,7 +133,7 @@
   {
    "fetch_from": "product_id.points",
    "fieldname": "gift_points",
-   "fieldtype": "Int",
+   "fieldtype": "Float",
    "label": "Gift Points"
   }
  ],
@@ -141,7 +141,7 @@
  "index_web_pages_for_search": 1,
  "links": [],
  "make_attachments_public": 1,
- "modified": "2024-12-26 18:14:57.342513",
+ "modified": "2024-12-30 16:14:20.729728",
  "modified_by": "Administrator",
  "module": "Reward Management",
  "name": "Product Order",
