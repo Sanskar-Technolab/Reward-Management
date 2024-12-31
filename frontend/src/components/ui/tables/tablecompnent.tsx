@@ -68,7 +68,7 @@ const TableComponent = <T,>({
     onDelete,
     onView,
     iconsConfig = {},
-    iconsDisabled = {}, // Default is undefined
+    iconsDisabled = {},
 
 }: TableProps<T>) => {
     const indexOfLastItem = currentPage * itemsPerPage;

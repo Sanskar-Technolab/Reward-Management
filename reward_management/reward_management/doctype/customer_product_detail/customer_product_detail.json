@@ -17,7 +17,8 @@
   "earned_points",
   "product_image",
   "date",
-  "gift_image"
+  "gift_image",
+  "time"
  ],
  "fields": [
   {
@@ -43,7 +44,7 @@
   },
   {
    "fieldname": "earned_points",
-   "fieldtype": "Int",
+   "fieldtype": "Float",
    "in_list_view": 1,
    "label": "Earned Points"
   },
@@ -55,7 +56,7 @@
   },
   {
    "fieldname": "earned_amount",
-   "fieldtype": "Data",
+   "fieldtype": "Float",
    "in_list_view": 1,
    "label": "Earned Amount"
   },
@@ -85,7 +86,7 @@
   {
    "fetch_from": "gift_id.points",
    "fieldname": "deduct_gift_points",
-   "fieldtype": "Int",
+   "fieldtype": "Float",
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Deduct Gift Points"
@@ -98,12 +99,17 @@
    "fieldname": "gift_image",
    "fieldtype": "Attach",
    "label": "Gift Image"
+  },
+  {
+   "fieldname": "time",
+   "fieldtype": "Time",
+   "label": "Time"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2024-12-18 17:39:15.363654",
+ "modified": "2024-12-31 11:58:57.546335",
  "modified_by": "Administrator",
  "module": "Reward Management",
  "name": "Customer Product Detail",

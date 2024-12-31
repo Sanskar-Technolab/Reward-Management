@@ -93,7 +93,7 @@ def create_product_qr(product_name, quantity):
             child_row.generated_time = current_time
 
             # Set the points value from the Product master
-            child_row.points = reward_points  # Set points from the product master
+            child_row.points = reward_points  
 
             # Generate QR code using the API with product_name and product_qr_id concatenated
             qr_content = f"{product_qr_doc.name}_{product_name}_{child_row.product_qr_id}"
