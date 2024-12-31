@@ -41,20 +41,20 @@
   },
   {
    "fieldname": "redeemed_points",
-   "fieldtype": "Int",
+   "fieldtype": "Float",
    "in_list_view": 1,
    "label": "Redeemed Points",
    "reqd": 1
   },
   {
    "fieldname": "current_point_status",
-   "fieldtype": "Int",
+   "fieldtype": "Float",
    "label": "Current Points"
   },
   {
    "fetch_from": "customer_id.total_points",
    "fieldname": "total_points",
-   "fieldtype": "Int",
+   "fieldtype": "Float",
    "label": "Total Points"
   },
   {
@@ -121,7 +121,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-12-26 18:22:44.056437",
+ "modified": "2024-12-30 16:18:41.096653",
  "modified_by": "Administrator",
  "module": "Reward Management",
  "name": "Redeem Request",

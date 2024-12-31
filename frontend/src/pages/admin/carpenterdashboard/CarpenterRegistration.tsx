@@ -218,7 +218,7 @@ const CarpenterRegistration: React.FC = () => {
                 console.log("Registration request status updated successfully and cancel request successfully.");
                 // Set the success alert and trigger page reload
                 setShowSuccessAlert(true);
-                setAlertMessage('Registration Request Canceled Successsfully!!!');
+                setAlertMessage('Registration Request Cancelled Successsfully!!!');
                 setAlertTitle('Success');
             } else {
                 console.error("Failed to update registration request status and delete user/customer: ", response.data.message);

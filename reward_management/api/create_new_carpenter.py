@@ -1,5 +1,7 @@
 import frappe
 from frappe.model.document import Document
+from datetime import datetime
+
 
 # @frappe.whitelist(allow_guest=True)
 # def create_new_carpainters(firstname, lastname, city, mobile):
@@ -94,6 +96,7 @@ def create_new_carpainters(firstname, lastname, city, mobile):
             "status": "Pending", 
             "registration_date": frappe.utils.now_datetime().strftime('%Y-%m-%d'),  
             "registration_time": frappe.utils.now_datetime().strftime('%H:%M:%S'),
+            "approved_time":'',
         })
         carpenter_new_ragistration.insert()
 

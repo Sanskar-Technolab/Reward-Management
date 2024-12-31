@@ -181,59 +181,157 @@ def send_customer_product_order_approved_notification(doc, method=None):
 
 
 # send notification to customer after add new reward points-------
+# @frappe.whitelist()
+# def send_customer_reward_points_earn_notification(doc, method=None):
+#     try:
+#         # Fetch the customer from the related document
+#         customer = frappe.get_doc("Customer", doc.name)  # Assuming 'customer' field links to the customer
+#     except frappe.DoesNotExistError:
+#         # frappe.throw(_("Customer {0} not found").format(doc.name))
+#         return{
+#             "success":False,
+#             "message":"Customer {0} not found"
+#         }
+
+#     # Get the customer's mobile number
+#     customer_mobile = customer.mobile_number
+    
+#     if not customer_mobile:
+#         # frappe.throw(_("Customer does not have a mobile number"))
+#         return{
+#             "success":False,
+#             "message":"Customer does not have a mobile number"
+#         }
+
+#     # Access child table records using the 'getattr' method
+#     point_history_records = getattr(doc, "point_history", [])
+
+#     if not point_history_records:
+#         return{
+#               "success":False,
+#               "message": "No point history found. Notification not sent."} 
+
+#     # Get the last point history record (the most recent one)
+#     last_point_history = point_history_records[-1]  # Get the last row
+
+#     earned_points = last_point_history.get("earned_points")
+#     earned_amount = last_point_history.get("earned_amount")
+#     product_name = last_point_history.get("product_name")
+
+#     # Only proceed if earned_points is added (i.e., greater than zero)
+#     if not earned_points or earned_points <= 0:
+#         return {
+#             "success":False,
+#             "message":"No points earned, notification not sent."}
+
+#     # Find the corresponding User by matching the mobile number
+#     user = frappe.db.get_value("User", {"mobile_no": customer_mobile}, "name")
+    
+#     if not user:
+#         # frappe.throw(_("No user found with mobile number {0}").format(customer_mobile))
+#         return {
+#             "success":False,
+#             "message":"No user found with mobile number {0}"}
+
+#     # Create a new notification log entry for the user found via the mobile number
+#     notification = frappe.get_doc({
+#         'doctype': 'Notification Log',
+#         'for_user': user,
+#         'subject': 'Reward Points Earned',
+#         'type': 'Alert',
+#         'email_content': f"""
+#         {customer.full_name},</br>
+#         You have earned <strong>{earned_points}</strong> points for the product <strong>{product_name}</strong>!
+#         """,
+#         'document_type': 'Customer',
+#         'document_name': doc.name
+#     })
+#     notification.insert(ignore_permissions=True)
+#     frappe.db.commit()
+
+#     return {
+#         "success":True,
+#         "message":"Notification sent successfully to the user"}
+
+
+ 
+
 @frappe.whitelist()
 def send_customer_reward_points_earn_notification(doc, method=None):
     try:
         # Fetch the customer from the related document
-        customer = frappe.get_doc("Customer", doc.name)  # Assuming 'customer' field links to the customer
+        customer = frappe.get_doc("Customer", doc.name)
     except frappe.DoesNotExistError:
-        # frappe.throw(_("Customer {0} not found").format(doc.name))
-        return{
-            "success":False,
-            "message":"Customer {0} not found"
+        return {
+            "success": False,
+            "message": f"Customer {doc.name} not found"
         }
 
     # Get the customer's mobile number
     customer_mobile = customer.mobile_number
-    
+
     if not customer_mobile:
-        # frappe.throw(_("Customer does not have a mobile number"))
-        return{
-            "success":False,
-            "message":"Customer does not have a mobile number"
+        return {
+            "success": False,
+            "message": "Customer does not have a mobile number"
         }
 
-    # Access child table records using the 'getattr' method
+    # Access child table records
     point_history_records = getattr(doc, "point_history", [])
 
     if not point_history_records:
-        return{
-              "success":False,
-              "message": "No point history found. Notification not sent."} 
+        return {
+            "success": False,
+            "message": "No point history found. Notification not sent."
+        }
 
-    # Get the last point history record (the most recent one)
+    # Identify the last row in the child table
     last_point_history = point_history_records[-1]  # Get the last row
 
+    # Check if `earned_points` is added in the last row
     earned_points = last_point_history.get("earned_points")
+    time_added = last_point_history.get("time")
+
+    if not earned_points or earned_points <= 0:
+        return {
+            "success": False,
+            "message": "No points earned in the last row. Notification not sent."
+        }
+
+    # Ensure the `time` is newly added (e.g., recent compared to a threshold)
+    from datetime import datetime, timedelta
+
+    try:
+        current_time = datetime.now()
+        row_time = datetime.strptime(time_added, "%H:%M:%S").time()
+        row_datetime = datetime.combine(current_time.date(), row_time)
+
+        # Assume "newly added" is within the last 5 minutes
+        if (current_time - row_datetime) > timedelta(minutes=5):
+            return {
+                "success": False,
+                "message": "Time for the last row is not recent. Notification not sent."
+            }
+    except Exception as e:
+        return {
+            "success": False,
+            "message": f"Error in parsing time for the last row: {str(e)}"
+        }
+
+    # Get other details from the last row
     earned_amount = last_point_history.get("earned_amount")
     product_name = last_point_history.get("product_name")
 
-    # Only proceed if earned_points is added (i.e., greater than zero)
-    if not earned_points or earned_points <= 0:
-        return {
-            "success":False,
-            "message":"No points earned, notification not sent."}
-
     # Find the corresponding User by matching the mobile number
     user = frappe.db.get_value("User", {"mobile_no": customer_mobile}, "name")
-    
-    if not user:
-        # frappe.throw(_("No user found with mobile number {0}").format(customer_mobile))
-        return {
-            "success":False,
-            "message":"No user found with mobile number {0}"}
 
-    # Create a new notification log entry for the user found via the mobile number
+    if not user:
+        return {
+            "success": False,
+            "message": f"No user found with mobile number {customer_mobile}"
+        }
+
+    # Create a new notification log entry
     notification = frappe.get_doc({
         'doctype': 'Notification Log',
         'for_user': user,
@@ -241,7 +339,7 @@ def send_customer_reward_points_earn_notification(doc, method=None):
         'type': 'Alert',
         'email_content': f"""
         {customer.full_name},</br>
-        You have earned <strong>{earned_points}</strong> points for the product <strong>{product_name}</strong>!
+        You have earned <strong>{earned_points}</strong> points for the product <strong>{product_name}</strong>
         """,
         'document_type': 'Customer',
         'document_name': doc.name
@@ -250,9 +348,6 @@ def send_customer_reward_points_earn_notification(doc, method=None):
     frappe.db.commit()
 
     return {
-        "success":True,
-        "message":"Notification sent successfully to the user"}
-
-
- 
-
+        "success": True,
+        "message": "Notification sent successfully to the user"
+    }
