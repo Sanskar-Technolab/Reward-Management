@@ -14,6 +14,7 @@ interface PointHistoryItem {
     product_category: string;
     gift_product_name:string;
     deduct_gift_points:number;
+    time : string;
 
 }
 
@@ -121,6 +122,7 @@ const PointHistory: React.FC = () => {
                 (item.product_category && item.product_category.toLowerCase().includes(query)) ||
                 (item.gift_product_name && item.gift_product_name.toLowerCase().includes(query)) ||
                 (item.earned_points && item.earned_points.toString().includes(query)) ||
+                (item.time && item.time.toString().includes(query)) ||
                 (item.deduct_gift_points && item.deduct_gift_points.toString().includes(query));
 
 
@@ -237,6 +239,7 @@ const PointHistory: React.FC = () => {
                                     { header: 'Product Category', accessor: 'product_category' },
                                     { header: 'Earned Points', accessor: 'earned_points' },
                                     { header: 'Date', accessor: 'date' },
+                                    { header: 'Time', accessor: 'time' },
                                     { header: 'Gift Name', accessor: 'gift_product_name' },
                                     { header: 'Deduct Points', accessor: 'deduct_gift_points' },
                                 ]}

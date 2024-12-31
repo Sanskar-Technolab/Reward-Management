@@ -101,7 +101,7 @@ def get_carpainter_data(user):
                 "Customer Product Detail",
                 filters={"parent": carpainter["name"]}, 
                 fields=[
-                    "earned_points", "date", "product_name", "product", "product_category",
+                    "earned_points", "date","time","product_name", "product", "product_category",
                     "product_image", "gift_id", "gift_product_name", "deduct_gift_points"
                 ],
                 order_by="creation desc"
@@ -244,7 +244,7 @@ def update_customer_points(points):
 
 
 
-# update carpainter product table ----- 
+# update customer points into the point history table ----- 
 
 @frappe.whitelist()
 def update_carpainter_points(product_name, points,earned_amount):
@@ -274,7 +274,8 @@ def update_carpainter_points(product_name, points,earned_amount):
             "product_name": product_name,
             "earned_points": points,
             "earned_amount":earned_amount,
-            "date": nowdate()
+            "date": nowdate(),
+            "time":frappe.utils.now_datetime().strftime('%H:%M:%S'),
         })
 
         # Save the Carpainter document

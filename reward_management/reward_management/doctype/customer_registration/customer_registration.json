@@ -6,18 +6,18 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
+  "naming_series",
+  "first_name",
+  "last_name",
+  "registration_date",
+  "status",
+  "approved_date",
+  "column_break_ppg8",
   "carpainter_name",
   "mobile_number",
   "city",
-  "status",
-  "column_break_ppg8",
-  "registration_date",
   "registration_time",
-  "approved_date",
-  "approved_time",
-  "first_name",
-  "last_name",
-  "naming_series"
+  "approved_time"
  ],
  "fields": [
   {
@@ -85,7 +85,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-12-26 17:44:41.704503",
+ "modified": "2024-12-31 12:14:39.620801",
  "modified_by": "Administrator",
  "module": "Reward Management",
  "name": "Customer Registration",
