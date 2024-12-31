@@ -291,6 +291,7 @@ def send_customer_reward_points_earn_notification(doc, method=None):
     # Check if `earned_points` is added in the last row
     earned_points = last_point_history.get("earned_points")
     time_added = last_point_history.get("time")
+    date = last_point_history.get("date")
 
     if not earned_points or earned_points <= 0:
         return {
@@ -307,7 +308,7 @@ def send_customer_reward_points_earn_notification(doc, method=None):
         row_datetime = datetime.combine(current_time.date(), row_time)
 
         # Assume "newly added" is within the last 5 minutes
-        if (current_time - row_datetime) > timedelta(minutes=5):
+        if (current_time - row_datetime) > timedelta(minutes=1):
             return {
                 "success": False,
                 "message": "Time for the last row is not recent. Notification not sent."
@@ -339,8 +340,8 @@ def send_customer_reward_points_earn_notification(doc, method=None):
         'type': 'Alert',
         'email_content': f"""
         {customer.full_name},</br>
-        You have earned <strong>{earned_points}</strong> points for the product <strong>{product_name}</strong>
-        """,
+        You have earned <strong>{earned_points}</strong> points for the product <strong>{product_name}</strong> on {date} at {time_added}
+         """,
         'document_type': 'Customer',
         'document_name': doc.name
     })
