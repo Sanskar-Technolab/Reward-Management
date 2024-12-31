@@ -96,7 +96,9 @@ def update_product_order(product_name, order_status, name, gift_points):
                 "gift_id":order.product_id ,
                 "gift_product_name": order.product_name,
                 "deduct_gift_points": order.gift_points,
-                "date": nowdate()
+                "date": nowdate(),
+                "time":frappe.utils.now_datetime().strftime('%H:%M:%S'),
+
             })
 
 

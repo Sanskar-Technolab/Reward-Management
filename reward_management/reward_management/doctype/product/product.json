@@ -53,7 +53,7 @@
   },
   {
    "fieldname": "reward_points",
-   "fieldtype": "Int",
+   "fieldtype": "Float",
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Reward Points",
@@ -66,7 +66,7 @@
   },
   {
    "fieldname": "product_price",
-   "fieldtype": "Int",
+   "fieldtype": "Float",
    "label": "Product Price"
   },
   {
@@ -82,7 +82,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-10-21 13:53:51.106558",
+ "modified": "2024-12-30 16:18:16.594850",
  "modified_by": "Administrator",
  "module": "Reward Management",
  "name": "Product",
