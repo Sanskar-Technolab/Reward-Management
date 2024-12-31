@@ -286,7 +286,8 @@ def send_customer_reward_points_earn_notification(doc, method=None):
         }
 
     # Identify the last row in the child table
-    last_point_history = point_history_records[-1]  # Get the last row
+     # Get the last row
+    last_point_history = point_history_records[-1] 
 
     # Check if `earned_points` is added in the last row
     earned_points = last_point_history.get("earned_points")
