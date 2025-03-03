@@ -97,7 +97,9 @@ def create_product_qr(product_name, quantity):
 
             # Generate QR code using the API with product_name and product_qr_id concatenated
             qr_content = f"{product_qr_doc.name}_{product_name}_{child_row.product_qr_id}"
-            qr_api_url = f"https://api.qrserver.com/v1/create-qr-code/?data={qr_content}&size=100x75"
+            # qr_api_url = f"https://api.qrserver.com/v1/create-qr-code/?data={qr_content}&size=100x75"
+            qr_api_url = f"https://api.qrserver.com/v1/create-qr-code/?data={qr_content}&size=30x30"
+
             response = requests.get(qr_api_url)
 
             if response.status_code == 200:
