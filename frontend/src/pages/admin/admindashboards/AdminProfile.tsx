@@ -373,7 +373,7 @@ const AdminProfile = () => {
                                                     <label htmlFor="first-name" className="form-label text-sm text-defaulttextcolor font-semibold">First Name</label>
                                                     <input
                                                         type="text"
-                                                        className="form-control w-full rounded-[5px] border border-[#dadada] form-control-light mt-2 text-sm"
+                                                        className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full rounded-[5px] border border-[#dadada] form-control-light mt-2 text-sm"
                                                         id="first-name"
                                                         placeholder="First Name"
                                                         value={firstName} // Set the value from the state
@@ -382,13 +382,13 @@ const AdminProfile = () => {
                                                 </div>
                                                 <div className="xl:col-span-6 col-span-12">
                                                     <label htmlFor="last-name" className="form-label text-sm text-defaulttextcolor font-semibold">Last Name</label>
-                                                    <input type="text" className="form-control w-full rounded-[5px] border border-[#dadada] form-control-light mt-2 text-sm" id="last-name" placeholder="Last Name"
+                                                    <input type="text" className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full rounded-[5px] border border-[#dadada] form-control-light mt-2 text-sm" id="last-name" placeholder="Last Name"
                                                         value={lastName} // Set the value from the state
                                                         onChange={(e) => setLastName(e.target.value)} />
                                                 </div>
                                                 <div className="xl:col-span-6 col-span-12">
                                                     <label htmlFor="full-name" className="form-label text-sm text-defaulttextcolor font-semibold">Full Name</label>
-                                                    <input type="text" className="form-control w-full rounded-[5px] border border-[#dadada] form-control-light mt-2 text-sm" id="full-name" placeholder="Full Name"
+                                                    <input type="text" className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full rounded-[5px] border border-[#dadada] form-control-light mt-2 text-sm" id="full-name" placeholder="Full Name"
                                                         value={fullname} // Set the value from the state
                                                         onChange={(e) =>
 
@@ -405,7 +405,7 @@ const AdminProfile = () => {
                                                         <input
                                                             value={username} // Set the value from the state
                                                             onChange={(e) => setUsername(e.target.value)}
-                                                            type="text" className="form-control w-full rounded-[5px] border border-[#dadada] form-control-light mt-2 text-sm" id="basic-url" aria-describedby="basic-addon3" placeholder='username' />
+                                                            type="text" className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full rounded-[5px] border border-[#dadada] form-control-light mt-2 text-sm" id="basic-url" aria-describedby="basic-addon3" placeholder='username' />
                                                     </div>
                                                 </div>
                                             </div>
@@ -413,7 +413,7 @@ const AdminProfile = () => {
                                             <div className="sm:grid grid-cols-12 gap-6 mb-6">
                                                 <div className="xl:col-span-6 col-span-12">
                                                     <label htmlFor="email-address" className="form-label text-sm text-defaulttextcolor font-semibold">Email Address</label>
-                                                    <input type="text" className="form-control w-full rounded-[5px] border border-[#dadada] form-control-light mt-2 text-sm" id="email-address" placeholder="xyz@gmail.com"
+                                                    <input type="text" className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full rounded-[5px] border border-[#dadada] form-control-light mt-2 text-sm" id="email-address" placeholder="xyz@gmail.com"
                                                         value={email} // Set the value from the state
                                                         onChange={(e) => setEmail(e.target.value)}
                                                         readOnly
@@ -421,7 +421,7 @@ const AdminProfile = () => {
                                                 </div>
                                                 <div className="xl:col-span-6 col-span-12">
                                                     <label htmlFor="phone" className="form-label text-sm text-defaulttextcolor font-semibold">Phone</label>
-                                                    <input type="text" className="form-control w-full rounded-[5px] border border-[#dadada] form-control-light mt-2 text-sm" id="phone" placeholder="contact details"
+                                                    <input type="text" className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full rounded-[5px] border border-[#dadada] form-control-light mt-2 text-sm" id="phone" placeholder="contact details"
                                                         value={phone} // Set the value from the state
                                                         onChange={(e) => setPhone(e.target.value)}
                                                     />
@@ -430,7 +430,7 @@ const AdminProfile = () => {
                                                     <label htmlFor="mobile-number" className="form-label text-sm text-defaulttextcolor font-semibold">Mobile Number</label>
                                                     <input
                                                         type="text"
-                                                        className={`form-control w-full rounded-[5px] border border-[#dadada] form-control-light mt-2 text-sm ${isValid ? '' : 'border-red-500'}`}
+                                                        className={`outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full rounded-[5px] border border-[#dadada] form-control-light mt-2 text-sm ${isValid ? '' : 'border-red-500'}`}
                                                         id="mobile-number"
                                                         placeholder="contact details"
                                                         value={mobileno} // Set the value from the state
@@ -440,7 +440,7 @@ const AdminProfile = () => {
                                                 </div>
                                                 <div className="xl:col-span-6 col-span-12">
                                                     <label htmlFor="dob" className="form-label text-sm text-defaulttextcolor font-semibold">Date of Birth</label>
-                                                    <input type="date" className="form-control w-full rounded-[5px] border border-[#dadada] form-control-light mt-2 text-sm" id="dob" placeholder="contact details"
+                                                    <input type="date" className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full rounded-[5px] border border-[#dadada] form-control-light mt-2 text-sm" id="dob" placeholder="contact details"
                                                         value={birthdate} // Set the value from the state
                                                         onChange={(e) => {
                                                             const selectedDate = e.target.value;
@@ -452,7 +452,7 @@ const AdminProfile = () => {
                                                 <div className="xl:col-span-6 col-span-12">
                                                     <label htmlFor="gender" className="form-label text-sm text-defaulttextcolor font-semibold">Gender</label>
                                                     <select
-                                                        className="form-control w-full rounded-[5px] border border-[#dadada] form-control-light mt-2 text-sm"
+                                                        className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full rounded-[5px] border border-[#dadada] form-control-light mt-2 text-sm"
                                                         id="gender"
                                                         value={gender} // Bind the selected value to the state
                                                         onChange={(e) => {
@@ -470,7 +470,7 @@ const AdminProfile = () => {
                                                 </div>
                                                 <div className="xl:col-span-6 col-span-12">
                                                     <label htmlFor="location" className="form-label text-sm text-defaulttextcolor font-semibold">Location</label>
-                                                    <input type="text" className="form-control w-full rounded-[5px] border border-[#dadada] form-control-light mt-2 text-sm" id="location" placeholder="Location"
+                                                    <input type="text" className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full rounded-[5px] border border-[#dadada] form-control-light mt-2 text-sm" id="location" placeholder="Location"
                                                         value={location} // Set the value from the state
                                                         onChange={(e) => setLocation(e.target.value)}
                                                     />
@@ -502,7 +502,7 @@ const AdminProfile = () => {
                                                     <label htmlFor="new-password" className="form-label text-sm text-defaulttextcolor font-semibold">New Password</label>
                                                     <input
                                                         type={showNewPassword ? 'text' : 'password'}
-                                                        className="form-control w-full rounded-[5px] border border-[#dadada] form-control-light mt-2 text-sm"
+                                                        className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full rounded-[5px] border border-[#dadada] form-control-light mt-2 text-sm"
                                                         id="new-password"
                                                         value={newPassword}
                                                         onChange={handlePasswordChange} // Attach onChange handler here
@@ -521,10 +521,10 @@ const AdminProfile = () => {
                                                     <label htmlFor="confirm-password" className="form-label text-sm text-defaulttextcolor font-semibold">Confirm Password</label>
                                                     <input
                                                         type={showConfirmPassword ? 'text' : 'password'}
-                                                        className="form-control w-full rounded-[5px] border border-[#dadada] form-control-light mt-2 text-sm"
+                                                        className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full rounded-[5px] border border-[#dadada] form-control-light mt-2 text-sm"
                                                         id="confirm-password"
                                                         value={confirmPassword}
-                                                        onChange={handlePasswordChange} // Attach onChange handler here
+                                                        onChange={handlePasswordChange}
                                                         placeholder="Confirm password"
                                                     />
                                                     <button

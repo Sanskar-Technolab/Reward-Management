@@ -345,7 +345,7 @@ const ProductCatalogue: React.FC = () => {
                                             <input
                                                 type="text"
                                                 id="categoryName"
-                                                className="form-control w-full rounded-md text-defaulttextcolor text-sm border border-[#dadada]"
+                                                className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full rounded-md text-defaulttextcolor text-sm border border-[#dadada]"
                                                 placeholder="Enter Product Category"
                                                 value={
                                                     productCatalogue ||
@@ -367,7 +367,7 @@ const ProductCatalogue: React.FC = () => {
                                             <input
                                                 type="file"
                                                 multiple
-                                                className="form-control w-full rounded-md text-defaulttextcolor text-sm font-medium p-2 border border-[#dadada]"
+                                                className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full rounded-md text-defaulttextcolor text-sm font-medium p-2 border border-[#dadada]"
                                                 id="product-images-add"
                                                 onChange={handleFileChange}
                                             />
