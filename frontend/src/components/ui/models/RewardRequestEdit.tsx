@@ -50,8 +50,7 @@ const RewardRequestEdit: React.FC<ViewModalProps> = ({
   
     useEffect(() => {
         if (showAmount) {
-            // Fetch amount logic could go here if not done in parent
-            // Assuming you might want to fetch based on some other condition
+          
         }
     }, [showAmount]);
 
@@ -70,7 +69,7 @@ const RewardRequestEdit: React.FC<ViewModalProps> = ({
                         <div className="xl:col-span-12 col-span-12 mb-4">
                             <label htmlFor="question" className="form-label text-sm text-defaulttextcolor font-semibold">{questionLabel}</label>
                             <input
-                                className="form-control w-full rounded-5px border border-[#dadada] form-control-light mt-2 text-sm"
+                                className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full rounded-5px border border-[#dadada] form-control-light mt-2 text-sm"
                                 placeholder="Enter your question here"
                                 id="question"
                                 value={question}
@@ -82,7 +81,7 @@ const RewardRequestEdit: React.FC<ViewModalProps> = ({
                             <label htmlFor="answer" className="form-label text-sm text-defaulttextcolor font-semibold">{answerLabel}</label>
                             <input
                                 type="text"
-                                className="form-control w-full rounded-5px border border-[#dadada] form-control-light mt-2 text-sm"
+                                className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full rounded-5px border border-[#dadada] form-control-light mt-2 text-sm"
                                 placeholder="Enter your answer here"
                                 id="answer"
                                 value={answer}
@@ -94,7 +93,7 @@ const RewardRequestEdit: React.FC<ViewModalProps> = ({
                             <label htmlFor="status" className="form-label text-sm text-defaulttextcolor font-semibold">{statusLabel}</label>
                             <select
                                 id="status"
-                                className="form-control w-full rounded-5px border border-[#dadada] form-control-light mt-2 text-sm"
+                                className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full rounded-5px border border-[#dadada] form-control-light mt-2 text-sm"
                                 value={status}
                                 onChange={(e) => setStatus(e.target.value)}
                             >
@@ -108,7 +107,7 @@ const RewardRequestEdit: React.FC<ViewModalProps> = ({
                             <label htmlFor="transactionid" className="form-label text-sm text-defaulttextcolor font-semibold">{transactionIdLabel}</label>
                             <input
                                 type="text"
-                                className="form-control w-full rounded-5px border border-[#dadada] form-control-light mt-2 text-sm"
+                                className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full rounded-5px border border-[#dadada] form-control-light mt-2 text-sm"
                                 placeholder="Enter Transaction ID here"
                                 id="transactionid"
                                 value={transactionId}
@@ -121,7 +120,7 @@ const RewardRequestEdit: React.FC<ViewModalProps> = ({
                             <label htmlFor="amount" className="form-label text-sm text-defaulttextcolor font-semibold">{amountLabel}</label>
                             <input
                                 type="text"
-                                className="form-control w-full rounded-5px border border-[#dadada] form-control-light mt-2 text-sm"
+                                className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full rounded-5px border border-[#dadada] form-control-light mt-2 text-sm"
                                 placeholder="Enter Amount here"
                                 id="amount"
                                 value={amount}

@@ -13,8 +13,8 @@ interface ViewModalProps {
     onClose: () => void;
     onSubmit: () => void;
     onCancel: () => void;
-    control: any; // React Hook Form control
-    errors: any; // React Hook Form errors
+    control: any; 
+    errors: any;
 }
 
 const AddAdminModel: React.FC<ViewModalProps> = ({
@@ -52,7 +52,7 @@ const AddAdminModel: React.FC<ViewModalProps> = ({
                                     render={({ field }) => (
                                         <input
                                             type="text"
-                                            className="form-control w-full rounded-[5px] border border-[#dadada] form-control-light mt-2 text-sm"
+                                            className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full rounded-[5px] border border-[#dadada] form-control-light mt-2 text-sm"
                                             placeholder="Enter first name"
                                             id="adminFirstName"
                                             {...field}
@@ -69,7 +69,7 @@ const AddAdminModel: React.FC<ViewModalProps> = ({
                                     render={({ field }) => (
                                         <input
                                             type="text"
-                                            className="form-control w-full rounded-[5px] border border-[#dadada] form-control-light mt-2 text-sm"
+                                            className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full rounded-[5px] border border-[#dadada] form-control-light mt-2 text-sm"
                                             placeholder="Enter last name"
                                             id="adminLastName"
                                             {...field}
@@ -86,7 +86,7 @@ const AddAdminModel: React.FC<ViewModalProps> = ({
                                     render={({ field }) => (
                                         <input
                                             type="text"
-                                            className="form-control w-full rounded-[5px] border border-[#dadada] form-control-light mt-2 text-sm"
+                                            className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full rounded-[5px] border border-[#dadada] form-control-light mt-2 text-sm"
                                             placeholder="Enter username"
                                             id="adminUsername"
                                             {...field}
@@ -103,7 +103,7 @@ const AddAdminModel: React.FC<ViewModalProps> = ({
                                     render={({ field }) => (
                                         <input
                                             type="email"
-                                            className="form-control w-full rounded-[5px] border border-[#dadada] form-control-light mt-2 text-sm"
+                                            className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full rounded-[5px] border border-[#dadada] form-control-light mt-2 text-sm"
                                             placeholder="Enter email"
                                             id="adminEmail"
                                             {...field}
@@ -120,7 +120,7 @@ const AddAdminModel: React.FC<ViewModalProps> = ({
                                     render={({ field }) => (
                                         <input
                                             type="text"
-                                            className="form-control w-full rounded-[5px] border border-[#dadada] form-control-light mt-2 text-sm"
+                                            className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full rounded-[5px] border border-[#dadada] form-control-light mt-2 text-sm"
                                             placeholder="Enter mobile number"
                                             id="adminMobile"
                                             {...field}
@@ -137,7 +137,7 @@ const AddAdminModel: React.FC<ViewModalProps> = ({
                                     render={({ field }) => (
                                         <input
                                             type="password"
-                                            className="form-control w-full rounded-[5px] border border-[#dadada] form-control-light mt-2 text-sm"
+                                            className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full rounded-[5px] border border-[#dadada] form-control-light mt-2 text-sm"
                                             placeholder="Enter password"
                                             id="adminPassword"
                                             {...field}

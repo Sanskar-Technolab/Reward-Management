@@ -263,7 +263,7 @@ const Project: React.FC = () => {
                                     type="file"
                                     multiple
                                     id="file-upload"
-                                    className="mt-1 block w-full p-2 border border-defaultborder rounded-md"
+                                    className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] mt-1 block w-full p-2 border border-defaultborder rounded-md"
                                     onChange={handleFileChange}
                                 />
                                 {error && <p className="text-red-500 text-sm mt-1">{error}</p>}

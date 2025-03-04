@@ -299,7 +299,7 @@ const AddLoginInstruction = () => {
             <form onSubmit={handleAddSubmit} className="mt-4">
               <div className="p-4">
               <div className="">
-                <label htmlFor="file-upload" className="block text-sm text-defaulttextcolor font-semibold">
+                <label htmlFor="file-upload" className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] block text-sm text-defaulttextcolor font-semibold">
                   Instruction Images
                 </label>
                 <input
@@ -339,7 +339,7 @@ const AddLoginInstruction = () => {
                 </label>
                 <textarea
                   id="image-description"
-                  className="mt-1 p-2 w-full border border-[#dadada] rounded-md"
+                  className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] mt-1 p-2 w-full border border-[#dadada] rounded-md"
                   value={imageAddDescription}
                   onChange={(e) => setImageAddDescription(e.target.value)}
                 />
@@ -388,7 +388,7 @@ const AddLoginInstruction = () => {
                   type="file"
                   multiple
                   id="file-upload"
-                  className="mt-1 block w-full p-2 border border-[#dadada] rounded-md"
+                  className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] mt-1 block w-full p-2 border border-[#dadada] rounded-md"
                   onChange={handleFileChange}
                 />
                 {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
@@ -421,7 +421,7 @@ const AddLoginInstruction = () => {
                 </label>
                 <textarea
                   id="image-description"
-                  className="mt-1 p-2 w-full border border-[#dadada] rounded-md"
+                  className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] mt-1 p-2 w-full border border-[#dadada] rounded-md"
                   value={imageDescription}
                   onChange={(e) => setImageDescription(e.target.value)}
                 />

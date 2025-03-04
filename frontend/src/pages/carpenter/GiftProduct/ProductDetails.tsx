@@ -143,63 +143,6 @@ const ProductDetails = () => {
   }, [productId]);
 
 
-  // useEffect(() => {
-  //   const fetchProducts = async (loggedInUser:any) => {
-  //     try {
-  //       const response = await axios.get(
-  //         "/api/method/reward_management.api.gift_product.get_filtered_gift_products",
-  //         { params: { user: loggedInUser } }
-  //       );
-  //       const productData = response.data.message.filtered_gift_products;
-  //       console.log("Fetched Gift Products:", productData);
-
-  //       if (response.data.message.status === "success") {
-  //         if (Array.isArray(productData) && productData.length > 0) {
-  //           setProducts(productData);
-
-  //           // Extract images for the slider (flatten if necessary)
-  //           const images = productData.flatMap((product) =>
-  //             product.gift_product_images?.map((img: any) => img.gift_product_image) || []
-  //           );
-  //           console.log("Extracted Images:", images);
-  //           setProductImages(images);
-
-  //           // Find the product that matches the productId from the URL
-  //           const matchedProduct = productData.find(
-  //             (product) =>
-  //               product.gift_product_name.replace(/\s+/g, "-").toLowerCase() ===
-  //               productId?.toLowerCase()
-  //           );
-
-  //           if (matchedProduct) {
-  //             console.log("match product", matchedProduct);
-
-  //             setCurrentProduct(matchedProduct);
-  //             console.log("match product image", matchedProduct.gift_product_images)
-  //             const matchedProductImages = matchedProduct.gift_product_images.map(
-  //               (img: any) => img.gift_product_image
-  //             );
-  //             // Pass images to the ProjectSlider component
-  //             setProductImages(matchedProductImages);
-  //           } else {
-  //             setError("Product not found.");
-  //           }
-  //         } else {
-  //           setError("No products available.");
-  //         }
-  //       } else {
-  //         setError("API returned an error status.");
-  //       }
-  //     } catch (err) {
-  //       setError(err.message || "Failed to fetch products.");
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-
-  //   fetchProducts();
-  // }, [productId]);
-
   if (loading) {
     return (
       <div className="text-center py-10">
