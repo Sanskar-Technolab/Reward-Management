@@ -72,7 +72,7 @@ const BoxHeader: React.FC<BoxHeaderProps> = ({ title, onSearch, onAddButtonClick
                         onChange={handleFromDateChange}
                         dateFormat="dd-MM-yyyy"
                         placeholderText="From Date"
-                        className="mb-[0.25rem] text-[0.8rem] ti-form-control form-control-sm rounded-sm mr-2 p-0 py-[3px] px-2"
+                        className="border border-[#dadada] mb-[0.25rem] text-[0.8rem] ti-form-control form-control-sm rounded-sm mr-2 p-0 py-[3px] px-2 outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada]"
                     />
               
                 </div>
@@ -84,14 +84,14 @@ const BoxHeader: React.FC<BoxHeaderProps> = ({ title, onSearch, onAddButtonClick
                         onChange={handleToDateChange}
                         dateFormat="dd-MM-yyyy"
                         placeholderText="To Date"
-                        className="mb-[0.25rem] text-[0.8rem] ti-form-control form-control-sm rounded-sm mr-2 p-0 py-[3px] px-2"
+                        className="border border-[#dadada] mb-[0.25rem] text-[0.8rem] ti-form-control form-control-sm rounded-sm mr-2 p-0 py-[3px] px-2 outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada]"
                     />
                 </div>
                 )}
 
                 <div className='flex '>
                     <input
-                        className="mb-[0.25rem] text-[0.8rem] ti-form-control form-control-sm rounded-sm"
+                        className="border border-[#dadada] mb-[0.25rem] text-[0.8rem] ti-form-control form-control-sm rounded-sm outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada]"
                         type="text"
                         placeholder="Search Here"
                         value={searchValue}
@@ -103,7 +103,7 @@ const BoxHeader: React.FC<BoxHeaderProps> = ({ title, onSearch, onAddButtonClick
                     <div className='flex ms-2'>
                         <button
                             type="button"
-                            className="ti-btn !py-1 !px-2 text-xs !text-white !font-medium bg-[var(--primaries)]"
+                            className="ti-btn !py-1 !px-2 text-xs !text-white !font-medium bg-[var(--primaries)] "
                             onClick={onAddButtonClick}
                         >
                             {icon && <i className={`${icon} font-semibold align-middle me-1`}></i>}

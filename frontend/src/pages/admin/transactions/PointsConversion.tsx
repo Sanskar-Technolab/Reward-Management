@@ -110,7 +110,7 @@ const PointConversionDashboard: React.FC = () => {
                                         <div className="xl:col-span-12 col-span-12">
                                             <input
                                                 type="text"
-                                                className="form-control w-full !rounded-md !bg-light text-defaulttextcolor text-xs font-medium"
+                                                className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full !rounded-md !bg-light text-defaulttextcolor text-xs font-medium"
                                                 id="setrewardPoints"
                                                 placeholder="Reward Points"
                                                 value={rewardPoints}
@@ -120,7 +120,7 @@ const PointConversionDashboard: React.FC = () => {
                                         <div className="xl:col-span-12 col-span-12">
                                             <input
                                                 type="text"
-                                                className="form-control w-full !rounded-md !bg-light text-defaulttextcolor text-xs font-medium"
+                                                className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full !rounded-md !bg-light text-defaulttextcolor text-xs font-medium"
                                                 id="setpayoutAmount"
                                                 placeholder="Payout Amount"
                                                 value={payoutAmount}

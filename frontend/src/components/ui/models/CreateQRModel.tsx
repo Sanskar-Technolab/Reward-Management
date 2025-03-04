@@ -6,7 +6,7 @@ interface ModalProps {
     onSubmit: () => void;
     onCancel: () => void;
     onConfirm: (quantity: number) => void;
-    title?: string; // Optional title prop
+    title?: string; 
 }
 
 const CreateQRCodeModal: React.FC<ModalProps> = ({
@@ -16,10 +16,17 @@ const CreateQRCodeModal: React.FC<ModalProps> = ({
     onConfirm,
     title = "Create QR Code"
 }) => {
-    const [quantity, setQuantity] = useState<number>(0);
+    // const [quantity, setQuantity] = useState<number>(0);
+    const [quantity, setQuantity] = useState<string>("");
 
+
+    // const handleConfirm = () => {
+    //     onConfirm(quantity);
+    //     onClose();
+    // };
     const handleConfirm = () => {
-        onConfirm(quantity);
+        if (quantity.trim() === "") return;
+        onConfirm(Number(quantity));
         onClose();
     };
 
@@ -43,11 +50,20 @@ const CreateQRCodeModal: React.FC<ModalProps> = ({
                                 type="number"
                                 min="1"
                                 value={quantity}
-                                onChange={(e) => setQuantity(Number(e.target.value))}
-                                className="w-full p-2 border border-gray-300 rounded mb-4"
+                                onChange={(e) => setQuantity(e.target.value)}
+                                className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] w-full p-2 border border-gray-300 rounded mb-4"
                                 placeholder="Enter quantity"
                                 id="quantity"
                             />
+                            {/* <input
+                                type="number"
+                                min="1"
+                                value={quantity}
+                                onChange={(e) => setQuantity(Number(e.target.value))}
+                                className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] w-full p-2 border border-gray-300 rounded mb-4"
+                                placeholder="Enter quantity"
+                                id="quantity"
+                            /> */}
                         </div>
                     </div>
                     <div className="border-t border-defaultborder p-4 flex justify-end">

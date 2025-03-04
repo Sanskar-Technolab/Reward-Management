@@ -508,7 +508,7 @@ const Login = () => {
                                                 placeholder='Username'
                                                 onChange={(e) => setUsername(e.target.value)}
                                                 value={username}
-                                                className="border rounded-[5px] p-2 mt-2 text-xs w-full"
+                                                className="border rounded-[5px] p-2 mt-2 text-xs w-full outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] "
                                             />
                                         </Box>
                                         <Box className="mb-4 ">
@@ -520,7 +520,7 @@ const Login = () => {
                                                     placeholder='******'
                                                     onChange={(e) => setPassword(e.target.value)}
                                                     value={password}
-                                                    className="border p-2 pt-2 mt-2 rounded-[5px] w-full"
+                                                    className="border p-2 pt-2 mt-2 rounded-[5px] w-full outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] "
                                                 />
                                                 <button
                                                     type="button"
@@ -545,7 +545,7 @@ const Login = () => {
                                                 <input
                                                     type="text"
                                                     name="firstName"
-                                                    className="form-control form-control-lg border rounded-[5px] p-2 mt-2 text-xs w-full"
+                                                    className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control form-control-lg border rounded-[5px] p-2 mt-2 text-xs w-full"
                                                     onChange={changeHandler}
                                                     value={firstName}
                                                     placeholder="First Name"
@@ -558,7 +558,7 @@ const Login = () => {
                                                 <input
                                                     type="text"
                                                     name="lastName"
-                                                    className="form-control form-control-lg border rounded-[5px] p-2 mt-2 text-xs w-full"
+                                                    className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control form-control-lg border rounded-[5px] p-2 mt-2 text-xs w-full"
                                                     onChange={changeHandler}
                                                     value={lastName}
                                                     placeholder="Last Name"
@@ -571,7 +571,7 @@ const Login = () => {
                                                 <input
                                                     type="text"
                                                     name="city"
-                                                    className="form-control form-control-lg border rounded-[5px] p-2 mt-2 text-xs w-full"
+                                                    className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control form-control-lg border rounded-[5px] p-2 mt-2 text-xs w-full"
                                                     onChange={changeHandler}
                                                     value={city}
                                                     placeholder="City"
@@ -584,7 +584,7 @@ const Login = () => {
                                                 <input
                                                     type="tel"
                                                     name="mobile"
-                                                    className={`form-control form-control-lg border rounded-[5px] p-2 mt-2 text-xs w-full ${mobile.length !== 10 || !/^\d+$/.test(mobile) ? 'border-red-500' : ''}`}
+                                                    className={`outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control form-control-lg border rounded-[5px] p-2 mt-2 text-xs w-full ${mobile.length !== 10 || !/^\d+$/.test(mobile) ? 'border-red-500' : ''}`}
                                                     onChange={changeHandler}
                                                     value={mobile}
                                                     placeholder="Mobile Number"
@@ -610,7 +610,7 @@ const Login = () => {
                                                         <input
                                                             type="number"
                                                             name="otp"
-                                                            className="form-control form-control-lg border rounded-[5px] p-2 mt-2 text-xs w-full"
+                                                            className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control form-control-lg border rounded-[5px] p-2 mt-2 text-xs w-full"
                                                             onChange={changeHandler}
                                                             value={otp}
                                                             placeholder="OTP"
@@ -673,7 +673,7 @@ const Login = () => {
                                                 name='mobilenumber'
                                                 onChange={changeHandler}
                                                 value={mobilenumber}
-                                                className={`border rounded-[5px] p-2 mt-2 text-xs w-full  ${mobilenumber.length !== 10 || !/^\d+$/.test(mobile) ? 'border-red-500' : ''}`}
+                                                className={`outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] border rounded-[5px] p-2 mt-2 text-xs w-full  ${mobilenumber.length !== 10 || !/^\d+$/.test(mobile) ? 'border-red-500' : ''}`}
                                                 required
                                             />
                                             {mobilenumber.length !== 10 && mobilenumber.length > 0 && (
@@ -693,7 +693,7 @@ const Login = () => {
                                                   name="mobileotp"
                                                   onChange={changeHandler}
                                                   value={mobileotp}
-                                                  className="border rounded-[5px] p-2 mt-2 text-xs w-full"
+                                                  className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] border rounded-[5px] p-2 mt-2 text-xs w-full"
                                               />
                                           </Box>
                                           <Button

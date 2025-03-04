@@ -4,6 +4,8 @@ import Pageheader from '../../../components/common/pageheader/pageheader';
 import React, { Fragment, useState, useEffect } from "react";
 import axios from 'axios';
 import SuccessAlert from '../../../components/ui/alerts/SuccessAlert';
+import { Notyf } from 'notyf';
+import 'notyf/notyf.min.css'; 
 
 const SetRewardPointsDashboard: React.FC = () => {
     const [minPoints, setMinPoints] = useState<number | ''>('');
@@ -11,6 +13,15 @@ const SetRewardPointsDashboard: React.FC = () => {
     const [currentMinPoints, setCurrentMinPoints] = useState<number | ''>('');
     const [currentMaxPoints, setCurrentMaxPoints] = useState<number | ''>('');
     const [showSuccessAlert, setShowSuccessAlert] = useState(false);
+
+    const notyf = new Notyf({
+            position: {
+                x: 'right',
+                y: 'top',
+            },
+            duration: 5000, 
+        });
+    
 
     useEffect(() => {
         document.title='Set Reward Points';
@@ -47,7 +58,9 @@ const SetRewardPointsDashboard: React.FC = () => {
 
         // Validate the inputs
         if (minPoints === '' || maxPoints === '' || minPoints > maxPoints) {
-            alert("Please enter valid points and ensure minimum points are not greater than maximum points.");
+            notyf.error("Please enter valid points and ensure minimum points are not greater than maximum points.");
+
+            // alert("Please enter valid points and ensure minimum points are not greater than maximum points.");
             return;
         }
 
@@ -72,8 +85,10 @@ const SetRewardPointsDashboard: React.FC = () => {
             // Set the success alert and trigger page reload
             setShowSuccessAlert(true);
         } catch (error) {
-            console.error('Error:', error);
-            alert('Failed to create Redeemption Points Setup.');
+            console.log('Error:', error);
+            notyf.error("Failed to create Redeemption Points Setup.");
+
+            // alert('Failed to create Redeemption Points Setup.');
         }
     };
 
@@ -110,7 +125,7 @@ const SetRewardPointsDashboard: React.FC = () => {
                                         <div className="xl:col-span-12 col-span-12">
                                             <input
                                                 type="number"
-                                                className="form-control w-full !rounded-md !bg-light text-defaulttextcolor text-xs font-medium"
+                                                className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full !rounded-md !bg-light text-defaulttextcolor text-xs font-medium"
                                                 id="setMinPoints"
                                                 placeholder="Minimum Points"
                                                 value={minPoints}
@@ -120,7 +135,7 @@ const SetRewardPointsDashboard: React.FC = () => {
                                         <div className="xl:col-span-12 col-span-12">
                                             <input
                                                 type="number"
-                                                className="form-control w-full !rounded-md !bg-light text-defaulttextcolor text-xs font-medium"
+                                                className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full !rounded-md !bg-light text-defaulttextcolor text-xs font-medium"
                                                 id="setMaxPoints"
                                                 placeholder="Maximum Points"
                                                 value={maxPoints}

@@ -57,25 +57,6 @@ const AddProduct: React.FC = () => {
     const { call: createCategory } = useFrappePostCall('reward_management.api.product_master.add_category');
 
 
-    // const handleAddCategory = async (event: any) => {
-    //     event.preventDefault();
-    //     console.log("first")
-    //     try {
-    //         const response = await createCategory({ productCategory: newCategory });
-    //         if (response) {
-    //             console.log("product category name:", response);
-    //             // setProductCategory(response.category_name);
-    //             setProductCategory(prevCategories => [...prevCategories, { category_name: response.category_name, id: response.category_id }]);
-
-    //             setNewCategory('');
-    //             // window.location.reload();
-    //             setShowAddCategoryModal(false);
-    //         }
-    //     } catch (error) {
-    //         console.error("Error adding category:", error);
-    //     }
-    // };
-
     const handleAddCategory = async (event: any) => {
         event.preventDefault();
         console.log("first");
@@ -92,10 +73,8 @@ const AddProduct: React.FC = () => {
                     { category_name: response.category_name, id: response.category_id }
                 ]);
     
-                // Clear the new category input field
                 setNewCategory('');
     
-                // Close the modal
                 setShowAddCategoryModal(false);
             }
         } catch (error) {
@@ -145,7 +124,7 @@ const AddProduct: React.FC = () => {
     };
 
     const addProduct = async (fileUrls: string[]) => {
-        if (!productName || !rewardPoints || !pointReward || !rewardAmount || !productPrice || !productDescription || !productCategory) {
+        if (!productName || !rewardPoints || !pointReward || !rewardAmount || !productPrice || !productCategory) {
             console.log("Please fill all the fields.");
             notyf.error("Please fill all the fields");
             return; 
@@ -259,10 +238,10 @@ const AddProduct: React.FC = () => {
                                         <div className="xxl:col-span-6 xl:col-span-12 lg:col-span-12 md:col-span-6 col-span-12">
                                             <div className="grid grid-cols-12 gap-4">
                                                 <div className="xl:col-span-12 col-span-12">
-                                                    <label htmlFor="product-name-add" className="form-label text-sm font-semibold text-defaulttextcolor">Product Name</label>
+                                                    <label htmlFor="product-name-add" className="form-label text-sm font-semibold text-defaulttextcolor">Product Name<span style={{color:'red'}}>*</span></label>
                                                     <input
                                                         type="text"
-                                                        className="form-control w-full border border-defaultborder text-defaultsize text-defaulttextcolor rounded-[0.5rem] mt-2"
+                                                        className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full border border-defaultborder text-defaultsize text-defaulttextcolor rounded-[0.5rem] mt-2"
                                                         id="product-name-add"
                                                         placeholder="Name"
                                                         value={productName}
@@ -271,10 +250,10 @@ const AddProduct: React.FC = () => {
                                                     />
                                                 </div>
                                                 <div className="xl:col-span-12 col-span-12">
-                                                    <label htmlFor="product-price-add" className="form-label text-sm font-semibold text-defaulttextcolor">Product Price</label>
+                                                    <label htmlFor="product-price-add" className="form-label text-sm font-semibold text-defaulttextcolor">Product Price<span style={{color:'red'}}>*</span></label>
                                                     <input
                                                         type="text"
-                                                        className="form-control w-full text-defaultsize text-defaulttextcolor border border-defaultborder rounded-[0.5rem] mt-2"
+                                                        className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full text-defaultsize text-defaulttextcolor border border-defaultborder rounded-[0.5rem] mt-2"
                                                         id="product-price-add"
                                                         placeholder="Price"
                                                         value={productPrice}
@@ -286,20 +265,20 @@ const AddProduct: React.FC = () => {
 
 
                                                 <div className="xl:col-span-12 col-span-12">
-                                                    <label htmlFor="product-cost-add" className="form-label text-sm font-semibold text-defaulttextcolor">Reward Points</label>
+                                                    <label htmlFor="product-cost-add" className="form-label text-sm font-semibold text-defaulttextcolor">Reward Points<span style={{color:'red'}}>*</span></label>
                                                     <input
                                                         type="text"
-                                                        className="form-control w-full text-defaultsize text-defaulttextcolor border border-defaultborder rounded-[0.5rem] mt-2"
+                                                        className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full text-defaultsize text-defaulttextcolor border border-defaultborder rounded-[0.5rem] mt-2"
                                                         id="product-cost-add"
                                                         placeholder="Reward points"
                                                         value={rewardPoints}
                                                         onChange={(e) => setRewardPoints(e.target.value)}
-                                                        readOnly={showRewardPercent} // Make read-only if the checkbox is checked
+                                                        readOnly={showRewardPercent} 
                                                     />
                                                 </div>
 
                                                 <div className="xl:col-span-12 col-span-12 mb-4">
-                                                    <label className="form-label text-sm font-semibold text-defaulttextcolor">Product Description</label>
+                                                    <label className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-label text-sm font-semibold text-defaulttextcolor">Product Description</label>
                                                     <div id="product-features" className="mt-2">
                                                         <SunEditor
                                                             setContents={productDescription}
@@ -325,12 +304,12 @@ const AddProduct: React.FC = () => {
                                             <div className='grid grid-cols-12 gap-4'>
                                                 {/* Product Category Dropdown */}
                                                 <div className="xl:col-span-12 col-span-12">
-                                                    <label htmlFor="product-category-add" className="form-label text-sm font-semibold text-defaulttextcolor">Category</label>
+                                                    <label htmlFor="product-category-add" className="form-label text-sm font-semibold text-defaulttextcolor">Category<span style={{color:'red'}}>*</span></label>
                                                     <div className="flex items-center mt-[8px]">
                                                         <select
                                                             id="product-category-add"
                                                             name="product-category-add"
-                                                            className="w-full border border-defaultborder text-defaultsize text-defaulttextcolor rounded-[0.5rem] mr-1" // added margin-right
+                                                            className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada]  w-full border border-defaultborder text-defaultsize text-defaulttextcolor rounded-[0.5rem] mr-1" // added margin-right
                                                             value={productCategory}
                                                             onChange={(e) => setProductCategory(e.target.value)}
                                                             required
@@ -368,10 +347,10 @@ const AddProduct: React.FC = () => {
                                                 {/* Conditionally render Reward Percent input */}
                                                 {showRewardPercent && (
                                                     <div className="xl:col-span-12 col-span-12">
-                                                        <label htmlFor="reward-percent-add" className="form-label text-sm font-semibold text-defaulttextcolor">Set Reward Percent</label>
+                                                        <label htmlFor="reward-percent-add" className="form-label text-sm font-semibold text-defaulttextcolor">Set Reward Percent<span style={{color:'red'}}>*</span></label>
                                                         <input
                                                             type="text"
-                                                            className="form-control w-full text-defaultsize text-defaulttextcolor border border-defaultborder rounded-[0.5rem] mt-2"
+                                                            className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full text-defaultsize text-defaulttextcolor border border-defaultborder rounded-[0.5rem] mt-2"
                                                             id="reward-percent-add"
                                                             placeholder="Set Reward Percent"
                                                             value={rewardPercent}
@@ -383,10 +362,10 @@ const AddProduct: React.FC = () => {
 
                                                 {/* point calculation */}
                                                 <div className="xl:col-span-12 col-span-12">
-                                                    <label htmlFor="point-reward-add" className="form-label text-sm font-semibold text-defaulttextcolor">Point</label>
+                                                    <label htmlFor="point-reward-add" className="form-label text-sm font-semibold text-defaulttextcolor">Point<span style={{color:'red'}}>*</span></label>
                                                     <input
                                                         type="text"
-                                                        className="form-control w-full text-defaultsize text-defaulttextcolor border border-defaultborder rounded-[0.5rem] mt-2"
+                                                        className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full text-defaultsize text-defaulttextcolor border border-defaultborder rounded-[0.5rem] mt-2"
                                                         id="point-reward-add"
                                                         placeholder="Set Reward Points"
                                                         value={pointReward}
@@ -396,10 +375,10 @@ const AddProduct: React.FC = () => {
                                                 </div>
                                                 {/* amount per point */}
                                                 <div className="xl:col-span-12 col-span-12">
-                                                    <label htmlFor="reward-amount-add" className="form-label text-sm font-semibold text-defaulttextcolor">Amount per Point</label>
+                                                    <label htmlFor="reward-amount-add" className="form-label text-sm font-semibold text-defaulttextcolor">Amount per Point<span style={{color:'red'}}>*</span></label>
                                                     <input
                                                         type="text"
-                                                        className="form-control w-full text-defaultsize text-defaulttextcolor border border-defaultborder rounded-[0.5rem] mt-2"
+                                                        className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full text-defaultsize text-defaulttextcolor border border-defaultborder rounded-[0.5rem] mt-2"
                                                         id="reward-amount-add"
                                                         placeholder="Set Amount Per Point"
                                                         value={rewardAmount}
@@ -417,7 +396,7 @@ const AddProduct: React.FC = () => {
                                                         accept="image/*"
                                                         multiple
                                                         onChange={handleFileChange}
-                                                        className="form-control w-full text-defaultsize text-defaulttextcolor border border-defaultborder rounded-[0.5rem] p-2 "
+                                                        className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full text-defaultsize text-defaulttextcolor border border-defaultborder rounded-[0.5rem] p-2 "
                                                     />
                                                     <div className="image-preview-grid mt-4">
                                                         {previews.map((src, index) => (

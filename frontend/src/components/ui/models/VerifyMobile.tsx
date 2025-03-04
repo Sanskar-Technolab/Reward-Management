@@ -6,9 +6,9 @@ interface ModalProps {
   onClose: () => void;
   reSendOtp : ()=> void;
   mobileNumber: string;
-  onVerify: (otp: string) => void; // onVerify expects OTP string as a parameter
-  otp: string; // OTP value from parent
-  setOtp: React.Dispatch<React.SetStateAction<string>>; // Function to set OTP in parent state
+  onVerify: (otp: string) => void; 
+  otp: string; 
+  setOtp: React.Dispatch<React.SetStateAction<string>>; 
 }
 
 const CreateVerifyMobile: React.FC<ModalProps> = ({
@@ -20,7 +20,7 @@ const CreateVerifyMobile: React.FC<ModalProps> = ({
   otp,
   setOtp,
 }) => {
-  const [timer, setTimer] = useState(120); // Countdown timer state
+  const [timer, setTimer] = useState(120); 
 
   // Start countdown timer when modal is open
   useEffect(() => {
@@ -29,7 +29,7 @@ const CreateVerifyMobile: React.FC<ModalProps> = ({
         setTimer((prev) => prev - 1);
       }, 1000);
 
-      return () => clearInterval(interval); // Cleanup timer
+      return () => clearInterval(interval); 
     }
   }, [isOpen, timer]);
 
@@ -42,7 +42,7 @@ const CreateVerifyMobile: React.FC<ModalProps> = ({
   };
 
   const handleOtpChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setOtp(e.target.value); // Update OTP state in parent component
+    setOtp(e.target.value); 
   };
 
   return (
@@ -56,7 +56,7 @@ const CreateVerifyMobile: React.FC<ModalProps> = ({
             <span className="font-medium text-black">{mobileNumber}</span>{" "}
             <span
               className="text-blue-600 cursor-pointer"
-              onClick={onClose} // Replace with edit functionality if needed
+              onClick={onClose} 
             >
               Edit
             </span>
@@ -69,8 +69,8 @@ const CreateVerifyMobile: React.FC<ModalProps> = ({
               id="otp"
               type="text"
               placeholder="Enter your OTP"
-              onChange={handleOtpChange} // Update OTP state on input change
-              value={otp} // Bind OTP state to input value
+              onChange={handleOtpChange}
+              value={otp}
               className="border rounded-[5px] p-2 mt-2 text-xs w-full"
             />
           </Box>
@@ -91,7 +91,7 @@ const CreateVerifyMobile: React.FC<ModalProps> = ({
               Cancel
             </button>
             <button
-              onClick={() => onVerify(otp)} // Pass OTP value when Verify button is clicked
+              onClick={() => onVerify(otp)} 
               className="px-4 py-2 w-[47%] bg-primary text-defaultsize text-white rounded-[10px]"
             >
               Verify
