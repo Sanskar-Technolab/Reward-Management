@@ -55,7 +55,7 @@ const ProductOrderRequestEdit: React.FC<ViewModalProps> = ({
                         <div className="xl:col-span-12 col-span-12 mb-4">
                             <label htmlFor="orderid" className="form-label text-sm text-defaulttextcolor font-semibold">{orderLevel}</label>
                             <input
-                                className="form-control w-full rounded-5px border border-[#dadada] form-control-light mt-2 text-sm"
+                                className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full rounded-5px border border-[#dadada] form-control-light mt-2 text-sm"
                                 placeholder="Enter your question here"
                                 id="orderid"
                                 value={orderId}
@@ -67,7 +67,7 @@ const ProductOrderRequestEdit: React.FC<ViewModalProps> = ({
                             <label htmlFor="productname" className="form-label text-sm text-defaulttextcolor font-semibold">{productnameLevel}</label>
                             <input
                                 type="text"
-                                className="form-control w-full rounded-5px border border-[#dadada] form-control-light mt-2 text-sm"
+                                className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full rounded-5px border border-[#dadada] form-control-light mt-2 text-sm"
                                 placeholder="Enter your answer here"
                                 id="productname"
                                 value={productName}
@@ -79,7 +79,7 @@ const ProductOrderRequestEdit: React.FC<ViewModalProps> = ({
                             <label htmlFor="giftpoint" className="form-label text-sm text-defaulttextcolor font-semibold">{giftpointLevel}</label>
                             <input
                                 type="text"
-                                className="form-control w-full rounded-5px border border-[#dadada] form-control-light mt-2 text-sm"
+                                className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full rounded-5px border border-[#dadada] form-control-light mt-2 text-sm"
                                 placeholder="Enter your answer here"
                                 id="giftpoint"
                                 value={giftPoint}
@@ -91,7 +91,7 @@ const ProductOrderRequestEdit: React.FC<ViewModalProps> = ({
                             <label htmlFor="status" className="form-label text-sm text-defaulttextcolor font-semibold">{statusLabel}</label>
                             <select
                                 id="status"
-                                className="form-control w-full rounded-5px border border-[#dadada] form-control-light mt-2 text-sm"
+                                className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full rounded-5px border border-[#dadada] form-control-light mt-2 text-sm"
                                 value={status}
                                 onChange={(e) => setStatus(e.target.value)}
                             >

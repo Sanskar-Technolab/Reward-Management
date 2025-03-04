@@ -244,7 +244,7 @@ const handleRemoveImage = (indexToRemove: number) => {
                                                 <label htmlFor="gift-product-name-add" className="form-label text-sm font-semibold text-defaulttextcolor">Gift Product Name</label>
                                                 <input
                                                     type="text"
-                                                    className="form-control w-full border border-defaultborder text-defaultsize text-defaulttextcolor rounded-[0.5rem] mt-2"
+                                                    className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full border border-defaultborder text-defaultsize text-defaulttextcolor rounded-[0.5rem] mt-2"
                                                     id="gift-product-name-add"
                                                     placeholder="Name"
                                                     value={giftproductName}
@@ -253,10 +253,10 @@ const handleRemoveImage = (indexToRemove: number) => {
                                                 />
                                             </div>
                                             <div className="xl:col-span-12 col-span-12">
-                                                <label htmlFor="gift-product-details" className="form-label text-sm font-semibold text-defaulttextcolor">Gift Details</label>
+                                                <label htmlFor="gift-product-details" className="form-label text-sm font-semibold text-defaulttextcolor">Gift Details<span style={{color:'red'}}>*</span></label>
                                                 <textarea
                                                     type="text"
-                                                    className="form-control w-full text-defaultsize text-defaulttextcolor border border-defaultborder rounded-[0.5rem] mt-2"
+                                                    className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full text-defaultsize text-defaulttextcolor border border-defaultborder rounded-[0.5rem] mt-2"
                                                     id="gift-product-details"
                                                     placeholder="Details"
                                                     value={giftproductDetails}
@@ -265,10 +265,10 @@ const handleRemoveImage = (indexToRemove: number) => {
                                                 />
                                             </div>
                                             <div className="xl:col-span-12 col-span-12">
-                                                <label htmlFor="gift-product-description" className="form-label text-sm font-semibold text-defaulttextcolor">Gift Product Description</label>
+                                                <label htmlFor="gift-product-description" className="form-label text-sm font-semibold text-defaulttextcolor">Gift Product Description<span style={{color:'red'}}>*</span>   </label>
                                                 <textarea
                                                     id="gift-product-description"
-                                                    className="form-control w-full text-defaultsize text-defaulttextcolor border border-defaultborder rounded-[0.5rem] mt-2"
+                                                    className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full text-defaultsize text-defaulttextcolor border border-defaultborder rounded-[0.5rem] mt-2"
                                                     placeholder="Description"
                                                     value={giftproductDescription}
                                                     onChange={(e) => setGiftProductDescription(e.target.value)}
@@ -279,7 +279,7 @@ const handleRemoveImage = (indexToRemove: number) => {
                                                 <label htmlFor="product-cost-add" className="form-label text-sm font-semibold text-defaulttextcolor">Points</label>
                                                 <input
                                                     type="text"
-                                                    className="form-control w-full text-defaultsize text-defaulttextcolor border border-defaultborder rounded-[0.5rem] mt-2"
+                                                    className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full text-defaultsize text-defaulttextcolor border border-defaultborder rounded-[0.5rem] mt-2"
                                                     id="product-cost-add"
                                                     placeholder="Reward points"
                                                     value={points}
@@ -324,7 +324,7 @@ const handleRemoveImage = (indexToRemove: number) => {
                                                     type="file"
                                                     multiple
                                                     id="file-upload"
-                                                    className="mt-1 block w-full p-2 border rounded-md"
+                                                    className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] mt-1 block w-full p-2 border rounded-md"
                                                     onChange={handleFileChange}
                                                 />
                                                 {error && <p className="text-red-500 text-sm mt-1">{error}</p>}

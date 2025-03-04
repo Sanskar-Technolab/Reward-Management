@@ -115,7 +115,7 @@ const Modalsearch = ({ isOpen, onClose }: any) => {
                 <div className="input-group border-[2px] border-[var(--primaries)] rounded-[0.25rem] w-full flex">
                   <input
                     type="search"
-                    className="form-control border-0 px-2 !text-[0.8rem] w-full focus:ring-transparent"
+                    className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control border-0 px-2 !text-[0.8rem] w-full focus:ring-transparent"
                     placeholder="Search"
                     aria-label="Search"
                     defaultValue={InputValue}

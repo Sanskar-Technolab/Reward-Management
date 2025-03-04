@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Pageheader from "../../../components/common/pageheader/pageheader";
 import TableBoxComponent from "../../../components/ui/tables/tableboxheader";
-import CreateQRCode from "../../../components/ui/models/CreateQRModel.tsx";
+// import CreateQRCode from "../../../components/ui/models/CreateQRModel.tsx";
 import SuccessAlert from "../../../components/ui/alerts/SuccessAlert";
 import DangerAlert from "../../../components/ui/alerts/DangerAlert";
 import TableComponent from '../../../components/ui/tables/tablecompnent';

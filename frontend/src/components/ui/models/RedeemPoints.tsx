@@ -12,8 +12,8 @@ interface PointCollectedAlertProps {
     maxpoints?: string;
     showAvailablepoints?: boolean;
     showMinpoints?: boolean;
-    pointValue?: string; // New prop for initial point value
-    onPointValueChange?: (e: React.ChangeEvent<HTMLInputElement>) => void; // New prop for handling input changes
+    pointValue?: string; 
+    onPointValueChange?: (e: React.ChangeEvent<HTMLInputElement>) => void; 
 }
 
 const RedeemPointAlert: React.FC<PointCollectedAlertProps> = ({
@@ -28,7 +28,7 @@ const RedeemPointAlert: React.FC<PointCollectedAlertProps> = ({
     maxpoints,
     showAvailablepoints = true,
     showMinpoints = false,
-    pointValue = "", // Default to an empty string
+    pointValue = "", 
     onPointValueChange,
 }) => {
     const [pointredeem, setPointRedeem] = useState<string>(pointValue);
@@ -57,7 +57,7 @@ const RedeemPointAlert: React.FC<PointCollectedAlertProps> = ({
                         aria-label="Close"
                         onClick={onPointClose}
                     >
-                        {/* Close button icon */}
+                        
                     </button>
                 )}
                 <div className="text-center">
@@ -74,18 +74,18 @@ const RedeemPointAlert: React.FC<PointCollectedAlertProps> = ({
                 </div>
                 <div className="mb-4">
                     <input
-                        type="number" // Numeric input
-                        className="form-control w-full rounded-5px border border-[#dadada] form-control-light mt-2 text-sm"
+                        type="number" 
+                        className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full rounded-5px border border-[#dadada] form-control-light mt-2 text-sm"
                         placeholder="Enter points to redeem"
                         id="pointredeem"
                         value={pointredeem}
                         onChange={(e) => {
                             setPointRedeem(e.target.value);
                             if (onPointValueChange) {
-                                onPointValueChange(e); // Call parent function if provided
+                                onPointValueChange(e); 
                             }
                         }}
-                        size={10} // Set the size of the input to 10 columns
+                        size={10}
                     />
                 </div>
                 {showPointCollectButton && onPointCollect && (
@@ -93,7 +93,7 @@ const RedeemPointAlert: React.FC<PointCollectedAlertProps> = ({
                         <button
                             type="button"
                             className="ti-btn ti-btn-primary bg-primary text-white font-medium py-2 px-4 rounded transition-all duration-300"
-                            onClick={handlePointCollect} // Call the updated function
+                            onClick={handlePointCollect} 
                         >
                             {collectButtonLabel}
                         </button>

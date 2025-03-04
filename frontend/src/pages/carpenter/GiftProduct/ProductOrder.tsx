@@ -296,7 +296,7 @@ const ProductOrder = () => {
                   placeholder="Enter your Full Name"
                   onChange={(e) => setFullname(e.target.value)}
                   value={fullname}
-                  className="border rounded-[5px] p-2 mt-2 text-xs w-full"
+                  className="border rounded-[5px] p-2 mt-2 text-xs w-full outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] "
                 />
               </Box>
               <Box className="mb-4">
@@ -313,7 +313,7 @@ const ProductOrder = () => {
                   placeholder="Enter Email id"
                   onChange={(e) => setEmail(e.target.value)}
                   value={email}
-                  className="border rounded-[5px] p-2 mt-2 text-xs w-full"
+                  className="border rounded-[5px] p-2 mt-2 text-xs w-full outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] "
                 />
               </Box>
               <Box className="mb-4">
@@ -330,7 +330,7 @@ const ProductOrder = () => {
                   placeholder="Enter mobile number"
                   onChange={(e) => setMobile(e.target.value)}
                   value={mobile}
-                  className="border rounded-[5px] p-2 mt-2 text-xs w-full"
+                  className="border rounded-[5px] p-2 mt-2 text-xs w-full outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] "
                 />
               </Box>
               <Box className="mb-4">
@@ -347,7 +347,7 @@ const ProductOrder = () => {
                   placeholder="Enter your Address"
                   onChange={(e) => setAddress(e.target.value)}
                   value={address}
-                  className="border rounded-[5px] p-2 mt-2 text-xs w-full"
+                  className="border rounded-[5px] p-2 mt-2 text-xs w-full outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] "
                 />
               </Box>
               <Box className="mb-4">
@@ -364,7 +364,7 @@ const ProductOrder = () => {
                   placeholder="365601"
                   onChange={(e) => setPincode(e.target.value)}
                   value={pincode}
-                  className="border rounded-[5px] p-2 mt-2 text-xs w-full"
+                  className="border rounded-[5px] p-2 mt-2 text-xs w-full outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] "
                 />
               </Box>
               <Box className="mb-4">
@@ -381,7 +381,7 @@ const ProductOrder = () => {
                   placeholder="Amreli"
                   onChange={(e) => setCity(e.target.value)}
                   value={city}
-                  className="border rounded-[5px] p-2 mt-2 text-xs w-full"
+                  className="border rounded-[5px] p-2 mt-2 text-xs w-full outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] "
                 />
               </Box>
               <div className="flex gap-6">
