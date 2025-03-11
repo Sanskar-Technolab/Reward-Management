@@ -209,7 +209,7 @@ const DownloadQRCode: React.FC = () => {
         const imageWidth = 30;
         const imageHeight = 30;
         const rowSpacing = 5; // Reduce spacing
-        const paddingY = 5; // Reduce padding
+        const paddingY = 15; // Reduce padding
     
         row.qr_code_images.forEach((image, index) => {
             const qrCodeID = image.qr_code_image.split('/').pop()?.replace('.png', '') || 'Unknown QR Code ID';
@@ -235,7 +235,9 @@ const DownloadQRCode: React.FC = () => {
             const qrCodeIdX = (pageWidth - qrCodeIdWidth) / 2;
             const qrCodeIdY = imageY + imageHeight + rowSpacing;
     
-            const productNameX = 5;
+            // const productNameX = 5;
+            const productNameX = 8;
+
             const productNameY = imageY + imageHeight / 2 + paddingY;
     
             // Add QR Code image
@@ -243,13 +245,15 @@ const DownloadQRCode: React.FC = () => {
     
             // Add rotated Product Name
             pdf.saveGraphicsState();
-            pdf.setFontSize(12);
+            // pdf.setFontSize(12);
+            pdf.setFontSize(8);
             pdf.setFont('helvetica', 'bold');
             pdf.text(row.product_name, productNameX, productNameY, { angle: 90 });
             pdf.restoreGraphicsState();
     
             // Add QR Code ID below the image
-            pdf.setFontSize(12);
+            // pdf.setFontSize(12);
+            pdf.setFontSize(8);
             pdf.setFont('helvetica', 'bold');
             pdf.text(qrCodeID, qrCodeIdX, qrCodeIdY);
         });
