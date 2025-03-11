@@ -206,8 +206,8 @@ const DownloadQRCode: React.FC = () => {
         const zip = new JSZip();
         const pdf = new jsPDF();
     
-        const imageWidth = 30;
-        const imageHeight = 30;
+        const imageWidth = 20;
+        const imageHeight = 20;
         const rowSpacing = 5; // Reduce spacing
         const paddingY = 15; // Reduce padding
     
