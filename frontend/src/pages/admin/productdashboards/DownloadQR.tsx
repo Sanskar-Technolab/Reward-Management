@@ -2,16 +2,14 @@ import React, { Fragment, useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Pageheader from '../../../components/common/pageheader/pageheader';
-import TableComponent from '../../../components/ui/tables/tablecompnent'; // Ensure correct path
+import TableComponent from '../../../components/ui/tables/tablecompnent';
 import TableBoxComponent from '../../../components/ui/tables/tableboxheader';
 import '../../../assets/css/style.css';
 import '../../../assets/css/pages/admindashboard.css';
-// import html2canvas from 'html2canvas';
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
 import { jsPDF } from 'jspdf';
-
-
+import SelectQRSize from '../../../components/ui/models/SelectQRCodeSideModel';
 
 interface QRCodeImage {
     qr_code_image: string;
@@ -26,22 +24,22 @@ interface DownloadProductQRCode {
     total_product?: number;
     points?: number;
     qr_code_images?: QRCodeImage[];
-    product_qr_id?:string;
 }
 
 const DownloadQRCode: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [data, setData] = useState<DownloadProductQRCode[]>([]);
-    const [error, setError] = useState<string | null>(null);
-    const [itemsPerPage] = useState(5);
+    const [filteredData, setFilteredData] = useState<DownloadProductQRCode[]>([]);
+    const [searchQuery, setSearchQuery] = useState("");
+    const [fromDate, setFromDate] = useState<Date | null>(null);
+    const [toDate, setToDate] = useState<Date | null>(null);
+    const [modalOpen, setModalOpen] = useState(false);
+    const [selectedProduct, setSelectedProduct] = useState<DownloadProductQRCode | null>(null);
+    // const [qrSize, setQRSize] = useState<number>(50); 
+    const itemsPerPage = 5;
     const navigate = useNavigate();
     const urlParams = new URLSearchParams(window.location.search);
-    const productName = urlParams.get('product');   
-    const [filteredData, setFilteredData] = useState<DownloadProductQRCode[]>([]);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [fromDate, setFromDate] = useState<Date | null>(null);
-  const [toDate, setToDate] = useState<Date | null>(null);
-
+    const productName = urlParams.get('product');
 
     useEffect(() => {
         document.title = 'Download QR';
@@ -145,81 +143,66 @@ const DownloadQRCode: React.FC = () => {
         setCurrentPage(1);
       };
     
-      if (error) return <div>Error: {error}</div>;
 
-    // download and create pdf for qr images---------
-    // const handleDownloadQR = async (row: DownloadProductQRCode) => {
-    //     const zip = new JSZip();
-    //     const pdf = new jsPDF();
+    const handleDownloadQR = (row: DownloadProductQRCode) => {
+        setSelectedProduct(row);
+        setModalOpen(true);
+    };
+
+    const closeModal = () => {
+        setModalOpen(false);
+        setSelectedProduct(null);
+    };
+
+
+  
+
+    const handleConfirmDownload = async (selectedSize: any) => {
+        if (!selectedProduct) {
+            console.error("No product selected.");
+            return;
+        }
+        console.log(" Selected Product:", selectedProduct.product_name);
     
-    //     const imageWidth = 100; // Image width
-    //     const imageHeight = 75; // Image height
-    //     const rowSpacing = 15; // Spacing between text and image
+        if (!selectedProduct.qr_code_images || selectedProduct.qr_code_images.length === 0) {
+            console.error("No QR images found.");
+            return;
+        }
     
-    //     row.qr_code_images.forEach((image, index) => {
-    //         const qrCodeID = image.qr_code_image.split('/').pop()?.replace('.png', '') || 'Unknown QR Code ID';
-            
-    //         // Calculate dimensions of the page based on content
-    //         const qrCodeIdWidth = pdf.getStringUnitWidth(qrCodeID) * pdf.internal.scaleFactor;
-    //         const pageWidth = Math.max(imageWidth, qrCodeIdWidth) + 30; // Adding some padding
-    //         const pageHeight = imageHeight + rowSpacing + 40; // Adjust height for image and text spacing
-            
-    //         // Add a new page and set its dimensions
-    //         if (index > 0) {
-    //             pdf.addPage([pageWidth, pageHeight]);
-    //         } else {
-    //             pdf.internal.pageSize.width = pageWidth;
-    //             pdf.internal.pageSize.height = pageHeight;
-    //         }
-            
-    //         // Calculate positions to center the image and text
-    //         const imageX = (pageWidth - imageWidth) / 2;
-    //         const imageY = 10; // Some top margin
-    //         const qrCodeIdX = (pageWidth - qrCodeIdWidth) / 2;
-    //         const qrCodeIdY = imageY + imageHeight + rowSpacing;
-    
-    //         // Add the QR code image to the page
-    //         pdf.addImage(image.qr_code_image, 'PNG', imageX, imageY, imageWidth, imageHeight);
-    
-    //         // Add the product name rotated on the left
-    //         pdf.saveGraphicsState();
-    //         pdf.setFontSize(16);
-    //         pdf.setFont('helvetica', 'bold');
-    //         pdf.text(row.product_name, imageX - 5, imageY + imageHeight / 2, { angle: 90 });
-    //         pdf.restoreGraphicsState();
-    
-    //         // Add the QR Code ID below the image
-    //         pdf.setFont('helvetica', 'bold');
-    //         pdf.setFontSize(16);
-    //         pdf.text(qrCodeID, qrCodeIdX, qrCodeIdY);
-    //     });
-    
-    //     // Save the PDF as a blob and add it to the ZIP file
-    //     const pdfBlob = pdf.output('blob');
-    //     zip.file(`${row.product_name || 'QR_Codes'}.pdf`, pdfBlob);
-    
-    //     // Generate the ZIP and download it
-    //     const zipBlob = await zip.generateAsync({ type: 'blob' });
-    //     saveAs(zipBlob, 'qr_codes.zip');
-    // };
-    const handleDownloadQR = async (row: DownloadProductQRCode) => {
         const zip = new JSZip();
         const pdf = new jsPDF();
     
-        const imageWidth = 30;
-        const imageHeight = 30;
-        const rowSpacing = 5; // Reduce spacing
-        const paddingY = 15; // Reduce padding
+        let imageWidth, imageHeight, rowSpacing, paddingY;
+        let productNameFontSize, qrCodeIDFontSize;
     
-        row.qr_code_images.forEach((image, index) => {
+        if (selectedSize =="30") {
+            console.log(" Generating 30x30 QR Code PDF");
+            imageWidth = 20;
+            imageHeight = 20;
+            rowSpacing = 5;
+            paddingY = 10;
+            productNameFontSize = 6;
+            qrCodeIDFontSize = 6;
+        } else if (selectedSize ="100") {
+            console.log("Generating 100x75 QR Code PDF");
+            imageWidth = 30;
+            imageHeight = 30;
+            rowSpacing = 5;
+            paddingY = 15;
+            productNameFontSize = 8;
+            qrCodeIDFontSize = 8;
+        } else {
+            console.error("Invalid size selected.");
+            return;
+        }
+    
+        selectedProduct.qr_code_images.forEach((image: any, index: number) => {
             const qrCodeID = image.qr_code_image.split('/').pop()?.replace('.png', '') || 'Unknown QR Code ID';
-            
-            // Calculate required page dimensions dynamically
+    
             const qrCodeIdWidth = pdf.getStringUnitWidth(qrCodeID) * pdf.internal.scaleFactor;
-            const pageWidth = Math.max(imageWidth, qrCodeIdWidth) + 20; 
-            const pageHeight = imageHeight + rowSpacing + 15; // Reduce extra white space
-            
-            // Add new page after first one
+            const pageWidth = Math.max(imageWidth, qrCodeIdWidth) + 20;
+            const pageHeight = imageHeight + rowSpacing + 15;
+    
             if (index > 0) {
                 pdf.addPage([pageWidth, pageHeight]);
             } else {
@@ -227,73 +210,62 @@ const DownloadQRCode: React.FC = () => {
                 pdf.internal.pageSize.height = pageHeight;
             }
     
-            // Center image
             const imageX = (pageWidth - imageWidth) / 2;
-            const imageY = 10; // Reduce top padding
-    
-            // Position text
+            const imageY = 10;
             const qrCodeIdX = (pageWidth - qrCodeIdWidth) / 2;
             const qrCodeIdY = imageY + imageHeight + rowSpacing;
-    
-            // const productNameX = 5;
             const productNameX = 8;
-
             const productNameY = imageY + imageHeight / 2 + paddingY;
     
-            // Add QR Code image
             pdf.addImage(image.qr_code_image, 'PNG', imageX, imageY, imageWidth, imageHeight);
-    
-            // Add rotated Product Name
             pdf.saveGraphicsState();
-            // pdf.setFontSize(12);
-            pdf.setFontSize(8);
+            pdf.setFontSize(productNameFontSize);
             pdf.setFont('helvetica', 'bold');
-            pdf.text(row.product_name, productNameX, productNameY, { angle: 90 });
+            pdf.text(selectedProduct.product_name, productNameX, productNameY, { angle: 90 });
             pdf.restoreGraphicsState();
-    
-            // Add QR Code ID below the image
-            // pdf.setFontSize(12);
-            pdf.setFontSize(8);
+            pdf.setFontSize(qrCodeIDFontSize);
             pdf.setFont('helvetica', 'bold');
             pdf.text(qrCodeID, qrCodeIdX, qrCodeIdY);
         });
     
-        // Save PDF as blob and add to ZIP file
-        const pdfBlob = pdf.output('blob');
-        zip.file(`${row.product_name || 'QR_Codes'}.pdf`, pdfBlob);
+        // Convert PDF to blob
+        const pdfBlob = pdf.output("blob");
+        zip.file(`${selectedProduct.product_name}_QR_Codes.pdf`, pdfBlob);
     
-        // Generate ZIP and download
-        const zipBlob = await zip.generateAsync({ type: 'blob' });
-        saveAs(zipBlob, 'qr_codes.zip');
+        // Generate ZIP file and trigger download
+        zip.generateAsync({ type: "blob" }).then((content) => {
+            saveAs(content, `${selectedProduct.product_name}_QR_Codes.zip`);
+        });
     };
+    
+    
+    
     
 
     return (
         <Fragment>
             <Pageheader 
-                currentpage={"Download QR"} 
-                activepage={"/product-master"} 
-                mainpage={"/download-qr-code"} 
-                activepagename='Product Master' 
-                mainpagename='Download QR' 
+                currentpage="Download QR" 
+                activepage="/product-master" 
+                mainpage="/download-qr-code" 
+                activepagename="Product Master" 
+                mainpagename="Download QR" 
             />
             <div className="grid grid-cols-12 gap-x-6 bg-white mt-5 rounded-lg shadow-lg">
                 <div className="xl:col-span-12 col-span-12">
-                    <div className="">
-                        <TableBoxComponent
-                            title="Download Product QR"
-                            onSearch={handleSearch}
-                            onAddButtonClick={handleAddProductClick}
-                            buttonText="Back"
-                            showButton={true}
-                            showFromDate={true}
-                            showToDate={true}
-                            onDateFilter={handleDateFilter}
-                            icon="ri-arrow-left-line"
-                        />
-
-                        <div className="box-body m-5">
-                            <TableComponent<DownloadProductQRCode>
+                    <TableBoxComponent
+                        title="Download Product QR"
+                        onSearch={handleSearch}
+                        onAddButtonClick={handleAddProductClick}
+                        buttonText="Back"
+                        showButton
+                        showFromDate
+                        showToDate
+                        onDateFilter={handleDateFilter}
+                        icon="ri-arrow-left-line"
+                    />
+                    <div className="box-body m-5">
+                    <TableComponent<DownloadProductQRCode>
                                 columns={[
                                     { header: 'Product Name', accessor: 'product_name' },
                                     { header: 'Reward Points', accessor: 'points' },
@@ -323,10 +295,13 @@ const DownloadQRCode: React.FC = () => {
                                     'Product Name': 'text-[var(--primaries)] font-semibold',
                                 }}
                             />
-                        </div>
                     </div>
                 </div>
             </div>
+
+            {modalOpen && selectedProduct && (
+                <SelectQRSize isOpen={modalOpen} onClose={closeModal} onCancel={closeModal} onConfirm={handleConfirmDownload} />
+            )}
         </Fragment>
     );
 };
