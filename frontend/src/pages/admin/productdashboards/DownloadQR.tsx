@@ -177,9 +177,9 @@ const DownloadQRCode: React.FC = () => {
     
         if (selectedSize =="30") {
             console.log(" Generating 30x30 QR Code PDF");
-            imageWidth = 16;
-            imageHeight = 16;
-            rowSpacing = 5;
+            imageWidth = 13;
+            imageHeight = 13;
+            rowSpacing = 4;
             paddingY = 10;
             productNameFontSize = 6;
             qrCodeIDFontSize = 6;
