@@ -155,173 +155,134 @@ const DownloadQRCode: React.FC = () => {
     };
 
 
-  
     const handleConfirmDownload = async (selectedSize: any) => {
-        if (!selectedProduct) {
-            console.error("No product selected.");
-            return;
-        }
-        console.log("Selected Product:", selectedProduct.product_name);
-    
-        if (!selectedProduct.qr_code_images || selectedProduct.qr_code_images.length === 0) {
-            console.error("No QR images found.");
-            return;
-        }
-    
-        const zip = new JSZip();
-        const pdf = new jsPDF();
-    
-        let imageWidth, imageHeight, rowSpacing,paddingY;
-        let includeText = true; // Default: Include text
-    
-        if (selectedSize == "30") {
-            console.log("Generating 30x30 QR Code PDF");
-            imageWidth = 11;
-            imageHeight = 11;
-            rowSpacing = 4;
-            paddingY=0
-            includeText = false; 
-        } else if (selectedSize == "100") {
-            console.log("Generating 100x75 QR Code PDF");
-            imageWidth = 30;
-            imageHeight = 30;
-            rowSpacing = 5;
-            paddingY = 1;
+    if (!selectedProduct) {
+        console.error("No product selected.");
+        return;
+    }
+    console.log("Selected Product:", selectedProduct.product_name);
 
-            includeText = true; 
-        } else {
-            console.error("Invalid size selected.");
-            return;
+    if (!selectedProduct.qr_code_images || selectedProduct.qr_code_images.length === 0) {
+        console.error("No QR images found.");
+        return;
+    }
+
+    const zip = new JSZip();
+    let pdf;
+
+    
+    // 30X30 with page break----------------------
+
+    if (selectedSize == "30") {
+        console.log("Generating QR Code PDF for sticker roll");
+    
+        pdf = new jsPDF({
+            orientation: 'landscape',
+            unit: 'mm',
+            format: [90, 31] // Updated width: 93mm, height: 30mm
+        });
+    
+        const stickerSize = 28;  // Each sticker is 30x30mm
+        const imagesPerRow = 3;  // 3 stickers per row
+        const gapX = 2;          // Space between stickers in a row
+        const gapY = 3;          // Row space increased to 3mm
+    
+        const marginLeft = 0.5;    // No extra padding
+        const marginTop = 0.5;     // No extra padding
+    
+        let currentImageIndex = 0;
+        let currentY = marginTop;
+    
+        while (currentImageIndex < selectedProduct.qr_code_images.length) {
+            // Add new page after each row of 3 stickers
+            if (currentImageIndex > 0 && currentImageIndex % imagesPerRow === 0) {
+                pdf.addPage();
+                currentY = marginTop; // Reset Y position for new page
+            }
+    
+            // Calculate X position for stickers in a row
+            const imageX = marginLeft + (currentImageIndex % imagesPerRow) * (stickerSize + gapX);
+    
+            // Add QR Code Image
+            pdf.addImage(
+                selectedProduct.qr_code_images[currentImageIndex].qr_code_image,
+                'PNG',
+                imageX,
+                currentY,
+                stickerSize,
+                stickerSize
+            );
+    
+            currentImageIndex++;
+    
+            // Move Y position for next row after every 3 stickers
+            if (currentImageIndex % imagesPerRow === 0) {
+                currentY += stickerSize + gapY; // Add row space (3mm)
+            }
         }
     
+        // pdf.save("qr_codes.pdf");
+    }
+    // 100X75 with page break----------------
+    
+    else if (selectedSize == "100") {
+        // ==== QR CODE SIZE: 100x75 (1 QR Code Per Page) ====
+        console.log("Generating 100x75 QR Code PDF");
+
+        pdf = new jsPDF();
+
+        const imageWidth = 30;
+        const imageHeight = 30;
+        const rowSpacing = 3;
+        const paddingY = 1;
+
         selectedProduct.qr_code_images.forEach((image: any, index: number) => {
             const qrCodeID = image.qr_code_image.split('/').pop()?.replace('.png', '') || 'Unknown QR Code ID';
             const pageWidth = imageWidth + 20;
             const pageHeight = imageHeight + rowSpacing + 15;
-    
+
             if (index > 0) {
                 pdf.addPage([pageWidth, pageHeight]);
             } else {
                 pdf.internal.pageSize.width = pageWidth;
                 pdf.internal.pageSize.height = pageHeight;
             }
-    
+
             const imageX = (pageWidth - imageWidth) / 2;
             const imageY = 10;
-    
-            //  Only add the QR code image
-            pdf.addImage(image.qr_code_image, 'PNG', imageX, imageY, imageWidth, imageHeight);
-    
-            //  Only add text for 100x75 size
-            if (includeText) {
-                const qrCodeIdX = (pageWidth - pdf.getStringUnitWidth(qrCodeID) * pdf.internal.scaleFactor) / 2;
-                const qrCodeIdY = imageY + imageHeight + rowSpacing;
-                const productNameX = 8;
-                const productNameY = imageY + imageHeight + paddingY;
-    
-                pdf.setFontSize(8);
-                pdf.setFont('helvetica', 'bold');
-                pdf.text(selectedProduct.product_name, productNameX, productNameY, { angle: 90 });
-    
-                pdf.setFontSize(8);
-                pdf.setFont('helvetica', 'bold');
-                pdf.text(qrCodeID, qrCodeIdX, qrCodeIdY);
-            }
-        });
-    
-        // Convert PDF to blob
-        const pdfBlob = pdf.output("blob");
-        zip.file(`${selectedProduct.product_name}_QR_Codes.pdf`, pdfBlob);
-    
-        // Generate ZIP file and trigger download
-        zip.generateAsync({ type: "blob" }).then((content) => {
-            saveAs(content, `${selectedProduct.product_name}_QR_Codes.zip`);
-        });
-    };
 
-    // const handleConfirmDownload = async (selectedSize: any) => {
-    //     if (!selectedProduct) {
-    //         console.error("No product selected.");
-    //         return;
-    //     }
-    //     console.log(" Selected Product:", selectedProduct.product_name);
-    
-    //     if (!selectedProduct.qr_code_images || selectedProduct.qr_code_images.length === 0) {
-    //         console.error("No QR images found.");
-    //         return;
-    //     }
-    
-    //     const zip = new JSZip();
-    //     const pdf = new jsPDF();
-    
-    //     let imageWidth, imageHeight, rowSpacing, paddingY;
-    //     let productNameFontSize, qrCodeIDFontSize;
-    
-    //     if (selectedSize =="30") {
-    //         console.log(" Generating 30x30 QR Code PDF");
-    //         imageWidth = 13;
-    //         imageHeight = 13;
-    //         rowSpacing = 4;
-    //         paddingY = 10;
-    //         productNameFontSize = 6;
-    //         qrCodeIDFontSize = 6;
-    //     } else if (selectedSize ="100") {
-    //         console.log("Generating 100x75 QR Code PDF");
-    //         imageWidth = 30;
-    //         imageHeight = 30;
-    //         rowSpacing = 5;
-    //         paddingY = 15;
-    //         productNameFontSize = 8;
-    //         qrCodeIDFontSize = 8;
-    //     } else {
-    //         console.error("Invalid size selected.");
-    //         return;
-    //     }
-    
-    //     selectedProduct.qr_code_images.forEach((image: any, index: number) => {
-    //         const qrCodeID = image.qr_code_image.split('/').pop()?.replace('.png', '') || 'Unknown QR Code ID';
-    
-    //         const qrCodeIdWidth = pdf.getStringUnitWidth(qrCodeID) * pdf.internal.scaleFactor;
-    //         const pageWidth = Math.max(imageWidth, qrCodeIdWidth) + 20;
-    //         const pageHeight = imageHeight + rowSpacing + 15;
-    
-    //         if (index > 0) {
-    //             pdf.addPage([pageWidth, pageHeight]);
-    //         } else {
-    //             pdf.internal.pageSize.width = pageWidth;
-    //             pdf.internal.pageSize.height = pageHeight;
-    //         }
-    
-    //         const imageX = (pageWidth - imageWidth) / 2;
-    //         const imageY = 10;
-    //         const qrCodeIdX = (pageWidth - qrCodeIdWidth) / 2;
-    //         const qrCodeIdY = imageY + imageHeight + rowSpacing;
-    //         const productNameX = 8;
-    //         const productNameY = imageY + imageHeight / 2 + paddingY;
-    
-    //         pdf.addImage(image.qr_code_image, 'PNG', imageX, imageY, imageWidth, imageHeight);
-    //         pdf.saveGraphicsState();
-    //         pdf.setFontSize(productNameFontSize);
-    //         pdf.setFont('helvetica', 'bold');
-    //         pdf.text(selectedProduct.product_name, productNameX, productNameY, { angle: 90 });
-    //         pdf.restoreGraphicsState();
-    //         pdf.setFontSize(qrCodeIDFontSize);
-    //         pdf.setFont('helvetica', 'bold');
-    //         pdf.text(qrCodeID, qrCodeIdX, qrCodeIdY);
-    //     });
-    
-    //     // Convert PDF to blob
-    //     const pdfBlob = pdf.output("blob");
-    //     zip.file(`${selectedProduct.product_name}_QR_Codes.pdf`, pdfBlob);
-    
-    //     // Generate ZIP file and trigger download
-    //     zip.generateAsync({ type: "blob" }).then((content) => {
-    //         saveAs(content, `${selectedProduct.product_name}_QR_Codes.zip`);
-    //     });
-    // };
-    
-    
-    
+            pdf.addImage(image.qr_code_image, 'PNG', imageX, imageY, imageWidth, imageHeight);
+
+            // Add text below the QR code
+            const qrCodeIdX = (pageWidth - pdf.getStringUnitWidth(qrCodeID) * pdf.internal.scaleFactor) / 2;
+            const qrCodeIdY = imageY + imageHeight + rowSpacing;
+            const productNameX = 8;
+            const productNameY = imageY + imageHeight + paddingY;
+
+            pdf.setFontSize(8);
+            pdf.setFont('helvetica', 'bold');
+            pdf.text(selectedProduct.product_name, productNameX, productNameY, { angle: 90 });
+
+            pdf.setFontSize(8);
+            pdf.setFont('helvetica', 'bold');
+            pdf.text(qrCodeID, qrCodeIdX, qrCodeIdY);
+        });
+    } else {
+        console.error("Invalid size selected.");
+        return;
+    }
+
+    // Convert PDF to blob and add to ZIP
+    const pdfBlob = pdf.output("blob");
+    zip.file(`${selectedProduct.product_name}_QR_Codes.pdf`, pdfBlob);
+
+    // Generate ZIP and trigger download
+    zip.generateAsync({ type: "blob" }).then((content) => {
+        saveAs(content, `${selectedProduct.product_name}_QR_Codes.zip`);
+    });
+};
+
+
     
 
     return (
