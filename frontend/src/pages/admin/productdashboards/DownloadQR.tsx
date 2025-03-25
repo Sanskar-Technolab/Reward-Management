@@ -174,7 +174,7 @@ const DownloadQRCode: React.FC = () => {
     // 30X30 with page break----------------------
 
     if (selectedSize == "30") {
-        console.log("Generating QR Code PDF for sticker roll");
+        // console.log("Generating QR Code PDF for sticker roll");
     
         pdf = new jsPDF({
             orientation: 'landscape',
@@ -227,13 +227,18 @@ const DownloadQRCode: React.FC = () => {
     
     else if (selectedSize == "100") {
         // ==== QR CODE SIZE: 100x75 (1 QR Code Per Page) ====
-        console.log("Generating 100x75 QR Code PDF");
+        // console.log("Generating 100x75 QR Code PDF");
 
-        pdf = new jsPDF();
+        // pdf = new jsPDF();
+        pdf = new jsPDF({
+            orientation: 'landscape',
+            unit: 'mm',
+            format: [100, 75] 
+        });
 
-        const imageWidth = 30;
-        const imageHeight = 30;
-        const rowSpacing = 3;
+        const imageWidth = 100;
+        const imageHeight = 75;
+        const rowSpacing = 5;
         const paddingY = 1;
 
         selectedProduct.qr_code_images.forEach((image: any, index: number) => {
@@ -259,11 +264,11 @@ const DownloadQRCode: React.FC = () => {
             const productNameX = 8;
             const productNameY = imageY + imageHeight + paddingY;
 
-            pdf.setFontSize(8);
+            pdf.setFontSize(10);
             pdf.setFont('helvetica', 'bold');
             pdf.text(selectedProduct.product_name, productNameX, productNameY, { angle: 90 });
 
-            pdf.setFontSize(8);
+            pdf.setFontSize(11);
             pdf.setFont('helvetica', 'bold');
             pdf.text(qrCodeID, qrCodeIdX, qrCodeIdY);
         });
