@@ -229,49 +229,143 @@ const DownloadQRCode: React.FC = () => {
         // ==== QR CODE SIZE: 100x75 (1 QR Code Per Page) ====
         // console.log("Generating 100x75 QR Code PDF");
 
-        // pdf = new jsPDF();
-        pdf = new jsPDF({
-            orientation: 'landscape',
-            unit: 'mm',
-            format: [100, 75] 
-        });
+        // // pdf = new jsPDF();
+        // pdf = new jsPDF({
+        //     orientation: 'landscape',
+        //     unit: 'mm',
+        //     format: [100, 75] 
+        // });
 
+        // const imageWidth = 100;
+        // const imageHeight = 75;
+        // const rowSpacing = 5;
+        // const paddingY = 1;
+
+        // selectedProduct.qr_code_images.forEach((image: any, index: number) => {
+        //     const qrCodeID = image.qr_code_image.split('/').pop()?.replace('.png', '') || 'Unknown QR Code ID';
+        //     const pageWidth = imageWidth + 20;
+        //     const pageHeight = imageHeight + rowSpacing + 15;
+
+        //     if (index > 0) {
+        //         pdf.addPage([pageWidth, pageHeight]);
+        //     } else {
+        //         pdf.internal.pageSize.width = pageWidth;
+        //         pdf.internal.pageSize.height = pageHeight;
+        //     }
+
+        //     const imageX = (pageWidth - imageWidth) / 2;
+        //     const imageY = 10;
+
+        //     pdf.addImage(image.qr_code_image, 'PNG', imageX, imageY, imageWidth, imageHeight);
+
+        //     // Add text below the QR code
+        //     const qrCodeIdX = (pageWidth - pdf.getStringUnitWidth(qrCodeID) * pdf.internal.scaleFactor) / 2;
+        //     const qrCodeIdY = imageY + imageHeight + rowSpacing;
+        //     const productNameX = 8;
+        //     const productNameY = imageY + imageHeight + paddingY;
+
+        //     pdf.setFontSize(14);
+        //     pdf.setFont('helvetica', 'bold');
+        //     pdf.text(selectedProduct.product_name, productNameX, productNameY, { angle: 90 });
+
+        //     pdf.setFontSize(14);
+        //     pdf.setFont('helvetica', 'bold');
+        //     pdf.text(qrCodeID, qrCodeIdX, qrCodeIdY);
+        // });
+       
+        pdf = new jsPDF({
+                orientation: 'landscape',
+                unit: 'mm',
+                format: [100, 75] 
+            });
+        
         const imageWidth = 100;
         const imageHeight = 75;
-        const rowSpacing = 5;
+        const rowSpacing = 2;
         const paddingY = 1;
-
+        
         selectedProduct.qr_code_images.forEach((image: any, index: number) => {
             const qrCodeID = image.qr_code_image.split('/').pop()?.replace('.png', '') || 'Unknown QR Code ID';
-            const pageWidth = imageWidth + 20;
-            const pageHeight = imageHeight + rowSpacing + 15;
-
+            const pageWidth = imageWidth + 40;
+            let pageHeight = imageHeight + rowSpacing + 20; // Initial height
+        
             if (index > 0) {
                 pdf.addPage([pageWidth, pageHeight]);
             } else {
                 pdf.internal.pageSize.width = pageWidth;
                 pdf.internal.pageSize.height = pageHeight;
             }
-
+        
             const imageX = (pageWidth - imageWidth) / 2;
             const imageY = 10;
-
             pdf.addImage(image.qr_code_image, 'PNG', imageX, imageY, imageWidth, imageHeight);
-
-            // Add text below the QR code
-            const qrCodeIdX = (pageWidth - pdf.getStringUnitWidth(qrCodeID) * pdf.internal.scaleFactor) / 2;
-            const qrCodeIdY = imageY + imageHeight + rowSpacing;
-            const productNameX = 8;
-            const productNameY = imageY + imageHeight + paddingY;
-
-            pdf.setFontSize(10);
+        
+            //  Determine Font Size Based on Character Length
+            let fontSize = selectedProduct.product_name.length > 10 ? 20 : 35;
+            pdf.setFontSize(fontSize);
             pdf.setFont('helvetica', 'bold');
-            pdf.text(selectedProduct.product_name, productNameX, productNameY, { angle: 90 });
-
-            pdf.setFontSize(11);
-            pdf.setFont('helvetica', 'bold');
-            pdf.text(qrCodeID, qrCodeIdX, qrCodeIdY);
+        
+            const textX = 8; // Adjust horizontal position
+            const textY = pageHeight - 12; // Adjust vertical position
+        
+            if (selectedProduct.product_name.length > 10) {
+                //  Wrap Product Name if Length > 10
+                const wrappedText = pdf.splitTextToSize(selectedProduct.product_name, pageHeight - 20);
+                pdf.text(wrappedText, textX, textY, { angle: 90 });
+            } else {
+                //  Print Product Name Directly if Length ≤ 10
+                pdf.text(selectedProduct.product_name, textX+8, textY-10, { angle: 90 });
+            }
+        
+            //  QR Code ID (Centered)
+            const qrCodeIdY = imageY + imageHeight + paddingY+8 + rowSpacing;
+            pdf.text(qrCodeID, (pageWidth - pdf.getStringUnitWidth(qrCodeID) * pdf.internal.scaleFactor) / 2, qrCodeIdY, { align: 'center' });
         });
+        
+
+        // pdf = new jsPDF({
+        //         orientation: 'landscape',
+        //         unit: 'mm',
+        //         format: [100, 75] 
+        //     });
+        
+        // const imageWidth = 100;
+        // const imageHeight = 75;
+        // const rowSpacing = 2;
+        // const paddingY = 1;
+        
+        // selectedProduct.qr_code_images.forEach((image: any, index: number) => {
+        //     const qrCodeID = image.qr_code_image.split('/').pop()?.replace('.png', '') || 'Unknown QR Code ID';
+        //     const pageWidth = imageWidth + 30;
+        //     let pageHeight = imageHeight + rowSpacing + 20; // Initial height
+        
+        //     if (index > 0) {
+        //         pdf.addPage([pageWidth, pageHeight]);
+        //     } else {
+        //         pdf.internal.pageSize.width = pageWidth;
+        //         pdf.internal.pageSize.height = pageHeight;
+        //     }
+        
+        //     const imageX = (pageWidth - imageWidth) / 2;
+        //     const imageY = 10;
+        //     pdf.addImage(image.qr_code_image, 'PNG', imageX, imageY, imageWidth, imageHeight);
+        
+        //     //  Wrap Product Name
+        //     const wrappedText = pdf.splitTextToSize(selectedProduct.product_name, pageHeight - 10);
+        //     const textX = 8; // Adjust horizontal position
+        //     const textY = pageHeight; // Adjust vertical position
+        
+        //     //  Rotate and Print Product Name (90 Degrees)
+        //     pdf.setFontSize(14);
+        //     pdf.setFont('helvetica', 'bold');
+        //     pdf.text(wrappedText, textX, textY-12, { angle: 90 });
+        
+        //     //  QR Code ID (Centered)
+        //     const qrCodeIdY = imageY + imageHeight + paddingY + wrappedText.length * 2 + rowSpacing;
+        //     pdf.text(qrCodeID, (pageWidth - pdf.getStringUnitWidth(qrCodeID) * pdf.internal.scaleFactor) / 2, qrCodeIdY);
+        // });
+        
+        
     } else {
         console.error("Invalid size selected.");
         return;
