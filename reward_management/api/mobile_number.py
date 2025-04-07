@@ -20,7 +20,8 @@ def generate_or_update_otp(mobile_number):
         return {'status': 'failed', 'message': 'Mobile number is required'}
 
     # Generate OTP
-    otp = str(random.randint(100000, 999999))
+    # otp = str(random.randint(100000, 999999))
+    otp = str(123456)  # For testing purposes, use a fixed OTP)
 
     # Check if a document already exists for the given mobile number
     existing_verification = frappe.get_all('Mobile Verification', filters={'mobile_number': mobile_number}, fields=["name", "mobile_number", "otp"], limit=1)
