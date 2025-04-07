@@ -86,8 +86,8 @@ const Login = () => {
                 usr: username,
                 pwd: password
             });
-            console.log(username, password);
-            console.log('Login successful:', response.data.full_name);
+            // console.log(username, password);
+            // console.log('Login successful:', response.data.full_name);
 
             // Fetch roles
             const rolesResponse = await fetchUserRoles(username);
@@ -97,7 +97,7 @@ const Login = () => {
             const roles = rolesResponse.message || []; // Assuming `message` contains the array of roles
             localStorage.setItem('user_roles', JSON.stringify(roles));
 
-            console.log('User roles:', roles);
+            // console.log('User roles:', roles);
 
             login({ username: username, password: password });
 
@@ -135,9 +135,9 @@ const Login = () => {
                 headers: { 'Content-Type': 'application/json' }
             });
 
-            if(response){
-                console.log("registration response",response)
-            }
+            // if(response){
+            //     console.log("registration response",response)
+            // }
 
             return response.data;
         } catch (error) {
@@ -166,7 +166,7 @@ const Login = () => {
             );
 
             if (otpResponse.data.message.status === "success") {
-                console.log("OTP matched:", otpResponse);
+                // console.log("OTP matched:", otpResponse);
                 setAlertTitle("Success");
                 setAlertMessage("OTP Matched Successfully.");
                 setShowSuccessAlert(true);
@@ -179,10 +179,10 @@ const Login = () => {
                     city
                 );
 
-                console.log("registerResponse", registerResponse);
+                // console.log("registerResponse", registerResponse);
 
                 if (registerResponse.message.status === "success") {
-                    console.log("Carpainter registered successfully:", registerResponse);
+                    // console.log("Carpainter registered successfully:", registerResponse);
                     setAlertTitle("Success");
                     setAlertMessage(
                         "Customer Registration Sent to the Admin Successfully."
@@ -226,7 +226,7 @@ const Login = () => {
             return;
         }
         // Handle carpenter login logic here
-        console.log("Carpenter login with:", mobilenumber, mobileotp);
+        // console.log("Carpenter login with:", mobilenumber, mobileotp);
     };
 
     // User Registration Handle or Generate Registration OTP Logic---------
@@ -242,7 +242,7 @@ const Login = () => {
             );
 
             // Log the response to inspect its structure
-            console.log("Check Response Data:", checkResponse)
+            // console.log("Check Response Data:", checkResponse)
 
             // If the mobile number is not registered, show OTP input field
             if (checkResponse.data.message.registered === false && checkResponse.data.message.approved === false && checkResponse.data.message.activate === false) {
@@ -262,7 +262,7 @@ const Login = () => {
                 if (response.data.message.status === "success") {
                     // console.log("OTP sent successfully:", response);
                     const generatedregistrationOtp = response.data.message.otp;
-                    console.log("otp registration",generatedregistrationOtp);
+                    // console.log("otp registration",generatedregistrationOtp);
                     // Show success alert
                     setAlertTitle("Success");
                     // setAlertMessage("OTP has been sent to your mobile number!");
@@ -320,7 +320,7 @@ const Login = () => {
         const checkResponse = await axios.get(`/api/method/reward_management.api.create_new_user.check_user_registration`, {
             params: { mobile_number: mobilenumber },
         });
-        console.log("login response data",checkResponse)
+        // console.log("login response data",checkResponse)
 
         localStorage.setItem('carpenterrole', checkResponse.data.message.role_profile_name);
 
@@ -334,7 +334,7 @@ const Login = () => {
 
             if (otpResponse.data.message.status === "success") {
                 const generatedOtp = otpResponse.data.message.otp;
-                console.log("login otp",generatedOtp);
+                // console.log("login otp",generatedOtp);
                 setAlertTitle('Success');
                 setAlertMessage(isResendOtp ? "OTP has been resent to your mobile number!" : "OTP has been sent to your mobile number!");
                 setShowSuccessAlert(true);
@@ -374,7 +374,7 @@ const Login = () => {
                 }
             );
 
-            console.log("OTP Verification Response Data:", response.data);
+            // console.log("OTP Verification Response Data:", response.data);
 
             // Check if the OTP verification was successful
             if (response.data.message.status === "success") {
@@ -394,7 +394,7 @@ const Login = () => {
                 //     localStorage.setItem("credentials", JSON.stringify(credentials))
                 // );
 
-                console.log("Login Status:", localStorage.getItem("login"));
+                // console.log("Login Status:", localStorage.getItem("login"));
 
                 navigate("/carpenter-dashboard");
             } else {
