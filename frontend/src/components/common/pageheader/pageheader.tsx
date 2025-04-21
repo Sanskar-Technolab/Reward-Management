@@ -2,7 +2,7 @@ import { Fragment } from 'react';
 import { Link } from 'react-router-dom';
 
 export default function Pageheader(props: any) {
-    console.log("props.currentpage---", props.currentpage);
+    // console.log("props.currentpage---", props.currentpage);
     return (
         <Fragment>
             <div className="block justify-between page-header md:flex mt-5">

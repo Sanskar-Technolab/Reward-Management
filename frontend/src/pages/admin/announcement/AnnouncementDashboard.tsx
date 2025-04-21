@@ -368,6 +368,8 @@ const AnnouncementDashboard: React.FC = () => {
                     title={modalMode === 'add' ? "Add Announcement" : "Edit Announcement"}
                     questionLabel={"Title"}
                     answerLabel={"Subject"}
+                    questionPlaceholder="Enter Announcement Title"
+                    answerPlaceholder="Enter Announcement Subject"
                     startDateLabel={"Published On"}
                     endDateLabel={"End Date"}
                     showDate={true}

@@ -53,6 +53,10 @@ const ProductCatalogue: React.FC = () => {
     const { data: productcategoryData, mutate: mutateProductCategory } =
         useFrappeGetDocList<ProductCategory>("Product Category", {
             fields: ["name", "category_name", "catalogue_image"],
+            orderBy: {
+                field: "creation",
+                order: "asc", // for oldest first
+            },
         });
 
     const handleSearch = (value: string) => setSearchQuery(value);
@@ -244,6 +248,10 @@ const ProductCatalogue: React.FC = () => {
     const handleCloseModal = () => {
         setProductCategoryToEdit(null);
         setShowAddCatalogueForm(false);
+        setProductCatalogue("");
+        setPreviews([]);
+        setFiles(null);
+        setExistingImages([]);
     };
 
     const cancelDelete = () => {

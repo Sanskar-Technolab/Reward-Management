@@ -39,8 +39,10 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({ isOpen, tog
     useEffect(() => {
         const fetchUserEmailAndInitScanner = async () => {
             try {
-                const userResponse = await axios.get('/api/method/frappe.auth.get_logged_user');
-                console.log("userData:", userResponse.data.message);
+                await axios.get('/api/method/frappe.auth.get_logged_user');
+
+                // const userResponse = await axios.get('/api/method/frappe.auth.get_logged_user');
+                // console.log("userData:", userResponse.data.message);
             } catch (err) {
                 console.error("Error fetching user data:", err);
             }

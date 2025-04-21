@@ -10,6 +10,8 @@ import { useFrappeAuth } from "frappe-react-sdk";
 
 import '../../assets/css/style.css';
 import SuccessAlert from '../../components/ui/alerts/SuccessAlert';
+import { Notyf } from 'notyf';
+import 'notyf/notyf.min.css';
 
 
 const Login = () => {
@@ -32,10 +34,10 @@ const Login = () => {
     const [alertMessage, setAlertMessage] = useState('');
     const [alertTitle, setAlertTitle] = useState('');
     const [isTimerActive, setIsTimerActive] = React.useState(false);
-    const [timer, setTimer] = React.useState(60); 
+    const [timer, setTimer] = React.useState(60);
 
     const [logo, setLogo] = useState(null);
-    const [loading, setLoading] = useState(true); 
+    const [loading, setLoading] = useState(true);
 
     const [data, setData] = useState({
         email: "",
@@ -48,6 +50,14 @@ const Login = () => {
         mobilenumber: "",
         mobileotp: "",
     });
+
+    // Initialize Notyf for notifications
+    const notyf = new Notyf({
+        duration: 5000,
+        position: { x: 'right', y: 'top' },
+    });
+
+
 
     let { email, password: registerPassword, firstName, lastName, city, mobile, otp, mobilenumber, mobileotp } = data;
 
@@ -64,7 +74,7 @@ const Login = () => {
         try {
             const response = await axios.get(`/api/method/frappe.core.doctype.user.user.get_roles`, {
                 params: {
-                    uid: username  
+                    uid: username
                 },
 
             });
@@ -82,16 +92,20 @@ const Login = () => {
         e.preventDefault();
         try {
             // Perform login
-            const response = await axios.post(`/api/method/login`, {
+            await axios.post(`/api/method/login`, {
                 usr: username,
                 pwd: password
             });
+            // const response = await axios.post(`/api/method/login`, {
+            //     usr: username,
+            //     pwd: password
+            // });
             // console.log(username, password);
             // console.log('Login successful:', response.data.full_name);
 
             // Fetch roles
             const rolesResponse = await fetchUserRoles(username);
-            console.log("rolesResponse----", rolesResponse);
+            // console.log("rolesResponse----", rolesResponse);
 
             // Extract roles from the response
             const roles = rolesResponse.message || []; // Assuming `message` contains the array of roles
@@ -113,12 +127,13 @@ const Login = () => {
             } else if (roles.includes('Administrator')) {
                 navigate('/admin-dashboard');
             }
-           
+
 
 
         } catch (err) {
             console.error('Login error:', err);
-            setLoginError('Invalid Username or Password.');
+            notyf.error('Invalid Username or Password.');
+            // setLoginError('Invalid Username or Password.');
         }
     };
 
@@ -230,7 +245,7 @@ const Login = () => {
     };
 
     // User Registration Handle or Generate Registration OTP Logic---------
-    const handleGetOtp = async (e: React.FormEvent ,isResendOtp = false) => {
+    const handleGetOtp = async (e: React.FormEvent, isResendOtp = false) => {
         e.preventDefault();
         try {
             // First, check if the user is registered
@@ -261,7 +276,7 @@ const Login = () => {
 
                 if (response.data.message.status === "success") {
                     // console.log("OTP sent successfully:", response);
-                    const generatedregistrationOtp = response.data.message.otp;
+                    // const generatedregistrationOtp = response.data.message.otp;
                     // console.log("otp registration",generatedregistrationOtp);
                     // Show success alert
                     setAlertTitle("Success");
@@ -270,14 +285,15 @@ const Login = () => {
                     setShowSuccessAlert(true);
                     setIsOtpVisible(true);
 
-                      // Start the timer
+                    // Start the timer
                     startTimer();
                 } else {
                     setLoginError("Failed to send OTP. Please try again.");
                 }
             } else {
                 // If user is already registered, show error message
-                setLoginError(checkResponse.data.message.message);
+                notyf.error(checkResponse.data.message.message);
+                // setLoginError(checkResponse.data.message.message);
             }
         } catch (error) {
             console.error("Error generating OTP:", error);
@@ -290,69 +306,70 @@ const Login = () => {
     // Start time for otp ------
     const startTimer = () => {
         setIsTimerActive(true);
-        setTimer(60); 
+        setTimer(60);
         const countdown = setInterval(() => {
             setTimer((prevTimer) => {
                 if (prevTimer <= 1) {
                     clearInterval(countdown);
                     setIsTimerActive(false);
-                    setIsloginOtpVisible(false); 
+                    setIsloginOtpVisible(false);
                     setIsOtpVisible(false);
 
 
                     return 0;
                 }
-                return prevTimer - 1; 
+                return prevTimer - 1;
             });
         }, 1000);
     };
     // Carpenter login handling-----------
-   const handleloginGetOtp = async (e: React.FormEvent, isResendOtp = false) => {
-    e.preventDefault();
+    const handleloginGetOtp = async (e: React.FormEvent, isResendOtp = false) => {
+        e.preventDefault();
 
-    if (mobilenumber.length !== 10 || !/^\d+$/.test(mobilenumber)) {
-        alert("Mobile number must be exactly 10 digits.");
-        return;
-    }
-
-    try {
-        // Check if the user is registered
-        const checkResponse = await axios.get(`/api/method/reward_management.api.create_new_user.check_user_registration`, {
-            params: { mobile_number: mobilenumber },
-        });
-        // console.log("login response data",checkResponse)
-
-        localStorage.setItem('carpenterrole', checkResponse.data.message.role_profile_name);
-
-        if (checkResponse.data.message && checkResponse.data.message.registered && checkResponse.data.message.approved && checkResponse.data.message.activate) {
-            // Call the OTP generation API
-            const otpResponse = await axios.post(`/api/method/reward_management.api.mobile_number.generate_or_update_otp`, {
-                mobile_number: mobilenumber
-            }, {
-                headers: { 'Content-Type': 'application/json' }
-            });
-
-            if (otpResponse.data.message.status === "success") {
-                const generatedOtp = otpResponse.data.message.otp;
-                // console.log("login otp",generatedOtp);
-                setAlertTitle('Success');
-                setAlertMessage(isResendOtp ? "OTP has been resent to your mobile number!" : "OTP has been sent to your mobile number!");
-                setShowSuccessAlert(true);
-                setIsloginOtpVisible(true);
-                // Start the timer
-                startTimer();
-
-            } else {
-                setLoginError('Failed to send OTP. Please try again.');
-            }
-        } else {
-            setLoginError(checkResponse.data.message.message);
+        if (mobilenumber.length !== 10 || !/^\d+$/.test(mobilenumber)) {
+            alert("Mobile number must be exactly 10 digits.");
+            return;
         }
-    } catch (error) {
-        console.error('Error handling login OTP:', error);
-        setLoginError('An error occurred while processing your request.');
-    }
-};
+
+        try {
+            // Check if the user is registered
+            const checkResponse = await axios.get(`/api/method/reward_management.api.create_new_user.check_user_registration`, {
+                params: { mobile_number: mobilenumber },
+            });
+            // console.log("login response data",checkResponse)
+
+            localStorage.setItem('carpenterrole', checkResponse.data.message.role_profile_name);
+
+            if (checkResponse.data.message && checkResponse.data.message.registered && checkResponse.data.message.approved && checkResponse.data.message.activate) {
+                // Call the OTP generation API
+                const otpResponse = await axios.post(`/api/method/reward_management.api.mobile_number.generate_or_update_otp`, {
+                    mobile_number: mobilenumber
+                }, {
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                if (otpResponse.data.message.status === "success") {
+                    // const generatedOtp = otpResponse.data.message.otp;
+                    // console.log("login otp",generatedOtp);
+                    setAlertTitle('Success');
+                    setAlertMessage(isResendOtp ? "OTP has been resent to your mobile number!" : "OTP has been sent to your mobile number!");
+                    setShowSuccessAlert(true);
+                    setIsloginOtpVisible(true);
+                    // Start the timer
+                    startTimer();
+
+                } else {
+                    setLoginError('Failed to send OTP. Please try again.');
+                }
+            } else {
+                notyf.error(checkResponse.data.message.message);
+                // setLoginError(checkResponse.data.message.message);
+            }
+        } catch (error) {
+            console.error('Error handling login OTP:', error);
+            setLoginError('An error occurred while processing your request.');
+        }
+    };
 
     const handlelogincarpenter: any = async (e: React.FocusEvent) => {
         e.preventDefault();
@@ -421,21 +438,21 @@ const Login = () => {
                     // If banner_image exists, set it as the logo
                     if (banner_image) {
                         const fullBannerImageURL = `${window.origin}${banner_image}`;
-                        setLogo(fullBannerImageURL); 
+                        setLogo(fullBannerImageURL);
                         // console.log('Banner Image Set:', fullBannerImageURL);
                     } else {
                         // console.log('No banner_image found, using default logo.');
-                        setLogo("/assets/frappe/images/frappe-framework-logo.svg"); 
+                        setLogo("/assets/frappe/images/frappe-framework-logo.svg");
                     }
                 } else {
                     // console.error('API response was not successful:', response.data.message);
-                    setLogo("/assets/frappe/images/frappe-framework-logo.svg"); 
+                    setLogo("/assets/frappe/images/frappe-framework-logo.svg");
                 }
             } catch (error) {
                 console.error('Error fetching website settings:', error);
                 setLogo("/assets/frappe/images/frappe-framework-logo.svg");
             } finally {
-                setLoading(false); 
+                setLoading(false);
             }
         };
 
@@ -445,13 +462,12 @@ const Login = () => {
         if (showSuccessAlert) {
             const timer = setTimeout(() => {
                 setShowSuccessAlert(false);
-                // window.location.reload(); // Optional: Reload the page if needed
-            }, 3000); // Hide alert after 3 seconds
-            return () => clearTimeout(timer); // Cleanup timeout on component unmount
+            }, 3000); 
+            return () => clearTimeout(timer); 
         }
     }, [showSuccessAlert]);
     if (loading) {
-        return <div></div>; 
+        return <div></div>;
     }
 
     return (
@@ -460,13 +476,13 @@ const Login = () => {
                 <div className="grid grid-cols-12 gap-4 b ">
                     <div className="xxl:col-span-4 xl:col-span-4 lg:col-span-4 md:col-span-3 sm:col-span-2"></div>
                     <div className="xxl:col-span-4 xl:col-span-4 lg:col-span-4 md:col-span-6 sm:col-span-8 col-span-12 ">
-                    <div className="p-8 box-shadow-md border border-defaultborder shadow-md rounded-[10px] bg-white ">
-                        
+                        <div className="p-8 box-shadow-md border border-defaultborder shadow-md rounded-[10px] bg-white ">
+
                             <div className="flex justify-center mb-8 ">
                                 {/* <img src={desktoplogo} alt="logo" className="w-28" /> */}
-                                <img src={logo } alt="logo" className="w-20" />
+                                <img src={logo} alt="logo" className="w-20" />
                             </div>
-                           
+
                             <div className="text-center mb-5">
                                 <p className="text-lg font-semibold">
                                     {currentForm === "login" && "Login"}
@@ -596,7 +612,7 @@ const Login = () => {
 
                                             </Box>
 
-                                          
+
                                             {isOtpVisible ? (
                                                 <>
                                                     <Box className="xl:col-span-12 col-span-12 mb-3 ">
@@ -629,10 +645,10 @@ const Login = () => {
 
                                                     </Box>
                                                     {isTimerActive && (
-                                              <Text className="text-center text-default">
-                                                  You can resend OTP in {timer} seconds
-                                              </Text>
-                                          )}
+                                                        <Text className="text-center text-default">
+                                                            You can resend OTP in {timer} seconds
+                                                        </Text>
+                                                    )}
                                                 </>
                                             ) : (
                                                 <Box className="xl:col-span-12 col-span-12 grid mt-2">
@@ -681,35 +697,35 @@ const Login = () => {
                                             )}
                                         </Box>
                                         {isloginOtpVisible ? (
-                                          <>
-                                          <Box className="mb-4">
-                                              <Text as="label" htmlFor="mobileotp" className="text-defaultsize font-semibold">
-                                                  OTP
-                                              </Text>
-                                              <input
-                                                  id="mobileotp"
-                                                  type="text"
-                                                  placeholder="Enter OTP"
-                                                  name="mobileotp"
-                                                  onChange={changeHandler}
-                                                  value={mobileotp}
-                                                  className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] border rounded-[5px] p-2 mt-2 text-xs w-full"
-                                              />
-                                          </Box>
-                                          <Button
-                                              type="submit"
-                                              onClick={handlelogincarpenter}
-                                              id="logincarpenter"
-                                              className="w-full mb-2 ti-btn ti-btn-primary !bg-primary !text-white !font-medium"
-                                          >
-                                              Login
-                                          </Button>
-                                          {isTimerActive && (
-                                              <Text className="text-center text-default">
-                                                  You can resend OTP in {timer} seconds
-                                              </Text>
-                                          )}
-                                      </>
+                                            <>
+                                                <Box className="mb-4">
+                                                    <Text as="label" htmlFor="mobileotp" className="text-defaultsize font-semibold">
+                                                        OTP
+                                                    </Text>
+                                                    <input
+                                                        id="mobileotp"
+                                                        type="text"
+                                                        placeholder="Enter OTP"
+                                                        name="mobileotp"
+                                                        onChange={changeHandler}
+                                                        value={mobileotp}
+                                                        className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] border rounded-[5px] p-2 mt-2 text-xs w-full"
+                                                    />
+                                                </Box>
+                                                <Button
+                                                    type="submit"
+                                                    onClick={handlelogincarpenter}
+                                                    id="logincarpenter"
+                                                    className="w-full mb-2 ti-btn ti-btn-primary !bg-primary !text-white !font-medium"
+                                                >
+                                                    Login
+                                                </Button>
+                                                {isTimerActive && (
+                                                    <Text className="text-center text-default">
+                                                        You can resend OTP in {timer} seconds
+                                                    </Text>
+                                                )}
+                                            </>
                                         ) : (
                                             <Button type="button" onClick={handleloginGetOtp} id='getloginotp' className="w-full mb-2 ti-btn ti-btn-primary !bg-primary !text-white !font-medium ">
                                                 Get OTP

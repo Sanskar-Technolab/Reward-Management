@@ -31,6 +31,11 @@ const AddGiftProduct: React.FC = () => {
         setGiftProductSpecificaton('');
     };
 
+    const handlecancel = () => {
+        navigate("/gift-master");
+    }
+
+
     useEffect(() => {
         document.title = 'Add Gift Product';
 
@@ -189,6 +194,8 @@ const handleRemoveImage = (indexToRemove: number) => {
                                                     value={giftproductName}
                                                     onChange={(e) => setGiftProductName(e.target.value)}
                                                     required
+                                                    onInvalid={(e) => (e.target as HTMLInputElement).setCustomValidity("Please enter a gift product name.")}
+                                                    onInput={(e) => (e.target as HTMLInputElement).setCustomValidity("")}
                                                 />
                                             </div>
                                             <div className="xl:col-span-12 col-span-12">
@@ -201,6 +208,8 @@ const handleRemoveImage = (indexToRemove: number) => {
                                                     value={giftproductDetails}
                                                     onChange={(e) => setGiftProductDetails(e.target.value)}
                                                     required
+                                                    onInvalid={(e) => (e.target as HTMLInputElement).setCustomValidity("Please enter gift product details.")}
+                                                    onInput={(e) => (e.target as HTMLInputElement).setCustomValidity("")}
                                                 />
                                             </div>
                                             <div className="xl:col-span-12 col-span-12">
@@ -212,6 +221,8 @@ const handleRemoveImage = (indexToRemove: number) => {
                                                     value={giftproductDescription}
                                                     onChange={(e) => setGiftProductDescription(e.target.value)}
                                                     required
+                                                    onInvalid={(e) => (e.target as HTMLInputElement).setCustomValidity("Please enter gift product description..")}
+                                                    onInput={(e) => (e.target as HTMLInputElement).setCustomValidity("")}
                                                 />
                                             </div>
                                             <div className="xl:col-span-12 col-span-12">
@@ -299,7 +310,8 @@ const handleRemoveImage = (indexToRemove: number) => {
                                     <button
                                         type="button"
                                         className="ti-btn ti-btn-success bg-primary/20 ti-btn text-defaulttextcolor !font-medium m-1"
-                                        onClick={resetForm}
+                                        // onClick={resetForm}
+                                        onClick={handlecancel}
                                     >
                                         Cancel
                                     </button>
@@ -314,7 +326,7 @@ const handleRemoveImage = (indexToRemove: number) => {
                                 showCollectButton={false}
                                 showAnotherButton={false}
                                 showMessagesecond={false}
-                                message="New Product Added successfully!"
+                                message="New Gift Product Added successfully!"
                                 onClose={() => { }}
                                 onCancel={() => { }}
                             />

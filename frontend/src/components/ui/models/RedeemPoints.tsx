@@ -92,7 +92,7 @@ const RedeemPointAlert: React.FC<PointCollectedAlertProps> = ({
                     <div className="flex justify-center gap-2 mt-4">
                         <button
                             type="button"
-                            className="ti-btn ti-btn-primary bg-primary text-white font-medium py-2 px-4 rounded transition-all duration-300"
+                            className="ti-btn  bg-primary text-white font-medium py-2 px-4 rounded transition-all duration-300"
                             onClick={handlePointCollect} 
                         >
                             {collectButtonLabel}

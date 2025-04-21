@@ -37,7 +37,7 @@ const BankingHistory: React.FC = () => {
                 const response = await axios.get(`/api/method/frappe.auth.get_logged_user`,{
                     
                 });
-                console.log("Logged user data:", response);
+                // console.log("Logged user data:", response);
                 setUserData(response.data.message);
             } catch (error) {
                 console.error("Error fetching user data:", error);
@@ -49,7 +49,7 @@ const BankingHistory: React.FC = () => {
                 const response = await axios.get(`/api/method/reward_management.api.bank_history.get_bank_history_details`,{
                    
                 });
-                console.log("Bank table data:", response);
+                // console.log("Bank table data:", response);
 
                 // Access the nested array within the response
                 const bankData = response.data.message.data;
@@ -93,7 +93,7 @@ const BankingHistory: React.FC = () => {
     const handleSearch = (value: string) => {
         setSearchQuery(value); // Update search query
         setCurrentPage(1);
-        console.log("Search value:", value);
+        // console.log("Search value:", value);
     };
 
     const handleDateFilter = (from: Date | null, to: Date | null) => {

@@ -19,18 +19,18 @@ const Header = ({ toggleSidebar, isSidebarActive }: any) => {
 
     const { logout } = useFrappeAuth();
     const carpenterrole = localStorage.getItem('carpenterrole');
-    console.log(carpenterrole);
+    // console.log(carpenterrole);
 
     const roles = JSON.parse(localStorage.getItem('user_roles')) || [];
-    console.log("admin role-----", roles);
+    // console.log("admin role-----", roles);
 
     // Check if the user has Admin or Administrator roles
     const isAdmin = roles.includes("Admin");
     const isAdministrator = roles.includes("Administrator");
 
     // Debug logs to check if the conditions are correct
-    console.log("isAdmin:", isAdmin);
-    console.log("isAdministrator:", isAdministrator);
+    // console.log("isAdmin:", isAdmin);
+    // console.log("isAdministrator:", isAdministrator);
     const [fullScreen, setFullScreen] = useState(false);
     const [theme, setTheme] = useState({
         dataNavLayout: 'vertical',
@@ -61,8 +61,10 @@ const Header = ({ toggleSidebar, isSidebarActive }: any) => {
                 const userdata = await axios.get(`/api/resource/User/${userResponse.data.message}`, {
                    
                 });
+                // console.log("userdata", userdata.data.data);
     
-                setUsername(userdata.data.data.username || "");
+                setUsername(userdata.data.data.full_name || "");
+                // console.log("usename", userdata.data.data.username);
                 setUserImage(userdata.data.data.user_image || ProfilePic);
     
             } catch (error) {
