@@ -6,7 +6,8 @@ import { useFrappeGetCall } from 'frappe-react-sdk';
 import axios from 'axios';
 import '../../../assets/css/header.css';
 import '../../../assets/css/style.css';
-
+import { Notyf } from "notyf";
+import "notyf/notyf.min.css";
 const iconMap = {
     'ti-user': TiUser,
 };
@@ -27,14 +28,21 @@ interface Notification {
     icon: keyof typeof iconMap; 
     subjectHTML: string;
     email_contentHTML: string;
-    timestamp: string;  // Time part of the creation date
-    date: string;       // Date part of the creation date
+    timestamp: string; 
+    date: string;   
 }
 
 const NotificationsDashboard = () => {
     const { data, error, isLoading } = useFrappeGetCall('reward_management.api.admin_notifications.get_notifications_log');
     const [notifications, setNotifications] = useState<Notification[]>([]);
     const [notificationCount, setNotificationCount] = useState<number>(0);
+    const notyf = new Notyf({
+        position: {
+            x: "right",
+            y: "top",
+        },
+        duration: 5000,
+    });
 
     useEffect(() => {
         const fetchUserEmailAndInitScanner = async () => {
@@ -58,7 +66,7 @@ const NotificationsDashboard = () => {
                 const creationDate = new Date(notif.creation);
 
                 const day = String(creationDate.getDate()).padStart(2, '0');
-                const month = String(creationDate.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
+                const month = String(creationDate.getMonth() + 1).padStart(2, '0'); 
                 const year = creationDate.getFullYear();
     
                 const date = `${day}/${month}/${year}`;  
@@ -74,8 +82,8 @@ const NotificationsDashboard = () => {
                     icon: 'ti-user',
                     subjectHTML: notif.subject,
                     email_contentHTML: notif.email_content,
-                    timestamp: time,  // Time part of the creation date
-                    date: date,       // Date part of the creation date
+                    timestamp: time, 
+                    date: date,     
                 };
             });
             
@@ -83,6 +91,36 @@ const NotificationsDashboard = () => {
             setNotificationCount(notificationsData.length);
         }
     }, [data]);
+
+
+    const markAsRead = async (notificationId:any) => {
+        try {
+            const response = await axios.put('/api/method/reward_management.api.admin_notifications.mark_notification_as_read', {
+                name: notificationId,
+                read: 1,
+            });
+            if (response.data.message.success === true) {
+
+                notyf.success("Successfully marked as read.");
+
+                setTimeout(() => {
+                    window.location.reload();
+                }, 2000); 
+            } else {
+                notyf.error(response.data.message.message);
+            }
+
+            
+        } catch (err) {
+            if (err.response && err.response.status === 403) {
+                window.location.href = '/';
+            } else {
+                console.error("Error fetching user data:", err);
+            }
+
+            console.error('Error marking notification as read:', err);
+        }
+    };
 
     // const handleLinkClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
     //     const href = event.currentTarget.getAttribute('href');
@@ -123,7 +161,7 @@ const NotificationsDashboard = () => {
                                                                 <IconComponent className="text-2xl" />
                                                             </span>
                                                         </div>
-                                                        <div className="flex-grow">
+                                                        {/* <div className="flex-grow">
                                                             <div className="sm:flex items-center">
                                                                 <div className="sm:mt-0">
                                                                     <p className="mb-0 text-[.875rem] font-semibold">{notification.subjectHTML}</p>
@@ -139,7 +177,38 @@ const NotificationsDashboard = () => {
                                                                     </span>
                                                                 </div>
                                                             </div>
+                                                        </div> */}
+                                                         <div className="flex-grow">
+                                                        <div className="sm:flex items-center">
+                                                            <div className="sm:mt-0">
+                                                                <p className="mb-0 text-[.875rem] font-semibold text-primary">
+                                                                    {notification.subjectHTML}
+                                                                </p>
+                                                                <p
+                                                                    className="mb-0 text-[#8c9097] dark:text-white/50"
+                                                                    dangerouslySetInnerHTML={{
+                                                                        __html: notification.email_contentHTML,
+                                                                    }}
+                                                                />
+                                                                <span className="mb-0 block text-primary dark:text-white/50 text-[0.75rem]">
+                                                                    {notification.timestamp}
+                                                                    <span className="px-2 ml-[2px] rounded-[4px] text-primary dark:text-white/50 whitespace-nowrap">
+                                                                        {notification.date}
+                                                                    </span>
+                                                                </span>
+                                                            </div>
+                                                            <div className="ms-auto ">
+                                                                {!notification.read && (
+                                                                    <button
+                                                                        className="ltr:float-right rtl:float-left badge px-2 py-1 rounded-[4px] bg-[#dedede] text-primary dark:text-white/50 whitespace-nowrap"
+                                                                        onClick={() => markAsRead(notification.id)}
+                                                                    >
+                                                                        Mark as Read
+                                                                    </button>
+                                                                )}
+                                                            </div>
                                                         </div>
+                                                    </div>
                                                     </div>
                                                 </Link>
                                             </div>

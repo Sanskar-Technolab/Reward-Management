@@ -46,7 +46,7 @@ const RedeemRequest: React.FC = () => {
     const fetchUserData = async () => {
         try {
             const response = await axios.get(`/api/method/frappe.auth.get_logged_user`);
-            console.log("Logged user data:", response);
+            // console.log("Logged user data:", response);
             setUserData(response.data.message);
         } catch (error) {
             console.error("Error fetching user data:", error);
@@ -58,7 +58,7 @@ const RedeemRequest: React.FC = () => {
             const response = await axios.get(`/api/method/reward_management.api.carpenter_master.get_customer_details`, {
 
             });
-            console.log("Carpenter details:", response);
+            // console.log("Carpenter details:", response);
             const points = response.data.message.current_points || '0';
             const customer_id = response.data.message.name || '';
             setCurrentPoints(points);
@@ -73,7 +73,7 @@ const RedeemRequest: React.FC = () => {
             const response = await axios.get(`/api/method/reward_management.api.points_setup.get_redeem_points`, {
 
             });
-            console.log("Min and Max points:", response);
+            // console.log("Min and Max points:", response);
             const { minimum_points, maximum_points } = response.data.message;
             setMinPoints(minimum_points || 0);
             setMaxPoints(maximum_points || 0);
@@ -86,7 +86,7 @@ const RedeemRequest: React.FC = () => {
         try {
             const response = await axios.get(`/api/method/reward_management.api.redeem_request_data.get_redeem_request_details`, {
             });
-            console.log("Redeem Request table data:", response);
+            // console.log("Redeem Request table data:", response);
             const RedeemRequestData = response.data.message.message;
 
             if (Array.isArray(RedeemRequestData)) {
@@ -131,7 +131,7 @@ const RedeemRequest: React.FC = () => {
     const handleSearch = (value: string) => {
         setSearchQuery(value); 
         setCurrentPage(1);
-        console.log("Search value:", value);
+        // console.log("Search value:", value);
     };
 
     const handleDateFilter = (from: Date | null, to: Date | null) => {
@@ -144,7 +144,7 @@ const RedeemRequest: React.FC = () => {
 
     const handleAddRedeemRequestClick = () => {
         setIsModalOpen(true);
-        console.log("Redeem Now button clicked");
+        // console.log("Redeem Now button clicked");
     };
 
     const handleModalClose = () => {
@@ -188,7 +188,7 @@ const RedeemRequest: React.FC = () => {
                 customer_id: customerId,
                 redeemed_points: redeemedPoints,
             });
-            console.log("Redeem request successful:", response.data);
+            // console.log("Redeem request successful:", response.data);
             setIsModalOpen(false);
             setShowSuccessAlert(true);  // Show success alert
             setPointRedeem(''); // Clear the input field after a successful request

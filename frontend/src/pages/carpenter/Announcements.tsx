@@ -26,7 +26,7 @@ const Announcements = () => {
     useEffect(() => {
         document.title='Announcements';
         if (data) {
-            console.log("Fetched announcement data:", data);
+            // console.log("Fetched announcement data:", data);
 
             const announcementData: Announcement[] = data.map((notif: Announcement) => {
                 const publishedDate = new Date(notif.published_on).toLocaleDateString('en-US', {

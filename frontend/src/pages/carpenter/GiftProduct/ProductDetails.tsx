@@ -49,7 +49,7 @@ const ProductDetails = () => {
 
         if (response && response.data.message.carpainter_data) {
           const carpainterData = response.data.message.carpainter_data;
-          console.log('Fetched Carpenter Data:', carpainterData);
+          // console.log('Fetched Carpenter Data:', carpainterData);
 
           if (Array.isArray(carpainterData) && carpainterData.length > 0) {
             setCurrentPoints(carpainterData[0].current_points || 0);
@@ -73,7 +73,7 @@ const ProductDetails = () => {
           { params: { user: loggedInUser } }
         );
         const productData = response.data.message.filtered_gift_products;
-        console.log("Fetched Gift Products:", productData);
+        // console.log("Fetched Gift Products:", productData);
 
         if (response.data.message.status === "success") {
           if (Array.isArray(productData) && productData.length > 0) {
@@ -83,7 +83,7 @@ const ProductDetails = () => {
             const images = productData.flatMap((product) =>
               product.gift_product_images?.map((img: any) => img.gift_product_image) || []
             );
-            console.log("Extracted Images:", images);
+            // console.log("Extracted Images:", images);
             setProductImages(images);
 
             // Find the product that matches the productId from the URL
@@ -94,10 +94,10 @@ const ProductDetails = () => {
             );
 
             if (matchedProduct) {
-              console.log("match product", matchedProduct);
+              // console.log("match product", matchedProduct);
 
               setCurrentProduct(matchedProduct);
-              console.log("match product image", matchedProduct.gift_product_images)
+              // console.log("match product image", matchedProduct.gift_product_images)
               const matchedProductImages = matchedProduct.gift_product_images.map(
                 (img: any) => img.gift_product_image
               );
@@ -123,7 +123,7 @@ const ProductDetails = () => {
       try {
         const response = await axios.get('/api/method/frappe.auth.get_logged_user');
         const loggedInUser = response.data.message;
-        console.log('Logged in user:', loggedInUser);
+        // console.log('Logged in user:', loggedInUser);
 
         if (loggedInUser) {
           await fetchCarpenterData(loggedInUser);

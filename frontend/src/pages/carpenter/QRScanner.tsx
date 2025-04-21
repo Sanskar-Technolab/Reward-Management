@@ -35,7 +35,7 @@ const QRScanner = () => {
         const userData = userResponse.data;
 
         if (userData.message) {
-          console.log("Logged user data:", userData);
+          // console.log("Logged user data:", userData);
           setUserEmail(userData.message);
           await fetchAndLogCarpenterData();
           initQRScanner();
@@ -52,13 +52,13 @@ const QRScanner = () => {
         const carpenterResponse: any = await axios.get(`/api/method/reward_management.api.carpenter_master.get_customer_details`, {
 
         });
-        console.log("Carpenter data:", carpenterResponse.data);
+        // console.log("Carpenter data:", carpenterResponse.data);
         const customer_id = carpenterResponse.data.message.name || '';
         setCustomerId(customer_id);
         if (carpenterResponse.data && !carpenterResponse.error) {
           const customer = carpenterResponse.data.message;
-          console.log("Customer Name:", customer.name);
-          console.log("Total Points:", customer.total_points);
+          // console.log("Customer Name:", customer.name);
+          // console.log("Total Points:", customer.total_points);
           setCarpenterData(customer); 
         } else {
           console.error("Error fetching carpenter data:", carpenterResponse.error);
@@ -70,7 +70,7 @@ const QRScanner = () => {
 
     const initQRScanner = () => {
       const onScanSuccess = async (decodedText: string) => {
-        console.log("Decoded QR Code:", decodedText);
+        // console.log("Decoded QR Code:", decodedText);
         try {
           const productResponse = await axios.get(`/api/method/reward_management.api.qr_code_product_detail.get_product_details_from_qr`, {
             params: { decode_text: decodedText },
@@ -86,7 +86,7 @@ const QRScanner = () => {
             setShowAlert(true);
           } else {
             const productData = productResponse.data;
-            console.log("Scanned QR data", productData);
+            // console.log("Scanned QR data", productData);
             setProductTableName(productData.message.product_table_name);
             setProductQrId(productData.message.product_qr_id);
             setProductQrPoints(productData.message.points);
@@ -139,7 +139,7 @@ const QRScanner = () => {
       });
 
       if (response.data.message?.success === true) {
-        console.log("Points collected successfully:", response);
+        // console.log("Points collected successfully:", response);
 
         // Second API call to update scanned status
         const updateResponse = await axios.post(`/api/method/reward_management.api.qr_code_product_detail.update_scanned_status`, {
@@ -151,7 +151,7 @@ const QRScanner = () => {
         console.log("Product QR table data:", updateResponse);
 
         if (updateResponse.data.message?.success === true) {
-          console.log("Scanned status updated successfully:", updateResponse);
+          // console.log("Scanned status updated successfully:", updateResponse);
           setShowAlert(false);
           setAlertMessage("Points collected and status updated successfully!");
           setIsError(false);
@@ -183,7 +183,7 @@ const QRScanner = () => {
       });
 
       if (response.data.message?.success === true) {
-        console.log("Carpenter points updated successfully:", response);
+        // console.log("Carpenter points updated successfully:", response);
         // Close the alert or perform other actions if needed
         setShowPointCollectAlert(false);
       } else {
@@ -218,7 +218,7 @@ const QRScanner = () => {
   
       // Check if it's a scanned message
       if (data.message && typeof data.message === "object" && data.message.message === "This Product QR has already been scanned.") {
-        console.log("API Response:", data.message.message);
+        // console.log("API Response:", data.message.message);
         setAlertMessage(data.message.message); // Set the "already scanned" message
         setIsError(true);
         setShowAlert(true);
@@ -226,7 +226,7 @@ const QRScanner = () => {
       }
   
       if (data.message) {
-        console.log("API QR Response:", data);
+        // console.log("API QR Response:", data);
         const productData = data.message;
   
         // Set product details
@@ -257,56 +257,7 @@ const QRScanner = () => {
     }
   };
   
-  // const VerifyQRCode = async () => {
-  //   console.log("Button clicked");
-  
-  //   if (!qrnumber) {
-  //     alert("Please enter a QR number");
-  //     return;
-  //   }
-  
-  //   try {
-  //     // Call the API
-  //     const response = await fetch(`/api/method/reward_management.api.qr_code_product_detail.get_product_details_from_qr_id?product_qr_id=${encodeURIComponent(qrnumber)}`, {
-  //       method: 'GET',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //       },
-  //     });
-  
-  //     if (!response.ok) {
-  //       throw new Error(`Error: ${response.statusText}`);
-  //     }
-  
-  //     const data = await response.json();
-  
-  //     if (data.message) {
-  //       console.log("API Response:", data);
-  //       const productData = data.message;
-  
-  //       setProductTableName(productData.product_table_name);
-  //       setProductQrId(productData.product_qr_id);
-  //       setProductQrPoints(productData.points);
-  //       setProductEarnedAmount(productData.earned_amount);
-  //       setAlertMessage(
-  //         `Product Name: ${productData.product_name}\nPoints: ${productData.points}\nEarned Amount: ${productData.earned_amount}`
-  //       );
-  //       setIsError(false);
-  //       setCarpenterData(productData);
-  //       setShowAlert(true);
-  //     } else {
-  //       const errorMessage = data.error || "Unknown error occurred";
-  //       alert(`Error: ${errorMessage}`);
-  //       setAlertTitle("Error");
-  //       setAlertMessage(errorMessage);
-  //       setIsError(true);
-  //       setShowAlert(true);
-  //     }
-  //   } catch (error) {
-  //     console.error("Error fetching QR Code details:", error);
-  //     alert("Failed to verify QR Code. Please try again.");
-  //   }
-  // };
+
   return (
     <main className="flex items-center justify-center h-screen">
       <div className="border border-defaultborder p-6 bg-white shadow-lg rounded-[5px]">

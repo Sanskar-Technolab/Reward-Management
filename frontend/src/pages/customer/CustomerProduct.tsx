@@ -21,7 +21,7 @@ const CustomerProducts = () => {
     const fetchWebsiteSettings = async () => {
       try {
         const response = await axios.get('/api/method/reward_management.api.website_settings.get_website_settings');
-        console.log('API Image Response:', response.data);
+        // console.log('API Image Response:', response.data);
 
         // Check if the response is successful and contains the expected structure
         if (response && response.data && response.data.message && response.data.message.status === 'success') {
@@ -31,9 +31,9 @@ const CustomerProducts = () => {
           if (banner_image) {
             const fullBannerImageURL = `${window.origin}${banner_image}`;
             setLogo(fullBannerImageURL);
-            console.log('Banner Image Set:', fullBannerImageURL);
+            // console.log('Banner Image Set:', fullBannerImageURL);
           } else {
-            console.log('No banner_image found, using default logo.');
+            // console.log('No banner_image found, using default logo.');
             setLogo("/assets/frappe/images/frappe-framework-logo.svg");
           }
         } else {
@@ -53,7 +53,7 @@ const CustomerProducts = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get('/api/method/reward_management.api.product_master.get_all_products_data');
-        console.log("API Response:", response.data);
+        // console.log("API Response:", response.data);
 
         // Access the message property to get the products array
         const products = response.data.message || [];

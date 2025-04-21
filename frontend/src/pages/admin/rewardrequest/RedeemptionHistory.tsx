@@ -189,8 +189,8 @@ const RedeemptionHistory: React.FC = () => {
 
                                     { header: 'Current Points', accessor: 'current_point_status' },
                                     { header: 'Redeem Request Points', accessor: 'redeemed_points' },
-                                    { header: 'Approved Date', accessor: 'approved_on' },
-                                    { header: 'Approved Time', accessor: 'approve_time' },
+                                    { header: 'Approved/Cancelled Date', accessor: 'approved_on' },
+                                    { header: 'Approved/Cancelled Time', accessor: 'approve_time' },
 
 
                                 ]}

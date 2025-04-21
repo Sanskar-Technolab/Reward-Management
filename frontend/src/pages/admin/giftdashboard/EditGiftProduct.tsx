@@ -210,7 +210,8 @@ const handleRemoveImage = (indexToRemove: number) => {
         // Check if the response was successful
         if (response.status === 200) {
             setShowSuccessAlert(true);
-            resetForm();  // Reset the form after successful submission
+            
+            // resetForm();  // Reset the form after successful submission
         }
     } catch (err) {
         setError('Something went wrong. Please try again later.');
@@ -218,8 +219,11 @@ const handleRemoveImage = (indexToRemove: number) => {
     }
 };
 
-    const resetForm = () => {
-        window.location.reload();
+    // const resetForm = () => {
+    //     window.location.reload();
+    // };
+    const handleCancel = () => {
+        navigate('/gift-master');
     };
 
 
@@ -262,6 +266,8 @@ const handleRemoveImage = (indexToRemove: number) => {
                                                     value={giftproductDetails}
                                                     onChange={(e) => setGiftProductDetails(e.target.value)}
                                                     required
+                                                    onInvalid={(e) => (e.target as HTMLInputElement).setCustomValidity("Please enter gift product details.")}
+                                                    onInput={(e) => (e.target as HTMLInputElement).setCustomValidity("")}
                                                 />
                                             </div>
                                             <div className="xl:col-span-12 col-span-12">
@@ -273,6 +279,8 @@ const handleRemoveImage = (indexToRemove: number) => {
                                                     value={giftproductDescription}
                                                     onChange={(e) => setGiftProductDescription(e.target.value)}
                                                     required
+                                                    onInvalid={(e) => (e.target as HTMLInputElement).setCustomValidity("Please enter gift product description..")}
+                                                    onInput={(e) => (e.target as HTMLInputElement).setCustomValidity("")}
                                                 />
                                             </div>
                                             <div className="xl:col-span-12 col-span-12">
@@ -379,7 +387,8 @@ const handleRemoveImage = (indexToRemove: number) => {
                                     <button
                                         type="button"
                                         className="ti-btn ti-btn-success bg-primary/20 ti-btn text-defaulttextcolor !font-medium m-1"
-                                        onClick={resetForm}
+                                        // onClick={resetForm}
+                                        onClick={handleCancel}
                                     >
                                         Cancel
                                     </button>
