@@ -24,7 +24,8 @@ def update_registration_request_status(registration_id, status):
                 user.first_name = registration.first_name
                 user.last_name = registration.last_name
                 user.full_name = f"{registration.first_name} {registration.last_name}"
-                user.email = f"{registration.mobile_number}@gmail.com"
+                # user.email = f"{registration.mobile_number}@gmail.com"
+                user.email = f"{registration.mobile_number}@noexit.com"
                 user.mobile_no = registration.mobile_number
                 user.location = registration.city
                 user.role_profile_name = "Customer"  # Assigning role as Customer
@@ -42,7 +43,9 @@ def update_registration_request_status(registration_id, status):
                 new_customer.first_name = registration.first_name
                 new_customer.last_name = registration.last_name
                 new_customer.full_name = registration.first_name + " " + registration.last_name
-                new_customer.email = f"{registration.mobile_number}@gmail.com"
+                # new_customer.email = f"{registration.mobile_number}@gmail.com"
+                new_customer.email = f"{registration.mobile_number}@noexit.com"
+
                 new_customer.mobile_number = registration.mobile_number
                 new_customer.city = registration.city
 

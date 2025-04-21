@@ -24,7 +24,7 @@ const ContactUs = () => {
           "/api/method/reward_management.api.company_address.get_company_address"
         );
         if(response){
-          console.log("address data",response);
+          // console.log("address data",response);
         }
         if (response && response.data && response.data.message) {
           const { address, email, website, mobile_numbers ,about_company} = response.data.message;

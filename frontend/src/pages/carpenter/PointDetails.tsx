@@ -17,7 +17,7 @@ const CatalogueProducts = () => {
       try {
         const response = await axios.get('/api/method/frappe.auth.get_logged_user');
         const loggedInUser = response.data.message; // Get logged-in user name
-        console.log("Logged in user:", loggedInUser);
+        // console.log("Logged in user:", loggedInUser);
   
         if (loggedInUser) {
           await fetchProductData(loggedInUser); // Pass the user to the carpenter data API
@@ -33,7 +33,7 @@ const CatalogueProducts = () => {
           params: { user: loggedInUser },
         });
 
-        console.log("Product data:", response.data);
+        // console.log("Product data:", response.data);
         const carpainterData = response.data.message.carpainter_data;
         
         if (Array.isArray(carpainterData) && carpainterData.length > 0) {

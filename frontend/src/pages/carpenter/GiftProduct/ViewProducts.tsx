@@ -36,7 +36,7 @@ const ViewProduct = () => {
 
         if (response && response.data.message.carpainter_data) {
           const carpainterData = response.data.message.carpainter_data;
-          console.log('Fetched Carpenter Data:', carpainterData);
+          // console.log('Fetched Carpenter Data:', carpainterData);
 
           if (Array.isArray(carpainterData) && carpainterData.length > 0) {
             setCurrentPoints(carpainterData[0].current_points || 0);
@@ -85,7 +85,7 @@ const ViewProduct = () => {
       try {
         const response = await axios.get('/api/method/frappe.auth.get_logged_user');
         const loggedInUser = response.data.message;
-        console.log('Logged in user:', loggedInUser);
+        // console.log('Logged in user:', loggedInUser);
 
         if (loggedInUser) {
           await fetchCarpenterData(loggedInUser);

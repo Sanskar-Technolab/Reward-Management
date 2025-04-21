@@ -52,7 +52,7 @@ const PointHistory: React.FC = () => {
             try {
               const response = await axios.get('/api/method/frappe.auth.get_logged_user');
               const loggedInUser = response.data.message; // Get logged-in user name
-              console.log("Logged in user:", loggedInUser);
+            //   console.log("Logged in user:", loggedInUser);
         
               if (loggedInUser) {
                 await fetchCarpenterData(loggedInUser); // Pass the user to the carpenter data API
@@ -66,7 +66,7 @@ const PointHistory: React.FC = () => {
                 const response = await axios.get('/api/method/reward_management.api.carpenter_master.get_carpainter_data', {
                     params: { user: loggedInUser },
                 });
-                console.log("Carpenter data:", response);
+                // console.log("Carpenter data:", response);
 
                 const data = response.data.message?.carpainter_data[0];
                 if (data) {
@@ -100,7 +100,7 @@ const PointHistory: React.FC = () => {
                 const response = await axios.get(`/api/method/reward_management.api.carpenter_master.show_total_points`,{
                 });
                 const { redeem_points, current_points } = response.data.message.message; 
-                console.log("card data", response);
+                // console.log("card data", response);
                 setRedeemPoints(redeem_points);
                 setTotalPoints(current_points);
             } catch (error) {
@@ -158,7 +158,7 @@ const PointHistory: React.FC = () => {
     const handleSearch = (value: string) => {
         setSearchQuery(value); 
         setCurrentPage(1);
-        console.log("Search value:", value);
+        // console.log("Search value:", value);
     };
 
     const handleAddProductClick = () => {
