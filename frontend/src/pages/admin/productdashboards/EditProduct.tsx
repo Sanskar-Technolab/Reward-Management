@@ -46,6 +46,8 @@ const EditProduct: React.FC = () => {
     const urlParams = new URLSearchParams(window.location.search);
     const productId = urlParams.get("product");
     const [showSuccessAlert, setShowSuccessAlert] = useState(false);
+    const [alertMessage, setAlertMessage] = useState('');
+
     const [newCategory, setNewCategory] = useState("");
     const [showAddCategoryModal, setShowAddCategoryModal] = useState(false);
     const [showRewardPercent, setShowRewardPercent] = useState(false);
@@ -123,14 +125,14 @@ const EditProduct: React.FC = () => {
         if (showSuccessAlert) {
             const timer = setTimeout(() => {
                 setShowSuccessAlert(false);
-                // navigate("/product-master");
+                navigate("/product-master");
             }, 3000);
             return () => clearTimeout(timer);
         }
     }, [showSuccessAlert, navigate, productPrice, rewardPercent, productId]);
 
     useEffect(() => {
-       
+
         const fetchProductData = async () => {
             if (!productId) return;
 
@@ -215,9 +217,13 @@ const EditProduct: React.FC = () => {
         }
     };
 
-    const resetForm = () => {
-        window.location.reload();
-    };
+    // const resetForm = () => {
+    //     window.location.reload();
+    // };
+
+    const handlecancel = () => {
+        navigate("/product-master");
+    }
 
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
@@ -271,9 +277,12 @@ const EditProduct: React.FC = () => {
             });
 
             setShowSuccessAlert(true);
+            setAlertMessage('Product updated successfully!');
             if (showSuccessAlert) {
                 const timer = setTimeout(() => {
                     setShowSuccessAlert(false);
+
+
                     navigate("/product-master");
                 }, 3000);
                 return () => clearTimeout(timer);
@@ -393,6 +402,8 @@ const EditProduct: React.FC = () => {
             });
 
             setShowSuccessAlert(true);
+            setAlertMessage('Point Conversion deleted successfully!');
+
         } catch (error) {
             console.error("Error deleting matched row:", error);
         }
@@ -478,6 +489,8 @@ const EditProduct: React.FC = () => {
             // Show success alert
 
             setShowSuccessAlert(true);
+            setAlertMessage('New Point Conversion Added successfully!');
+
             // Close the modal
             setShowAddRowModal(false);
             // Clear the input fields
@@ -551,7 +564,7 @@ const EditProduct: React.FC = () => {
                                                             value={productName}
                                                             onChange={(e) => setProductName(e.target.value)}
                                                             readOnly
-                                                            // required
+                                                        // required
                                                         />
                                                     </div>
                                                     <div className="xl:col-span-12 col-span-12">
@@ -559,7 +572,7 @@ const EditProduct: React.FC = () => {
                                                             htmlFor="product-price-add"
                                                             className="form-label text-sm font-semibold text-defaulttextcolor"
                                                         >
-                                                            Product Price<span style={{color:'red'}}>*</span>
+                                                            Product Price<span style={{ color: 'red' }}>*</span>
                                                         </label>
                                                         <input
                                                             type="text"
@@ -577,7 +590,7 @@ const EditProduct: React.FC = () => {
                                                             htmlFor="product-cost-add"
                                                             className="form-label text-sm font-semibold text-defaulttextcolor"
                                                         >
-                                                            Reward Points<span style={{color:'red'}}>*</span>
+                                                            Reward Points<span style={{ color: 'red' }}>*</span>
                                                         </label>
                                                         <input
                                                             type="text"
@@ -622,7 +635,7 @@ const EditProduct: React.FC = () => {
                                                             htmlFor="product-category-add"
                                                             className="form-label text-sm font-semibold text-defaulttextcolor"
                                                         >
-                                                            Category<span style={{color:'red'}}>*</span>
+                                                            Category<span style={{ color: 'red' }}>*</span>
                                                         </label>
                                                         <div className="flex items-center mt-[8px]">
                                                             <select
@@ -677,7 +690,7 @@ const EditProduct: React.FC = () => {
                                                                 htmlFor="reward-percent-add"
                                                                 className="form-label text-sm font-semibold text-defaulttextcolor"
                                                             >
-                                                                Set Reward Percent<span style={{color:'red'}}>*</span>
+                                                                Set Reward Percent<span style={{ color: 'red' }}>*</span>
                                                             </label>
                                                             <input
                                                                 type="text"
@@ -698,7 +711,7 @@ const EditProduct: React.FC = () => {
                                                             htmlFor="point-reward-add"
                                                             className="form-label text-sm font-semibold text-defaulttextcolor"
                                                         >
-                                                            Point<span style={{color:'red'}}>*</span>
+                                                            Point<span style={{ color: 'red' }}>*</span>
                                                         </label>
                                                         <input
                                                             type="text"
@@ -716,7 +729,7 @@ const EditProduct: React.FC = () => {
                                                             htmlFor="payout-amount-add"
                                                             className="form-label text-sm font-semibold text-defaulttextcolor"
                                                         >
-                                                            Amount per Point<span style={{color:'red'}}>*</span>
+                                                            Amount per Point<span style={{ color: 'red' }}>*</span>
                                                         </label>
                                                         <input
                                                             type="text"
@@ -774,7 +787,8 @@ const EditProduct: React.FC = () => {
                                             <button
                                                 type="button"
                                                 className="ti-btn ti-btn-success bg-primary/20 ti-btn text-defaulttextcolor !font-medium m-1"
-                                                onClick={resetForm}
+                                                // onClick={resetForm}
+                                                onClick={handlecancel}
                                             >
                                                 Cancel
                                             </button>
@@ -883,6 +897,8 @@ const EditProduct: React.FC = () => {
                                     title={"Add New Row"}
                                     questionLabel={"Reward Point"}
                                     answerLabel={"Payout Amount"}
+                                    questionPlaceholder="Enter Reward Point"
+                                    answerPlaceholder="Enter Payout Amount"
                                     showDate={false}
                                     showEndDate={false}
                                     question={rewardPoint}
@@ -912,7 +928,8 @@ const EditProduct: React.FC = () => {
                                     showCollectButton={false}
                                     showAnotherButton={false}
                                     showMessagesecond={false}
-                                    message="Product updated successfully!"
+                                    // message="Product updated successfully!"
+                                    message={alertMessage}
                                 />
                             )}
                         </div>

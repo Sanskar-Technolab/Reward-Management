@@ -8,7 +8,7 @@ import SubMenu from './sidebar/submenu';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 
-console.log(SidebarData);
+// console.log(SidebarData);
 
 const Sidebar = ({ isSidebarActive }: any) => {
     // State to manage hover state
@@ -19,7 +19,7 @@ const Sidebar = ({ isSidebarActive }: any) => {
     // Retrieve roles from localStorage
     const storedRoles = localStorage.getItem('user_roles');
     const carpenterrole = localStorage.getItem('carpenterrole');
-    console.log(carpenterrole);
+    // console.log(carpenterrole);
     const roles = storedRoles ? JSON.parse(storedRoles) : [];
     // console.log("Roles from localStorage:", roles);
 

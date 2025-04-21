@@ -48,7 +48,7 @@ const AdminProfile = () => {
             const timer = setTimeout(() => setShowSuccessAlert(false), 3000);
             return () => clearTimeout(timer);
         }
-        console.log("birthdate--", birthdate);
+        // console.log("birthdate--", birthdate);
         const fetchUserEmailAndInitScanner = async () => {
             try {
                 // Fetch logged-in user
@@ -59,7 +59,7 @@ const AdminProfile = () => {
                         'Expires': '0',
                     },
                 });
-                console.log("userData----->", userResponse.data.message);
+                // console.log("userData----->", userResponse.data.message);
                 //   const userData = userResponse.data;
 
                 const userdata = await axios.get(`/api/resource/User/${userResponse.data.message}`,
@@ -68,7 +68,7 @@ const AdminProfile = () => {
 
                     }
                 );
-                console.log("userData----->", userdata.data.data);
+                // console.log("userData----->", userdata.data.data);
                 //   document.getElementById('first-name').innerText = userdata.data.data.first_name || "";
                 setFirstName(userdata.data.data.first_name || "");
                 setLastName(userdata.data.data.last_name || "");
@@ -138,10 +138,10 @@ const AdminProfile = () => {
     
             if (response.data.message.status === "success") {
                 setShowSuccessAlert(true);
-                console.log("User details updated successfully.");
+                // console.log("User details updated successfully.");
             } 
             else if (response.data.message.status === 'error') {
-                console.log("Update user response:", response);
+                // console.log("Update user response:", response);
                 setShowSuccessAlert(true);
                 // setShowSuccessAlert(true); // This should likely be set to false in case of error
             } 
@@ -211,7 +211,7 @@ const AdminProfile = () => {
 
                 if (response.data.message.status === "success") {
                     // setShowSuccessAlert(true);
-                    console.log("uploadedFileUrl", uploadedFileUrl);
+                    // console.log("uploadedFileUrl", uploadedFileUrl);
                     localStorage.setItem('uploadedFileUrl', uploadedFileUrl);
 
                     setUserImage(uploadedFileUrl);  // Update the user's profile image with the new image URL
@@ -350,8 +350,8 @@ const AdminProfile = () => {
                                                     value={birthdate} // Set the value from the state
                                                     onChange={(e) => {
                                                         const selectedDate = e.target.value;
-                                                        setBirthdate(selectedDate); // Update the state with the selected date
-                                                        console.log("Selected Date:", selectedDate); // Log the selected date to the console
+                                                        setBirthdate(selectedDate); 
+                                                        // console.log("Selected Date:", selectedDate); 
                                                     }}
                                                 />
                                             </div>
@@ -363,8 +363,8 @@ const AdminProfile = () => {
                                                     value={gender} // Bind the selected value to the state
                                                     onChange={(e) => {
                                                         const selectedGender = e.target.value;
-                                                        setGender(selectedGender); // Update the state with the selected gender
-                                                        console.log("Selected Gender:", selectedGender); // Log the selected gender to the console
+                                                        setGender(selectedGender);
+                                                        // console.log("Selected Gender:", selectedGender);
                                                     }}
                                                 >
                                                     <option value="">Select Gender</option> {/* Default option */}

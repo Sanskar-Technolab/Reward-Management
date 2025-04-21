@@ -8,7 +8,7 @@ import '../../../assets/css/style.css';
 import '../../../assets/css/pages/admindashboard.css';
 import { useFrappeGetDocList, useFrappePostCall } from 'frappe-react-sdk';
 import { Notyf } from 'notyf';
-import 'notyf/notyf.min.css'; 
+import 'notyf/notyf.min.css';
 
 
 import axios from 'axios';
@@ -49,7 +49,7 @@ const AddProduct: React.FC = () => {
             x: 'right',
             y: 'top',
         },
-        duration: 3000, 
+        duration: 3000,
     });
 
 
@@ -60,28 +60,28 @@ const AddProduct: React.FC = () => {
     const handleAddCategory = async (event: any) => {
         event.preventDefault();
         console.log("first");
-    
+
         try {
             const response = await createCategory({ productCategory: newCategory });
-    
+
             if (response) {
                 console.log("product category name:", response);
-                
+
                 // Correctly update state with the new category
                 setProductCategory(prevCategories => [
-                    ...prevCategories, 
+                    ...prevCategories,
                     { category_name: response.category_name, id: response.category_id }
                 ]);
-    
+
                 setNewCategory('');
-    
+
                 setShowAddCategoryModal(false);
             }
         } catch (error) {
             console.error("Error adding category:", error);
         }
     };
-    
+
 
     // Handle file input change
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -124,11 +124,26 @@ const AddProduct: React.FC = () => {
     };
 
     const addProduct = async (fileUrls: string[]) => {
-        if (!productName || !rewardPoints || !pointReward || !rewardAmount || !productPrice || !productCategory) {
-            console.log("Please fill all the fields.");
-            notyf.error("Please fill all the fields");
-            return; 
+        const missingFields: string[] = [];
+
+        if (!productName) missingFields.push("Product Name");
+        if (!rewardPoints) missingFields.push("Reward Points");
+        if (!pointReward) missingFields.push("Point Reward");
+        if (!rewardAmount) missingFields.push("Reward Amount");
+        if (!productPrice) missingFields.push("Product Price");
+        if (!productCategory) missingFields.push("Product Category");
+
+        if (missingFields.length > 0) {
+            const errorMessage = `Please fill the following field${missingFields.length > 1 ? 's' : ''}: ${missingFields.join(', ')}`;
+            console.log(errorMessage);
+            notyf.error(errorMessage);
+            return;
         }
+        // if (!productName || !rewardPoints || !pointReward || !rewardAmount || !productPrice || !productCategory) {
+        //     console.log("Please fill all the fields.");
+        //     notyf.error("Please fill all the fields");
+        //     return; 
+        // }
         const data = {
             productName: productName,
             rewardPoints: rewardPoints,
@@ -166,6 +181,11 @@ const AddProduct: React.FC = () => {
         setProductDescription('');
         setProductCategory('');
     };
+
+    const handlecancel = () => {
+        navigate("/product-master");
+    }
+
 
 
     // Fetch the product categories
@@ -238,7 +258,7 @@ const AddProduct: React.FC = () => {
                                         <div className="xxl:col-span-6 xl:col-span-12 lg:col-span-12 md:col-span-6 col-span-12">
                                             <div className="grid grid-cols-12 gap-4">
                                                 <div className="xl:col-span-12 col-span-12">
-                                                    <label htmlFor="product-name-add" className="form-label text-sm font-semibold text-defaulttextcolor">Product Name<span style={{color:'red'}}>*</span></label>
+                                                    <label htmlFor="product-name-add" className="form-label text-sm font-semibold text-defaulttextcolor">Product Name<span style={{ color: 'red' }}>*</span></label>
                                                     <input
                                                         type="text"
                                                         className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full border border-defaultborder text-defaultsize text-defaulttextcolor rounded-[0.5rem] mt-2"
@@ -247,10 +267,12 @@ const AddProduct: React.FC = () => {
                                                         value={productName}
                                                         onChange={(e) => setProductName(e.target.value)}
                                                         required
+                                                        onInvalid={(e) => (e.target as HTMLInputElement).setCustomValidity("Product Name is required.")}
+                                                        onInput={(e) => (e.target as HTMLInputElement).setCustomValidity("")}
                                                     />
                                                 </div>
                                                 <div className="xl:col-span-12 col-span-12">
-                                                    <label htmlFor="product-price-add" className="form-label text-sm font-semibold text-defaulttextcolor">Product Price<span style={{color:'red'}}>*</span></label>
+                                                    <label htmlFor="product-price-add" className="form-label text-sm font-semibold text-defaulttextcolor">Product Price<span style={{ color: 'red' }}>*</span></label>
                                                     <input
                                                         type="text"
                                                         className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full text-defaultsize text-defaulttextcolor border border-defaultborder rounded-[0.5rem] mt-2"
@@ -259,13 +281,15 @@ const AddProduct: React.FC = () => {
                                                         value={productPrice}
                                                         onChange={(e) => setProductPrice(e.target.value)}
                                                         required
+                                                        onInvalid={(e) => (e.target as HTMLInputElement).setCustomValidity("Please enter a valid price.")}
+                                                        onInput={(e) => (e.target as HTMLInputElement).setCustomValidity("")}
                                                     />
                                                 </div>
 
 
 
                                                 <div className="xl:col-span-12 col-span-12">
-                                                    <label htmlFor="product-cost-add" className="form-label text-sm font-semibold text-defaulttextcolor">Reward Points<span style={{color:'red'}}>*</span></label>
+                                                    <label htmlFor="product-cost-add" className="form-label text-sm font-semibold text-defaulttextcolor">Reward Points<span style={{ color: 'red' }}>*</span></label>
                                                     <input
                                                         type="text"
                                                         className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full text-defaultsize text-defaulttextcolor border border-defaultborder rounded-[0.5rem] mt-2"
@@ -273,7 +297,15 @@ const AddProduct: React.FC = () => {
                                                         placeholder="Reward points"
                                                         value={rewardPoints}
                                                         onChange={(e) => setRewardPoints(e.target.value)}
-                                                        readOnly={showRewardPercent} 
+                                                        readOnly={showRewardPercent}
+                                                        required={!showRewardPercent}
+                                                        onInvalid={(e) =>
+                                                            (e.target as HTMLInputElement).setCustomValidity("Reward Points are required.")
+                                                        }
+                                                        onInput={(e) =>
+                                                            (e.target as HTMLInputElement).setCustomValidity("")
+                                                        }
+
                                                     />
                                                 </div>
 
@@ -304,7 +336,7 @@ const AddProduct: React.FC = () => {
                                             <div className='grid grid-cols-12 gap-4'>
                                                 {/* Product Category Dropdown */}
                                                 <div className="xl:col-span-12 col-span-12">
-                                                    <label htmlFor="product-category-add" className="form-label text-sm font-semibold text-defaulttextcolor">Category<span style={{color:'red'}}>*</span></label>
+                                                    <label htmlFor="product-category-add" className="form-label text-sm font-semibold text-defaulttextcolor">Category<span style={{ color: 'red' }}>*</span></label>
                                                     <div className="flex items-center mt-[8px]">
                                                         <select
                                                             id="product-category-add"
@@ -313,6 +345,8 @@ const AddProduct: React.FC = () => {
                                                             value={productCategory}
                                                             onChange={(e) => setProductCategory(e.target.value)}
                                                             required
+                                                            onInvalid={(e) => (e.target as HTMLInputElement).setCustomValidity("Category cannot be empty.")}
+                                                            onInput={(e) => (e.target as HTMLInputElement).setCustomValidity("")}
                                                         >
                                                             <option value="">Select a category</option>
                                                             {productcategoryData && productcategoryData.map((category) => (
@@ -347,7 +381,7 @@ const AddProduct: React.FC = () => {
                                                 {/* Conditionally render Reward Percent input */}
                                                 {showRewardPercent && (
                                                     <div className="xl:col-span-12 col-span-12">
-                                                        <label htmlFor="reward-percent-add" className="form-label text-sm font-semibold text-defaulttextcolor">Set Reward Percent<span style={{color:'red'}}>*</span></label>
+                                                        <label htmlFor="reward-percent-add" className="form-label text-sm font-semibold text-defaulttextcolor">Set Reward Percent<span style={{ color: 'red' }}>*</span></label>
                                                         <input
                                                             type="text"
                                                             className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full text-defaultsize text-defaulttextcolor border border-defaultborder rounded-[0.5rem] mt-2"
@@ -356,13 +390,15 @@ const AddProduct: React.FC = () => {
                                                             value={rewardPercent}
                                                             onChange={(e) => setRewardPercent(e.target.value)}
                                                             required
+                                                            onInvalid={(e) => (e.target as HTMLInputElement).setCustomValidity("Please enter a valid reward percent.")}
+                                                            onInput={(e) => (e.target as HTMLInputElement).setCustomValidity("")}
                                                         />
                                                     </div>
                                                 )}
 
                                                 {/* point calculation */}
                                                 <div className="xl:col-span-12 col-span-12">
-                                                    <label htmlFor="point-reward-add" className="form-label text-sm font-semibold text-defaulttextcolor">Point<span style={{color:'red'}}>*</span></label>
+                                                    <label htmlFor="point-reward-add" className="form-label text-sm font-semibold text-defaulttextcolor">Point<span style={{ color: 'red' }}>*</span></label>
                                                     <input
                                                         type="text"
                                                         className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full text-defaultsize text-defaulttextcolor border border-defaultborder rounded-[0.5rem] mt-2"
@@ -371,11 +407,13 @@ const AddProduct: React.FC = () => {
                                                         value={pointReward}
                                                         onChange={(e) => setPointReward(e.target.value)}
                                                         required
+                                                        onInvalid={(e) => (e.target as HTMLInputElement).setCustomValidity("Please enter the point reward.")}
+                                                        onInput={(e) => (e.target as HTMLInputElement).setCustomValidity("")}
                                                     />
                                                 </div>
                                                 {/* amount per point */}
                                                 <div className="xl:col-span-12 col-span-12">
-                                                    <label htmlFor="reward-amount-add" className="form-label text-sm font-semibold text-defaulttextcolor">Amount per Point<span style={{color:'red'}}>*</span></label>
+                                                    <label htmlFor="reward-amount-add" className="form-label text-sm font-semibold text-defaulttextcolor">Amount per Point<span style={{ color: 'red' }}>*</span></label>
                                                     <input
                                                         type="text"
                                                         className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full text-defaultsize text-defaulttextcolor border border-defaultborder rounded-[0.5rem] mt-2"
@@ -384,6 +422,8 @@ const AddProduct: React.FC = () => {
                                                         value={rewardAmount}
                                                         onChange={(e) => setRewardAmount(e.target.value)}
                                                         required
+                                                        onInvalid={(e) => (e.target as HTMLInputElement).setCustomValidity("Please enter the amount per point.")}
+                                                        onInput={(e) => (e.target as HTMLInputElement).setCustomValidity("")}
                                                     />
                                                 </div>
 
@@ -417,7 +457,8 @@ const AddProduct: React.FC = () => {
                                         <button
                                             type="button"
                                             className="ti-btn ti-btn-success bg-primary/20 ti-btn text-defaulttextcolor !font-medium m-1"
-                                            onClick={resetForm}
+                                            // onClick={resetForm}
+                                            onClick={handlecancel}
                                         >
                                             Cancel
                                         </button>
@@ -470,7 +511,7 @@ const AddProduct: React.FC = () => {
                                         </div>
                                         <div className=" overflow-auto flex-1">
                                             <div className='p-4 overflow-auto '>
-                                            <label htmlFor="question" className="form-label text-sm text-defaulttextcolor font-semibold">Category</label>
+                                                <label htmlFor="question" className="form-label text-sm text-defaulttextcolor font-semibold">Category</label>
 
                                                 <input
                                                     type="text"

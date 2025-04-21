@@ -19,6 +19,12 @@ interface ViewModalProps {
     setAnswer: (value: string) => void;
     setDate?: (value: string) => void;  
     setEndDate?: (value: string) => void; 
+
+     // New placeholder props
+     questionPlaceholder?: string;
+     answerPlaceholder?: string;
+     startDatePlaceholder?: string;
+     endDatePlaceholder?: string;
 }
 
 const ViewModal: React.FC<ViewModalProps> = ({
@@ -40,6 +46,11 @@ const ViewModal: React.FC<ViewModalProps> = ({
     setAnswer,
     setDate,
     setEndDate,
+    // Destructure new placeholder props with default values
+    questionPlaceholder = "Enter your question here",
+    answerPlaceholder = "Enter your answer here",
+    startDatePlaceholder = "",
+    endDatePlaceholder = "",
 }) => {
     return (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
@@ -57,7 +68,7 @@ const ViewModal: React.FC<ViewModalProps> = ({
                             <label htmlFor="question" className="form-label text-sm text-defaulttextcolor font-semibold">{questionLabel}</label>
                             <input
                                 className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full rounded-5px border border-[#dadada] form-control-light mt-2 text-sm"
-                                placeholder="Enter your question here"
+                                placeholder={questionPlaceholder}
                                 id="question"
                                 value={question}
                                 onChange={(e) => setQuestion(e.target.value)}
@@ -68,7 +79,8 @@ const ViewModal: React.FC<ViewModalProps> = ({
                             <input
                                 type="text"
                                 className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full rounded-5px border border-[#dadada] form-control-light mt-2 text-sm"
-                                placeholder="Enter your answer here"
+                                placeholder={answerPlaceholder}
+
                                 id="answer"
                                 value={answer}
                                 onChange={(e) => setAnswer(e.target.value)}
@@ -84,6 +96,8 @@ const ViewModal: React.FC<ViewModalProps> = ({
                                     type="date"
                                     className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full rounded-5px border border-[#dadada] form-control-light mt-2 text-sm"
                                     id="date"
+                                    placeholder={startDatePlaceholder}
+
                                     value={date || ''} 
                                     onChange={(e) => setDate && setDate(e.target.value)} 
                                 />
@@ -99,6 +113,7 @@ const ViewModal: React.FC<ViewModalProps> = ({
                                     type="date"
                                     className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full rounded-5px border border-[#dadada] form-control-light mt-2 text-sm"
                                     id="endDate"
+                                    placeholder={endDatePlaceholder}
                                     value={endDate || ''}
                                     onChange={(e) => setEndDate && setEndDate(e.target.value)} 
                                 />

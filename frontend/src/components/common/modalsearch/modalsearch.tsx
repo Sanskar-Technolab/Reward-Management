@@ -19,7 +19,7 @@ const Modalsearch = ({ isOpen, onClose }: any) => {
   const storedRoles = localStorage.getItem('user_roles');
   const roles = storedRoles ? JSON.parse(storedRoles) : [];
   const carpenterrole = localStorage.getItem('carpenterrole');
-  console.log(carpenterrole);
+  // console.log(carpenterrole);
   
   useEffect(() => {
     setShow(isOpen);

@@ -54,9 +54,9 @@ const MySwiper = () => {
         const response = await axios.get(
           "/api/method/reward_management.api.login_instructions.get_instructions"
         );
-        if (response) {
-          console.log("instruction response", response)
-        }
+        // if (response) {
+        //   // console.log("instruction response", response)
+        // }
 
         if (response && response.data && response.data.message && response.data.message.instructions) {
           setInstructions(response.data.message.instructions);

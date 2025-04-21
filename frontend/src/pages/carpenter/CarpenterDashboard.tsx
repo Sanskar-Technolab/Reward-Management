@@ -74,16 +74,16 @@ useEffect(() => {
       });
   
       if (response) {
-        console.log("Customer response", response);
+        // console.log("Customer response", response);
       }
 
       const carpainterData = response.data.message.carpainter_data;
   
-      console.log("Fetched Carpenter Data:", carpainterData);
+      // console.log("Fetched Carpenter Data:", carpainterData);
   
       if (Array.isArray(carpainterData) && carpainterData.length > 0) {
         const firstCarpenter = carpainterData[0];
-        console.log("First Carpenter:", firstCarpenter);
+        // console.log("First Carpenter:", firstCarpenter);
   
       //  set get data-----
         setRedeemPoints(firstCarpenter.redeem_points || 0);
@@ -102,9 +102,9 @@ useEffect(() => {
       const response = await axios.get('/api/method/reward_management.api.gift_product.get_filtered_gift_products',
         { params: { user: loggedInUser } }
       );
-      console.log("Full Response:", response); 
+      // console.log("Full Response:", response); 
       const productData = response.data.message.filtered_gift_products;
-      console.log("Gift data", productData);
+      // console.log("Gift data", productData);
 
       if (response.data.message.status === 'success') {
         if (Array.isArray(productData) && productData.length > 0) {
@@ -126,7 +126,7 @@ useEffect(() => {
     try {
       const response = await axios.get('/api/method/frappe.auth.get_logged_user');
       const loggedInUser = response.data.message;
-      console.log("Logged in user:", loggedInUser);
+      // console.log("Logged in user:", loggedInUser);
 
       if (loggedInUser) {
         await fetchCarpenterData(loggedInUser);

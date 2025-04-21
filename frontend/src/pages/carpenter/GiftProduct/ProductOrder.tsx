@@ -86,13 +86,13 @@ const ProductOrder = () => {
     };
 
     const openMobileVerify = async () => {
-      console.log("Generated OTP:", generatedOtp);
-      console.log("User-entered OTP:", otp);
+      // console.log("Generated OTP:", generatedOtp);
+      // console.log("User-entered OTP:", otp);
   
       // Ensure both values are strings for comparison
       if (generatedOtp?.toString() !== otp?.toString()) {
           notyf.error("Entered OTP does not match the generated OTP.");
-          console.log("OTP mismatch");
+          // console.log("OTP mismatch");
           return;
       }
   
@@ -101,7 +101,7 @@ const ProductOrder = () => {
               `/api/method/reward_management.api.mobile_number.verify_otp_product_order`,
               { params: { mobile_number: mobile, otp: otp } }
           );
-          console.log("OTP Verification Response:", response);
+          // console.log("OTP Verification Response:", response);
   
           if (response.data.message.status === "success") {
               notyf.success("OTP verified successfully.");
@@ -128,7 +128,7 @@ const ProductOrder = () => {
 
             if (otpResponse.data.message.status === "success") {
                 const otp = otpResponse.data.message.otp;
-                console.log("otp",otp);
+                // console.log("otp",otp);
                 notyf.success("OTP sent successfully.");
                 setGeneratedOtp(otp);
                 setIsMobileVerifyOpen(true);
@@ -152,7 +152,7 @@ const ProductOrder = () => {
   
           if (response && response.data.message.carpainter_data) {
             const carpainterData = response.data.message.carpainter_data;
-            console.log('Fetched Carpenter Data:', carpainterData);
+            // console.log('Fetched Carpenter Data:', carpainterData);
   
             if (Array.isArray(carpainterData) && carpainterData.length > 0) {
               // setCurrentPoints(carpainterData[0].current_points || 0);
@@ -172,7 +172,7 @@ const ProductOrder = () => {
         try {
           const response = await axios.get('/api/method/frappe.auth.get_logged_user');
           const loggedInUser = response.data.message;
-          console.log('Logged in user:', loggedInUser);
+          // console.log('Logged in user:', loggedInUser);
   
           if (loggedInUser) {
             await fetchCarpenterData(loggedInUser);

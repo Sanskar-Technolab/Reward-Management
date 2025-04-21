@@ -341,8 +341,7 @@ def send_customer_reward_points_earn_notification(doc, method=None):
         'type': 'Alert',
         'email_content': f"""
         {customer.full_name},</br>
-        You have earned <strong>{earned_points}</strong> points for the product <strong>{product_name}</strong> on {date} at {time_added}
-         """,
+        You have earned <strong>{earned_points}</strong> points for the product <strong>{product_name}</strong>""",
         'document_type': 'Customer',
         'document_name': doc.name
     })

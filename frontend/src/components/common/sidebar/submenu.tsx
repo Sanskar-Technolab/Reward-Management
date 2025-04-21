@@ -11,12 +11,12 @@ const SidebarLink = styled(Link)`
   border-radius: 6px;
   font-size: 0.85rem;
   font-weight: 600;
-  color: rgb(163 174 209 / var(--tw-text-opacity));
+  color: rgb(49, 48, 48);
   justify-content: space-between;
   margin-bottom: 5px;
   &:hover {
-    background-color: rgb(255 255 255 / 0.05);
-    color: rgb(255 255 255 / var(--tw-text-opacity));
+    background-color: rgba(53, 51, 51, 0.05);
+    color: rgb(8, 8, 8);
     cursor: pointer;
   }
 `;
@@ -36,12 +36,13 @@ const DropdownLink = styled(Link)`
   font-size: 0.85rem;
   line-height: 1;
   font-weight: 500;
-  color: rgb(163 174 209 / var(--tw-text-opacity));
+  color: rgb(49, 48, 48);
   border-radius: 6px;
   &:hover {
-    background-color: rgb(255 255 255 / 0.05);
+      background-color: rgba(53, 51, 51, 0.05);
+
     --tw-text-opacity: 1;
-    color: rgb(255 255 255 / var(--tw-text-opacity));
+    color: rgb(8, 8, 8);
     cursor: pointer;
   }
 `;
