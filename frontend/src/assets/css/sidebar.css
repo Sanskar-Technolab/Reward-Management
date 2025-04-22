@@ -194,3 +194,8 @@
     overflow-y: auto;
     max-height: calc(100vh - 3.75rem); /* Adjust height considering the header height */
 }
+
+.sidebar-link.active {
+    background-color: #3b82f6; 
+    color: white;
+  }
