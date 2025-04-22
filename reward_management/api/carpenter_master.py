@@ -122,7 +122,7 @@ def get_carpainter_data(user):
             point_details = []
 
             for point in point_history:
-                if point.get("earned_points") and point.get("product_image") and point.get("product"):
+                if point.get("earned_points") or point.get("product_image") or point.get("product"):
                     point_details.append({
                         "earned_points": point["earned_points"],
                         "product": point["product"],
@@ -130,7 +130,7 @@ def get_carpainter_data(user):
                     })
 
             carpainter_fields["point_history"] = point_history
-            carpainter_fields["point_details"] = point_details  # Added response
+            carpainter_fields["point_details"] = point_details
 
             carpainter_data.append(carpainter_fields)
 
