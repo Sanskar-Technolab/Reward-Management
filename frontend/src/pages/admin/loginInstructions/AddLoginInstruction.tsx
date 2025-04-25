@@ -224,8 +224,8 @@ const AddLoginInstruction = () => {
   
       if (result.message && result.message.status === 'success') {
         setShowSuccessAlert(true);
-        setFileDetails([]); // Clear file details after success
-        setImageDescription(''); // Clear description field after success
+        setFileDetails([]); 
+        setImageDescription(''); 
       } else {
         alert("Error updating instructions: " + (result.message.message || "Unknown error."));
       }
