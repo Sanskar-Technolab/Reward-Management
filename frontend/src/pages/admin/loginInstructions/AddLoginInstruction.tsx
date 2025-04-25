@@ -244,9 +244,9 @@ const AddLoginInstruction = () => {
       />
 
       <div className="grid grid-cols-12 gap-x-6 p-6">
-        <div className="col-span-12 flex justify-between items-center">
+        {/* <div className="col-span-12 flex justify-between items-center">
           <h2 className="text-[var(--primaries)] text-xl font-semibold">Instructions</h2>
-        </div>
+        </div> */}
 
         <div className="col-span-12 mt-6">
           <div className="bg-white rounded-lg shadow-lg p-6 ">
@@ -256,7 +256,7 @@ const AddLoginInstruction = () => {
             </h3>
             <button
             onClick={handleAddNewGuide}
-            className="ti-btn bg-primary text-white px-4 py-2 rounded-md"
+            className="ti-btn !py-1 !px-2 text-xs text-white !font-medium bg-[var(--primaries)] hover:bg-primary/20 hover:text-black"
           >
             Add New Instructions
           </button>
@@ -267,7 +267,7 @@ const AddLoginInstruction = () => {
                 {instructions.map((instruction, index) => (
                   <div key={index} className={index === 0 ? "first-slide" : ""}>
                     <div className="pt-5 text-sm text-defaulttextcolor flex justify-end pb-5 mx-[10px] ">
-                      <button onClick={() => handleEditGuide(instruction)} className="ti-btn bg-primary text-white px-5 py-2 rounded-md">Edit</button>
+                      <button onClick={() => handleEditGuide(instruction)} className="ti-btn !py-1 !px-2 text-xs text-white !font-medium bg-[var(--primaries)] hover:bg-primary/20 hover:text-black">Edit</button>
                     </div>
                     <img
                       src={`${window.origin}${instruction.guide_image}`}
