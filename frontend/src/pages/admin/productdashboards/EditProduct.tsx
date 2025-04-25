@@ -12,6 +12,9 @@ import TableComponent from "../../../components/ui/tables/tablecompnent";
 import TableBoxComponent from "../../../components/ui/tables/tableboxheader";
 import DangerAlert from '../../../components/ui/alerts/DangerAlert';
 import ViewModalComponent from '../../../components/ui/models/ViewModel';
+
+import { Notyf } from 'notyf';
+import 'notyf/notyf.min.css';
 interface EditProduct {
     product_name?: string;
     productId?: string;
@@ -29,6 +32,15 @@ interface PointConversion {
     payout_amount: number;
     from_date: Date;
 }
+
+const notyf = new Notyf({
+    position: {
+        x: 'right',
+        y: 'top',
+    },
+    duration: 5000, 
+});
+
 
 const EditProduct: React.FC = () => {
     const [files, setFiles] = useState<File[]>([]);
@@ -70,11 +82,10 @@ const EditProduct: React.FC = () => {
 
     const handleAddCategory = async (event: any) => {
         event.preventDefault();
-        console.log("first");
         try {
             const response = await createCategory({ productCategory: newCategory });
             if (response) {
-                console.log("product category name:", response);
+                // console.log("product category name:", response);
                 setProductCategory(response.category_name);
                 setNewCategory("");
                 window.location.reload();
@@ -148,7 +159,7 @@ const EditProduct: React.FC = () => {
                 );
 
                 if (response.data && response.data.message.message) {
-                    console.log("Edit Product Data", response);
+                    // console.log("Edit Product Data", response);
                     const product = response.data.message.message;
 
                     setProductName(product.product_name || "");
@@ -296,7 +307,6 @@ const EditProduct: React.FC = () => {
     const handleCloseModal = () => {
         setShowAddCategoryModal(false);
         setShowAddRowModal(false);
-        // console.log("first")
     };
 
 
@@ -445,9 +455,27 @@ const EditProduct: React.FC = () => {
         setCurrentPage(1);
     };
 
-    const handleAddRowSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
+    const isValidNumber = (title: string) => {
+        // Regex to allow only numbers
+        const regex = /^[0-9]+$/;
+        return regex.test(title);
+    };
 
+
+    const handleAddRowSubmit = async (event: React.FormEvent) => {
+        if (event && event.preventDefault) {
+            event.preventDefault();
+        }
+
+        // Validate the inputs
+        if (!isValidNumber(rewardPoint)) {
+            notyf.error('Reward Point must be a number.');
+            return;
+        }
+        if (!isValidNumber(payoutAmount)) {
+            notyf.error('Payout Amount must be a number.');
+            return;
+        }
         // Prepare the new child table row
         const newChildRow = {
             product_name: productName,
@@ -504,7 +532,7 @@ const EditProduct: React.FC = () => {
 
     const handleAddRow = () => {
         setShowAddRowModal(true);
-        console.log("Adding new row");
+        // console.log("Adding new row");
 
     };
 
@@ -822,7 +850,7 @@ const EditProduct: React.FC = () => {
                                             { header: "Product Name", accessor: "product_name" },
                                             { header: "Reward Point", accessor: "reward_point" },
                                             { header: "Payout Amount", accessor: "payout_amount" },
-                                            { header: "From Date", accessor: "from_date" },
+                                            { header: "Date", accessor: "from_date" },
                                         ]}
                                         // Use filtered and paginated data
                                         data={filteredData}
@@ -905,6 +933,10 @@ const EditProduct: React.FC = () => {
                                     answer={payoutAmount}
                                     setQuestion={setRewardPoint}
                                     setAnswer={setPayoutAmount}
+                                    requiredQuestion
+                                    requiredAnswer
+                                    questionErrorMessage="Reward point cannot be empty."
+                                    answerErrorMessage="Payout amount cannot be empty."
                                     onClose={handleCloseModal}
                                     onSubmit={handleAddRowSubmit}
                                     onCancel={handleCloseModal}
@@ -914,7 +946,7 @@ const EditProduct: React.FC = () => {
                             {isConfirmDeleteModalOpen && (
                                 <DangerAlert
                                     type="danger"
-                                    message={`Are you sure you want to delete ${pointConversionToDelete?.product_name}?`}
+                                    message={`Are you sure you want to delete this point detail?`}
                                     onDismiss={cancelDelete}
                                     onConfirm={confirmDelete}
                                     cancelText="Cancel"
