@@ -8,6 +8,9 @@ import React, { Fragment, useState } from "react";
 import { useFrappeGetDocList } from 'frappe-react-sdk';
 import SuccessAlert from '../../../components/ui/alerts/SuccessAlert';
 import DangerAlert from '../../../components/ui/alerts/DangerAlert';
+
+import { Notyf } from 'notyf';
+import 'notyf/notyf.min.css';
 interface Announcements {
     name: string,
     title?: string,
@@ -15,6 +18,15 @@ interface Announcements {
     published_on?: string,
     end_date?: string
 }
+
+ const notyf = new Notyf({
+        position: {
+            x: 'right',
+            y: 'top',
+        },
+        duration: 5000, 
+    });
+
 
 const AnnouncementDashboard: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(1);
@@ -44,7 +56,7 @@ const AnnouncementDashboard: React.FC = () => {
     const { data: announcementsData, mutate: mutateAnnouncements } = useFrappeGetDocList<Announcements>('Announcements', {
         fields: ['name', 'title', 'subject', 'published_on', 'end_date'],
         orderBy: {
-            field: 'published_on',
+            field: 'creation',
             order: 'desc',
         }
     });
@@ -108,7 +120,22 @@ const AnnouncementDashboard: React.FC = () => {
         setIsModalOpen(false); 
     };
 
+    const isValidAnnouncementTitle = (title: string) => {
+        // Regex to allow only letters and spaces
+        const regex = /^[a-zA-Z\s]+$/;
+        return regex.test(title);
+    };
+
     const handleSubmit = async () => {
+
+        if (!isValidAnnouncementTitle(question)) {
+            notyf.error('Announcement title should only contain letters and spaces.');
+            return;
+        }
+        if (!isValidAnnouncementTitle(answer)) {
+            notyf.error('Announcement subject should only contain letters and spaces.');
+            return;
+        }
         const data = {
             title: question,
             subject: answer,
@@ -221,14 +248,41 @@ const AnnouncementDashboard: React.FC = () => {
     };
 
 
+    // const handleEditAnnouncement = (item: Announcements) => {
+    //     setModalMode('edit');
+    //     setSelectedAnnouncement(item);
+    //     setQuestion(item.title || '');
+    //     setAnswer(item.subject);
+    //     setDate(item.published_on || '');
+    //     setEndDate(item.end_date || '');
+    //     setIsModalOpen(true); 
+    // };
+
     const handleEditAnnouncement = (item: Announcements) => {
         setModalMode('edit');
         setSelectedAnnouncement(item);
         setQuestion(item.title || '');
         setAnswer(item.subject);
-        setDate(item.published_on || '');
-        setEndDate(item.end_date || '');
+        
+        // Format the date for the input field (assuming it's in 'dd-mm-yyyy' format from the table)
+        const formattedPublishedDate = item.published_on 
+            ? formatDateForInput(item.published_on) 
+            : '';
+        const formattedEndDate = item.end_date 
+            ? formatDateForInput(item.end_date) 
+            : '';
+        
+        setDate(formattedPublishedDate);
+        setEndDate(formattedEndDate);
         setIsModalOpen(true); 
+    };
+    
+    // Helper function to convert 'dd-mm-yyyy' to 'yyyy-mm-dd' for input[type="date"]
+    const formatDateForInput = (dateString: string) => {
+        if (!dateString) return '';
+        
+        const [day, month, year] = dateString.split('-');
+        return `${year}-${month}-${day}`;
     };
 
    
@@ -382,6 +436,10 @@ const AnnouncementDashboard: React.FC = () => {
                     setAnswer={setAnswer}
                     setDate={setDate}
                     setEndDate={setEndDate}
+                    requiredQuestion
+                    requiredAnswer
+                    questionErrorMessage="Announcement title is requird."
+                    answerErrorMessage="Announcement subject cannot be empty."
                     onClose={handleCloseModal}
                     onSubmit={modalMode === 'add' ? handleSubmit : handleEditSubmit}
                     onCancel={handleCloseModal}

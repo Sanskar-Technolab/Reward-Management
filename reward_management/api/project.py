@@ -66,7 +66,7 @@ def add_project(new_image_url):
     try:
         project_doc = frappe.get_doc("Project", "Project")
     except frappe.DoesNotExistError:
-        frappe.throw(_("The 'Project' document does not exist."))
+        frappe.throw(("The 'Project' document does not exist."))
 
     # Clear existing child table rows
     project_doc.set("project_image", [])  # Reset the child table
@@ -86,3 +86,118 @@ def add_project(new_image_url):
         "message": "Project images updated successfully",
         "updated_images": new_image_url
     }
+
+
+# update selected slider image
+@frappe.whitelist()
+def update_selected_project_image(image_name, new_image_url):
+    if not image_name or not new_image_url:
+        return {
+            "success": False,
+            "message": "Image name or new image URL is missing."
+        }
+
+    project_doc = frappe.get_single("Project")
+
+    found = False
+    for idx, row in enumerate(project_doc.project_image):
+        if row.image == image_name:
+            # Directly update the child row's field
+            project_doc.project_image[idx].image = new_image_url
+            found = True
+            break
+
+    if not found:
+        return {
+            "success": False,
+            "message": f"No image found with name: {image_name}"
+        }
+
+    project_doc.save(ignore_version=True)  # Optional: skip versioning if not needed
+    return {
+        "status": "success",
+        "message": "Project image updated successfully"
+    }
+
+
+
+
+# delete selected slider image
+@frappe.whitelist()
+def delete_project_image(image_name):
+    if not image_name:
+        return {
+            "success": False,
+            "message": "Image name is required."
+        }
+    
+    # Fetch the single Project doc
+    project_doc = frappe.get_single("Project")
+
+    # Find and remove the matching row from the child table
+    found = False
+    for row in project_doc.project_image:
+        if row.image == image_name:
+            project_doc.remove(row)
+            found = True
+            break
+
+    if not found:
+        frappe.throw(f"No image found with name: {image_name}")
+
+    # Save changes and commit
+    project_doc.save()
+    frappe.db.commit()
+
+    return {
+        "status": "success",
+        "message": "Project image deleted successfully"
+    }
+
+
+
+# delete all project
+@frappe.whitelist()
+def delete_all_project():
+    # Fetch the single Project doc
+    project_doc = frappe.get_single("Project")
+
+    # Clear all rows in the child table
+    project_doc.set("project_image", [])
+    project_doc.save()
+    frappe.db.commit()
+    return {
+        "status": "success",
+        "message": "All project images deleted successfully"
+    }
+
+
+
+
+# add new slider image------------------------
+@frappe.whitelist()
+def add_new_slider(image_url):
+    if not image_url:
+        return {
+            "success": False,
+            "message":"Image is not found."
+        }
+    try:
+        project_doc = frappe.get_single("Project")
+        # Append the new image URL to the child table
+        new_image_row = project_doc.append("project_image")
+        new_image_row.image = image_url
+        # Save the updated document
+        project_doc.save()
+        frappe.db.commit()
+        return {
+            "status": "success",
+            "message": "Project image added successfully",
+            "image_url": image_url
+        }
+    except Exception as e:
+        return {
+            "success": False,
+            "message": f"Error adding image: {str(e)}"
+        }
+        

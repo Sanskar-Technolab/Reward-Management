@@ -47,6 +47,9 @@ const RewardRequestEdit: React.FC<ViewModalProps> = ({
     showTransactionId,
     showAmount
 }) => {
+
+    const isStatusDisabled = status === 'Approved' || status === 'Cancel';
+
   
     useEffect(() => {
         if (showAmount) {
@@ -96,8 +99,9 @@ const RewardRequestEdit: React.FC<ViewModalProps> = ({
                                 className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full rounded-5px border border-[#dadada] form-control-light mt-2 text-sm"
                                 value={status}
                                 onChange={(e) => setStatus(e.target.value)}
+                                
                             >
-                                <option value="Pending">Pending</option>
+                                <option value="Pending" disabled={isStatusDisabled}>Pending</option>
                                 <option value="Approved">Approved</option>
                                 <option value="Cancel">Cancel</option>
                             </select>

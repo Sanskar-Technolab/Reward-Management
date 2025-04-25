@@ -152,6 +152,7 @@ const Header = ({ toggleSidebar, isSidebarActive }: any) => {
     const handleCloseSearchModal = () => {
         setIsSearchModalOpen(false);
     };
+   
     const handleDropdownToggle = () => {
         setDropdownVisible(prevState => !prevState);
     };

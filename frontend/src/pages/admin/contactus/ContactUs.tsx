@@ -4,21 +4,36 @@ import Pageheader from '../../../components/common/pageheader/pageheader';
 import React, { useState, useEffect } from "react";
 import SuccessAlert from '../../../components/ui/alerts/SuccessAlert';
 import axios from 'axios';
-import { FaTrashAlt } from 'react-icons/fa'; // Import the delete icon
+import { FaTrashAlt } from 'react-icons/fa'; 
+import { Notyf } from 'notyf';
+import 'notyf/notyf.min.css';
+import validator from 'validator';
+
+const notyf = new Notyf({
+    position: {
+        x: 'right',
+        y: 'top',
+    },
+    duration: 5000, 
+});
 
 const SetContactUs: React.FC = () => {
     const [companyAddress, setCompanyAddress] = useState<string>('');
     const [companyEmail, setCompanyEmail] = useState<string>('');
+    const [emailError, setEmailError] = useState<string>('');
     const [companyWebsite, setCompanyWebsite] = useState<string>('');
-    const [companyMobile, setCompanyMobile] = useState<string[]>(['']); // Array to store multiple mobile numbers
+    const [websiteError, setWebsiteError] = useState<string>('');
+    const [companyMobile, setCompanyMobile] = useState<string[]>(['']);
+    const [mobileErrors, setMobileErrors] = useState<string[]>(['']);
     const [companyAboutUs, setCompanyAboutUs] = useState<string>('');
     const [currentAddress, setCurrentAddress] = useState<string>('');
     const [currentEmail, setCurrentEmail] = useState<string>('');
     const [currentWebsite, setCurrentWebsite] = useState<string>('');
-    const [currentMobile, setCurrentMobile] = useState<string[]>([]); // Array for current mobile numbers
+    const [currentMobile, setCurrentMobile] = useState<string[]>([]);
     const [currentAboutUs, setCurrentAboutUs] = useState<string>('');
 
     const [showSuccessAlert, setShowSuccessAlert] = useState(false);
+    const maxAboutUsLength = 100; 
 
     useEffect(() => {
         document.title = 'Company Address';
@@ -26,26 +41,27 @@ const SetContactUs: React.FC = () => {
         if (showSuccessAlert) {
             const timer = setTimeout(() => {
                 setShowSuccessAlert(false);
-                // window.location.reload(); // Reload the page after hiding the alert
             }, 3000);
             return () => clearTimeout(timer);
         }
 
-        // Fetch API function
         const fetchAPI = async () => {
             try {
                 const response = await axios.get(`/api/method/reward_management.api.company_address.get_company_address`);
 
                 if (response.data.message) {
-                    const data = response.data.message; 
-                    console.log("company data", data);
+                    const data = response.data.message;
+                    // console.log("company data", data);
 
-                    // Set the fetched data to the state variables
                     setCurrentAddress(data.address);
                     setCurrentEmail(data.email || '');
                     setCurrentWebsite(data.website || '');
-                    setCurrentMobile(data.mobile_numbers || ['']);  
+                    setCurrentMobile(data.mobile_numbers || ['']);
                     setCurrentAboutUs(data.about_company || '');
+                    
+                    if (data.mobile_numbers && data.mobile_numbers.length > 0) {
+                        setMobileErrors(new Array(data.mobile_numbers.length).fill(''));
+                    }
                 }
             } catch (error) {
                 console.error('Error fetching company address:', error);
@@ -55,7 +71,6 @@ const SetContactUs: React.FC = () => {
         fetchAPI();
     }, [showSuccessAlert]);
 
-    // Set form fields to current data after fetching it
     useEffect(() => {
         if (currentAddress && currentEmail && currentWebsite && currentMobile.length && currentAboutUs) {
             setCompanyAddress(currentAddress);
@@ -66,118 +81,136 @@ const SetContactUs: React.FC = () => {
         }
     }, [currentAddress, currentEmail, currentWebsite, currentMobile, currentAboutUs]);
 
-    // const handleSubmit = async (e: React.FormEvent) => {
-    //     e.preventDefault();
-
-    //     if (!companyAddress || !companyEmail || !companyWebsite || !companyMobile.length || !companyAboutUs) {
-    //         alert('All fields are required!');
-    //         return;
-    //     }
-
-    //     // Ensure all mobile numbers are valid (10 digits)
-    //     for (const mobile of companyMobile) {
-    //         if (mobile.length !== 10) {
-    //             alert('Please enter valid 10-digit mobile numbers!');
-    //             return;
-    //         }
-    //     }
-
-    //     const data = {
-    //         address: companyAddress,
-    //         email: companyEmail,
-    //         website: companyWebsite,
-    //         mobile_numbers: companyMobile,
-    //         about_company: companyAboutUs
-    //     };
-
-    //     try {
-    //         const response = await axios.post('/api/resource/Company Address', data, {
-    //             headers: {
-    //                 'Content-Type': 'application/json',
-    //             },
-    //         });
-
-    //         if (response.status !== 200) {
-    //             throw new Error('Failed to update company address');
-    //         }
-
-    //         console.log('Updated Company Mobile:', companyMobile);
-
-    //         setShowSuccessAlert(true);
-    //     } catch (error) {
-    //         console.error('Error submitting company address:', error);
-    //         alert('Failed to update company address.');
-    //     }
-
-    //     console.log({
-    //         companyAddress,
-    //         companyEmail,
-    //         companyWebsite,
-    //         companyMobile,
-    //         companyAboutUs,
-    //     });
-    // };
-
     const addMobileNumber = () => {
         setCompanyMobile([...companyMobile, '']);
+        setMobileErrors([...mobileErrors, '']);
     };
 
+    const isValidAboutUs = (text: string) => {
+        return validator.isAlphanumeric(text.replace(/\s/g, ''));
+    };
+
+    const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setCompanyEmail(value);
+        
+        if (value && !validator.isEmail(value)) {
+            setEmailError('Please enter a valid email address');
+        } else {
+            setEmailError('');
+        }
+    };
+
+    const handleWebsiteChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setCompanyWebsite(value);
+        
+        if (value && !validator.isURL(value, {
+            require_protocol: false,
+            allow_underscores: true,
+            allow_trailing_dot: false,
+            allow_protocol_relative_urls: false
+        })) {
+            setWebsiteError('Please enter a valid website URL (e.g., example.com or https://example.com)');
+        } else {
+            setWebsiteError('');
+        }
+    };
+
+    const handleMobileChange = (index: number, value: string) => {
+        // Allow only numbers and limit to 10 digits
+        const numericValue = value.replace(/\D/g, '').slice(0, 10);
+        
+        const updatedMobileNumbers = [...companyMobile];
+        updatedMobileNumbers[index] = numericValue;
+        setCompanyMobile(updatedMobileNumbers);
+
+        // Validate mobile number
+        const updatedErrors = [...mobileErrors];
+        if (numericValue && !validator.isMobilePhone(numericValue, 'en-IN')) {
+            updatedErrors[index] = 'Please enter a valid 10-digit mobile number';
+        } else {
+            updatedErrors[index] = '';
+        }
+        setMobileErrors(updatedErrors);
+    };
+
+    const deleteMobileNumber = (index: number) => {
+        const updatedMobileNumbers = companyMobile.filter((_, i) => i !== index);
+        setCompanyMobile(updatedMobileNumbers);
+        
+        const updatedErrors = mobileErrors.filter((_, i) => i !== index);
+        setMobileErrors(updatedErrors);
+    };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-    
-        if (!companyAddress || !companyEmail || !companyWebsite || !companyMobile.length || !companyAboutUs) {
-            alert('All fields are required!');
+
+        // Validate all fields before submission
+        if (!companyAddress) {
+            notyf.error('Company address is required!');
             return;
         }
-    
-        // Ensure all mobile numbers are valid (10 digits)
-        for (const mobile of companyMobile) {
-            if (mobile.length !== 10) {
-                alert('Please enter valid 10-digit mobile numbers!');
-                return;
-            }
+
+        if (!companyEmail) {
+            notyf.error('Company email is required!');
+            return;
         }
-    
+
+        if (emailError) {
+            notyf.error('Please fix email errors before submitting');
+            return;
+        }
+
+        if (websiteError) {
+            notyf.error('Please fix website errors before submitting');
+            return;
+        }
+
+        if (companyMobile.length === 0 || companyMobile.some(m => !m)) {
+            notyf.error('At least one mobile number is required!');
+            return;
+        }
+
+        if (mobileErrors.some(err => err)) {
+            notyf.error('Please fix mobile number errors before submitting');
+            return;
+        }
+
+        if (!companyAboutUs) {
+            notyf.error('About Us is required!');
+            return;
+        }
+
+        if (!isValidAboutUs(companyAddress)) {
+            notyf.error('Please enter a valid Company Address using only letters and numbers.');
+            return;
+        }
+
         const data = {
             address: companyAddress,
             email: companyEmail,
             website: companyWebsite,
-            mobile_numbers: companyMobile, // Mobile numbers as an array
+            mobile_numbers: companyMobile.filter(m => m),
             about_company: companyAboutUs
         };
-    
+
         try {
             const response = await axios.post('/api/method/reward_management.api.company_address.add_or_update_company_address', data, {
                 headers: {
                     'Content-Type': 'application/json',
                 },
             });
-    
+
             if (response.status !== 200) {
                 throw new Error('Failed to update company address');
             }
-    
-            console.log('Updated Company Mobile:', companyMobile);
-    
+
             setShowSuccessAlert(true);
         } catch (error) {
             console.error('Error submitting company address:', error);
-            alert('Failed to update company address.');
+            notyf.error('Failed to update company address.');
         }
-    };
-    
-    
-
-    const handleMobileChange = (index: number, value: string) => {
-        const updatedMobileNumbers = [...companyMobile];
-        updatedMobileNumbers[index] = value;
-        setCompanyMobile(updatedMobileNumbers);
-    };
-
-    const deleteMobileNumber = (index: number) => {
-        const updatedMobileNumbers = companyMobile.filter((_, i) => i !== index);
-        setCompanyMobile(updatedMobileNumbers);
     };
 
     return (
@@ -209,12 +242,13 @@ const SetContactUs: React.FC = () => {
                                             <input
                                                 type="text"
                                                 id="companyAddress"
-                                                className="form-control w-full !rounded-md !bg-light text-defaulttextcolor text-xs font-medium"
+                                                className="form-control w-full !rounded-md !bg-light text-defaulttextcolor text-xs font-medium "
                                                 placeholder="Enter company address"
                                                 value={companyAddress}
                                                 onChange={(e) => setCompanyAddress(e.target.value)}
                                             />
                                         </div>
+                                        
                                         <div className="xl:col-span-12 col-span-12">
                                             <label
                                                 htmlFor="companyEmail"
@@ -225,12 +259,16 @@ const SetContactUs: React.FC = () => {
                                             <input
                                                 type="email"
                                                 id="companyEmail"
-                                                className="form-control w-full !rounded-md !bg-light text-defaulttextcolor text-xs font-medium"
+                                                className={`form-control w-full !rounded-md !bg-light text-defaulttextcolor text-xs font-medium ${emailError ? 'border-red-500' : ''}`}
                                                 placeholder="Enter company email"
                                                 value={companyEmail}
-                                                onChange={(e) => setCompanyEmail(e.target.value)}
+                                                onChange={handleEmailChange}
                                             />
+                                            {emailError && (
+                                                <p className="text-red text-xs mt-1">{emailError}</p>
+                                            )}
                                         </div>
+                                        
                                         <div className="xl:col-span-12 col-span-12">
                                             <label
                                                 htmlFor="companyWebsite"
@@ -241,12 +279,16 @@ const SetContactUs: React.FC = () => {
                                             <input
                                                 type="text"
                                                 id="companyWebsite"
-                                                className="form-control w-full !rounded-md !bg-light text-defaulttextcolor text-xs font-medium"
-                                                placeholder="Enter company website"
+                                                className={`form-control w-full !rounded-md !bg-light text-defaulttextcolor text-xs font-medium ${websiteError ? 'border-red-500' : ''}`}
+                                                placeholder="Enter company website (e.g., example.com)"
                                                 value={companyWebsite}
-                                                onChange={(e) => setCompanyWebsite(e.target.value)}
+                                                onChange={handleWebsiteChange}
                                             />
+                                            {websiteError && (
+                                                <p className="text-red text-xs mt-1">{websiteError}</p>
+                                            )}
                                         </div>
+                                        
                                         {companyMobile.map((mobile, index) => (
                                             <div className="xl:col-span-12 col-span-12" key={index}>
                                                 <label
@@ -259,8 +301,8 @@ const SetContactUs: React.FC = () => {
                                                     <input
                                                         type="tel"
                                                         id={`companyMobile${index}`}
-                                                        className="form-control w-full !rounded-md !bg-light text-defaulttextcolor text-xs font-medium"
-                                                        placeholder="Enter company mobile"
+                                                        className={`form-control w-full !rounded-md !bg-light text-defaulttextcolor text-xs font-medium ${mobileErrors[index] ? 'border-red-500' : ''}`}
+                                                        placeholder="Enter 10-digit mobile number"
                                                         value={mobile}
                                                         onChange={(e) => handleMobileChange(index, e.target.value)}
                                                     />
@@ -274,8 +316,12 @@ const SetContactUs: React.FC = () => {
                                                         </button>
                                                     )}
                                                 </div>
+                                                {mobileErrors[index] && (
+                                                    <p className="text-red text-xs mt-1">{mobileErrors[index]}</p>
+                                                )}
                                             </div>
                                         ))}
+                                        
                                         <div className="xl:col-span-12 col-span-12 text-center">
                                             <button
                                                 type="button"
@@ -284,9 +330,9 @@ const SetContactUs: React.FC = () => {
                                             >
                                                 Add Another Mobile Number
                                             </button>
-                                         </div>
+                                        </div>
 
-                                         <div className="xl:col-span-12 col-span-12">
+                                        <div className="xl:col-span-12 col-span-12">
                                             <label
                                                 htmlFor="companyAboutUs"
                                                 className="block text-sm text-defaulttextcolor font-semibold mb-1"
@@ -299,18 +345,25 @@ const SetContactUs: React.FC = () => {
                                                 placeholder="Enter About Us"
                                                 value={companyAboutUs}
                                                 onChange={(e) => setCompanyAboutUs(e.target.value)}
+                                                maxLength={maxAboutUsLength}
                                             />
+                                            <div className="text-right text-sm">
+                                                {companyAboutUs.length}/{maxAboutUsLength} characters
+                                            </div>
                                         </div>
-                                         <div className='xl:col-span-12 col-span-12 text-center flex justify-between gap-5'>
+                                        
+                                        <div className='xl:col-span-12 col-span-12 text-center flex justify-between gap-5'>
                                             <button
                                                 type="submit"
                                                 className="ti-btn text-white w-full bg-primary"
+                                                disabled={!!emailError || !!websiteError || mobileErrors.some(err => err)}
                                             >
                                                 Submit
                                             </button>
                                             <button
-                                                type="submit"
+                                                type="button"
                                                 className="ti-btn text-defaulttextcolor w-full bg-primary/20"
+                                                onClick={() => window.location.reload()}
                                             >
                                                 Cancel
                                             </button>

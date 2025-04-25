@@ -2,6 +2,10 @@ import frappe
 from frappe import _
 from frappe.utils import now, format_datetime
 from frappe.utils.file_manager import save_file
+from frappe.model.rename_doc import rename_doc
+import json
+
+
 
 @frappe.whitelist()
 def get_all_products():
@@ -90,6 +94,37 @@ def get_all_products_data():
 
     except Exception as e:
         frappe.throw(_("Error fetching products: {0}").format(str(e)))
+
+
+
+
+@frappe.whitelist(allow_guest=False)
+def update_or_rename_product(data):
+    """
+    Rename a Product document if name is changed, then update all fields.
+    """
+    data = json.loads(data)
+    old_name = data.get("old_name")
+    new_name = data.get("product_name")
+
+    if not old_name:
+        frappe.throw("Missing original Product ID")
+
+    # Rename if name changed
+    if new_name != old_name:
+        if frappe.db.exists("Product", new_name):
+            frappe.throw("A product with the new name already exists.")
+        
+        # Rename the Product Doc
+        rename_doc("Product", old_name, new_name, force=True)
+
+    # Now update the renamed doc
+    doc = frappe.get_doc("Product", new_name)
+    doc.update(data)
+    doc.save()
+
+    return {"message": "Product renamed and updated successfully", "name": doc.name}
+
 
 
 @frappe.whitelist()
@@ -358,3 +393,5 @@ def get_product_detail(product_id):
     }
 
     return {"message": product_details}
+
+
