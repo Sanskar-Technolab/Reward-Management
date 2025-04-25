@@ -149,7 +149,9 @@
         align-items: center;
         white-space: nowrap;
         border-radius: 0.5rem;
-        padding: 13px 15px;
+        /* padding: 13px 15px; */
+        padding: 8px 15px;
+        margin-bottom:5px;
         font-size: 0.85rem;
         line-height: 1;
         font-weight: 600;
@@ -195,7 +197,25 @@
     max-height: calc(100vh - 3.75rem); /* Adjust height considering the header height */
 }
 
-.sidebar-link.active {
-    background-color: #3b82f6; 
-    color: white;
-  }
+
+.sidebar-menu-item.active-menu {
+    background-color:black; /* Tailwind gray-800 */
+    --tw-text-opacity: 1;
+    color: #ffffff;
+}
+
+.sidebar-menu-item.active-menu .menu-text {
+    font-weight: bold;
+    color: #ffffff;
+}
+
+
+.sidebar-menu-item.active-menu .sidebaricon {
+    color: #ffffff !important;
+    fill: #ffffff !important;
+}
+
+/* Optional smoother transition for hover/active */
+.sidebaricon {
+    transition: color 0.3s ease, fill 0.3s ease;
+}

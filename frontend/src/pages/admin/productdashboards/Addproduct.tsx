@@ -135,7 +135,7 @@ const AddProduct: React.FC = () => {
 
         if (missingFields.length > 0) {
             const errorMessage = `Please fill the following field${missingFields.length > 1 ? 's' : ''}: ${missingFields.join(', ')}`;
-            console.log(errorMessage);
+            // console.log(errorMessage);
             notyf.error(errorMessage);
             return;
         }
@@ -156,8 +156,10 @@ const AddProduct: React.FC = () => {
         };
 
         try {
-            const response = await axios.post(`/api/method/reward_management.api.product_master.add_product`, data);
-            console.log("Product added successfully:", response.data);
+            await axios.post(`/api/method/reward_management.api.product_master.add_product`, data);
+
+            // const response = await axios.post(`/api/method/reward_management.api.product_master.add_product`, data);
+            // console.log("Product added successfully:", response.data);
             setShowSuccessAlert(true);
             // Navigate after showing the success alert
             setTimeout(() => {
