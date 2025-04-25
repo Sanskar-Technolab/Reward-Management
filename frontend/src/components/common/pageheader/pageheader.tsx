@@ -20,7 +20,7 @@ export default function Pageheader(props: any) {
                     </li>
                     <li className="text-defaultsize text-defaulttextcolor font-semibold hover:text-[var(--primaries)] dark:text-[#8c9097] dark:text-white/50" aria-current="page">
                     {props.mainpagename && (
-                                <i className="ti ti-chevrons-left flex-shrink-0 text-[#8c9097] dark:text-white/50 px-[0.5rem] overflow-visible rtl:rotate-180"></i>
+                                <i className="ti ti-chevrons-right flex-shrink-0 text-[#8c9097] dark:text-white/50 px-[0.5rem] overflow-visible rtl:rotate-180"></i>
                             )}
                         {props.mainpagename}
                       

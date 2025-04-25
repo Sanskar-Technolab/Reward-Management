@@ -59,7 +59,6 @@ def update_redeem_request_status(request_id, action, transaction_id=None, amount
     try:
         redeem_request = frappe.get_doc("Redeem Request", request_id)
         request_action = redeem_request.request_status  # Previous status
-        # print(f"\n\nRedeem Request Status Before: {request_action}, Action Received: {action}")
         
         # Update request_status and timestamps
         redeem_request.request_status = action
@@ -72,54 +71,36 @@ def update_redeem_request_status(request_id, action, transaction_id=None, amount
         if amount:
             redeem_request.amount = amount
         
-        # Fetch the Carpenter associated with the redeem request
+        # Fetch the Customer associated with the redeem request
         carpainter = frappe.get_doc("Customer", {"name": redeem_request.customer_id})
 
         # Handling Cancel after Approved
         if request_action == 'Approved' and action == 'Cancel':
-            # print(f"\n\nHandling Cancel after Approved for Request: {request_id}")
             carpainter.current_points += redeem_request.redeemed_points
-            # carpainter.point_requested = 0
-            # carpainter.point_requested = (carpainter.point_requested or 0) - redeem_request.redeemed_points
             carpainter.redeem_points = (carpainter.redeem_points or 0) - redeem_request.redeemed_points
             redeem_request.current_point_status = carpainter.current_points
-            
-           
-        
+            message = f"Redeem request {request_id} was approved but now cancelled."
+
         # Handling Approval from Cancel
         elif request_action == 'Cancel' and action == 'Approved':
-            # print(f"\n\nHandling Approval after Cancel for Request: {request_id}")
             carpainter.current_points -= redeem_request.redeemed_points
-            # carpainter.point_requested = 0
-            # carpainter.point_requested = (carpainter.point_requested or 0) + redeem_request.redeemed_points
             carpainter.redeem_points = (carpainter.redeem_points or 0) + redeem_request.redeemed_points
             redeem_request.current_point_status = carpainter.current_points
             redeem_request.total_points = carpainter.total_points
             create_bank_balance(redeem_request.name, redeem_request.redeemed_points, transaction_id)
-            
-           
-            # pending_reward_request_approved_sms(redeem_request.mobile_number, redeem_request.redeemed_points,transaction_id)
-        
+            message = f"Redeem request {request_id} was cancelled but now approved."
+
         # Handling New Approvals
         elif action == "Approved":
-            # print(f"\n\nHandling New Approval for Request: {request_id}")
-            # carpainter.point_requested = 0
-
-            # carpainter.point_requested = (carpainter.point_requested or 0) - redeem_request.redeemed_points
             carpainter.redeem_points = (carpainter.redeem_points or 0) + redeem_request.redeemed_points
             create_bank_balance(redeem_request.name, redeem_request.redeemed_points, transaction_id)
-            
-           
-            # pending_reward_request_approved_sms(redeem_request.mobile_number, redeem_request.redeemed_points,transaction_id)
-        
+            message = f"Redeem request {request_id} approved successfully."
+
         # Handling New Cancellations
         elif action == "Cancel":
-            # print(f"\n\nHandling New Cancellation for Request: {request_id}")
             carpainter.current_points += redeem_request.redeemed_points
-            # carpainter.point_requested = 0
-            # carpainter.point_requested = (carpainter.point_requested or 0) - redeem_request.redeemed_points
             redeem_request.current_point_status = carpainter.current_points
-           
+            message = f"Redeem request {request_id} cancelled successfully."
 
         # Save both documents
         redeem_request.save(ignore_permissions=True)
@@ -128,18 +109,20 @@ def update_redeem_request_status(request_id, action, transaction_id=None, amount
         # Commit the transaction
         frappe.db.commit()
         
-        return {"status":200, "success":True, 
-                "message": "Redeem request status updated successfully."
-                }
+        return {
+            "status": 200, 
+            "success": True, 
+            "message": message
+        }
     
     except Exception as e:
-        frappe.log_error(frappe.get_traceback(), _("Error in update_redeem_request_status"))
-        # frappe.throw(_("Failed to update redeem request status: {0}").format(str(e)))
-        return{
-            "success":False,
-            "message": f"Failed to update redeem request status: {str(e)}"
+        frappe.log_error(f"Error updating redeem request status: {str(e)}")
+        return {
+            "status": 500, 
+            "success": False, 
+            "message": f"An error occurred: {str(e)}"
         }
-        
+
         
 # @frappe.whitelist()
 # def update_redeem_request_status(request_id, action, transaction_id=None, amount=None):

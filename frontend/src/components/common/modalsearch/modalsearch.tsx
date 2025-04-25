@@ -6,7 +6,6 @@ import '../../../assets/css/style.css';
 
 const Modalsearch = ({ isOpen, onClose }: any) => {
   const modalRef: any = useRef(null);
-  const [isHover, setIsHover] = useState(false);
   const [_show, setShow] = useState(isOpen);
   const [show1, setShow1] = useState(false);
   const [InputValue, setInputValue] = useState("");
@@ -15,18 +14,33 @@ const Modalsearch = ({ isOpen, onClose }: any) => {
   const [searchval, setsearchval] = useState("Type something");
   const [NavData, setNavData] = useState([]);
 
-  // Retrieve roles from localStorage
   const storedRoles = localStorage.getItem('user_roles');
   const roles = storedRoles ? JSON.parse(storedRoles) : [];
   const carpenterrole = localStorage.getItem('carpenterrole');
-  // console.log(carpenterrole);
-  
+
+  // Prevent background scrolling when modal is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+
+    // Cleanup: Re-enable scrolling when component unmounts
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
+  }, [isOpen]);
+
   useEffect(() => {
     setShow(isOpen);
   }, [isOpen]);
 
   const handleClose = () => {
     setShow(false);
+    setInputValue("");
+    setShow1(false);
+    setShow2(false);
     if (onClose) onClose();
   };
 
@@ -46,7 +60,6 @@ const Modalsearch = ({ isOpen, onClose }: any) => {
     };
   }, [isOpen]);
 
-  // Filter SidebarData based on roles
   const filterSidebarData = () => {
     if (roles.includes("Administrator")) {
       const addUserIndex = SidebarData.findIndex(item => item.title === 'Add User');
@@ -105,14 +118,18 @@ const Modalsearch = ({ isOpen, onClose }: any) => {
     }
   };
 
+  const handleLinkClick = () => {
+    handleClose();
+  };
+
   return (
     <Fragment>
       {isOpen && (
-        <div id="search-modal" className="hs-overlay ti-modal mt-[1.75rem]">
+        <div id="search-modal" className="hs-overlay ti-modal mt-[1.75rem]  ">
           <div className="ti-modal-box" ref={modalRef}>
             <div className="ti-modal-content !border !border-defaultborder dark:!border-defaultborder !rounded-[0.5rem]">
-              <div className="ti-modal-body m-4">
-                <div className="input-group border-[2px] border-[var(--primaries)] rounded-[0.25rem] w-full flex">
+              <div className="ti-modal-body m-2">
+                <div className="input-group border-[1px] border-[var(--primaries)]  w-full flex">
                   <input
                     type="search"
                     className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control border-0 px-2 !text-[0.8rem] w-full focus:ring-transparent"
@@ -143,10 +160,7 @@ const Modalsearch = ({ isOpen, onClose }: any) => {
                             <Link
                               to={`${e.path}/`}
                               className="search-result-item"
-                              onClick={() => {
-                                setShow1(false);
-                                setInputValue("");
-                              }}
+                              onClick={handleLinkClick}
                             >
                               {e.title}
                             </Link>

@@ -63,7 +63,7 @@ export const SidebarData = [
       },
       {
         title: 'Product QR History',
-    path: '/product-qr-history',
+        path: '/product-qr-history',
         icon: <VscCircle />,
         cName: 'sub-nav'
       },
@@ -72,7 +72,6 @@ export const SidebarData = [
 
   {
     title: 'Gift Dashboard',
-    // path: '/admin-dashboard',
     icon: <IconGift className='sidebaricon' />,
     iconClosed:<SlArrowRight style={iconStyle}  /> ,
     iconOpened: <SlArrowDown style={iconStyle}  />,
@@ -84,12 +83,7 @@ export const SidebarData = [
         icon: <VscCircle />,
         cName: 'sub-nav'
       },
-    //   {
-    //     title: 'Product QR History',
-    // path: '/product-qr-history',
-    //     icon: <VscCircle />,
-    //     cName: 'sub-nav'
-    //   },
+  
     ]
   },
   {
@@ -99,7 +93,6 @@ export const SidebarData = [
   },
   {
     title: 'Customer Dashboard',
-    // path: '/carpenter-dashboard',
     icon: <GrUserWorker className='sidebaricon'  />,
 
     iconClosed:<SlArrowRight  style={iconStyle} /> ,
@@ -144,11 +137,7 @@ export const SidebarData = [
     icon: <IconCoins className='sidebaricon'  />
   },
  
-  // {
-  //   title: 'Points Conversion Rate ',
-  //   path: '/point-conversion',
-  //   icon: <IconCashRegister className='sidebaricon'  />
-  // },
+
   {
     title: 'Set Company Address',
     path: '/company-address',

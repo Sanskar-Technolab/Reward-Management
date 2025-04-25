@@ -47,6 +47,7 @@ const CarpenterRewardRequest: React.FC = () => {
     const [fromDate, setFromDate] = useState<Date | null>(null);
     const [toDate, setToDate] = useState<Date | null>(null);
     const [amount, setAmount] = useState<string>(''); 
+    const [alertMessage, setAlertMessage] = useState('');
 
     const { data: rewardrequestData } = useFrappeGetDocList<RewardRequest>('Redeem Request', {
         fields: ['name', 'customer_id', 'total_points', 'current_point_status', 'redeemed_points', 'received_date', 'received_time', 'request_status', 'approved_on', 'approve_time', 'transection_id', 'amount'],
@@ -65,7 +66,7 @@ const CarpenterRewardRequest: React.FC = () => {
         try {
             const response = await axios.post(`/api/method/reward_management.api.admin_redeem_request.calculate_amount`, { request_id: requestId });
             if (response.data) {
-                console.log("amount count-----", response);
+                // console.log("amount count-----", response);
                 setAmount(response.data.message.amount); 
             } else {
                 setAmount('');
@@ -98,7 +99,7 @@ const CarpenterRewardRequest: React.FC = () => {
         
     }));
 
-    console.log("formattedData------->", formattedData);
+    // console.log("formattedData------->", formattedData);
 
     const parseDateString = (dateString: string): Date | null => {
         console.log("Input dateString:", dateString); 
@@ -217,9 +218,11 @@ const CarpenterRewardRequest: React.FC = () => {
             const response = await axios.post(`/api/method/reward_management.api.admin_redeem_request.update_redeem_request_status`, data);
 
             if (response.status === 200) {
-                console.log("Redeem Request updated successfully");
+                console.log("Redeem Request updated successfully",response.data.message);
+
              
                 setShowSuccessAlert(true);
+                setAlertMessage(`${response.data.message.message}`);
                 handleCloseModal();
                 
             } else {
@@ -331,7 +334,8 @@ const CarpenterRewardRequest: React.FC = () => {
                     showCollectButton={false}
                     showAnotherButton={false}
                     showMessagesecond={false}
-                    message="Reward Request Update successfully!" onClose={function (): void {
+                    message={alertMessage}
+                    onClose={function (): void {
                         throw new Error('Function not implemented.');
                     } } onCancel={function (): void {
                         throw new Error('Function not implemented.');

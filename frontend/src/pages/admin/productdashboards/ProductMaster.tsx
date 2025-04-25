@@ -67,7 +67,7 @@ const ProductMaster: React.FC = () => {
         }
     }, [showSuccessAlert]);
 
-    console.log("data", productsData);
+    // console.log("data", productsData);
 
 
     // Filter the data based on search query
@@ -121,14 +121,18 @@ const ProductMaster: React.FC = () => {
         if (selectedProduct) {
             setLoading(true);
             try {
-                const response = await axios.post(`/api/method/reward_management.api.print_qr_code.create_product_qr`, {
+                await axios.post(`/api/method/reward_management.api.print_qr_code.create_product_qr`, {
                     product_name: selectedProduct.name,
                     quantity: quantity
                 });
+                // const response = await axios.post(`/api/method/reward_management.api.print_qr_code.create_product_qr`, {
+                //     product_name: selectedProduct.name,
+                //     quantity: quantity
+                // });
                 setAlertTitle('Success');
                 setAlertMessage('QR Codes created successfully!');
                 setShowSuccessAlert(true);
-                console.log('QR Codes created successfully:', response.data);
+                // console.log('QR Codes created successfully:', response.data);
 
 
                 closeModal();
@@ -152,7 +156,7 @@ const ProductMaster: React.FC = () => {
 
 
     const handleAddProductClick = () => {
-        console.log("Add Product button clicked");
+        // console.log("Add Product button clicked");
         navigate('/add-product');
 
     };
@@ -221,8 +225,8 @@ const ProductMaster: React.FC = () => {
                             buttonOnClick={handleAddProductClick}
                         />
                         <div className="box-body m-5">
-                            <div className="table-responsive pt-2">
-                                <table className="table whitespace-nowrap min-w-full">
+                            <div className="table-responsive pt-2 overflow-auto">
+                                <table className="table whitespace-nowrap min-w-full overflow-auto">
                                     <thead>
                                         <tr>
                                             <th scope="col" className="text-start p-3 text-sm text-defaulttextcolor font-semibold border border-gray-300">S.No</th>
