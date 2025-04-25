@@ -1,5 +1,3 @@
-// components/common/BoxHeader.tsx
-
 import React, { useState } from 'react';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
@@ -12,19 +10,27 @@ interface BoxHeaderProps {
     onAddButtonClick: () => void;
     buttonText?: string;
     showButton?: boolean;
-    showToDate?:boolean;
-    showFromDate?:boolean;
+    showToDate?: boolean;
+    showFromDate?: boolean;
     icon?: string;
     onDateFilter?: (from: Date | null, to: Date | null) => void; 
 }
 
-const BoxHeader: React.FC<BoxHeaderProps> = ({ title, onSearch, onAddButtonClick, icon, buttonText = "Add Product", showButton = true,onDateFilter,showFromDate=false, showToDate=false }) => {
+const BoxHeader: React.FC<BoxHeaderProps> = ({
+    title,
+    onSearch,
+    onAddButtonClick,
+    icon,
+    buttonText = "Add Product",
+    showButton = true,
+    onDateFilter,
+    showFromDate = false,
+    showToDate = false,
+}) => {
     const [fromDate, setFromDate] = useState<Date | null>(null);
     const [toDate, setToDate] = useState<Date | null>(null);
     const [searchValue, setSearchValue] = useState('');
   
-
-
     const notyf = new Notyf({
         position: {
             x: 'right',
@@ -48,6 +54,7 @@ const BoxHeader: React.FC<BoxHeaderProps> = ({ title, onSearch, onAddButtonClick
             if (onDateFilter) onDateFilter(date, toDate);
         }
     };
+
     const handleToDateChange = (date: Date | null) => {
         if (date && fromDate && date < fromDate) {
             notyf.error("To Date cannot be less than From Date");
@@ -58,6 +65,18 @@ const BoxHeader: React.FC<BoxHeaderProps> = ({ title, onSearch, onAddButtonClick
         }
     };
 
+    const handleClearFilters = () => {
+        setFromDate(null);
+        setToDate(null);
+        setSearchValue('');
+        if (onDateFilter) {
+            onDateFilter(null, null); // Clear date filters
+        }
+        onSearch(''); // Clear the search
+    };
+
+    // Determine whether to show the "Clear Filters" button
+    const shouldShowClearButton = searchValue || fromDate || toDate;
 
     return (
         <div className="box-header flex justify-between items-center p-4 border-b">
@@ -65,31 +84,29 @@ const BoxHeader: React.FC<BoxHeaderProps> = ({ title, onSearch, onAddButtonClick
                 {title}
             </div>
             <div className="flex me-3 my-1 h-[36px]">
-            {showFromDate && (
-                <div className='flex '>
-                    <DatePicker
-                        selected={fromDate}
-                        onChange={handleFromDateChange}
-                        dateFormat="dd-MM-yyyy"
-                        placeholderText="From Date"
-                        className="border border-[#dadada] mb-[0.25rem] text-[0.8rem] ti-form-control form-control-sm rounded-sm mr-2 p-0 py-[3px] px-2 outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada]"
-                    />
-              
-                </div>
-                      )}
-                {showToDate && (
-                <div className='flex '>
-                    <DatePicker
-                        selected={toDate}
-                        onChange={handleToDateChange}
-                        dateFormat="dd-MM-yyyy"
-                        placeholderText="To Date"
-                        className="border border-[#dadada] mb-[0.25rem] text-[0.8rem] ti-form-control form-control-sm rounded-sm mr-2 p-0 py-[3px] px-2 outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada]"
-                    />
-                </div>
+                {showFromDate && (
+                    <div className='flex'>
+                        <DatePicker
+                            selected={fromDate}
+                            onChange={handleFromDateChange}
+                            dateFormat="dd-MM-yyyy"
+                            placeholderText="From Date"
+                            className="border border-[#dadada] mb-[0.25rem] text-[0.8rem] ti-form-control form-control-sm rounded-sm mr-2 p-0 py-[3px] px-2 outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada]"
+                        />
+                    </div>
                 )}
-
-                <div className='flex '>
+                {showToDate && (
+                    <div className='flex'>
+                        <DatePicker
+                            selected={toDate}
+                            onChange={handleToDateChange}
+                            dateFormat="dd-MM-yyyy"
+                            placeholderText="To Date"
+                            className="border border-[#dadada] mb-[0.25rem] text-[0.8rem] ti-form-control form-control-sm rounded-sm mr-2 p-0 py-[3px] px-2 outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada]"
+                        />
+                    </div>
+                )}
+                <div className='flex'>
                     <input
                         className="border border-[#dadada] mb-[0.25rem] text-[0.8rem] ti-form-control form-control-sm rounded-sm outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada]"
                         type="text"
@@ -99,11 +116,25 @@ const BoxHeader: React.FC<BoxHeaderProps> = ({ title, onSearch, onAddButtonClick
                         aria-label=".form-control-sm example"
                     />
                 </div>
+                
+                {/* Conditionally render the "Clear Filters" button */}
+                {shouldShowClearButton && (
+                    <div className='flex ms-2'>
+                        <button
+                            type="button"
+                            className="ti-btn !py-1 !px-2 text-xs !text-white !font-medium bg-[var(--primaries)]"
+                            onClick={handleClearFilters}
+                        >
+                            Clear Filters
+                        </button>
+                    </div>
+                )}
+
                 {showButton && (
                     <div className='flex ms-2'>
                         <button
                             type="button"
-                            className="ti-btn !py-1 !px-2 text-xs !text-white !font-medium bg-[var(--primaries)] "
+                            className="ti-btn !py-1 !px-2 text-xs !text-white !font-medium bg-[var(--primaries)]"
                             onClick={onAddButtonClick}
                         >
                             {icon && <i className={`${icon} font-semibold align-middle me-1`}></i>}
