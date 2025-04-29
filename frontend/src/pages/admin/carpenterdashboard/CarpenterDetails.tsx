@@ -64,7 +64,7 @@ const CarpenterDetails: React.FC = () => {
         validMobileNumbers.includes(carpenter.mobile_number)
     ).map(carpenter => ({
         ...carpenter, // Spread the original carpenter data
-        enabled: carpenter.enabled === 1 ? 'Active' : 'Deactive'
+        enabled: carpenter.enabled === 1 ? 'Active' : 'DeActive'
     })) || [];
 
     // Function to filter data based on search query
@@ -74,16 +74,16 @@ const CarpenterDetails: React.FC = () => {
             if (typeof status === 'string') {
                 // Match 'active' or 'deactive' keywords with 'Active' or 'Deactive'
                 if (query === 'active') {
-                    return status.toLowerCase() === 'active';  // Matches 'Active'
+                    return status.toLowerCase() === 'active';  
                 } else if (query === 'deactive') {
-                    return status.toLowerCase() === 'deactive';  // Matches 'Deactive'
+                    return status.toLowerCase() === 'deactive';  
                 }
             } else if (typeof status === 'number') {
                 // Match numeric values: 1 for 'Active', 0 for 'Deactive'
                 if (query === 'active') {
                     return status === 1;  // Matches 1
                 } else if (query === 'deactive') {
-                    return status === 0;  // Matches 0
+                    return status === 0; 
                 }
             }
             return false;
@@ -146,7 +146,7 @@ const CarpenterDetails: React.FC = () => {
 
     const handleSaveStatus = async () => {
         if (selectedCarpenter) {
-            const enabledValue = updatedStatus === 'Active' ? 1 : 0; // Use 1 for Active and 0 for Deactive
+            const enabledValue = updatedStatus === 'Active' ? 1 : 0; 
             try {
                 const response = await fetch(`/api/resource/Customer/${selectedCarpenter.name}`, {
                     method: 'PUT',
@@ -223,7 +223,7 @@ const CarpenterDetails: React.FC = () => {
                                     { header: 'Available Points', accessor: 'current_points' },
                                     { header: 'Redeemed Points ', accessor: 'redeem_points' },
                                     {
-                                        header: 'Active/Deactive',
+                                        header: 'Active/DeActive',
                                         accessor: 'enabled',
 
                                     },
@@ -281,7 +281,7 @@ const CarpenterDetails: React.FC = () => {
                                         onChange={handleStatusChange}
                                     >
                                         <option value="Active">Active</option>
-                                        <option value="Deactive">Deactive</option>
+                                        <option value="DeActive">DeActive</option>
                                     </select>
                                 </div>
 
@@ -308,7 +308,8 @@ const CarpenterDetails: React.FC = () => {
             )}
 
             {showSuccessAlert && (
-                <SuccessAlert title={alertTitle} message={alertMessage} 
+                <SuccessAlert title={alertTitle} 
+                    message={alertMessage} 
                 onClose={() => setShowSuccessAlert(false)} 
                 onCancel={function (): void {
                     throw new Error('Function not implemented.');
