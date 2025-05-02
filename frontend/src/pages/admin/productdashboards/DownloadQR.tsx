@@ -36,7 +36,7 @@ const DownloadQRCode: React.FC = () => {
     const [modalOpen, setModalOpen] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState<DownloadProductQRCode | null>(null);
     // const [qrSize, setQRSize] = useState<number>(50); 
-    const itemsPerPage = 5;
+    const itemsPerPage = 10;
     const navigate = useNavigate();
     const urlParams = new URLSearchParams(window.location.search);
     const productName = urlParams.get('product');
@@ -416,10 +416,7 @@ const DownloadQRCode: React.FC = () => {
                                     { header: 'Total QR', accessor: 'total_product' },
                                 ]}
                                 // data={data}
-                                data={filteredData.slice(
-                                    (currentPage - 1) * itemsPerPage,
-                                    currentPage * itemsPerPage
-                                  )}
+                                data={filteredData}
                                 currentPage={currentPage}
                                 itemsPerPage={itemsPerPage}
                                 handlePrevPage={handlePrevPage}

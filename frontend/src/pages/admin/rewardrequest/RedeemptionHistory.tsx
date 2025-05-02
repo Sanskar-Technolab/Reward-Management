@@ -160,7 +160,7 @@ const RedeemptionHistory: React.FC = () => {
             <Pageheader
                 currentpage={"Reward History"}
                 activepage={"/redeemption-request"}
-             
+                mainpagename="Reward History"
                 activepagename="Reward Request"
         
             />

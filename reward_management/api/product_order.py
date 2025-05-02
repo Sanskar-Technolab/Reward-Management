@@ -11,6 +11,11 @@ from frappe.utils import nowdate
 # Create New Product Order --------------
 @frappe.whitelist()
 def create_new_product_order(product_name, fullname, city, mobile, pincode, address, email):
+    if not mobile and not fullname:
+        return{
+            "success": False,
+            "message": "Mobile number and full name are required."
+        }
     try:
         # Fetch product_id from product_name
         product_id = frappe.db.get_value("Gift Product", {"gift_product_name": product_name}, "name")

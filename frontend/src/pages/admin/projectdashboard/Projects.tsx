@@ -349,10 +349,10 @@ const Project: React.FC = () => {
 
   return (
     <>
-      <Pageheader currentpage={"Projects"} activepage={"/project"} activepagename="Projects" />
+      <Pageheader currentpage={"Projects"} activepage={"/project"} activepagename="" />
       <div className="grid grid-cols-12 gap-x-6 p-6">
-        <div className="col-span-12 flex justify-between items-center">
-          <h2 className="text-[var(--primaries)] text-xl font-semibold">Projects</h2>
+        <div className="col-span-12 flex justify-end items-center">
+          {/* <h2 className="text-[var(--primaries)] text-xl font-semibold">Projects</h2> */}
           <button
             onClick={handleAddNewProject}
             className="ti-btn !py-1 !px-2 text-xs !text-white !font-medium bg-[var(--primaries)]"

@@ -165,7 +165,7 @@ useEffect(() => {
   const sliderSettings = {
     dots: true,
     infinite: true,
-    autoplay:true,
+    // autoplay:true,
     autoplaySpeed:2000,                            
     pauseOnHover:true, 
     arrows:false,
@@ -192,7 +192,7 @@ useEffect(() => {
     {loading && <div>Loading...</div>}
 
     {/* Slider Section */}
-    {!loading && instructions.length > 0 && (
+    {!loading && instructions.length > 1 && (
       <Slider {...sliderSettings}>
         {instructions.map((instruction, index) => (
           <div key={index} className="px-2">
@@ -204,6 +204,17 @@ useEffect(() => {
           </div>
         ))}
       </Slider>
+    )}
+
+    {/* Single Image if only one instruction */}
+    {!loading && instructions.length === 1 && (
+      <div className="px-2">
+        <img
+          src={`${window.origin}${instructions[0].image}`}
+          alt={instructions[0].instruction_name}
+          className="w-full lg:h-[450px] md:h-[300px] sm:h-[200px] object-fill"
+        />
+      </div>
     )}
 
     {/* Show error message if no instructions */}
@@ -223,7 +234,7 @@ useEffect(() => {
                     </p>
                   </div>
                   <div className="grid grid-cols-12 xl:gap-y-0 gap-4">
-                    <div className="category-link xxl:col-span-4 xl:col-span-3 lg:col-span-6 md:col-span-6 sm:col-span-12 col-span-12 p-4 bg-white shadow-lg rounded-lg transition-colors duration-300 hover:bg-purple-50 dark:bg-gray-800 dark:hover:bg-purple-900">
+                    <div className="category-link xxl:col-span-4 xl:col-span-4 lg:col-span-6 md:col-span-6 sm:col-span-12 col-span-12 p-4 bg-white shadow-lg rounded-lg transition-colors duration-300 hover:bg-purple-50 dark:bg-gray-800 dark:hover:bg-purple-900">
                       <div className="flex flex-row items-start mb-4 ">
                         <span className="avatar avatar-lg bg-black rounded-[5px] text-white inline-flex items-center justify-center w-12 h-12 mb-2 mr-3">
                           <i className="ti ti-wallet text-[1.25rem]"></i>
@@ -238,7 +249,7 @@ useEffect(() => {
                         </div>
                       </div>
                     </div>
-                    <div className="category-link xxl:col-span-4 xl:col-span-3 lg:col-span-6 md:col-span-6 sm:col-span-12 col-span-12 p-4 bg-white shadow-lg rounded-lg transition-colors duration-300 hover:bg-purple-50 dark:bg-gray-800 dark:hover:bg-purple-900">
+                    <div className="category-link xxl:col-span-4 xl:col-span-4 lg:col-span-6 md:col-span-6 sm:col-span-12 col-span-12 p-4 bg-white shadow-lg rounded-lg transition-colors duration-300 hover:bg-purple-50 dark:bg-gray-800 dark:hover:bg-purple-900">
                       <div className="flex flex-row items-start mb-4 ">
                         <span className="avatar avatar-lg bg-black rounded-[5px] text-white inline-flex items-center justify-center w-12 h-12  mb-2 mr-3">
                           <i className="ti ti-wallet text-[1.25rem]"></i>
@@ -253,7 +264,7 @@ useEffect(() => {
                         </div>
                       </div>
                     </div>
-                    <div className="category-link xxl:col-span-4 xl:col-span-3 lg:col-span-6 md:col-span-6 sm:col-span-12 col-span-12 p-4 bg-white shadow-lg rounded-lg transition-colors duration-300 hover:bg-purple-50 dark:bg-gray-800 dark:hover:bg-purple-900">
+                    <div className="category-link xxl:col-span-4 xl:col-span-4 lg:col-span-6 md:col-span-6 sm:col-span-12 col-span-12 p-4 bg-white shadow-lg rounded-lg transition-colors duration-300 hover:bg-purple-50 dark:bg-gray-800 dark:hover:bg-purple-900">
                       <div className="flex flex-row items-start mb-4 ">
                         <span className="avatar avatar-lg bg-black rounded-[5px] text-white inline-flex items-center justify-center w-12 h-12 mb-2 mr-3">
                           <i className="ti ti-wallet text-[1.25rem]"></i>
@@ -278,7 +289,7 @@ useEffect(() => {
                   <div className="grid grid-cols-12 xl:gap-y-0 gap-4">
                     <Link
                       to="/product-catalogue"
-                      className="category-link xxl:col-span-4 xl:col-span-3 lg:col-span-6 md:col-span-6 sm:col-span-12 col-span-12 p-4 bg-white shadow-lg rounded-lg transition-colors duration-300 hover:bg-purple-50 dark:bg-gray-800 dark:hover:bg-purple-900 "
+                      className="category-link xxl:col-span-4 xl:col-span-4 lg:col-span-6 md:col-span-6 sm:col-span-12 col-span-12 p-4 bg-white shadow-lg rounded-lg transition-colors duration-300 hover:bg-purple-50 dark:bg-gray-800 dark:hover:bg-purple-900 "
                     >
                       <div className="flex flex-row items-start mb-4 ">
                         <div className="bg-black/20 rounded-[10px] w-12 h-12 flex items-center justify-center">
@@ -297,7 +308,7 @@ useEffect(() => {
                    
                     <Link
                       to="/point-details"
-                      className="category-link xxl:col-span-4 xl:col-span-3 lg:col-span-6 md:col-span-6 sm:col-span-12 col-span-12 p-4 bg-white shadow-lg rounded-lg transition-colors duration-300 hover:bg-purple-50 dark:bg-gray-800 dark:hover:bg-purple-900 "
+                      className="category-link xxl:col-span-4 xl:col-span-4 lg:col-span-6 md:col-span-6 sm:col-span-12 col-span-12 p-4 bg-white shadow-lg rounded-lg transition-colors duration-300 hover:bg-purple-50 dark:bg-gray-800 dark:hover:bg-purple-900 "
                     >
                       <div className="flex flex-row items-start mb-4">
                         <div className="bg-black/20 rounded-[10px] w-12 h-12 flex items-center justify-center">
@@ -316,7 +327,7 @@ useEffect(() => {
                   
                     <Link
                       to="/help-and-support"
-                      className="category-link xxl:col-span-4 xl:col-span-3 lg:col-span-6 md:col-span-6 sm:col-span-12 col-span-12 p-4 bg-white shadow-lg rounded-lg transition-colors duration-300 hover:bg-purple-50 dark:bg-gray-800 dark:hover:bg-purple-900"
+                      className="category-link xxl:col-span-4 xl:col-span-4 lg:col-span-6 md:col-span-6 sm:col-span-12 col-span-12 p-4 bg-white shadow-lg rounded-lg transition-colors duration-300 hover:bg-purple-50 dark:bg-gray-800 dark:hover:bg-purple-900"
                     >
                       <div className="flex flex-row items-start mb-4 ">
                         <div className="bg-black/20 rounded-[10px] w-12 h-12 flex items-center justify-center">

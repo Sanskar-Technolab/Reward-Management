@@ -100,7 +100,7 @@ const Sidebar = ({ isSidebarActive }: any) => {
                 />
             </div>
             <div className='main-sidebar'>
-                <ul>
+                <ul className='overflow-y-scroll'>
                     {itemsToRender.map((item, index) => (
                         item.subNav ? (
                             <SubMenu
