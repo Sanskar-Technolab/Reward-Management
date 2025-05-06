@@ -8,7 +8,8 @@ import { useFrappeGetDocList } from 'frappe-react-sdk';
 import SuccessAlert from '../../../components/ui/alerts/SuccessAlert';
 import EditModalComponent from '../../../components/ui/models/ProductOrderRequestEdit';
 import axios from 'axios';
-
+import { Notyf } from 'notyf';
+import "notyf/notyf.min.css";
 
 interface ProductOrder {
     name: string;
@@ -30,6 +31,26 @@ interface ProductOrder {
     approved_time?:string;
 }
 
+const notyf = new Notyf({
+    duration: 3000,
+    position: {
+        x: 'right',
+        y: 'top',
+    },
+    types: [
+        {
+            type: 'success',
+            background: '#4caf50',
+            icon: false,
+        },
+        {
+            type: 'error',
+            background: '#f44336',
+            icon: false,
+        },
+    ],
+});
+
 const ProductOrder: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(5);
@@ -38,6 +59,7 @@ const ProductOrder: React.FC = () => {
     const [toDate, setToDate] = useState<Date | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [showSuccessAlert, setShowSuccessAlert] = useState(false);
+    const [alertMessage, setAlertMessage] = useState("");
     const [selectedOrderRequest, setSelectedOrderRequest] = useState<ProductOrder | null>(null); 
 
 
@@ -96,7 +118,7 @@ const ProductOrder: React.FC = () => {
     };
 
     const handleAddProductClick = () => {
-        console.log("Add Product button clicked");
+        // console.log("Add Product button clicked");
     };
 
     // const formatDate = (dateString: string) => {
@@ -126,12 +148,12 @@ const ProductOrder: React.FC = () => {
 
     const parseDateString = (dateString: string): Date | null => {
         if (typeof dateString !== 'string') {
-            console.error("Expected a string, but received:", dateString);
+            // console.error("Expected a string, but received:", dateString);
             return null;
         }
         const parts = dateString.split('-');
         if (parts.length !== 3) {
-            console.error("Invalid date format:", dateString);
+            // console.error("Invalid date format:", dateString);
             return null;
         }
         const day = parseInt(parts[0], 10);
@@ -197,7 +219,7 @@ const ProductOrder: React.FC = () => {
     }
     
     const handleSubmit = async () => {
-        console.log('Submit clicked');
+        // console.log('Submit clicked');
         if (!selectedOrderRequest) return;
     
         // Get current date and time
@@ -221,24 +243,25 @@ const ProductOrder: React.FC = () => {
             const response = await axios.put(`/api/method/reward_management.api.product_order.update_product_order`, data);
     
             if (response.status === 200) {
-                console.log("Product Order updated successfully");
+                // console.log("Product Order updated successfully");
     
                 // Show success alert and close modal
                 setShowSuccessAlert(true);
+                setAlertMessage(`${response.data.message.message}`);
                 handleCloseModal();
             } else {
                 console.error("Failed to update Product Order Request:", response.data);
-                alert('Failed to update Product Order Request.');
+                notyf.error(`Failed to update Product Order Request: ${response.data.message}`);
             }
         } catch (error) {
             console.error("Error:", error.message || error);
-            alert('An error occurred while updating the Product Order Request.');
+            notyf.error(`Failed to update Product Order Request: ${error}`);
         }
     };
     
 
     const handleCancel = () => {
-        console.log('Cancel clicked');
+        // console.log('Cancel clicked');
         setIsModalOpen(false); 
     }
 
@@ -336,7 +359,7 @@ const ProductOrder: React.FC = () => {
                     showCollectButton={false}
                     showAnotherButton={false}
                     showMessagesecond={false}
-                    message="Product Order Update successfully!" 
+                    message={alertMessage}
                     onClose={function (): void {
                         throw new Error('Function not implemented.');
                     } } 

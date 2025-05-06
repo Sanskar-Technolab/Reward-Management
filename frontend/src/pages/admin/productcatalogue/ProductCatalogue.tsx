@@ -169,8 +169,8 @@ const ProductCatalogue: React.FC = () => {
             handleCloseModal();
             mutateProductCategory();
         } catch (error) {
-            console.error("Error submitting the form:", error);
-            alert("An error occurred while submitting the form. Please try again.");
+            console.log("Error submitting the form:", error);
+            notyf.error(`Failed to submit the form. Please try again. ${error}`);
         }
     };
 
@@ -208,7 +208,7 @@ const ProductCatalogue: React.FC = () => {
                 }
             );
 
-            console.log("delete response", response);
+            // console.log("delete response", response);
 
             if (response.data.data === "ok") {
                 setAlertMessage("Product Category deleted successfully!");
@@ -217,8 +217,8 @@ const ProductCatalogue: React.FC = () => {
                 setIsConfirmDeleteModalOpen(false);
                 mutateProductCategory();
             } else {
-                console.warn("Unexpected response:", response);
-                alert("Failed to delete Product Category. Please try again.");
+                console.log("Unexpected response:", response);
+                notyf.error(`Failed to delete Product Category. ${response.data}`);
             }
         } catch (error) {
             if (error.response) {
@@ -237,11 +237,11 @@ const ProductCatalogue: React.FC = () => {
                         notyf.error(exceptionMessage);
                     }
                 } else {
-                    alert("Failed to delete Product Category. Please try again.");
+                    notyf.error(`Failed to delete Product Category. Please try again. ${error}`);
                 }
             } else {
-                console.error("Error deleting Product Category:", error);
-                alert("Failed to delete Product Category. Please try again.");
+                console.log("Error deleting Product Category:", error);
+                notyf.error(`Failed to delete Product Category. Please try again. ${error}`);
             }
         }
     };

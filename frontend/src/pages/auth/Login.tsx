@@ -484,7 +484,7 @@ const Login = () => {
                             </div>
 
                             <div className="text-center mb-5">
-                                <p className="text-lg font-semibold">
+                                <p className="text-lg font-semibold ">
                                     {currentForm === "login" && "Login"}
                                     {currentForm === "register" && "Registration"}
                                     {currentForm === "carpenterLogin" && "Customer Login"}
@@ -497,10 +497,10 @@ const Login = () => {
                             </div>
 
                             <div className="flex justify-evenly border-b mb-6 gap-4 font-semibold text-sm">
-                                <Button onClick={() => setCurrentForm('login')} className={`flex-1 bg-white text-defaulttextcolor ${currentForm === 'login' ? 'border-b-2 border-primary text-primary' : ''}`}>
+                                <Button onClick={() => setCurrentForm('login')} className={`flex-1 bg-white text-defaulttextcolor  ${currentForm === 'login' ? 'border-b-2 border-primary text-primary underline' : ''}`}>
                                     Admin
                                 </Button>
-                                <Button onClick={() => setCurrentForm('carpenterLogin')} className={`flex-1 bg-white text-defaulttextcolor ${currentForm === 'carpenterLogin' ? 'border-b-2 border-primary text-primary' : ''}`}>
+                                <Button onClick={() => setCurrentForm('carpenterLogin')} className={`flex-1 bg-white text-defaulttextcolor ${currentForm === 'carpenterLogin' ? 'border-b-2 border-primary text-primary underline' :currentForm === 'register' ? 'border-b-2 border-primary text-primary underline': ''}`}>
                                     Customer
                                 </Button>
                             </div>
