@@ -105,6 +105,8 @@ def update_product_order(product_name, order_status, name, gift_points):
                 "time":frappe.utils.now_datetime().strftime('%H:%M:%S'),
 
             })
+            message = f"Product Order approved successfully."
+
 
 
             # Save the customer record
@@ -112,8 +114,12 @@ def update_product_order(product_name, order_status, name, gift_points):
 
             # Commit the transaction
             frappe.db.commit()
+        elif order_status == "Cancel":
+            frappe.db.commit()
+            message = f"Product Order cancelled successfully."
+            
 
-        return {"status": "success", "message": "Product Order updated and points deducted successfully"}
+        return {"status": "success", "message":message}
 
     except Exception as e:
         frappe.log_error(frappe.get_traceback(), "update_product_order Error")

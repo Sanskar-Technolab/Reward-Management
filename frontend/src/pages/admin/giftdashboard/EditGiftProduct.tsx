@@ -53,7 +53,7 @@ const EditGiftProduct: React.FC = () => {
                     );
 
                     if (matchedProduct) {
-                        console.log("matched gift", matchedProduct)
+                        // console.log("matched gift", matchedProduct)
                         // Set state with the matched product data
                         setGiftProductName(matchedProduct.gift_product_name);
                         setPoints(matchedProduct.points);
@@ -156,9 +156,9 @@ const handleRemoveImage = (indexToRemove: number) => {
                     "Content-Type": "multipart/form-data",
                 },
             });
-            if (response) {
-                console.log("image upload response", response)
-            }
+            // if (response) {
+            //     console.log("image upload response", response)
+            // }
             if (response.data.message && response.data.message.file_url) {
                 return response.data.message.file_url;
             } else {
@@ -188,7 +188,7 @@ const handleRemoveImage = (indexToRemove: number) => {
                 }
             }
 
-            console.log("Uploaded File URLs:", uploadedFileURLs);
+            // console.log("Uploaded File URLs:", uploadedFileURLs);
     
             // Prepare data for the API call
             const giftProductData = {
@@ -203,9 +203,9 @@ const handleRemoveImage = (indexToRemove: number) => {
 
         // Make the API call to add a new gift product
         const response = await axios.put('/api/method/reward_management.api.gift_product.update_gift_product', giftProductData);
-        if(response){
-            console.log("gift post response",response)
-        }
+        // if(response){
+        //     console.log("gift post response",response)
+        // }
 
         // Check if the response was successful
         if (response.status === 200) {

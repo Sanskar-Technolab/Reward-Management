@@ -67,7 +67,7 @@ const RedeemptionHistory: React.FC = () => {
     }));
 
     const parseDateString = (dateString: string): Date | null => {
-        console.log("Input dateString:", dateString);
+        // console.log("Input dateString:", dateString);
         if (typeof dateString !== 'string') {
             console.error("Expected a string, but received:", dateString);
             return null;
@@ -139,7 +139,7 @@ const RedeemptionHistory: React.FC = () => {
         // Update search query
         setSearchQuery(value);
         setCurrentPage(1);
-        console.log("Search value:", value);
+        // console.log("Search value:", value);
 
     };
     const handleDateFilter = (from: Date | null, to: Date | null) => {
@@ -149,7 +149,7 @@ const RedeemptionHistory: React.FC = () => {
     };
 
     const handleAddProductClick = () => {
-        console.log("Add Product button clicked");
+        // console.log("Add Product button clicked");
         navigate('/redeemption-request');
         // Implement add product logic here
     };

@@ -13,7 +13,8 @@ import 'notyf/notyf.min.css';
 
 const Project: React.FC = () => {
   const [showSuccessAlert, setShowSuccessAlert] = useState(false);
-  const [alertMessage, setAlertMessage] = useState(''); const [projectImages, setProjectImages] = useState<string[]>([]);
+  const [alertMessage, setAlertMessage] = useState('');
+  const [projectImages, setProjectImages] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [showAddCatalogueForm, setShowAddCatalogueForm] = useState(false);
   const [fileDetails, setFileDetails] = useState<{ url: string, name: string }[]>([]);
@@ -373,7 +374,7 @@ const Project: React.FC = () => {
                   speed={500}
                   slidesToShow={1}
                   slidesToScroll={1}
-                  autoplay={false}
+                  autoplay={true}
                   autoplaySpeed={3000}
                   pauseOnHover={true}
                   arrows={false}
@@ -383,7 +384,7 @@ const Project: React.FC = () => {
                       <img
                         src={image}
                         alt={`Project ${index + 1}`}
-                        className="w-full h-[500px] rounded-md object-cover"
+                        className="w-full h-[500px] rounded-md object-contain"
                       />
                       <div className="absolute top-2 right-2 flex gap-2">
                         <button
@@ -407,7 +408,7 @@ const Project: React.FC = () => {
                   <img
                     src={projectImages[0]}
                     alt="Project"
-                    className="w-full h-[500px] rounded-md object-cover"
+                    className="w-full h-[500px] rounded-md object-contain"
                   />
                   <div className="absolute top-2 right-2 flex gap-2">
                     <button
@@ -434,13 +435,13 @@ const Project: React.FC = () => {
             <div className="flex justify-end mt-4 gap-2">
               <button
                 onClick={handleAddNewSlider}
-                className="ti-btn !py-1 !px-2 text-xs text-white !font-medium bg-[var(--primaries)] hover:bg-primary/20 hover:text-black"
+                className="ti-btn !py-1 !px-2 text-xs text-white !font-medium bg-[var(--primaries)]"
               >  <i className="ri-add-fill  font-bold "></i>
                 Add New Slider
               </button>
               <button
                 onClick={() => handleprojectdelete()}
-                className="ti-btn !py-1 !px-2 text-xs text-white !font-medium bg-[var(--primaries)] hover:bg-primary/20 hover:text-black"
+                className="ti-btn !py-1 !px-2 text-xs text-white !font-medium bg-[var(--primaries)]"
               >
                 <i className="ri-delete-bin-line font-bold"></i>
                 Delete Project

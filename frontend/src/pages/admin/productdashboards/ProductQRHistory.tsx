@@ -56,7 +56,7 @@ const ProductQRHistory: React.FC = () => {
     }, []);
 
     const parseDateString = (dateString: string): Date | null => {
-        console.log("Input dateString:", dateString); // Log the value
+        // console.log("Input dateString:", dateString); // Log the value
         if (typeof dateString !== 'string') {
             console.error("Expected a string, but received:", dateString);
             return null; // or some default value

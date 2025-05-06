@@ -55,7 +55,7 @@ const DownloadQRCode: React.FC = () => {
                 });
 
                 if (response.data.message && Array.isArray(response.data.message.message)) {
-                    console.log("data-------", response);
+                    // console.log("data-------", response);
                     // Aggregate data by generated_date and product_name
                     const aggregatedData = response.data.message.message.map((item: any) => ({
                         product_name: item.qr_code_images[0]?.product_name || 'Unknown Product Name',

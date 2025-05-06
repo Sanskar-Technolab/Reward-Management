@@ -9,6 +9,8 @@ import { useNavigate } from 'react-router-dom';
 import EditModalComponent from '../../../components/ui/models/RewardRequestEdit';
 import axios from 'axios';
 import SuccessAlert from '../../../components/ui/alerts/SuccessAlert';
+import { Notyf } from 'notyf';
+import "notyf/notyf.min.css";
 
 interface RewardRequest {
     name: string;
@@ -25,6 +27,26 @@ interface RewardRequest {
     approved_on?: string;
     approve_time?: string;
 }
+
+const notyf = new Notyf({
+    duration: 3000,
+    position: {
+        x: 'right',
+        y: 'top',
+    },
+    types: [
+        {
+            type: 'success',
+            background: '#4caf50',
+            icon: false,
+        },
+        {
+            type: 'error',
+            background: '#f44336',
+            icon: false,
+        },
+    ],
+});
 
 // Utility function to format dates
 const formatDate = (dateStr: string | undefined): string => {
@@ -70,11 +92,11 @@ const CarpenterRewardRequest: React.FC = () => {
                 setAmount(response.data.message.amount); 
             } else {
                 setAmount('');
-                alert('Could not calculate amount. Please check your input.');
+                notyf.error(`Failed to fetch amount for request ID: ${requestId}`);
             }
         } catch (error) {
             console.error('Error fetching amount:', error);
-            alert('An error occurred while calculating the amount. Please try again later.');
+            notyf.error(`An error occurred while calculating the amount. Please try again later.${error}`);
         }
     };
     useEffect(() => {
@@ -102,7 +124,7 @@ const CarpenterRewardRequest: React.FC = () => {
     // console.log("formattedData------->", formattedData);
 
     const parseDateString = (dateString: string): Date | null => {
-        console.log("Input dateString:", dateString); 
+        // console.log("Input dateString:", dateString); 
         if (typeof dateString !== 'string') {
             console.error("Expected a string, but received:", dateString);
             return null; 
@@ -110,7 +132,7 @@ const CarpenterRewardRequest: React.FC = () => {
         //  splitting by '-'
         const parts = dateString.split('-'); 
         if (parts.length !== 3) {
-            console.error("Invalid date format:", dateString);
+            // console.error("Invalid date format:", dateString);
             return null; 
         }
         const day = parseInt(parts[0], 10);
@@ -167,7 +189,7 @@ const CarpenterRewardRequest: React.FC = () => {
          // Update search query
         setSearchQuery(value);
         setCurrentPage(1);
-        console.log("Search value:", value);
+        // console.log("Search value:", value);
         // Implement search logic here
     };
     const handleDateFilter = (from: Date | null, to: Date | null) => {
@@ -178,7 +200,7 @@ const CarpenterRewardRequest: React.FC = () => {
     };
 
     const handleAddProductClick = () => {
-        console.log("Add Product button clicked");
+        // console.log("Add Product button clicked");
         navigate('/redeem-history');
       
     };
@@ -194,9 +216,9 @@ const CarpenterRewardRequest: React.FC = () => {
     }
 
     const handleSubmit = async () => {
-        console.log('Submit clicked');
+        // console.log('Submit clicked');
         if (!selectedRewardRequest) return;
-        console.log('Transaction ID:', selectedRewardRequest.transection_id);
+        // console.log('Transaction ID:', selectedRewardRequest.transection_id);
 
         // Get current date and time
         const now = new Date();
@@ -218,7 +240,7 @@ const CarpenterRewardRequest: React.FC = () => {
             const response = await axios.post(`/api/method/reward_management.api.admin_redeem_request.update_redeem_request_status`, data);
 
             if (response.status === 200) {
-                console.log("Redeem Request updated successfully",response.data.message);
+                // console.log("Redeem Request updated successfully",response.data.message);
 
              
                 setShowSuccessAlert(true);
@@ -227,16 +249,16 @@ const CarpenterRewardRequest: React.FC = () => {
                 
             } else {
                 console.error("Failed to update Redeem Request:", response.data);
-                alert('Failed to update Redeem Request.');
+                notyf.error(`Failed to update Redeem Request: ${response.data.message}`);
             }
         } catch (error) {
             console.error("Error:", error.message || error);
-            alert('An error occurred while updating the Redeem Request.');
+            notyf.error(`Failed to update Redeem Request: ${error}`);
         }
     };
 
     const handleCancel = () => {
-        console.log('Cancel clicked');
+        // console.log('Cancel clicked');
         setIsModalOpen(false); 
     }
 

@@ -30,7 +30,7 @@ const Faqs = () => {
   useEffect(() => {
     document.title='Help and Support';
     if (data) {
-    console.log("faq data",data);
+    // console.log("faq data",data);
       setFaqData(data);
     }
   }, [data]);
