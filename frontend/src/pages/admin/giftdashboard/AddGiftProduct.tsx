@@ -105,9 +105,9 @@ const handleRemoveImage = (indexToRemove: number) => {
                     "Content-Type": "multipart/form-data",
                 },
             });
-            if(response){
-                console.log("image upload response",response)
-            }
+            // if(response){
+            //     console.log("image upload response",response)
+            // }
             if (response.data.message && response.data.message.file_url) {
                 return response.data.message.file_url;
             } else {
@@ -151,9 +151,9 @@ const handleRemoveImage = (indexToRemove: number) => {
     
             // Make the API call to add a new gift product
             const response = await axios.post('/api/method/reward_management.api.gift_product.add_gift_product', giftProductData);
-            if(response){
-                console.log("gift post response",response)
-            }
+            // if(response){
+            //     console.log("gift post response",response)
+            // }
     
             // Check if the response was successful
             if (response.status === 200) {

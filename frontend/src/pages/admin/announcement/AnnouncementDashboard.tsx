@@ -166,7 +166,7 @@ const AnnouncementDashboard: React.FC = () => {
             }
         } catch (error) {
             console.error("Error:", error.message || error);
-            alert('An error occurred while adding the announcement.');
+            notyf.error(`Error: ${error.message || error}`);
         }
     };
 
@@ -192,7 +192,7 @@ const AnnouncementDashboard: React.FC = () => {
 
             const responseData = await response.json();
             if (response.ok) {
-                console.log("Announcement updated successfully");
+                // console.log("Announcement updated successfully");
                 // alert('Announcement updated successfully!');
                 setAlertTitle('Success');
                 setAlertMessage('Announcement updated successfully!');
@@ -204,7 +204,7 @@ const AnnouncementDashboard: React.FC = () => {
             }
         } catch (error) {
             console.error("Error:", error.message || error);
-            alert('An error occurred while updating the announcement.');
+            notyf.error(`Error: ${error.message || error}`);
         }
     };
 
@@ -238,7 +238,7 @@ const AnnouncementDashboard: React.FC = () => {
             mutateAnnouncements();
         } catch (error) {
             console.error('Error deleting announcement:', error.message || error);
-            alert('Failed to delete announcement.');
+            notyf.error(`Error: ${error.message || error}`);
         }
     };
 
@@ -301,7 +301,7 @@ const AnnouncementDashboard: React.FC = () => {
         }
         const parts = dateString.split('-');
         if (parts.length !== 3) {
-            console.error("Invalid date format:", dateString);
+            // console.error("Invalid date format:", dateString);
             return null;
         }
         const day = parseInt(parts[0], 10);

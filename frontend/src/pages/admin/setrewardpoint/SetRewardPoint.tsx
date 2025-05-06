@@ -39,7 +39,7 @@ const SetRewardPointsDashboard: React.FC = () => {
 
                 // Check if the API returns data
                 if (response.data.message) {
-                    console.log("data", response);
+                    // console.log("data", response);
                     const data = response.data.message; // Assuming the response is an array and we need the first item
                     setCurrentMinPoints(data.minimum_points);
                     setCurrentMaxPoints(data.maximum_points);

@@ -6,6 +6,8 @@ import TableBoxComponent from '../../../components/ui/tables/tableboxheader';
 import React, { Fragment, useState, useEffect } from "react";
 import { useFrappeGetDocList } from 'frappe-react-sdk';
 import SuccessAlert from '../../../components/ui/alerts/SuccessAlert';
+import { Notyf } from 'notyf';
+import "notyf/notyf.min.css";
 
 
 interface Carpenter {
@@ -24,6 +26,21 @@ interface User {
     name: string;
     mobile_no: string;
 }
+
+const notyf = new Notyf({
+    duration: 3000,
+    position: {
+        x: 'right',
+        y: 'top',
+    },
+    types: [
+        {
+            type: 'error',
+            background: '#ff0000',
+            icon: false,
+        },
+    ],
+});
 
 const CarpenterDetails: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(1);
@@ -172,7 +189,7 @@ const CarpenterDetails: React.FC = () => {
                 setSelectedCarpenter(prevState => prevState ? { ...prevState, enabled: updatedStatus } : null);
             } catch (error) {
                 console.error('Error updating carpenter status:', error);
-                alert('Failed to update carpenter status.');
+                notyf.error(`Failed to update carpenter status: ${error}`);
             }
             handleCloseModal(); 
         }

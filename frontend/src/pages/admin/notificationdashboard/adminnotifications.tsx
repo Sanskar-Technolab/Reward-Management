@@ -47,8 +47,9 @@ const NotificationsDashboard = () => {
     useEffect(() => {
         const fetchUserEmailAndInitScanner = async () => {
             try {
-                const userResponse = await axios.get('/api/method/frappe.auth.get_logged_user');
-                console.log("userData:", userResponse.data.message);
+                await axios.get('/api/method/frappe.auth.get_logged_user');
+                // const userResponse = await axios.get('/api/method/frappe.auth.get_logged_user');
+                // console.log("userData:", userResponse.data.message);
             } catch (err) {
                 console.error("Error fetching user data:", err);
             }
@@ -60,7 +61,7 @@ const NotificationsDashboard = () => {
     useEffect(() => {
         document.title='Notifications';
         if (data && Array.isArray(data.message)) {
-            console.log("Fetched notifications data:", data.message);
+            // console.log("Fetched notifications data:", data.message);
 
             const notificationsData: Notification[] = data.message.map((notif: NotificationData) => {
                 const creationDate = new Date(notif.creation);

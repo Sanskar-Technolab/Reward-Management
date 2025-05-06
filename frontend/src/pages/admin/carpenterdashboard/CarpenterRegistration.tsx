@@ -9,6 +9,8 @@ import EditModalComponent from '../../../components/ui/models/RewardRequestEdit'
 import axios from 'axios';
 import SuccessAlert from '../../../components/ui/alerts/SuccessAlert';
 import { PulseLoader } from 'react-spinners';
+import { Notyf } from 'notyf';
+import "notyf/notyf.min.css";
 
 
 interface CarpenterRegistrations {
@@ -21,6 +23,34 @@ interface CarpenterRegistrations {
     status?: string;
     approved_date?: string;
 }
+
+const notyf = new Notyf({
+    duration: 3000,
+    position: {
+        x: 'right',
+        y: 'top',
+    },
+    types: [
+        {
+            type: 'success',
+            background: '#4caf50',
+            icon: {
+                className: 'notyf-icon notyf-icon--custom',
+                tagName: 'i',
+                text: '✓',
+            },
+        },
+        {
+            type: 'error',
+            background: '#f44336',
+            icon: {
+                className: 'notyf-icon notyf-icon--custom',
+                tagName: 'i',
+                text: '✗',
+            },
+        },
+    ],
+});
 
 const CarpenterRegistration: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(1);
@@ -77,7 +107,7 @@ const CarpenterRegistration: React.FC = () => {
     const handleSearch = (value: string) => {
         setSearchQuery(value);
         setCurrentPage(1);
-        console.log("Search value:", value);
+        // console.log("Search value:", value);
     };
     const handleDateFilter = (from: Date | null, to: Date | null) => {
         setFromDate(from);
@@ -93,23 +123,23 @@ const CarpenterRegistration: React.FC = () => {
     };
 
     const handleEdit = (carpenter: CarpenterRegistrations) => {
-        console.log("Selected carpenter for editing:", carpenter); // Log selected carpenter
+        // console.log("Selected carpenter for editing:", carpenter); 
         setSelectedCarpenter(carpenter);
         setIsEditModalOpen(true);
     };
 
     const handleCloseModal = () => {
-        console.log("Closing modal. Selected carpenter:", selectedCarpenter); // Log selected carpenter before closing
+        // console.log("Closing modal. Selected carpenter:", selectedCarpenter); 
         setIsEditModalOpen(false);
         setSelectedCarpenter(null);
     };
 
     const handleSubmit = async (updatedCarpenter: CarpenterRegistrations) => {
-        console.log("Submitting update for:", updatedCarpenter);
+        // console.log("Submitting update for:", updatedCarpenter);
 
         if (!updatedCarpenter || !updatedCarpenter.name) {
             console.error("No carpenter name found for update.");
-            alert('Failed to update Registration Request: No carpenter name found.');
+            notyf.error('Failed to update Registration Request: No carpenter name found.');
             return;
         }
 
@@ -118,8 +148,8 @@ const CarpenterRegistration: React.FC = () => {
         const now = new Date();
         const currentDate = now.toISOString().split('T')[0]; // Format: YYYY-MM-DD
         const currentTime = now.toLocaleTimeString('en-US', { hour12: false });  // Format: HH:MM:SS
-        console.log("current date", currentDate);
-        console.log("current Time", currentTime);
+        // console.log("current date", currentDate);
+        // console.log("current Time", currentTime);
 
         const data = {
             approved_date: currentDate,
@@ -133,7 +163,7 @@ const CarpenterRegistration: React.FC = () => {
                     'Content-Type': 'application/json',
                 },
             });
-            console.log("updated response data", response);
+            // console.log("updated response data", response);
 
             if (response.status === 200) {
                 console.log("Registration Request updated successfully");
@@ -149,7 +179,7 @@ const CarpenterRegistration: React.FC = () => {
             }
             else {
                 console.error("Failed to cancel customer Registration Request:", response.data);
-                alert('Failed to update Customer Registration Request.');
+                notyf.error(`Failed to update Registration Request: ${response.data.message}`);
             }
         } catch (error) {
             console.error("Error details:", {
@@ -157,7 +187,7 @@ const CarpenterRegistration: React.FC = () => {
                 response: error.response?.data,
                 stack: error.stack,
             });
-            alert('An error occurred while updating the Registration Request.');
+            notyf.error(`Failed to update Registration Request: ${error}`);
 
         }
         finally {
@@ -180,14 +210,14 @@ const CarpenterRegistration: React.FC = () => {
             });
 
             if (response.data.message.status === "success") {
-                console.log("Registration request status updated successfully and create a new user");
+                // console.log("Registration request status updated successfully and create a new user");
                 // Set the success alert and trigger page reload
                 setShowSuccessAlert(true);
                 setAlertMessage('Registration Request Approved Successsfully!!!');
                 setAlertTitle('Success');
             } else {
                 console.error("Failed to update registration request status and new user creating: ", response.data.message);
-                alert('Failed to update registration request status and user .');
+                notyf.error(`Failed to update Registration Request: ${response.data.message}`);
             }
         } catch (error: any) {
             console.error("Error details:", {
@@ -195,7 +225,7 @@ const CarpenterRegistration: React.FC = () => {
                 response: error.response?.data,
                 stack: error.stack,
             });
-            alert('An error occurred while updating the registration request status.');
+            notyf.error(`Failed to update Registration Request: ${error}`);
         }
     };
 
@@ -212,17 +242,17 @@ const CarpenterRegistration: React.FC = () => {
                     'Content-Type': 'application/json',
                 },
             });
-            console.log("delete response", response)
+            // console.log("delete response", response)
 
             if (response.data.message.status === "success") {
-                console.log("Registration request status updated successfully and cancel request successfully.");
+                // console.log("Registration request status updated successfully and cancel request successfully.");
                 // Set the success alert and trigger page reload
                 setShowSuccessAlert(true);
                 setAlertMessage('Registration Request Cancelled Successsfully!!!');
                 setAlertTitle('Success');
             } else {
-                console.error("Failed to update registration request status and delete user/customer: ", response.data.message);
-                alert('Failed to update registration request status and delete user/customer.');
+                console.log("Failed to update registration request status and delete user/customer: ", response.data.message);
+                notyf.error('Failed to update registration request status and delete user/customer.');
             }
         } catch (error) {
             console.error("Error details:", {
@@ -230,7 +260,7 @@ const CarpenterRegistration: React.FC = () => {
                 response: error.response?.data,
                 stack: error.stack,
             });
-            alert('An error occurred while updating the registration request status.');
+            notyf.error(`Failed to update Registration Request: ${error}`);
         }
     };
 
@@ -250,12 +280,12 @@ const CarpenterRegistration: React.FC = () => {
 
     const parseDateString = (dateString: string): Date | null => {
         if (typeof dateString !== 'string') {
-            console.error("Expected a string, but received:", dateString);
+            console.log("Expected a string, but received:", dateString);
             return null;
         }
         const parts = dateString.split('-');
         if (parts.length !== 3) {
-            console.error("Invalid date format:", dateString);
+            // console.log("Invalid date format:", dateString);
             return null;
         }
         const day = parseInt(parts[0], 10);
@@ -310,7 +340,7 @@ const CarpenterRegistration: React.FC = () => {
 
 
     const handleCancel = () => {
-        console.log("Edit cancelled");
+        // console.log("Edit cancelled");
         handleCloseModal();
     };
 
