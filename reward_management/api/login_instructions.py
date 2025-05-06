@@ -1,82 +1,10 @@
 import frappe
 from frappe.model.document import Document
 
-# @frappe.whitelist(allow_guest=True)
-# def get_instructions():
-#     try:
-#         # Fetch all Login Guide records
-#         login_guide = frappe.get_all(
-#             "Login Guide", 
-#             fields=["name", "instruction_name","image","description"]
-#         )
-        
-#         if login_guide:
-#             all_guide_instruction = []
-            
-#             # Loop through each guide to get its child table data
-#             for guide_list in login_guide:
-#                 # Fetch related Login Instruction Guide records
-#                 login_guide_image_description = frappe.get_all(
-#                     "Login Instruction Guide", 
-#                     filters={"parent": guide_list.get("name")}, 
-#                     fields=["guide_image", "image_description"]
-#                 )
-                
-#                 # Add the fetched child table data to the guide record
-#                 guide_list["guide_image"] = login_guide_image_description
-                
-#                 # Append the complete guide to the result list
-#                 all_guide_instruction.append(guide_list)
-            
-#             # Return the complete data in JSON format
-#             return {
-#                 "status": "success", 
-#                 "data": all_guide_instruction  # Include all fetched data in the response
-#             }
-#         else:
-#             # If no guides are found, return an empty data array
-#             return {
-#                 "status": "success", 
-#                 "data": [], 
-#                 "message": "No Guide Instruction found"
-#             }
-#     except Exception as e:
-#         # Log the error for debugging purposes in the Frappe error logs
-#         frappe.log_error(frappe.get_traceback(), "Get Guide Instruction Error")
-        
-#         # Return an error response in JSON format
-#         return {
-#             "status": "error", 
-#             "message": str(e)
-#         }
 
-
-# @frappe.whitelist(allow_guest=True)
-# def get_instructions():
-#     try:
-#         # Fetch all Login Guide records with specified fields
-#         login_guide = frappe.get_all(
-#             "Login Guide", 
-#             fields=["name", "instruction_name", "image", "description"]
-#         )
-       
-#         # Return the fetched data
-#         return {
-#             "status": "success", 
-#             "data": login_guide  # Include all fetched records in the response
-#         }
-#     except Exception as e:
-#         # Log the error for debugging purposes in the Frappe error logs
-#         frappe.log_error(frappe.get_traceback(), "Get Guide Instruction Error")
-        
-#         # Return an error response in JSON format
-#         return {
-#             "status": "error", 
-#             "message": str(e)
-#         }
 
 # get all instruction guide single doctype--------
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist(allow_guest=False)
 def get_instructions():
     # Fetch child table data
     instruction_data = frappe.get_all(
@@ -97,7 +25,7 @@ def get_instructions():
 
 
 # # ADD or UPDATE INSTRUCTIONS--------
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist(allow_guest=False)
 def add_new_instruction(new_image_url, image_description):
     # Ensure the inputs are lists
     if not isinstance(new_image_url, list):
@@ -134,44 +62,133 @@ def add_new_instruction(new_image_url, image_description):
         "added_descriptions": image_description
     }
 
+# updated selected slider ------
+@frappe.whitelist()
+def add_update_instructions(image_url, new_image_url=None, new_image_description=None):
+    if not image_url or not new_image_url:
+        return {
+            "success": False,
+            "message": "Image URL or new image URL is missing."
+        }
 
-@frappe.whitelist(allow_guest=True)
-def add_update_instructions(selected_images, selected_descriptions):
-    # Validate inputs
-    if not isinstance(selected_images, list):
-        frappe.throw("The 'selected_images' parameter must be a list of image URLs.")
+    instruction_doc = frappe.get_single("Login Instruction")
+
+    found = False
+    for idx, row in enumerate(instruction_doc.instruction_table):
+        if row.guide_image == image_url:
+            # Update the existing row
+            instruction_doc.instruction_table[idx].guide_image = new_image_url
+            instruction_doc.instruction_table[idx].image_description = new_image_description
+            found = True
+            break
+
+    if not found:
+        # Add new row if not found (optional)
+        new_row = instruction_doc.append('instruction_table', {})
+        new_row.guide_image = new_image_url
+        new_row.image_description = new_image_description
+
+    instruction_doc.save()
+    return {
+        "status": "success",
+        "message": "Instruction updated successfully"
+    }
+# @frappe.whitelist(allow_guest=False)
+# def add_update_instructions(selected_images, selected_descriptions):
+#     # Validate inputs
+#     if not isinstance(selected_images, list):
+#         frappe.throw("The 'selected_images' parameter must be a list of image URLs.")
     
-    if not isinstance(selected_descriptions, list):
-        frappe.throw("The 'selected_descriptions' parameter must be a list of descriptions.")
+#     if not isinstance(selected_descriptions, list):
+#         frappe.throw("The 'selected_descriptions' parameter must be a list of descriptions.")
 
-    if len(selected_images) != len(selected_descriptions):
-        frappe.throw("The number of images and descriptions must match.")
+#     if len(selected_images) != len(selected_descriptions):
+#         frappe.throw("The number of images and descriptions must match.")
 
-    # Fetch the parent document
-    instruction_doc = frappe.get_doc("Login Instruction", "Login Instruction")
+#     # Fetch the parent document
+#     instruction_doc = frappe.get_doc("Login Instruction", "Login Instruction")
     
-    # Update only selected images and descriptions
-    for idx, (image_url, description) in enumerate(zip(selected_images, selected_descriptions)):
-        if idx < len(instruction_doc.instruction_table):
-            # Update existing child rows
-            instruction_doc.instruction_table[idx].update({
-                "guide_image": image_url,
-                "image_description": description
-            })
-        else:
-            # Append new rows if more data is provided
-            instruction_doc.append("instruction_table", {
-                "guide_image": image_url,
-                "image_description": description
-            })
+#     # Update only selected images and descriptions
+#     for idx, (image_url, description) in enumerate(zip(selected_images, selected_descriptions)):
+#         if idx < len(instruction_doc.instruction_table):
+#             # Update existing child rows
+#             instruction_doc.instruction_table[idx].update({
+#                 "guide_image": image_url,
+#                 "image_description": description
+#             })
+#         else:
+#             # Append new rows if more data is provided
+#             instruction_doc.append("instruction_table", {
+#                 "guide_image": image_url,
+#                 "image_description": description
+#             })
 
-    # Save changes
-    instruction_doc.save(ignore_permissions=True)
+#     # Save changes
+#     instruction_doc.save(ignore_permissions=True)
+#     frappe.db.commit()
+
+#     return {
+#         "status": "success",
+#         "message": "Selected instructions updated successfully",
+#         "updated_images": selected_images,
+#         "updated_descriptions": selected_descriptions
+#     }
+
+
+# delete selected slider image
+@frappe.whitelist()
+def delete_selected_instruction(image_name,description):
+    if not image_name:
+        return {
+            "success": False,
+            "message": "Image name is required."
+        }
+    
+    # Fetch the single Project doc
+    instruction_doc = frappe.get_single("Login Instruction")
+
+    # Find and remove the matching row from the child table
+    found = False
+    for row in instruction_doc.instruction_table:
+        if row.guide_image == image_name:
+            instruction_doc.remove(row)
+            found = True
+            break
+        if row.image_description == description:
+            instruction_doc.remove(row)
+            found = True
+            break
+    
+
+    if not found:
+        frappe.throw(f"No image found with name: {image_name}")
+
+    # Save changes and commit
+    instruction_doc.save()
     frappe.db.commit()
 
     return {
         "status": "success",
-        "message": "Selected instructions updated successfully",
-        "updated_images": selected_images,
-        "updated_descriptions": selected_descriptions
+        "message": "Project image deleted successfully"
     }
+
+
+
+# delete all project
+@frappe.whitelist()
+def delete_all_instructions():
+    # Fetch the single Project doc
+    project_doc = frappe.get_single("Login Instruction")
+
+    # Clear all rows in the child table
+    project_doc.set("instruction_table", [])
+    project_doc.save()
+    frappe.db.commit()
+    return {
+        "status": "success",
+        "message": "All Instructions deleted successfully"
+    }
+
+
+
+

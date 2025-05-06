@@ -42,6 +42,34 @@ def create_redeem_request(customer_id, redeemed_points):
         # Fetch current point status for the customer
         current_point_status = frappe.get_value("Customer", customer_id, "total_points")
         
+        
+        
+        # Ensure redeemed_points is an integer
+        redeemed_points = int(redeemed_points)
+
+        # Ensure current_point_status is an integer
+        if current_point_status is None:
+            current_point_status = 0
+        else:
+            current_point_status = int(current_point_status)
+
+        # Check if redeemed_points is greater than the available current_points
+        if redeemed_points > current_point_status:
+            return {"success": False, "message": "You cannot redeem more points than your current balance."}
+        
+        # check redeem point is not less then minimu, point and not greater then maximum point
+        redeem_setup = frappe.get_single('Redeemption Points Setup') 
+        maximum_points = redeem_setup.maximum_points or 0
+        minimum_points = redeem_setup.minimum_points or 0
+          # Ensure redeemed_points is an integer
+        maximum_points = int(maximum_points)
+        minimum_points = int(minimum_points)
+
+        if redeemed_points < minimum_points:
+            return {"success": False, "message": "You cannot redeem less than the minimum points."}
+        if redeemed_points > maximum_points:
+            return {"success": False, "message": "You cannot redeem more than the maximum points."}
+        
         # Create a new instance of the document
         redeem_request = frappe.new_doc("Redeem Request")
         

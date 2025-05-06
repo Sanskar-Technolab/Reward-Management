@@ -5,6 +5,36 @@ import Pageheader from '../../../components/common/pageheader/pageheader';
 // import {, API_KEY, API_SECRET } from "../../../utils/constants";
 import face9 from '../../../assets/images/reward_management/9.jpg';
 import SuccessAlert from '../../../components/ui/alerts/SuccessAlert';
+import { Notyf } from 'notyf';
+import 'notyf/notyf.min.css'; 
+
+const notyf = new Notyf({
+    duration: 3000,
+    position: {
+        x: 'right',
+        y: 'top',
+    },
+    types: [
+        {
+            type: 'success',
+            background: '#4caf50',
+            icon: {
+                className: 'notyf-icon notyf-icon--custom',
+                tagName: 'i',
+                text: '✓',
+            },
+        },
+        {
+            type: 'error',
+            background: '#f44336',
+            icon: {
+                className: 'notyf-icon notyf-icon--custom',
+                tagName: 'i',
+                text: '✗',
+            },
+        },
+    ],
+});
 
 const AdminProfile = () => {
     const [showSuccessAlert, setShowSuccessAlert] = useState(false);
@@ -66,7 +96,7 @@ const AdminProfile = () => {
             const timer = setTimeout(() => setShowSuccessAlert(false), 3000);
             return () => clearTimeout(timer);
         }
-        console.log("birthdate--", birthdate);
+        // console.log("birthdate--", birthdate);
         const fetchUserEmailAndInitScanner = async () => {
             try {
                 const userResponse = await axios.get(`/api/method/frappe.auth.get_logged_user`,
@@ -75,7 +105,7 @@ const AdminProfile = () => {
 
                     }
                 );
-                console.log("userData----->", userResponse.data.message);
+                // console.log("userData----->", userResponse.data.message);
                 //   const userData = userResponse.data;
 
                 const userdata = await axios.get(`/api/resource/User/${userResponse.data.message}`,
@@ -84,7 +114,7 @@ const AdminProfile = () => {
 
                     }
                 );
-                console.log("userData----->", userdata.data.data);
+                // console.log("userData----->", userdata.data.data);
                 //   document.getElementById('first-name').innerText = userdata.data.data.first_name || "";
                 setFirstName(userdata.data.data.first_name || "");
                 setLastName(userdata.data.data.last_name || "");
@@ -219,7 +249,7 @@ const AdminProfile = () => {
     // Handle User Image Chnage----
     const changeUserImage = async () => {
         if (!changeImage) {
-            alert("Please select an image first.");
+            notyf.error("Please select an image first.");
             return;
         }
 
@@ -236,15 +266,17 @@ const AdminProfile = () => {
 
                 if (response.data.message.status === "success") {
                     // setShowSuccessAlert(true);
-                    console.log("uploadedFileUrl", uploadedFileUrl);
+                    // console.log("uploadedFileUrl", uploadedFileUrl);
                     localStorage.setItem('uploadedFileUrl', uploadedFileUrl);
 
                     setUserImage(uploadedFileUrl);  // Update the user's profile image with the new image URL
                 } else {
                     console.error("Failed to update user image:", response.data);
+                    notyf.error(`Failed to update user image: ${response.data.message}`);
                 }
             } catch (error) {
                 console.error("Error updating user image:", error);
+                notyf.error(`Error updating user image: ${error}`);
             }
         }
     };
@@ -310,8 +342,9 @@ const AdminProfile = () => {
 
             if (response.data.message.status === "success") {
                 setShowSuccessAlert(true);
-                console.log("User Password updated successfully.");
+                // console.log("User Password updated successfully.");
             } else {
+                notyf.error(`Error updating password: ${response.data.message}`);
                 console.error("Error updating user details:", response.data.message);
             }
         } catch (error) {

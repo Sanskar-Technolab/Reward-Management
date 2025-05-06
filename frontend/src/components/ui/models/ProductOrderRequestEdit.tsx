@@ -39,6 +39,8 @@ const ProductOrderRequestEdit: React.FC<ViewModalProps> = ({
     setStatus,
   
 }) => {
+    const isStatusDisabled = status === 'Approved' || status === 'Cancel';
+
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
@@ -95,7 +97,7 @@ const ProductOrderRequestEdit: React.FC<ViewModalProps> = ({
                                 value={status}
                                 onChange={(e) => setStatus(e.target.value)}
                             >
-                                <option value="Pending">Pending</option>
+                                <option value="Pending" disabled={isStatusDisabled}>Pending</option>
                                 <option value="Approved">Approved</option>
                                 <option value="Cancel">Cancel</option>
                             </select>

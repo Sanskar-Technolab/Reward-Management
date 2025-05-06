@@ -66,7 +66,7 @@ const TransactionHistory: React.FC = () => {
     const handleSearch = (value: string) => {
         setSearchQuery(value); // Update search query
         setCurrentPage(1);
-        console.log("Search value:", value);
+        // console.log("Search value:", value);
     };
 
     const handleDateFilter = (from: Date | null, to: Date | null) => {
@@ -101,7 +101,7 @@ const TransactionHistory: React.FC = () => {
         }
         const parts = dateString.split('-');
         if (parts.length !== 3) {
-            console.error("Invalid date format:", dateString);
+            // console.error("Invalid date format:", dateString);
             return null;
         }
         const day = parseInt(parts[0], 10);

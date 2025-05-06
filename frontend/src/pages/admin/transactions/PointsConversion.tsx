@@ -4,6 +4,36 @@ import Pageheader from '../../../components/common/pageheader/pageheader';
 import React, { Fragment, useState, useEffect } from "react";
 import axios from 'axios';
 import SuccessAlert from '../../../components/ui/alerts/SuccessAlert';
+import { Notyf } from 'notyf';
+import 'notyf/notyf.min.css';
+
+const notyf = new Notyf({
+    duration: 3000,
+    position: {
+        x: 'right',
+        y: 'top',
+    },
+    types: [
+        {
+            type: 'success',
+            background: '#4caf50',
+            icon: {
+                className: 'notyf-icon notyf-icon--custom',
+                tagName: 'i',
+                text: '✓',
+            },
+        },
+        {
+            type: 'error',
+            background: '#f44336',
+            icon: {
+                className: 'notyf-icon notyf-icon--custom',
+                tagName: 'i',
+                text: '✗',
+            },
+        },
+    ],
+});
 
 const PointConversionDashboard: React.FC = () => {
     const [rewardPoints, setrewardPoints] = useState<string | ''>('');
@@ -28,7 +58,7 @@ const PointConversionDashboard: React.FC = () => {
 
                 // Check if the API returns data
                 if (response.data.message) {
-                    console.log("data", response);
+                    // console.log("data", response);
                     const data = response.data.message; // Assuming the response is an array and we need the first item
                     setCurrentrewardPoints(data.reward_point);
                     setCurrentpayoutAmount(data.payout_amount);
@@ -73,7 +103,7 @@ const PointConversionDashboard: React.FC = () => {
             setShowSuccessAlert(true);
         } catch (error) {
             console.error('Error:', error);
-            alert('Failed to create Redeemption Points Setup.');
+            notyf.error(`Error: ${error}`);
         }
     };
 

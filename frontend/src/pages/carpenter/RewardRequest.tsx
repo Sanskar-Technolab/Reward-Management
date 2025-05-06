@@ -7,6 +7,8 @@ import React, { Fragment, useState, useEffect } from "react";
 import RedeemPointAlert from '../../components/ui/models/RedeemPoints';
 import SuccessAlert from '../../components/ui/alerts/SuccessAlert';
 import axios from 'axios';
+import { Notyf } from 'notyf';
+import 'notyf/notyf.min.css';
 
 interface Transaction {
     name: string;
@@ -17,6 +19,26 @@ interface Transaction {
     approve_time?: string;
     request_status?: string;
 }
+
+const notyf = new Notyf({
+    duration: 5000,
+    position: {
+        x: 'right',
+        y: 'top',
+    },
+    types: [
+        {
+            type: 'success',
+            background: '#4caf50',
+            icon: false,
+        },
+        {
+            type: 'error',
+            background: '#f44336',
+            icon: false,
+        },
+    ],
+});
 
 const RedeemRequest: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(1);
@@ -78,7 +100,7 @@ const RedeemRequest: React.FC = () => {
             setMinPoints(minimum_points || 0);
             setMaxPoints(maximum_points || 0);
         } catch (error) {
-            console.error("Error fetching min and max points:", error);
+            console.log("Error fetching min and max points:", error);
         }
     };
 
@@ -92,12 +114,12 @@ const RedeemRequest: React.FC = () => {
             if (Array.isArray(RedeemRequestData)) {
                 setTransactionData(RedeemRequestData);
             } else {
-                setError("Unexpected response format");
+                notyf.error("Unexpected response format");
             }
 
             setLoading(false);
         } catch (error) {
-            setError("Error fetching data");
+            notyf.error("Error fetching data");
             setLoading(false);
         }
     };
@@ -153,47 +175,53 @@ const RedeemRequest: React.FC = () => {
 
     const handlePointCollect = async () => {
         if (!customerId || !pointredeem) {
-            console.error("Customer ID or redeem points are not available.");
+            notyf.error('Customer ID or redeem points are not available.');
+            console.log("Customer ID or redeem points are not available.");
             return;
         }
 
         const redeemedPoints = parseInt(pointredeem, 10);
 
         if (isNaN(redeemedPoints)) {
-            console.error("Invalid points value:", pointredeem);
+            notyf.error('Please enter a valid redeem points value.');
+            console.log("Invalid points value:", pointredeem);
             return;
         }
 
         // Check if redeemedPoints is within the minPoints and maxPoints range
         if (minPoints !== null && maxPoints !== null) {
             if (redeemedPoints < minPoints) {
-                alert(`The redeemed points cannot be less than the minimum required points: ${minPoints}`);
+                notyf.error(`You cannot redeem less than the minimum required points: ${minPoints}`);
                 setPointRedeem(''); // Clear the input field
                 return;
             }
             if (redeemedPoints > maxPoints) {
-                alert(`The redeemed points cannot be more than the maximum allowed points: ${maxPoints}`);
-                setPointRedeem(''); // Clear the input field
+                notyf.error(`You cannot redeem more than the maximum allowed points: ${maxPoints}`);
+                setPointRedeem(''); 
                 return;
             }
         }
 
-        console.log("Data being sent:", {
-            customer_id: customerId,
-            redeemed_points: redeemedPoints,
-        });
+     
 
         try {
+
             const response = await axios.post(`/api/method/reward_management.api.redeem_request.create_redeem_request`, {
                 customer_id: customerId,
                 redeemed_points: redeemedPoints,
             });
             // console.log("Redeem request successful:", response.data);
-            setIsModalOpen(false);
-            setShowSuccessAlert(true);  // Show success alert
-            setPointRedeem(''); // Clear the input field after a successful request
+            if (response.data.message.success === "true") {
+                setIsModalOpen(false);
+                setShowSuccessAlert(true);  
+                setPointRedeem('')            
+            } else {
+                notyf.error(`Error: ${response.data.message.message}`);
+                
+            }
+           ;
         } catch (error) {
-            console.error("Error creating redeem request:", error);
+            console.log("Error creating redeem request:", error);
         }
     };
 

@@ -11,6 +11,11 @@ from frappe.utils import nowdate
 # Create New Product Order --------------
 @frappe.whitelist()
 def create_new_product_order(product_name, fullname, city, mobile, pincode, address, email):
+    if not mobile and not fullname:
+        return{
+            "success": False,
+            "message": "Mobile number and full name are required."
+        }
     try:
         # Fetch product_id from product_name
         product_id = frappe.db.get_value("Gift Product", {"gift_product_name": product_name}, "name")
@@ -100,6 +105,8 @@ def update_product_order(product_name, order_status, name, gift_points):
                 "time":frappe.utils.now_datetime().strftime('%H:%M:%S'),
 
             })
+            message = f"Product Order approved successfully."
+
 
 
             # Save the customer record
@@ -107,8 +114,12 @@ def update_product_order(product_name, order_status, name, gift_points):
 
             # Commit the transaction
             frappe.db.commit()
+        elif order_status == "Cancel":
+            frappe.db.commit()
+            message = f"Product Order cancelled successfully."
+            
 
-        return {"status": "success", "message": "Product Order updated and points deducted successfully"}
+        return {"status": "success", "message":message}
 
     except Exception as e:
         frappe.log_error(frappe.get_traceback(), "update_product_order Error")

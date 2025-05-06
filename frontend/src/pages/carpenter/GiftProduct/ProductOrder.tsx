@@ -13,14 +13,21 @@ import RewardImage from "../../../assets/images/reward_management/Frame.png";
 import { Box, Text, Button } from "@radix-ui/themes";
 import MobileVerify from '../../../components/ui/models/VerifyMobile';
 import ProductOrderConfirm from '../../../components/ui/alerts/ProductOrderConfirm';
+import validator from 'validator';
+
 
 const ProductOrder = () => {
     const [fullname, setFullname] = useState<string>("");
+    const [fullnameError, setFullnameError] = useState<string>('');
     const [email, setEmail] = useState<string>("");
+    const [emailError, setEmailError] = useState<string>('');
     const [city, setCity] = useState<string>("");
+    const [cityError, setCityError] = useState<string>('');
     const [address, setAddress] = useState<string>("");
+    const [addressError, setAddressError] = useState<string>('');
     const [mobile, setMobile] = useState<string>("");
     const [pincode, setPincode] = useState<string>("");
+    const [pincodeError, setPincodeError] = useState<string>('');
     const [isMobileVerifyOpen, setIsMobileVerifyOpen] = useState<boolean>(false);
     const [currentProduct, setCurrentProduct] = useState<any>(null);
     const [generatedOtp, setGeneratedOtp] = useState(null);
@@ -35,12 +42,63 @@ const ProductOrder = () => {
         position: { x: "center", y: "top" },
     });
 
+
+    const handleFullnameChnage = (e: React.ChangeEvent<HTMLInputElement>) => {
+       const value = e.target.value;
+       setFullname(value);
+       setFullnameError('');
+       
+       
+       if (value && !validator.isAlpha(value)) {
+            setFullnameError('Please enter a valid name');
+        }
+    };
+
+    const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setEmail(value);
+        
+        if (value && !validator.isEmail(value)) {
+            setEmailError('Please enter a valid email address');
+        } else {
+            setEmailError('');
+        }
+    };
+    const handleAddressChnage = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value; 
+        setAddress(value);
+        setAddressError('');
+        if (value && !validator.isAlphanumeric(value)) {
+            setAddressError('Please enter a valid address');
+        }
+    };
+
+    const handleCityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setCity(value);
+        setCityError('');
+        
+        if (value && !validator.isAlpha(value)) {
+            setCityError('Please enter a valid city name');
+        }
+    };
+
+    const handlePincodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setPincode(value);
+        if (value && !/^\d{6}$/.test(value)) {
+            setPincodeError('Please enter a valid 6-digit pincode');
+        } else {
+            setPincodeError('');
+        }
+    };
+
     const handleOrder = async () => {
         if (!fullname || !mobile || !address || !pincode || !city) {
             notyf.error("All fields are required!");
             return;
         }
-
+        
         try {
             const response = await axios.post(
                 "/api/method/reward_management.api.product_order.create_new_product_order",
@@ -119,6 +177,36 @@ const ProductOrder = () => {
   
 
     const openMobile = async () => {
+        if (fullnameError) {
+          notyf.error("Name cannot be alphanumeric");
+          return;
+      }
+        if (emailError) {
+            notyf.error("Please enter a valid email address");
+            return;
+        }
+
+        if (addressError) {
+          notyf.error("Address cnnot be sepecial character");
+          return;
+      }
+        if (pincodeError) {
+            notyf.error("Please enter a valid 6-digit pincode");
+            return;
+        }
+        if (mobile.length !== 10) {
+            notyf.error("Please enter a valid 10-digit mobile number");
+            return;
+        }
+      
+
+        if (cityError) {
+            notyf.error("City cannot be alphanumeric");
+            return;
+        }
+      
+
+
         try {
             const otpResponse = await axios.post(
                 `/api/method/reward_management.api.mobile_number.generate_or_update_otp`,
@@ -152,7 +240,8 @@ const ProductOrder = () => {
   
           if (response && response.data.message.carpainter_data) {
             const carpainterData = response.data.message.carpainter_data;
-            // console.log('Fetched Carpenter Data:', carpainterData);
+            console.log('Fetched Carpenter Data:', carpainterData);
+            setMobile(carpainterData[0].mobile_number || '');
   
             if (Array.isArray(carpainterData) && carpainterData.length > 0) {
               // setCurrentPoints(carpainterData[0].current_points || 0);
@@ -172,7 +261,7 @@ const ProductOrder = () => {
         try {
           const response = await axios.get('/api/method/frappe.auth.get_logged_user');
           const loggedInUser = response.data.message;
-          // console.log('Logged in user:', loggedInUser);
+          console.log('Logged in user:', loggedInUser);
   
           if (loggedInUser) {
             await fetchCarpenterData(loggedInUser);
@@ -276,8 +365,8 @@ const ProductOrder = () => {
             )}
           </div>
         </div>
-        <div className="flex justify-center mt-5 ">
-          <div className="px-10 py-5 bg-white border border-defaultborder rounded-[10px]">
+        <div className="flex justify-center mt-5 pb-5">
+          <div className="px-10 py-5 bg-white border border-defaultborder rounded-[10px] overflow-y-scroll">
             <form onSubmit={(e) => {
               e.preventDefault();
               openMobile();
@@ -288,16 +377,21 @@ const ProductOrder = () => {
                   htmlFor="fullname"
                   className="text-defaultsize  "
                 >
-                  Enter Full Name
+                  Enter Full Name <span className='text-red'>*</span>
                 </Text>
                 <input
+                  required
                   id="fullname"
                   type="text"
                   placeholder="Enter your Full Name"
-                  onChange={(e) => setFullname(e.target.value)}
+                  // onChange={(e) => setFullname(e.target.value)}
+                  onChange={handleFullnameChnage}
                   value={fullname}
-                  className="border rounded-[5px] p-2 mt-2 text-xs w-full outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] "
+                  // className="border rounded-[5px] p-2 mt-2 text-xs w-full outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] "
+                  className={`border rounded-[5px] p-2 mt-2 text-xs w-full outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada]  ${emailError ? 'border-red-500' : ''}`}
+                   
                 />
+                {fullnameError && (<p className="text-red text-xs mt-1">{fullnameError}</p>)}
               </Box>
               <Box className="mb-4">
                 <Text
@@ -311,10 +405,14 @@ const ProductOrder = () => {
                   id="email"
                   type="text"
                   placeholder="Enter Email id"
-                  onChange={(e) => setEmail(e.target.value)}
+                  // onChange={(e) => setEmail(e.target.value)}
+                  onChange={handleEmailChange}
+
                   value={email}
-                  className="border rounded-[5px] p-2 mt-2 text-xs w-full outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] "
+                  // className="border rounded-[5px] p-2 mt-2 text-xs w-full outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] "
+                  className={`border rounded-[5px] p-2 mt-2 text-xs w-full outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada]  ${emailError ? 'border-red-500' : ''}`}
                 />
+                 {emailError && (<p className="text-red text-xs mt-1">{emailError}</p>)}
               </Box>
               <Box className="mb-4">
                 <Text
@@ -322,11 +420,12 @@ const ProductOrder = () => {
                   htmlFor="mobile"
                   className="text-defaultsize  "
                 >
-                  Enter mobile number
+                  Enter mobile number <span className='text-red'>*</span>
                 </Text>
                 <input
                   id="mobile"
                   type="text"
+                  readOnly
                   placeholder="Enter mobile number"
                   onChange={(e) => setMobile(e.target.value)}
                   value={mobile}
@@ -339,16 +438,21 @@ const ProductOrder = () => {
                   htmlFor="address"
                   className="text-defaultsize  "
                 >
-                  Address
+                  Address  <span className='text-red'>*</span>
                 </Text>
                 <input
                   id="address"
                   type="text"
                   placeholder="Enter your Address"
-                  onChange={(e) => setAddress(e.target.value)}
+                  required
+                  // onChange={(e) => setAddress(e.target.value)}
+                  onChange={handleAddressChnage}
                   value={address}
-                  className="border rounded-[5px] p-2 mt-2 text-xs w-full outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] "
+                  // className="border rounded-[5px] p-2 mt-2 text-xs w-full outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] "
+                  className={`border rounded-[5px] p-2 mt-2 text-xs w-full outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada]  ${addressError ? 'border-red-500' : ''}`}
+
                 />
+                {addressError && (<p className="text-red text-xs mt-1">{addressError}</p>)}
               </Box>
               <Box className="mb-4">
                 <Text
@@ -356,16 +460,20 @@ const ProductOrder = () => {
                   htmlFor="pincode"
                   className="text-defaultsize  "
                 >
-                  Pincode
+                  Pincode <span className='text-red'>*</span>
                 </Text>
                 <input
                   id="pincode"
                   type="text"
                   placeholder="365601"
-                  onChange={(e) => setPincode(e.target.value)}
+                  required
+                  // onChange={(e) => setPincode(e.target.value)}
+                  onChange={handlePincodeChange}
                   value={pincode}
-                  className="border rounded-[5px] p-2 mt-2 text-xs w-full outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] "
+                  // className="border rounded-[5px] p-2 mt-2 text-xs w-full outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] "
+                  className={`border rounded-[5px] p-2 mt-2 text-xs w-full outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada]  ${pincodeError ? 'border-red-500' : ''}`}
                 />
+                {pincodeError && (<p className="text-red text-xs mt-1">{pincodeError}</p>)}
               </Box>
               <Box className="mb-4">
                 <Text
@@ -373,16 +481,22 @@ const ProductOrder = () => {
                   htmlFor="city"
                   className="text-defaultsize  "
                 >
-                  City
+                  City  <span className='text-red'>*</span>
                 </Text>
                 <input
                   id="city"
                   type="text"
                   placeholder="Amreli"
-                  onChange={(e) => setCity(e.target.value)}
+                  required
+                  // onChange={(e) => setCity(e.target.value)}
+                  onChange={handleCityChange}
+
                   value={city}
-                  className="border rounded-[5px] p-2 mt-2 text-xs w-full outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] "
+                  // className="border rounded-[5px] p-2 mt-2 text-xs w-full outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] "
+                  className={`border rounded-[5px] p-2 mt-2 text-xs w-full outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada]  ${cityError ? 'border-red-500' : ''}`}
+
                 />
+                {cityError && (<p className="text-red text-xs mt-1">{cityError}</p>)}
               </Box>
               <div className="flex gap-6">
               <Button

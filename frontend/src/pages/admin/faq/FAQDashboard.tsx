@@ -11,6 +11,8 @@ import 'suneditor/dist/css/suneditor.min.css';
 import SuccessAlert from '../../../components/ui/alerts/SuccessAlert';
 import DangerAlert from '../../../components/ui/alerts/DangerAlert';
 import axios from 'axios';
+import { Notyf } from 'notyf';
+import 'notyf/notyf.min.css';
 
 
 
@@ -21,6 +23,34 @@ interface FAQ {
     status: string;
     created_date?: string;
 }
+
+const notyf = new Notyf({
+    duration: 3000,
+    position: {
+        x: 'right',
+        y: 'top',
+    },
+    types: [
+        {
+            type: 'success',
+            background: '#4caf50',
+            icon: {
+                className: 'notyf-icon notyf-icon--custom',
+                tagName: 'i',
+                text: '✓',
+            },
+        },
+        {
+            type: 'error',
+            background: '#f44336',
+            icon: {
+                className: 'notyf-icon notyf-icon--custom',
+                tagName: 'i',
+                text: '✗',
+            },
+        },
+    ],
+});
 
 const FAQDashboard: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(1);
@@ -67,7 +97,7 @@ const FAQDashboard: React.FC = () => {
         }
     }, [data,showSuccessAlert]);
 
-    console.log("faqData", faqData);
+    // console.log("faqData", faqData);
     const totalPages = Math.ceil((faqData?.length || 0) / itemsPerPage);
 
     const handlePrevPage = () => {
@@ -85,7 +115,7 @@ const FAQDashboard: React.FC = () => {
     const handleSearch = (value: string) => {
         setSearchQuery(value);
         setCurrentPage(1);
-        console.log("Search value:", value);
+        // console.log("Search value:", value);
     };
      // date filter---
      const handleDateFilter = (from: Date | null, to: Date | null) => {
@@ -110,11 +140,11 @@ const FAQDashboard: React.FC = () => {
 
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
-        console.log("Question:", question);
-        console.log("Answer:", answer);
+        // console.log("Question:", question);
+        // console.log("Answer:", answer);
     
         if (!answer || !question) {
-            alert("Please enter a valid question and answer.");
+            notyf.error("Please enter a valid question and answer.");
             return;
         }
     
@@ -166,7 +196,8 @@ const FAQDashboard: React.FC = () => {
     
         } catch (error) {
             console.error('Error:', error);
-            alert('Failed to save FAQ.');
+            notyf.error(`Failed to save FAQ: ${error}`);
+            
         }
     };
     
@@ -196,7 +227,7 @@ const FAQDashboard: React.FC = () => {
                 setShowSuccessAlert(true);
             } catch (error) {
                 console.error('Error deleting FAQ:', error);
-                alert('Failed to delete FAQ.');
+                notyf.error(`Failed to delete FAQ: ${error}`);
             }
         }
         setIsConfirmDeleteModalOpen(false);
@@ -249,7 +280,7 @@ const FAQDashboard: React.FC = () => {
         }
         const parts = dateString.split('-');
         if (parts.length !== 3) {
-            console.error("Invalid date format:", dateString);
+            // console.error("Invalid date format:", dateString);
             return null;
         }
         const day = parseInt(parts[0], 10);
@@ -354,7 +385,7 @@ const FAQDashboard: React.FC = () => {
                                         <label className="form-label text-sm text-defaulttextcolor font-semibold">FAQ ID</label>
                                         <input
                                             type="text"
-                                            className="form-control w-full rounded-5px border border-[#dadada] form-control-light mt-2 text-sm"
+                                            className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full rounded-5px border border-[#dadada] form-control-light mt-2 text-sm"
                                             value={selectedFAQ.name || ''}
                                             readOnly
                                         />
@@ -363,7 +394,7 @@ const FAQDashboard: React.FC = () => {
                                 <div className="xl:col-span-12 col-span-12 mb-4">
                                     <label htmlFor="question" className="form-label text-sm text-defaulttextcolor font-semibold">Question</label>
                                     <input
-                                        className="form-control w-full rounded-5px border border-[#dadada] form-control-light mt-2 text-sm"
+                                        className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full rounded-5px border border-[#dadada] form-control-light mt-2 text-sm"
                                         placeholder="Enter your question here"
                                         id="question"
 
@@ -401,7 +432,7 @@ const FAQDashboard: React.FC = () => {
                                         <label className="form-label text-sm text-defaulttextcolor font-semibold">Created Date</label>
                                         <input
                                             type="text"
-                                            className="form-control w-full rounded-5px border border-[#dadada] form-control-light mt-2 text-sm"
+                                            className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full rounded-5px border border-[#dadada] form-control-light mt-2 text-sm"
                                             value={selectedFAQ.created_date || ""}
                                             readOnly
                                         />

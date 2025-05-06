@@ -40,7 +40,7 @@ const ProductMaster: React.FC = () => {
                 const response = await axios.get('/api/method/reward_management.api.gift_product.get_gift_products');
                 const productData = response.data.message.data;
 
-                console.log("Fetched Products:", productData);
+                // console.log("Fetched Products:", productData);
 
                 if (response.data.message.status === 'success') {
                     if (Array.isArray(productData) && productData.length > 0) {

@@ -1,4 +1,6 @@
+import { Notyf } from 'notyf';
 import React, { useState } from 'react';
+import 'notyf/notyf.min.css';
 
 interface PointCollectedAlertProps {
     onPointClose: () => void;
@@ -15,6 +17,31 @@ interface PointCollectedAlertProps {
     pointValue?: string; 
     onPointValueChange?: (e: React.ChangeEvent<HTMLInputElement>) => void; 
 }
+const notyf = new Notyf({ 
+    position: { x: 'right', y: 'top' },
+    duration: 3000,
+    dismissible: true,
+    types: [
+        {
+            type: 'success',
+            background: '#4caf50',
+            icon: {
+                className: 'bi bi-check-circle-fill',
+                tagName: 'i',
+                color: '#fff',
+            },
+        },
+        {
+            type: 'error',
+            background: '#f44336',
+            icon: {
+                className: 'bi bi-x-circle-fill',
+                tagName: 'i',
+                color: '#fff',
+            },
+        },
+    ],
+});
 
 const RedeemPointAlert: React.FC<PointCollectedAlertProps> = ({
     onPointClose,
@@ -37,7 +64,8 @@ const RedeemPointAlert: React.FC<PointCollectedAlertProps> = ({
         const redeemedPoints = parseInt(pointredeem, 10);
 
         if (isNaN(redeemedPoints)) {
-            console.error("Invalid points value:", pointredeem);
+            console.log("Invalid points value:", pointredeem);
+            notyf.error("Please enter a valid number of points.");
             return;
         }
 
@@ -78,6 +106,7 @@ const RedeemPointAlert: React.FC<PointCollectedAlertProps> = ({
                         className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full rounded-5px border border-[#dadada] form-control-light mt-2 text-sm"
                         placeholder="Enter points to redeem"
                         id="pointredeem"
+                        required
                         value={pointredeem}
                         onChange={(e) => {
                             setPointRedeem(e.target.value);
