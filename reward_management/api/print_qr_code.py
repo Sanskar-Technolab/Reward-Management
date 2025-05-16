@@ -286,3 +286,51 @@ def get_product_by_name(productName):
 
 
 
+# delete product qr doctype and child table records----------
+# delete qr code records-------
+
+
+@frappe.whitelist()
+def delete_product_qr_child_records(docname):
+    try:
+        doc = frappe.get_doc("Product QR", docname)
+
+        # Clear the 'qr_tabl' child table
+        doc.qr_table = []
+
+        # Save the document
+        doc.save(ignore_permissions=True)
+        # frappe.delete_doc("Product QR", docname, ignore_permissions=True)
+        # frappe.db.delete("Product QR",docname, ignore_permissions=True)
+
+        return {
+            "status": "success",
+            "message": f"Deleted all child records from 'qr_table' in {docname}"
+        }
+    except Exception as e:
+        frappe.log_error(frappe.get_traceback(), "Delete Product QR Child Records Error")
+        return {
+            "status": "error",
+            "message": str(e)
+        }
+ 
+ # delete doctype---- 
+@frappe.whitelist()
+def delete_data(docname):
+    try:
+        frappe.db.delete("Product QR", docname)
+
+        return {
+            "status": "success",
+            "message": f"Document '{docname}' has been deleted successfully."
+        }
+    except Exception as e:
+        frappe.log_error(frappe.get_traceback(), "Delete Product QR Error")
+        return {
+            "status": "error",
+            "message": str(e)
+        }
+
+        
+        
+    
