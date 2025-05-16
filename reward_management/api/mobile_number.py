@@ -1,3 +1,4 @@
+
 import frappe
 import random
 from frappe.model.document import Document
