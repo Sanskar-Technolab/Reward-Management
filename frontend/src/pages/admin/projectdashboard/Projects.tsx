@@ -307,7 +307,7 @@ const Project: React.FC = () => {
 
   // handle add new slider---------------------------
   const handleAddNewSlider = () => {
-    console.log("first")
+    // console.log("first")
     setShowAddNewSliderModal(true);
   }
 
