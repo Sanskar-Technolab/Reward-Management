@@ -92,7 +92,7 @@ const EditProduct: React.FC = () => {
                 setShowAddCategoryModal(false);
             }
         } catch (error) {
-            console.error("Error adding category:", error);
+            console.log("Error adding category:", error);
         }
     };
 
@@ -112,7 +112,7 @@ const EditProduct: React.FC = () => {
                 productData.reward_point_conversion_rate || [];
             return rewardPointConversionRateData;
         } catch (error) {
-            console.error("Error fetching product data:", error);
+            console.log("Error fetching product data:", error);
             return [];
         }
     };
@@ -178,12 +178,12 @@ const EditProduct: React.FC = () => {
                     // Set child table data
                     setChildTableData(product.reward_point_conversion_rate || []);
                 } else {
-                    console.warn("Product details not found in response.");
+                    console.log("Product details not found in response.",response);
                 }
             } catch (error) {
-                console.error("Error fetching product data:", error);
+                console.log("Error fetching product data:", error);
                 const errorMessage = error.response?.data?.message || error.message;
-                alert(`Error fetching product data: ${errorMessage}`);
+                notyf.error(`Error fetching product data: ${errorMessage}`);
             }
         };
 
@@ -219,11 +219,11 @@ const EditProduct: React.FC = () => {
             if (response.data.message && response.data.message.file_url) {
                 return response.data.message.file_url;
             } else {
-                console.error("File URL not found in response:", response.data);
+                console.log("File URL not found in response:", response.data);
                 return null;
             }
         } catch (error) {
-            console.error("Error uploading file:", error);
+            console.log("Error uploading file:", error);
             return null;
         }
     };
@@ -239,6 +239,38 @@ const EditProduct: React.FC = () => {
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
         const fileUrls = [];
+
+
+        // Validate the inputs
+
+        if (!isValidNumber(productPrice)) {
+            notyf.error('Product Price must be a number.');
+            return false;
+        }   
+
+
+        if (!isValidNumber(rewardPoints)) {
+            notyf.error('Reward Point must be a number.');
+            return false;
+        }
+
+        if(rewardPercent){
+            if(!isValidNumber(rewardPercent)){
+                        notyf.error('Reward Percent must be a number.');
+                        return false
+                    }
+        }
+        
+         if (!isValidNumber(pointReward)) {
+            notyf.error('Point must be a number.');
+            return false;
+        }
+        if (!isValidNumber(rewardAmount)) {
+            notyf.error('Amount must be a number.');
+            return false;
+        }
+        
+        
 
         // Upload files and collect URLs
         for (const file of files) {
@@ -299,8 +331,8 @@ const EditProduct: React.FC = () => {
                 return () => clearTimeout(timer);
             }
         } catch (error) {
-            console.error("Error adding new row to child table:", error);
-            alert("An error occurred while adding the new row. Please try again.");
+            console.log("Error adding new row to child table:", error);
+            notyf.error("An error occurred while adding the new row. Please try again.");
         }
     };
 
@@ -415,7 +447,7 @@ const EditProduct: React.FC = () => {
             setAlertMessage('Point Conversion deleted successfully!');
 
         } catch (error) {
-            console.error("Error deleting matched row:", error);
+            console.log("Error deleting matched row:", error);
         }
     };
 
@@ -470,12 +502,13 @@ const EditProduct: React.FC = () => {
         // Validate the inputs
         if (!isValidNumber(rewardPoint)) {
             notyf.error('Reward Point must be a number.');
-            return;
+            return false;
         }
         if (!isValidNumber(payoutAmount)) {
             notyf.error('Payout Amount must be a number.');
-            return;
+            return false;
         }
+        
         // Prepare the new child table row
         const newChildRow = {
             product_name: productName,
@@ -592,7 +625,7 @@ const EditProduct: React.FC = () => {
                                                             value={productName}
                                                             onChange={(e) => setProductName(e.target.value)}
                                                             readOnly
-                                                        // required
+                                                            required
                                                         />
                                                     </div>
                                                     <div className="xl:col-span-12 col-span-12">
@@ -610,6 +643,8 @@ const EditProduct: React.FC = () => {
                                                             value={productPrice}
                                                             onChange={(e) => setproductPrice(e.target.value)}
                                                             required
+                                                            onInvalid={(e) => (e.target as HTMLInputElement).setCustomValidity("Product Price is required.")}
+                                                            onInput={(e) => (e.target as HTMLInputElement).setCustomValidity("")}
                                                         />
                                                     </div>
 
@@ -628,6 +663,10 @@ const EditProduct: React.FC = () => {
                                                             value={rewardPoints}
                                                             onChange={(e) => setRewardPoints(e.target.value)}
                                                             readOnly={showRewardPercent}
+                                                            required
+                                                            onInvalid={(e) => (e.target as HTMLInputElement).setCustomValidity("Reward Points are required.")}
+                                                            onInput={(e) => (e.target as HTMLInputElement).setCustomValidity("")}
+
                                                         />
                                                     </div>
                                                     <div className="xl:col-span-12 col-span-12 mb-4">
@@ -675,6 +714,8 @@ const EditProduct: React.FC = () => {
                                                                     setProductCategory(e.target.value)
                                                                 }
                                                                 required
+                                                                onInvalid={(e) => (e.target as HTMLInputElement).setCustomValidity("Category Cannot be empty.")}
+                                                                onInput={(e) => (e.target as HTMLInputElement).setCustomValidity("")}
                                                             >
                                                                 <option value="">Select a category</option>
                                                                 {productcategoryData &&
@@ -730,6 +771,8 @@ const EditProduct: React.FC = () => {
                                                                     setRewardPercent(e.target.value)
                                                                 }
                                                                 required
+                                                                onInvalid={(e) => (e.target as HTMLInputElement).setCustomValidity("Reward Percent is required.")}
+                                                                onInput={(e) => (e.target as HTMLInputElement).setCustomValidity("")}
                                                             />
                                                         </div>
                                                     )}
@@ -749,6 +792,8 @@ const EditProduct: React.FC = () => {
                                                             value={pointReward}
                                                             onChange={(e) => setPointReward(e.target.value)}
                                                             required
+                                                            onInvalid={(e) => (e.target as HTMLInputElement).setCustomValidity("Reward Points are required.")}
+                                                            onInput={(e) => (e.target as HTMLInputElement).setCustomValidity("")}
                                                         />
                                                     </div>
                                                     {/* amount per point */}
@@ -767,6 +812,8 @@ const EditProduct: React.FC = () => {
                                                             value={rewardAmount}
                                                             onChange={(e) => setRewardAmount(e.target.value)}
                                                             required
+                                                            onInvalid={(e) => (e.target as HTMLInputElement).setCustomValidity("Amount Per Point is required.")}
+                                                            onInput={(e) => (e.target as HTMLInputElement).setCustomValidity("")}
                                                         />
                                                     </div>
 

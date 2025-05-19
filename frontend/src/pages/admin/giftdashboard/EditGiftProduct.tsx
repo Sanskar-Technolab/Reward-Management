@@ -3,14 +3,25 @@ import Pageheader from '../../../components/common/pageheader/pageheader';
 import SunEditor from 'suneditor-react';
 import {useNavigate, useLocation } from "react-router-dom";
 import 'suneditor/dist/css/suneditor.min.css';
-
 import SuccessAlert from '../../../components/ui/alerts/SuccessAlert';
 import '../../../assets/css/style.css';
 import '../../../assets/css/pages/admindashboard.css';
 import axios from 'axios';
 
+import { Notyf } from 'notyf';
+import 'notyf/notyf.min.css';
+
+
+ const notyf = new Notyf({
+        position: {
+            x: 'right',
+            y: 'top',
+        },
+        duration: 3000,
+    });
+
 const EditGiftProduct: React.FC = () => {
-    const [files, setFiles] = useState<File[]>([]);
+    // const [files, setFiles] = useState<File[]>([]);
     const [fileDetails, setFileDetails] = useState<{ url: string, name: string }[]>([]);
     const [giftproductName, setGiftProductName] = useState('');
     const [points, setPoints] = useState('');
@@ -19,14 +30,9 @@ const EditGiftProduct: React.FC = () => {
     const [giftproductSpecificaton, setGiftProductSpecificaton] = useState('');
     const [existingImages, setExistingImages] = useState<string[]>([]);
     const [showExistingImages, setShowExistingImages] = useState(true);
-
-
     const [showSuccessAlert, setShowSuccessAlert] = useState(false);
     const [error, setError] = useState('');
     const navigate = useNavigate();
-
-
-
     const location = useLocation();
 
     useEffect(() => {
@@ -95,6 +101,14 @@ const EditGiftProduct: React.FC = () => {
             return () => clearTimeout(timer);
         }
     }, [showSuccessAlert, navigate, location]);
+
+
+const isValidNumber = (title: string) => {
+        // Regex to allow only numbers
+        const regex = /^[0-9]+$/;
+        return regex.test(title);
+    };
+      
 
     // Handle file removal
 const handleRemoveImage = (indexToRemove: number) => {
@@ -174,6 +188,10 @@ const handleRemoveImage = (indexToRemove: number) => {
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
         const uploadedFileURLs: string[] = [];
+        if(!isValidNumber(points)){
+            notyf.error('Gift points must be a number.');
+            return false;
+        }
 
         try {
             // Upload each file and collect the URLs

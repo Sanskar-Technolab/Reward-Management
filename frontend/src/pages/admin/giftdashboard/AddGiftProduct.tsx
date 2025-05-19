@@ -8,6 +8,17 @@ import '../../../assets/css/style.css';
 import '../../../assets/css/pages/admindashboard.css';
 // import { useFrappeGetDocList, useFrappePostCall } from 'frappe-react-sdk';
 import axios from 'axios';
+import { Notyf } from 'notyf';
+import 'notyf/notyf.min.css';
+
+
+ const notyf = new Notyf({
+        position: {
+            x: 'right',
+            y: 'top',
+        },
+        duration: 3000,
+    });
 
 const AddGiftProduct: React.FC = () => {
     const [files, setFiles] = useState<File[]>([]);
@@ -82,6 +93,13 @@ const AddGiftProduct: React.FC = () => {
     }
 };
 
+
+const isValidNumber = (title: string) => {
+    // Regex to allow only numbers
+    const regex = /^[0-9]+$/;
+    return regex.test(title);
+};
+
 // Handle file removal
 const handleRemoveImage = (indexToRemove: number) => {
     setFileDetails((prevFiles) =>
@@ -122,6 +140,13 @@ const handleRemoveImage = (indexToRemove: number) => {
 
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
+
+        // validate points -------------
+
+        if(!isValidNumber(points)){
+            notyf.error('Gift points must be a number.');
+            return false;
+        }
         const uploadedFileURLs: string[] = [];
     
         try {

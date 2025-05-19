@@ -123,6 +123,12 @@ const AddProduct: React.FC = () => {
         }
     };
 
+    const isValidNumber = (title: string) => {
+        // Regex to allow only numbers
+        const regex = /^[0-9]+$/;
+        return regex.test(title);
+    };
+
     const addProduct = async (fileUrls: string[]) => {
         const missingFields: string[] = [];
 
@@ -139,11 +145,34 @@ const AddProduct: React.FC = () => {
             notyf.error(errorMessage);
             return;
         }
-        // if (!productName || !rewardPoints || !pointReward || !rewardAmount || !productPrice || !productCategory) {
-        //     console.log("Please fill all the fields.");
-        //     notyf.error("Please fill all the fields");
-        //     return; 
-        // }
+           // Validate the inputs
+
+        if (!isValidNumber(productPrice)) {
+            notyf.error('Product Price must be a number.');
+            return false;
+        }   
+
+        if (!isValidNumber(rewardPoints)) {
+            notyf.error('Reward Points must be a number.');
+            return false;
+        }
+
+        if(rewardPercent){
+            if(!isValidNumber(rewardPercent)){
+                        notyf.error('Reward Percent must be a number.');
+                        return false
+                    }
+        }
+        
+         if (!isValidNumber(pointReward)) {
+            notyf.error('Point must be a number.');
+            return false;
+        }
+        if (!isValidNumber(rewardAmount)) {
+            notyf.error('Amount must be a number.');
+            return false;
+        }
+
         const data = {
             productName: productName,
             rewardPoints: rewardPoints,
