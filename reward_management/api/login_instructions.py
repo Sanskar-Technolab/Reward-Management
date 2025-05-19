@@ -4,7 +4,7 @@ from frappe.model.document import Document
 
 
 # get all instruction guide single doctype--------
-@frappe.whitelist(allow_guest=False)
+@frappe.whitelist(allow_guest=True)
 def get_instructions():
     # Fetch child table data
     instruction_data = frappe.get_all(
