@@ -363,6 +363,9 @@ const ProductCatalogue: React.FC = () => {
                                                 }
                                                 onChange={(e) => setProductCatalogue(e.target.value)}
                                                 readOnly={!!productCategoryToEdit}
+                                                required
+                                                onInvalid={(e) => (e.target as HTMLInputElement).setCustomValidity("Product Category is required.")}
+                                                onInput={(e) => (e.target as HTMLInputElement).setCustomValidity("")}
                                             />
                                         </div>
                                         <div className="xl:col-span-12 col-span-12">
