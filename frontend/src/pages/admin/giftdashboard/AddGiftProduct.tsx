@@ -94,11 +94,18 @@ const AddGiftProduct: React.FC = () => {
 };
 
 
+// const isValidNumber = (title: string) => {
+//     // Regex to allow only numbers
+//     const regex = /^[0-9]+$/;
+//     return regex.test(title);
+// };
+
 const isValidNumber = (title: string) => {
-    // Regex to allow only numbers
-    const regex = /^[0-9]+$/;
+    // Regex to allow integers and floats like 123, 0.001, .5, 123.
+    const regex = /^(\d+(\.\d*)?|\.\d+)$/;
     return regex.test(title);
 };
+
 
 // Handle file removal
 const handleRemoveImage = (indexToRemove: number) => {

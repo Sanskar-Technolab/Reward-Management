@@ -93,6 +93,9 @@ def add_update_instructions(image_url, new_image_url=None, new_image_description
         "status": "success",
         "message": "Instruction updated successfully"
     }
+    
+    
+    
 # @frappe.whitelist(allow_guest=False)
 # def add_update_instructions(selected_images, selected_descriptions):
 #     # Validate inputs
