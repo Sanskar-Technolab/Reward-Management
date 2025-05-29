@@ -34,17 +34,22 @@ const ProductQRHistory: React.FC = () => {
         document.title = 'Product QR History';
         const fetchData = async () => {
             try {
-                const response = await axios.get('/api/method/reward_management.api.print_qr_code.print_qr_code');
-                const fetchedData = response.data?.message ?? [];
+                // const response = await axios.get('/api/method/reward_management.api.print_qr_code.print_qr_code');
+                const response = await axios.get('/api/method/reward_management.api.print_qr_code.print_qr_code_data');
+
+                // console.log("Response data:", response.data);
+                const fetchedData = response.data?.message;                
+                // console.log("Fetched data:", fetchedData);
+                if (!Array.isArray(fetchedData)) {
+                    throw new Error('Invalid data format received from the server');
+                }
                 
-                const flattenedData = fetchedData.flatMap((item: any) =>
-                    item.qr_table_data?.map((qrItem: any) => ({
-                        ...qrItem,
-                        scanned: qrItem.scanned == '1' ? 'Scanned' : 'Not Scanned',
-                    })) ?? []
-                );
+                const mappedData: ProductQRHistory[] = fetchedData.map((qrItem: any) => ({
+                    ...qrItem,
+                    scanned: qrItem.scanned === '1' ? 'Scanned' : 'Not Scanned',
+                }));
                 
-                setData(flattenedData);
+                setData(mappedData);
             } catch (error) {
                 setError(error instanceof Error ? error.message : 'Failed to fetch data');
             } finally {

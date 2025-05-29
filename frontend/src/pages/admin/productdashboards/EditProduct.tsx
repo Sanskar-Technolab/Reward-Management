@@ -108,6 +108,7 @@ const EditProduct: React.FC = () => {
         try {
             const response = await axios.get(`/api/resource/Product/${productId}`);
             const productData = response.data.data;
+            console.log("Product Data:", productData);
             const rewardPointConversionRateData =
                 productData.reward_point_conversion_rate || [];
             return rewardPointConversionRateData;
@@ -162,8 +163,10 @@ const EditProduct: React.FC = () => {
                     // console.log("Edit Product Data", response);
                     const product = response.data.message.message;
 
+                    // console.log("reward points:",product.reward_points);
+
                     setProductName(product.product_name || "");
-                    setRewardPoints(product.reward_points || "");
+                    setRewardPoints(product.reward_points || 0);
                     setproductPrice(product.product_price || "");
                     setProductDescription(product.discription || "");
                     setProductCategory(product.category || "");

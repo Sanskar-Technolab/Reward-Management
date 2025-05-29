@@ -50,7 +50,11 @@ const DownloadQRCode: React.FC = () => {
             }
 
             try {
-                const response = await axios.get(`/api/method/reward_management.api.print_qr_code.get_product_by_name`, {
+                // const response = await axios.get(`/api/method/reward_management.api.print_qr_code.get_product_by_name`, {
+                //     params: { productName },
+                // });get_qr_data
+
+                const response = await axios.get(`/api/method/reward_management.api.print_qr_code.get_product_qr_by_name`, {
                     params: { productName },
                 });
 
