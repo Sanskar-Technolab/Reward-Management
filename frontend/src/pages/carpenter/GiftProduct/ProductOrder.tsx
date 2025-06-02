@@ -210,7 +210,11 @@ const ProductOrder = () => {
         try {
             const otpResponse = await axios.post(
                 `/api/method/reward_management.api.mobile_number.generate_or_update_otp`,
-                { mobile_number: mobile },
+                { mobile_number: mobile,
+                  template_name:"place_order"
+
+
+                 },
                 { headers: { "Content-Type": "application/json" } }
             );
 

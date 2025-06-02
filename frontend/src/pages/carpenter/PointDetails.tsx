@@ -17,7 +17,7 @@ const CatalogueProducts = () => {
       try {
         const response = await axios.get('/api/method/frappe.auth.get_logged_user');
         const loggedInUser = response.data.message; // Get logged-in user name
-        // console.log("Logged in user:", loggedInUser);
+        console.log("Logged in user:", loggedInUser);
   
         if (loggedInUser) {
           await fetchProductData(loggedInUser); // Pass the user to the carpenter data API
@@ -33,14 +33,16 @@ const CatalogueProducts = () => {
           params: { user: loggedInUser },
         });
 
-        // console.log("Product data:", response.data);
+        console.log("Product data:", response.data);
         const carpainterData = response.data.message.carpainter_data;
         
+        console.log("Carpainter data:", carpainterData);
+        
         if (Array.isArray(carpainterData) && carpainterData.length > 0) {
-          const pointHistory = carpainterData[0]?.point_history || [];
+          const pointHistory = carpainterData[0]?.point_details || [];
           
           // Filter and map only items with valid product details
-          const validProducts = pointHistory.filter((item: any) => item.product_name && item.product_image);
+          const validProducts = pointHistory.filter((item: any) => item.product && item.product_image);
           setProducts(validProducts);
         } else {
           setProducts([]);
@@ -71,12 +73,12 @@ const CatalogueProducts = () => {
                   <img
                     src={product.product_image}
                     alt={product.product_name}
-                    className="w-full h-40 rounded-[10px]"
+                    className="w-full object- rounded-[10px] bg-[#DDDDDD] "
                   />
                   
                   {/* Product Name and Points */}
                   <div className="mt-3 text-start">
-                    <h3 className="text-lg font-semibold text-black">{product.product_name}</h3>
+                    <h3 className="text-lg font-semibold text-black">{product.product}</h3>
                     <div className="flex">
                       <p className="text-sm text-[#464646] pr-1">Points</p>
                       <img src={PointImage} className="pr-1 w-5 h-5" alt="Points Icon" />

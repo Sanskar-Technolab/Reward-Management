@@ -266,6 +266,7 @@ const Login = () => {
                     `/api/method/reward_management.api.mobile_number.generate_or_update_otp`,
                     {
                         mobile_number: mobile,
+                        template_name:"login",
                     },
                     {
                         headers: {
@@ -306,7 +307,7 @@ const Login = () => {
     // Start time for otp ------
     const startTimer = () => {
         setIsTimerActive(true);
-        setTimer(60);
+        setTimer(120);
         const countdown = setInterval(() => {
             setTimer((prevTimer) => {
                 if (prevTimer <= 1) {
@@ -343,7 +344,9 @@ const Login = () => {
             if (checkResponse.data.message && checkResponse.data.message.registered && checkResponse.data.message.approved && checkResponse.data.message.activate) {
                 // Call the OTP generation API
                 const otpResponse = await axios.post(`/api/method/reward_management.api.mobile_number.generate_or_update_otp`, {
-                    mobile_number: mobilenumber
+                    mobile_number: mobilenumber,
+                    template_name:"login",
+
                 }, {
                     headers: { 'Content-Type': 'application/json' }
                 });

@@ -46,7 +46,7 @@ const ProductQRHistory: React.FC = () => {
                 
                 const mappedData: ProductQRHistory[] = fetchedData.map((qrItem: any) => ({
                     ...qrItem,
-                    scanned: qrItem.scanned === '1' ? 'Scanned' : 'Not Scanned',
+                    scanned: qrItem.scanned == '1' ? 'Scanned' : 'Not Scanned',
                 }));
                 
                 setData(mappedData);

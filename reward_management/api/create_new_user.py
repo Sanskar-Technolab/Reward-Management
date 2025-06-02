@@ -298,7 +298,7 @@ def check_user_registration(mobile_number):
         frappe.log_error(f"Error in check_user_registration: {str(e)}")
         return {
             "registered": False,
-            "message": str(e)  # Return the actual error message in case of exception
+            "message": str(e)  
         }
 
 # @frappe.whitelist(allow_guest=True)

@@ -1,6 +1,7 @@
 import frappe
 from frappe import _
-from frappe.utils import now, format_datetime
+from frappe.utils import now_datetime
+import datetime
 from frappe.utils.file_manager import save_file
 from frappe.model.rename_doc import rename_doc
 import json
@@ -55,10 +56,16 @@ def get_all_products():
         
 # show product details and images 
 @frappe.whitelist()
-def get_all_products_data():
+def get_all_products_data(product=None):
     try:
+        
+         # Prepare filters if product name is provided
+        filters = {}
+        if product:
+            filters["product_name"] = ["like", f"%{product}%"]
         # Fetch all products
         products = frappe.get_all("Product",
+            filters=filters,
             fields=["name", "product_name", "reward_points", "discription", "product_image", "category","product_price"],
             order_by="creation desc"
         )
@@ -282,8 +289,13 @@ def add_product(productName, productPrice, rewardPoints, discription, rewardAmou
             reward_point_row.payout_amount = rewardAmount  
             
             # Set the current date 
-            current_date = frappe.utils.nowdate()
-            reward_point_row.from_date = current_date  
+            # current_date = frappe.utils.nowdate()
+            current_datetime = now_datetime()
+            # reward_point_row.from_date = current_date  
+            reward_point_row.from_date = current_datetime.date() 
+            # set current time ----
+            reward_point_row.time  = current_datetime.time().strftime('%H:%M:%S')
+            
 
         # Save the Product document
         product.insert(ignore_permissions=True)
@@ -338,11 +350,13 @@ def get_tableproduct_detail(product_id=None):
         # Iterate over the child table 'reward_point_conversion_rate'
         for reward_row in product.reward_point_conversion_rate:  
             reward_points_data.append({
+                "idx":reward_row.idx,
                 "product_name": reward_row.product_name,
                 "product_id": reward_row.product_id,
                 "reward_point": reward_row.reward_point,
                 "payout_amount": reward_row.payout_amount,
-                "from_date": reward_row.from_date  
+                "from_date": reward_row.from_date,
+                # "time": reward_row.time.strftime('%H:%M:%S') if reward_row.time else ""
             })
 
         # Get reward_point from the last row if it exists
@@ -360,7 +374,8 @@ def get_tableproduct_detail(product_id=None):
                 "product_price":getattr(product,'product_price',0),
                 "product_image": getattr(product, 'product_image', ''),
                 "reward_point": last_reward_point ,
-                "payout_amount":last_payout_amount
+                "payout_amount":last_payout_amount,
+                "reward_point_conversion_rate":reward_points_data
             }
         }
     except Exception as e:
@@ -369,6 +384,119 @@ def get_tableproduct_detail(product_id=None):
         
         
         
+        
+# # delete point conversion table row-----------
+
+
+@frappe.whitelist(allow_guest=False)
+def delete_reward_point_row_by_index(product_id, row_index, from_date, update_data=None):
+    try:
+        # Convert types
+        row_index = int(row_index)
+        from_date = frappe.utils.getdate(from_date)
+
+        # Get Product document
+        product = frappe.get_doc("Product", product_id)
+
+        # Find the row by idx and from_date
+        matched_index = None
+        for i, row in enumerate(product.reward_point_conversion_rate):
+            if row.idx == row_index and frappe.utils.getdate(row.from_date) == from_date:
+                matched_index = i
+                break
+
+        if matched_index is None:
+            frappe.throw(_("No matching row found with idx {0} and from_date {1}").format(row_index, from_date))
+
+        # Delete the matched row
+        product.reward_point_conversion_rate.pop(matched_index)
+
+        # Reindex remaining rows
+        for i, row in enumerate(product.reward_point_conversion_rate):
+            row.idx = i + 1  # Ensure proper Frappe-style indexing
+
+        # Update additional fields if needed
+        if update_data:
+            if isinstance(update_data, str):
+                update_data = frappe.parse_json(update_data)
+            if isinstance(update_data, dict):
+                for field, value in update_data.items():
+                    if hasattr(product, field):
+                        setattr(product, field, value)
+
+        # Save the updated Product
+        product.save(ignore_permissions=True)
+        frappe.db.commit()
+
+        # Return success and updated data
+        return {
+            "success": True,
+            "message": "Row deleted and product updated successfully",
+            "updated_product": {
+                "name": product.name,
+                "product_name": product.product_name,
+                "reward_points": product.reward_points,
+                "product_price": product.product_price,
+            },
+            "updated_table": [{
+                "product_name": row.product_name,
+                "reward_point": row.reward_point,
+                "payout_amount": row.payout_amount,
+                "from_date": str(row.from_date),
+                "idx": row.idx
+            } for row in product.reward_point_conversion_rate]
+        }
+
+    except Exception as e:
+        frappe.log_error(frappe.get_traceback(), "Delete Reward Row by Index Failed")
+        frappe.throw(_("Error deleting reward row: {0}").format(str(e)))
+
+# @frappe.whitelist(allow_guest=False)
+# def delete_reward_point_row_by_index(product_id, row_index, from_date):
+#     try:
+#         row_index = int(row_index)
+#         product = frappe.get_doc("Product", product_id)
+
+#         if row_index < 0 or row_index >= len(product.reward_point_conversion_rate):
+#             frappe.throw(_("Invalid row index: {0}").format(row_index))
+
+#         # Convert from_date to string (yyyy-mm-dd) if it's a date object
+#         if isinstance(from_date, datetime.date):
+#             from_date = from_date.strftime("%Y-%m-%d")
+
+#         # If it's a string with slashes or dashes, normalize it
+#         if isinstance(from_date, str) and "-" in from_date:
+#             from_date = str(frappe.utils.getdate(from_date))
+
+#         row = product.reward_point_conversion_rate[row_index]
+#         if str(row.from_date) != str(from_date):
+#             frappe.throw(_("Mismatch in from_date. Expected: {0}, Found: {1}").format(from_date, row.from_date))
+
+#         # Delete the row
+#         product.reward_point_conversion_rate.pop(row_index)
+
+#         # Save and commit
+#         product.save(ignore_permissions=True)
+#         frappe.db.commit()
+
+#         # Return updated child table
+#         updated_table = []
+#         for row in product.reward_point_conversion_rate:
+#             updated_table.append({
+#                 "doctype": row.doctype,
+#                 "product_name": row.product_name,
+#                 "reward_point": row.reward_point,
+#                 "payout_amount": row.payout_amount,
+#                 "from_date": str(row.from_date),
+#             })
+
+#         return updated_table  # Will be wrapped inside {"message": ...}
+
+#     except Exception as e:
+#         frappe.log_error(frappe.get_traceback(), "Delete Reward Row by Index Failed")
+#         frappe.throw(_("Error deleting reward row: {0}").format(str(e)))
+
+
         
 # customer product details cards-----------
 # Edit Product Details API-------
@@ -393,5 +521,77 @@ def get_product_detail(product_id):
     }
 
     return {"message": product_details}
+
+
+
+
+
+# update reward point liked qr data--------------------------
+@frappe.whitelist()
+def update_linked_doc(product, reward_point):
+    try:
+        if not product:
+            print("No product provided")
+            return {
+                "success": False,
+                "message": "Product is not specified."
+            }
+
+        print(f"Product: {product}, Reward Point: {reward_point}")
+
+        # Find QR Data document(s) linked to the given product
+        qr_data_list = frappe.get_all(
+            'QR Data',
+            filters={'product_table_name': product},
+            fields=['name']
+        )
+
+        print(f"Found QR Data records: {[d['name'] for d in qr_data_list]}")
+
+        if not qr_data_list:
+            return {
+                "success": False,
+                "message": "Linked QR Data not found."
+            }
+
+        updated_docs = []
+
+        # Convert reward_point to numeric (if it comes as string from JS)
+        try:
+            reward_point = float(reward_point)
+        except:
+            print("Invalid reward_point value received.")
+            return {
+                "success": False,
+                "message": "Reward point must be a number."
+            }
+
+        for qr_data in qr_data_list:
+            qr_doc = frappe.get_doc('QR Data', qr_data.name)
+            print(f"Before update - Doc: {qr_doc.name}, Points: {qr_doc.points}")
+
+            qr_doc.points = reward_point
+            qr_doc.save(ignore_permissions=True)
+
+            print(f"After update - Doc: {qr_doc.name}, Points: {qr_doc.points}")
+
+            updated_docs.append({
+                "docname": qr_doc.name,
+                "updated_points": qr_doc.points
+            })
+         # Commit changes to DB
+        frappe.db.commit()
+
+        return {
+            "success": True,
+            "message": _("QR Data points updated successfully."),
+            "updated_docs": updated_docs
+        }
+
+    except Exception as e:
+        frappe.log_error(f"Error updating QR Data: {str(e)}")
+        print(f"Error: {str(e)}")
+        frappe.throw(_("Failed to update product QR data. Please try again later."))
+
 
 
