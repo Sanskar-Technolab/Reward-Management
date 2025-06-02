@@ -2,7 +2,8 @@ from __future__ import unicode_literals
 import frappe
 from frappe import _
 from datetime import datetime
-from frappe.utils import nowdate
+from frappe.utils import now, format_datetime,now_datetime
+
 
 
 
@@ -47,6 +48,105 @@ from frappe.utils import nowdate
 
 
 #  show carpenter data with seprate earned points and product image 
+# @frappe.whitelist()
+# def get_carpainter_data(user):
+#     try:
+#         user_info = frappe.get_doc("User", user)
+
+#         if not user_info:
+#             return {"success": False, "status": "failed", "message": "User not found."}
+
+#         user_data = {
+#             "name": user_info.name,
+#             "email": user_info.email,
+#             "full_name": user_info.full_name,
+#             "mobile_no": user_info.mobile_no,
+#             "role": [role.role for role in user_info.roles]
+#         }
+
+#         user_mobile_no = user_info.mobile_no
+
+#         if not user_mobile_no:
+#             return {"success": False, "status": "failed", "message": "Mobile number not found for user."}
+
+#         carpainters = frappe.get_list(
+#             "Customer",
+#             filters={"mobile_number": user_mobile_no},
+#             fields=[
+#                 "name", "first_name", "full_name", "last_name", "city", "total_points",
+#                 "mobile_number", "current_points", "redeem_points", "email"
+#             ]
+#         )
+
+#         carpainter_data = []
+
+#         for carpainter in carpainters:
+#             carpainter_fields = {
+#                 "name": carpainter["name"],
+#                 "first_name": carpainter["first_name"],
+#                 "full_name": carpainter["full_name"],
+#                 "last_name": carpainter["last_name"],
+#                 "city": carpainter["city"],
+#                 "total_points": carpainter["total_points"],
+#                 "mobile_number": carpainter["mobile_number"],
+#                 "current_points": carpainter["current_points"],
+#                 "redeem_points": carpainter["redeem_points"],
+#                 "email": carpainter["email"],
+#             }
+
+#             # Full point history
+#             point_history = frappe.get_all(
+#                 "Customer Product Detail",
+#                 filters={"parent": carpainter["name"]}, 
+#                 fields=[
+#                     "earned_points", "date", "time", "product_name", "product", "product_category",
+#                     "product_image", "gift_id", "gift_product_name", "deduct_gift_points"
+#                 ],
+#                 order_by="creation desc"
+#             )
+
+#             # Format date
+#             for point in point_history:
+#                 if point.get('date'):
+#                     point['date'] = frappe.utils.formatdate(point['date'], 'dd-MM-yyyy')
+
+#             # Filtered point history: Only records where earned_points, product_image, and product are not null
+#             # point_details = [
+#             #     {
+#             #         "earned_points": p["earned_points"],
+#             #         "product": p["product"],
+#             #         "product_image": p["product_image"]
+#             #     }
+#             #     for p in point_history
+#             #     if p.get("earned_points") and p.get("product_image") and p.get("product")
+#             # ]
+#             point_details = []
+
+#             for point in point_history:
+#                 if point.get("earned_points") or point.get("product_image") or point.get("product"):
+#                     point_details.append({
+#                         "earned_points": point["earned_points"],
+#                         "product": point["product"],
+#                         "product_image": point["product_image"]
+#                     })
+
+#             carpainter_fields["point_history"] = point_history
+#             carpainter_fields["point_details"] = point_details
+
+#             carpainter_data.append(carpainter_fields)
+
+#         return {
+#             "success": True,
+#             "status": "success",
+#             "login_user_data": user_data,
+#             "carpainter_data": carpainter_data
+#         }
+
+#     except Exception as e:
+#         frappe.logger().error(f"Error in carpenter data: {str(e)}")
+#         return {"success": False, "status": "failed", "message": str(e)}
+
+  
 @frappe.whitelist()
 def get_carpainter_data(user):
     try:
@@ -80,57 +180,68 @@ def get_carpainter_data(user):
         carpainter_data = []
 
         for carpainter in carpainters:
-            carpainter_fields = {
-                "name": carpainter["name"],
-                "first_name": carpainter["first_name"],
-                "full_name": carpainter["full_name"],
-                "last_name": carpainter["last_name"],
-                "city": carpainter["city"],
-                "total_points": carpainter["total_points"],
-                "mobile_number": carpainter["mobile_number"],
-                "current_points": carpainter["current_points"],
-                "redeem_points": carpainter["redeem_points"],
-                "email": carpainter["email"],
-            }
+            customer_id = carpainter["name"]
+            carpainter_fields = carpainter.copy()
 
-            # Full point history
-            point_history = frappe.get_all(
-                "Customer Product Detail",
-                filters={"parent": carpainter["name"]}, 
+            # Fetch Customer Product Point Detail
+            product_point_history = frappe.get_all(
+                "Customer Product Point Detail",
+                filters={"customer_id": customer_id},
                 fields=[
-                    "earned_points", "date", "time", "product_name", "product", "product_category",
-                    "product_image", "gift_id", "gift_product_name", "deduct_gift_points"
+                    "earned_points", "date", "time", "product_name", "product_id", "product_category", "product_image"
                 ],
                 order_by="creation desc"
             )
 
-            # Format date
-            for point in point_history:
-                if point.get('date'):
-                    point['date'] = frappe.utils.formatdate(point['date'], 'dd-MM-yyyy')
+            for point in product_point_history:
+                point["date"] = frappe.utils.formatdate(point.get("date"), "dd-MM-yyyy") if point.get("date") else None
+                point["type"] = "product"
 
-            # Filtered point history: Only records where earned_points, product_image, and product are not null
-            # point_details = [
-            #     {
-            #         "earned_points": p["earned_points"],
-            #         "product": p["product"],
-            #         "product_image": p["product_image"]
-            #     }
-            #     for p in point_history
-            #     if p.get("earned_points") and p.get("product_image") and p.get("product")
-            # ]
-            point_details = []
+            # Fetch Customer Gift Point Details
+            gift_point_history = frappe.get_all(
+                "Customer Gift Point Details",
+                filters={"customer_id": customer_id},
+                fields=[
+                    "deduct_gift_points", "date", "time", "gift_product_name", "gift_id"
+                ],
+                order_by="creation desc"
+            )
 
-            for point in point_history:
-                if point.get("earned_points") or point.get("product_image") or point.get("product"):
-                    point_details.append({
-                        "earned_points": point["earned_points"],
-                        "product": point["product"],
-                        "product_image": point["product_image"]
-                    })
+            for point in gift_point_history:
+                point["date"] = frappe.utils.formatdate(point.get("date"), "dd-MM-yyyy") if point.get("date") else None
+                point["type"] = "gift"
 
+            # Combine both point histories
+            point_history = []
+
+            for point in product_point_history:
+                point_history.append({
+                    "type": "product",
+                    "points": point["earned_points"],
+                    "product_name": point["product_name"],
+                    "product_id": point["product_id"],
+                    "product_category": point["product_category"],
+                    "product_image": point["product_image"],
+                    "date": point["date"],
+                    "time": point["time"]
+                })
+
+            for point in gift_point_history:
+                point_history.append({
+                    "type": "gift",
+                    "points": point["deduct_gift_points"],
+                    "gift_product_name": point["gift_product_name"],
+                    "gift_id": point["gift_id"],
+                    "date": point["date"],
+                    "time": point["time"]
+                })
+
+            # Optional: sort combined point history by date and time
+            point_history.sort(key=lambda x: (x.get("date") or "", x.get("time") or ""), reverse=True)
+
+            # Attach to carpainter data
             carpainter_fields["point_history"] = point_history
-            carpainter_fields["point_details"] = point_details
+            carpainter_fields["point_details"] = product_point_history
 
             carpainter_data.append(carpainter_fields)
 
@@ -142,91 +253,9 @@ def get_carpainter_data(user):
         }
 
     except Exception as e:
-        frappe.logger().error(f"Error in carpenter data: {str(e)}")
+        frappe.log_error(frappe.get_traceback(), "Error in get_carpainter_data")
         return {"success": False, "status": "failed", "message": str(e)}
 
-  
-# @frappe.whitelist()
-# def get_carpainter_data(user):
-#     try:
-#         # Fetch user information
-#         user_info = frappe.get_doc("User", user)
-
-#         if not user_info:
-#             return {"success":False,"status": "failed", "message": "User not found."}
-
-#         # Prepare user data
-#         user_data = {
-#             "name": user_info.name,
-#             "email": user_info.email,
-#             "full_name": user_info.full_name,
-#             "mobile_no": user_info.mobile_no,
-#             "role": [role.role for role in user_info.roles]  # Extract role names
-#         }
-
-#         # Extract mobile number from user
-#         user_mobile_no = user_info.mobile_no
-
-#         if not user_mobile_no:
-#             return {"success":False,"status": "failed", "message": "Mobile number not found for user."}
-
-#         # Fetch carpainter/customer details
-#         carpainters = frappe.get_list(
-#             "Customer",
-#             filters={"mobile_number": user_mobile_no},
-#             fields=[
-#                 "name", "first_name", "full_name", "last_name", "city", "total_points",
-#                 "mobile_number", "current_points", "redeem_points", "email"
-#             ]
-#         )
-
-#         carpainter_data = []
-
-#         # Process carpainter data
-#         for carpainter in carpainters:
-#             carpainter_fields = {
-#                 "name": carpainter["name"],
-#                 "first_name": carpainter["first_name"],
-#                 "full_name": carpainter["full_name"],
-#                 "last_name": carpainter["last_name"],
-#                 "city": carpainter["city"],
-#                 "total_points": carpainter["total_points"],
-#                 "mobile_number": carpainter["mobile_number"],
-#                 "current_points": carpainter["current_points"],
-#                 "redeem_points": carpainter["redeem_points"],
-#                 "email": carpainter["email"],
-#             }
-
-#             # Fetch child table data (point history)
-#             point_history = frappe.get_all(
-#                 "Customer Product Detail",
-#                 filters={"parent": carpainter["name"]}, 
-#                 fields=[
-#                     "earned_points", "date","time","product_name", "product", "product_category",
-#                     "product_image", "gift_id", "gift_product_name", "deduct_gift_points"
-#                 ],
-#                 order_by="creation desc"
-#             )
-
-#             # Format date in point history
-#             for point in point_history:
-#                 if point.get('date'):
-#                     point['date'] = frappe.utils.formatdate(point['date'], 'dd-MM-yyyy')
-
-#             carpainter_fields["point_history"] = point_history
-#             carpainter_data.append(carpainter_fields)
-
-#         # Return combined response
-#         return {
-#             "success":True,
-#             "status": "success",
-#             "login_user_data": user_data,
-#             "carpainter_data": carpainter_data
-#         }
-
-#     except Exception as e:
-#         frappe.logger().error(f"Error in carpenter data: {str(e)}")
-#         return {"success":False,"status": "failed", "message": str(e)}
 
     
 # Show Total Points and Available Points------ 
@@ -289,26 +318,6 @@ def get_customer_details():
     else:
         return {"success": False, "message": "Customer not found for this mobile number"}
 
-    
-# @frappe.whitelist(allow_guest=True)
-# def get_customer_details():
-#     logged_in_user = frappe.session.user
-#     user_info = frappe.get_doc("User", logged_in_user)
-#     user_mobile_no = user_info.mobile_no
-#     # Fetch Customer document based on the email
-#     customer = frappe.get_all("Customer", filters={"mobile_number": user_mobile_no}, fields=["name", "total_points","mobile_number","current_points","redeem_points","city","first_name","full_name","last_name"])
-#     if customer:
-#         return customer[0]  # Return the first match
-#     else:
-#         return {"success": False,"message":"Customer not found for this email"}
-
-        # frappe.throw(_("Customer not found for this email"))
-        
-        
-        
-        
-        
-        
 
 # update carpainter points-----------
 @frappe.whitelist()
@@ -347,45 +356,130 @@ def update_customer_points(points):
 
 # update customer points into the point history table ----- 
 
+# @frappe.whitelist()
+# def update_carpainter_points(product_name, points,earned_amount):
+#     try:
+#         logged_in_user = frappe.session.user
+#         user_info = frappe.get_doc("User", logged_in_user)
+#         user_mobile_no = user_info.mobile_no
+        
+#            # Ensure points and earned_amount are of correct type (int or float)
+#         points = float(points)  # or float(points) depending on your needs
+#         earned_amount = float(earned_amount)
+
+#         # Fetch the Carpainter record using the mobile number
+#         carpainter = frappe.get_list("Customer", filters={'mobile_number': user_mobile_no}, fields=['name'])
+
+#         if not carpainter:
+#             return {"success": False,"message":"Customer not found"}
+
+#             # frappe.throw(_("Carpainter not found"))
+
+#         # Assuming there's only one Carpainter with this mobile number
+#         carpainter_doc = frappe.get_doc("Customer", carpainter[0].name)
+
+#         # Add points to point_history child table
+#         carpainter_doc.append("point_history", {
+#             "doctype": "Carpainter Product Detail",
+#             "product_name": product_name,
+#             "earned_points": points,
+#             "earned_amount":earned_amount,
+#             "date": nowdate(),
+#             "time":frappe.utils.now_datetime().strftime('%H:%M:%S'),
+#         })
+
+#         # Save the Carpainter document
+#         carpainter_doc.save()
+
+#         return {"success": True,
+#                 "message":"Customer Point Update Successfully."}
+
+#     except Exception as e:
+#         frappe.log_error(frappe.get_traceback(), f"Error in Updating Customer Points: {e}")
+#         return {"success":False,"error": f"Server error: {e}"}
+
+
+# update customer point with create new customer point detail document----------------
 @frappe.whitelist()
-def update_carpainter_points(product_name, points,earned_amount):
+def update_carpainter_points(product_name, points, earned_amount):
     try:
         logged_in_user = frappe.session.user
         user_info = frappe.get_doc("User", logged_in_user)
         user_mobile_no = user_info.mobile_no
-        
-           # Ensure points and earned_amount are of correct type (int or float)
-        points = float(points)  # or float(points) depending on your needs
+
+        # Convert to float to ensure valid numeric values
+        points = float(points)
         earned_amount = float(earned_amount)
 
-        # Fetch the Carpainter record using the mobile number
+        # Fetch the Customer (Carpainter) record using the mobile number
         carpainter = frappe.get_list("Customer", filters={'mobile_number': user_mobile_no}, fields=['name'])
 
         if not carpainter:
-            return {"success": False,"message":"Customer not found"}
+            return {"success": False, "message": "Customer not found"}
 
-            # frappe.throw(_("Carpainter not found"))
+        customer_id = carpainter[0].name
 
-        # Assuming there's only one Carpainter with this mobile number
-        carpainter_doc = frappe.get_doc("Customer", carpainter[0].name)
-
-        # Add points to point_history child table
-        carpainter_doc.append("point_history", {
-            "doctype": "Carpainter Product Detail",
-            "product_name": product_name,
+        # Create a new Customer Product Point Detail document
+        new_point_doc = frappe.get_doc({
+            "doctype": "Customer Product Point Detail",
+            "customer_id": customer_id,
+            "product_id": product_name,
             "earned_points": points,
-            "earned_amount":earned_amount,
-            "date": nowdate(),
-            "time":frappe.utils.now_datetime().strftime('%H:%M:%S'),
+            "earned_amount": earned_amount,
+            "date": frappe.utils.nowdate(),
+            "time": frappe.utils.now_datetime().strftime('%H:%M:%S'),
         })
 
-        # Save the Carpainter document
-        carpainter_doc.save()
+        new_point_doc.insert(ignore_permissions=True) 
 
-        return {"success": True,
-                "message":"Customer Point Update Successfully."}
+        return {
+            "success": True,
+            "message": "Customer Point Updated Successfully."
+        }
 
     except Exception as e:
         frappe.log_error(frappe.get_traceback(), f"Error in Updating Customer Points: {e}")
-        return {"success":False,"error": f"Server error: {e}"}
+        return {"success": False, "error": f"Server error: {e}"}
 
+
+
+# create new customer product point details from point history table----------------
+@frappe.whitelist(allow_guest=False)
+def create_customer_product_point_details(docname):
+    try:
+        customer = frappe.get_doc("Customer", docname)
+        created_docs = []
+        now = frappe.utils.now_datetime()
+
+        for row in customer.point_history:
+            if not row.product_name:
+                break
+
+            doc = frappe.get_doc({
+                "doctype": "Customer Product Point Detail",
+                "customer_id": customer.name,
+                "product_id": row.product_name,
+                "product_name": row.product,
+                "product_image": row.product_image,
+                "earned_points": row.earned_points,
+                "earned_amount": row.earned_amount,
+                "date": row.date,
+                "time": row.time ,
+                "product_category": row.product_category
+            })
+
+            doc.insert(ignore_permissions=True)
+            created_docs.append(doc.name)
+
+        return {
+            "success": True,
+            "message": f"{len(created_docs)} Customer Product Point Detail document(s) created.",
+            "created_docs": created_docs
+        }
+
+    except Exception as e:
+        frappe.log_error(frappe.get_traceback(), "Customer Product Point Detail Creation Error")
+        return {
+            "success": False,
+            "message": f"Error: {str(e)}"
+        }

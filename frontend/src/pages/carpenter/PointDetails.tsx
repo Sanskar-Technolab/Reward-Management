@@ -27,31 +27,64 @@ const CatalogueProducts = () => {
       }
     };
 
-    const fetchProductData = async (loggedInUser: any) => {
-      try {
-        const response = await axios.get('/api/method/reward_management.api.carpenter_master.get_carpainter_data', {
-          params: { user: loggedInUser },
-        });
+    // const fetchProductData = async (loggedInUser: any) => {
+    //   try {
+    //     const response = await axios.get('/api/method/reward_management.api.carpenter_master.get_carpainter_data', {
+    //       params: { user: loggedInUser },
+    //     });
 
-        console.log("Product data:", response.data);
-        const carpainterData = response.data.message.carpainter_data;
+    //     console.log("Product data:", response.data);
+    //     const carpainterData = response.data.message.carpainter_data;
         
-        console.log("Carpainter data:", carpainterData);
+    //     console.log("Carpainter data:", carpainterData);
         
-        if (Array.isArray(carpainterData) && carpainterData.length > 0) {
-          const pointHistory = carpainterData[0]?.point_details || [];
+    //     if (Array.isArray(carpainterData) && carpainterData.length > 0) {
+    //       const pointHistory = carpainterData[0]?.point_details || [];
           
-          // Filter and map only items with valid product details
-          const validProducts = pointHistory.filter((item: any) => item.product && item.product_image);
-          setProducts(validProducts);
-        } else {
-          setProducts([]);
-        }
-      } catch (error) {
-        console.error("Error fetching product data:", error);
-        setProducts([]);
+    //       // Filter and map only items with valid product details
+    //       const validProducts = pointHistory.filter((item: any) => item.product && item.product_image);
+    //       setProducts(validProducts);
+    //     } else {
+    //       setProducts([]);
+    //     }
+    //   } catch (error) {
+    //     console.error("Error fetching product data:", error);
+    //     setProducts([]);
+    //   }
+    // };
+
+    const fetchProductData = async (loggedInUser: any) => {
+  try {
+    const response = await axios.get(
+      '/api/method/reward_management.api.carpenter_master.get_carpainter_data',
+      {
+        params: { user: loggedInUser },
       }
-    };
+    );
+
+    console.log("Product data:", response.data);
+    const carpainterData = response.data.message?.carpainter_data || [];
+
+    console.log("Carpainter data:", carpainterData);
+
+    if (Array.isArray(carpainterData) && carpainterData.length > 0) {
+      const pointDetails = carpainterData[0]?.point_details || [];
+
+      // Filter and map only items with valid product_name and product_image
+      const validProducts = pointDetails.filter(
+        (item: any) => item.product_name && item.product_image
+      );
+
+      setProducts(validProducts);
+    } else {
+      setProducts([]);
+    }
+  } catch (error) {
+    console.error("Error fetching product data:", error);
+    setProducts([]);
+  }
+};
+
 
     fetchUserData();
   }, []);
@@ -72,13 +105,13 @@ const CatalogueProducts = () => {
                   {/* Product Image */}
                   <img
                     src={product.product_image}
-                    alt={product.product_name}
+                    alt={product.product_id}
                     className="w-full object- rounded-[10px] bg-[#DDDDDD] "
                   />
                   
                   {/* Product Name and Points */}
                   <div className="mt-3 text-start">
-                    <h3 className="text-lg font-semibold text-black">{product.product}</h3>
+                    <h3 className="text-lg font-semibold text-black">{product.product_name}</h3>
                     <div className="flex">
                       <p className="text-sm text-[#464646] pr-1">Points</p>
                       <img src={PointImage} className="pr-1 w-5 h-5" alt="Points Icon" />

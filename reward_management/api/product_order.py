@@ -96,15 +96,27 @@ def update_product_order(product_name, order_status, name, gift_points):
             customer.current_points = customer.current_points - gift_points
             customer.redeem_points = (customer.redeem_points or 0) + gift_points
             
-            # Add points to point_history child table
-            customer.append("point_history", {
-                "gift_id":order.product_id ,
-                "gift_product_name": order.product_name,
-                "deduct_gift_points": order.gift_points,
-                "date": nowdate(),
-                "time":frappe.utils.now_datetime().strftime('%H:%M:%S'),
+            # # Add points to point_history child table
+            # customer.append("point_history", {
+            #     "gift_id":order.product_id ,
+            #     "gift_product_name": order.product_name,
+            #     "deduct_gift_points": order.gift_points,
+            #     "date": nowdate(),
+            #     "time":frappe.utils.now_datetime().strftime('%H:%M:%S'),
 
-            })
+            # })
+            
+            # create new gift point details record
+            gift_point_details = frappe.new_doc("Customer Gift Point Details")
+            gift_point_details.customer_id = order.customer_id
+            gift_point_details.customer_name = order.full_name
+            gift_point_details.gift_id = order.product_id
+            gift_point_details.gift_product_name = order.product_name
+            gift_point_details.deduct_gift_points = order.gift_points
+            gift_point_details.date = nowdate()
+            gift_point_details.time = current_datetime.strftime('%H:%M:%S')
+            gift_point_details.save(ignore_permissions=True)
+            # Add a message to indicate successful approval
             message = f"Product Order approved successfully."
 
 
