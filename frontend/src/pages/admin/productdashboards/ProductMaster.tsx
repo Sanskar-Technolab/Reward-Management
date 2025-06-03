@@ -30,7 +30,7 @@ const ProductMaster: React.FC = () => {
     const [alertMessage, setAlertMessage] = useState('');
     const [alertTitle, setAlertTitle] = useState('');
     const [searchQuery, setSearchQuery] = useState('');
-    const [itemsPerPage] = useState(5);
+    const [itemsPerPage] = useState(10);
     const [productToDelete, setProductToDelete] = useState<Product | null>(null);
     const [isConfirmDeleteModalOpen, setIsConfirmDeleteModalOpen] = useState(false);
     const { data: productsData, mutate: mutateProducts } = useFrappeGetDocList<Product>('Product', {

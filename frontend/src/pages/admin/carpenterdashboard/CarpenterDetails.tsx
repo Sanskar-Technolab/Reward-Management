@@ -44,7 +44,7 @@ const notyf = new Notyf({
 
 const CarpenterDetails: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage] = useState(5);
+    const [itemsPerPage] = useState(10);
     const [searchQuery, setSearchQuery] = useState('');
     const [validMobileNumbers, setValidMobileNumbers] = useState<string[]>([]);
     const [isModalOpen, setIsModalOpen] = useState(false);

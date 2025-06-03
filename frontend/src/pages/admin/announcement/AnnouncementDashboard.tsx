@@ -31,7 +31,7 @@ interface Announcements {
 const AnnouncementDashboard: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(1);
      // Number of items per page
-    const [itemsPerPage] = useState(5);
+    const [itemsPerPage] = useState(10);
     // State for modal visibility
     const [isModalOpen, setIsModalOpen] = useState(false); 
     // State to track if modal is for add or edit

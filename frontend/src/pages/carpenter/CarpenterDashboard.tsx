@@ -49,10 +49,10 @@ useEffect(() => {
 
         setInstructions(formattedInstructions);
       } else {
-        console.error("Failed to fetch instructions or no images available.");
+        console.error("Failed to fetch project or no images available.");
       }
     } catch (error) {
-      console.error("Error fetching instructions:", error);
+      console.error("Error fetching project:", error);
     } finally {
       setLoading(false);
     }
@@ -157,7 +157,7 @@ useEffect(() => {
       const formattedProductName = productName.replace(/\s+/g, '-');
       navigate(`/product-details/${formattedProductName}`);
     } else {
-      notyf.error('You do not have sufficient points to redeem this product.');  // Show error notification
+      notyf.error('You do not have sufficient points to redeem this product.'); 
     }
   };
 
@@ -212,15 +212,15 @@ useEffect(() => {
         <img
           src={`${window.origin}${instructions[0].image}`}
           alt={instructions[0].instruction_name}
-          className="w-full lg:h-[450px] md:h-[300px] sm:h-[200px] object-fill"
+          className="w-full lg:h-[450px] md:h-[300px] sm:h-[200px] object-contain"
         />
       </div>
     )}
 
-    {/* Show error message if no instructions */}
-    {!loading && instructions.length === 0 && (
-      <div>No instructions available.</div>
-    )}
+    {/* Show error message if no projects */}
+    {/* {!loading && instructions.length === 0 && (
+      <div>No projects available.</div>
+    )} */}
   </div>
       <div className="grid grid-cols-12 gap-x-6 pb-10 md:mt-0 sm:mt-5 ">
         <div className="xxl:col-span-12 xl:col-span-12 lg:col-span-12 col-span-12">

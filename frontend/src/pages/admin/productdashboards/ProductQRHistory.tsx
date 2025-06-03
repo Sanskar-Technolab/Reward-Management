@@ -128,7 +128,7 @@ const ProductQRHistory: React.FC = () => {
         navigate('/redeemption-history');
     };
 
-    if (loading) return <div>Loading...</div>;
+    if (loading) return <div className='text-center p-8'>Loading...</div>;
     if (error) return <div>{error}</div>;
 
     return (

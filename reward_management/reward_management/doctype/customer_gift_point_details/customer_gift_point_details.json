@@ -79,6 +79,9 @@
   {
    "fieldname": "customer_id",
    "fieldtype": "Link",
+   "in_filter": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
    "label": "Customer ID",
    "options": "Customer"
   },
@@ -86,13 +89,17 @@
    "fetch_from": "customer_id.first_name",
    "fieldname": "customer_name",
    "fieldtype": "Data",
+   "in_filter": 1,
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
    "label": "Customer Name"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-06-02 17:20:06.730479",
+ "modified": "2025-06-03 10:41:06.265669",
  "modified_by": "Administrator",
  "module": "Reward Management",
  "name": "Customer Gift Point Details",

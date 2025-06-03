@@ -54,7 +54,7 @@ const notyf = new Notyf({
 
 const FAQDashboard: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage] = useState(5);
+    const [itemsPerPage] = useState(10);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [modalTitle, setModalTitle] = useState('');
     const [question, setQuestion] = useState('');

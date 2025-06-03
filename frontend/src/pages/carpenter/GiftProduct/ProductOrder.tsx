@@ -49,10 +49,16 @@ const ProductOrder = () => {
        setFullnameError('');
        
        
-       if (value && !validator.isAlpha(value)) {
-            setFullnameError('Please enter a valid name');
-        }
-    };
+    //    if (value && !validator.isAlpha(value)) {
+    //         setFullnameError('Please enter a valid name');
+    //     }
+    // };
+
+        if (value && !/^[A-Za-z\s]+$/.test(value)) {
+        setFullnameError('Please enter a valid name');
+    }
+  };
+
 
     const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;

@@ -443,42 +443,136 @@ def update_carpainter_points(product_name, points, earned_amount):
 
 
 
-# create new customer product point details from point history table----------------
+# # create new customer product point details from point history table----------------
+# @frappe.whitelist(allow_guest=False)
+# def create_customer_product_point_details(docname):
+#     try:
+#         customer = frappe.get_doc("Customer", docname)
+#         created_docs = []
+#         now = frappe.utils.now_datetime()
+
+#         for row in customer.point_history:
+#             if not row.product_name:
+#                 continue
+
+#             doc = frappe.get_doc({
+#                 "doctype": "Customer Product Point Detail",
+#                 "customer_id": customer.name,
+#                 "product_id": row.product_name,
+#                 "product_name": row.product,
+#                 "product_image": row.product_image,
+#                 "earned_points": row.earned_points,
+#                 "earned_amount": row.earned_amount,
+#                 "date": row.date,
+#                 "time": row.time ,
+#                 "product_category": row.product_category
+#             })
+
+#             doc.insert(ignore_permissions=True)
+#             created_docs.append(doc.name)
+
+#         return {
+#             "success": True,
+#             "message": f"{len(created_docs)} Customer Product Point Detail document(s) created.",
+#             "created_docs": created_docs
+#         }
+
+#     except Exception as e:
+#         frappe.log_error(frappe.get_traceback(), "Customer Product Point Detail Creation Error")
+#         return {
+#             "success": False,
+#             "message": f"Error: {str(e)}"
+#         }
+
+
+# # Create new Customer Gift Point Details from point_history table
+# @frappe.whitelist(allow_guest=False)
+# def create_customer_gift_product_point_details(docname):
+#     try:
+#         customer = frappe.get_doc("Customer", docname)
+#         created_docs = []
+
+#         for row in customer.point_history:
+#             if not row.gift_id:
+#                 continue  # Skip the row instead of breaking the loop
+
+#             doc = frappe.get_doc({
+#                 "doctype": "Customer Gift Point Details",
+#                 "customer_id": customer.name,
+#                 "gift_id": row.gift_id,
+#                 "gift_product_name": row.gift_product_name,
+#                 "deduct_gift_points": row.deduct_gift_points,
+#                 "date": row.date,
+#                 "time": row.time,
+#                 "gift_image": row.gift_image
+#             })
+
+#             doc.insert(ignore_permissions=True)
+#             created_docs.append(doc.name)
+
+#         return {
+#             "success": True,
+#             "message": f"{len(created_docs)} Customer Gift Product Point Detail document(s) created.",
+#             "created_docs": created_docs
+#         }
+
+#     except Exception as e:
+#         frappe.log_error(frappe.get_traceback(), "Customer Gift Product Point Detail Creation Error")
+#         return {
+#             "success": False,
+#             "message": f"Error: {str(e)}"
+#         }
+
+# Create new Customer Product and Gift Point Details from point_history table
 @frappe.whitelist(allow_guest=False)
-def create_customer_product_point_details(docname):
+def create_customer_point_details(docname):
     try:
         customer = frappe.get_doc("Customer", docname)
-        created_docs = []
-        now = frappe.utils.now_datetime()
+        product_point_docs = []
+        gift_point_docs = []
 
         for row in customer.point_history:
-            if not row.product_name:
-                break
+            # Create Customer Product Point Detail if product info is present
+            if row.product_name:
+                product_doc = frappe.get_doc({
+                    "doctype": "Customer Product Point Detail",
+                    "customer_id": customer.name,
+                    "product_id": row.product_name,
+                    "product_name": row.product,
+                    "product_image": row.product_image,
+                    "earned_points": row.earned_points,
+                    "earned_amount": row.earned_amount,
+                    "date": row.date,
+                    "time": row.time,
+                    "product_category": row.product_category
+                })
+                product_doc.insert(ignore_permissions=True)
+                product_point_docs.append(product_doc.name)
 
-            doc = frappe.get_doc({
-                "doctype": "Customer Product Point Detail",
-                "customer_id": customer.name,
-                "product_id": row.product_name,
-                "product_name": row.product,
-                "product_image": row.product_image,
-                "earned_points": row.earned_points,
-                "earned_amount": row.earned_amount,
-                "date": row.date,
-                "time": row.time ,
-                "product_category": row.product_category
-            })
-
-            doc.insert(ignore_permissions=True)
-            created_docs.append(doc.name)
+            # Create Customer Gift Point Detail if gift info is present
+            if row.gift_id:
+                gift_doc = frappe.get_doc({
+                    "doctype": "Customer Gift Point Details",
+                    "customer_id": customer.name,
+                    "gift_id": row.gift_id,
+                    "gift_product_name": row.gift_product_name,
+                    "deduct_gift_points": row.deduct_gift_points,
+                    "date": row.date,
+                    "time": row.time,
+                    "gift_image": row.gift_image
+                })
+                gift_doc.insert(ignore_permissions=True)
+                gift_point_docs.append(gift_doc.name)
 
         return {
             "success": True,
-            "message": f"{len(created_docs)} Customer Product Point Detail document(s) created.",
-            "created_docs": created_docs
+            "message": f"{len(product_point_docs)} Product Point Detail(s) and {len(gift_point_docs)} Gift Point Detail(s) created.",
+            "product_docs": product_point_docs,
+            "gift_docs": gift_point_docs
         }
 
     except Exception as e:
-        frappe.log_error(frappe.get_traceback(), "Customer Product Point Detail Creation Error")
+        frappe.log_error(frappe.get_traceback(), "Customer Point Detail Creation Error")
         return {
             "success": False,
             "message": f"Error: {str(e)}"
