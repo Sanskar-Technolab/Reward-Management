@@ -57,6 +57,7 @@ def get_user_details(name):
         raise frappe.ValidationError(_("Error fetching user details: {0}").format(str(e)))
 
 
+
 # update user profile and id--------
 @frappe.whitelist()
 def update_user_details():

@@ -168,7 +168,7 @@ const Modalsearch = ({ isOpen, onClose }: any) => {
   return (
     <Fragment>
       {isOpen && (
-        <div id="search-modal" className="hs-overlay ti-modal mt-[1.75rem]  ">
+        <div id="search-modal" className="hs-overlay ti-modal mt-[1.75rem]" >
           <div className="ti-modal-box" ref={modalRef}>
             <div className="ti-modal-content !border !border-defaultborder dark:!border-defaultborder !rounded-[0.5rem]">
               <div className="ti-modal-body m-2">

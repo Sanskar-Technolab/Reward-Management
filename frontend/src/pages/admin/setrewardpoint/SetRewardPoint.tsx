@@ -103,8 +103,8 @@ const SetRewardPointsDashboard: React.FC = () => {
             />
             {/* <Pageheader currentpage="Set Reward Points" activepage="Set Reward Points" mainpage="Set Reward Points" /> */}
             <div className="grid grid-cols-12 gap-x-6 p-6">
-                <div className="col-span-12 flex justify-center items-center">
-                    <div className="xl:col-span-3 col-span-12 bg-white mt-5 rounded-lg shadow-lg p-6">
+                <div className="col-span-12  flex justify-center items-center">
+                    <div className="xl:col-span-4 lg:w-[30%] col-span-12 bg-white mt-5 rounded-lg shadow-lg p-6">
                         <div className="">
                             <div className="box-header">
                                 <div className="box-title text-center text-[var(--primaries)] text-sm font-semibold">
@@ -130,6 +130,9 @@ const SetRewardPointsDashboard: React.FC = () => {
                                                 placeholder="Minimum Points"
                                                 value={minPoints}
                                                 onChange={(e) => setMinPoints(Number(e.target.value))}
+                                                required
+                                                onInvalid={(e) => (e.target as HTMLInputElement).setCustomValidity("Please enter a valid minimum points value.")}
+                                                onInput={(e) => (e.target as HTMLInputElement).setCustomValidity("")}
                                             />
                                         </div>
                                         <div className="xl:col-span-12 col-span-12">
@@ -140,6 +143,9 @@ const SetRewardPointsDashboard: React.FC = () => {
                                                 placeholder="Maximum Points"
                                                 value={maxPoints}
                                                 onChange={(e) => setMaxPoints(Number(e.target.value))}
+                                                required
+                                                onInvalid={(e) => (e.target as HTMLInputElement).setCustomValidity("Please enter a valid maximum points value.")}   
+                                                onInput={(e) => (e.target as HTMLInputElement).setCustomValidity("")}
                                             />
                                         </div>
                                         <div className="xl:col-span-12 col-span-12 text-center">

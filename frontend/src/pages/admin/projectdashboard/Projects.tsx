@@ -200,10 +200,10 @@ const Project: React.FC = () => {
   const handleSelectedSlider = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      if (!selectedImageName || !newImageUrl) {
-        notyf.error("Please select an image to upload.");
-        return;
-      }
+      // if (!selectedImageName || !newImageUrl) {
+      //   notyf.error("Please select an image to upload.");
+      //   return;
+      // }
 
 
       const file = fileDetails[0];
@@ -313,10 +313,10 @@ const Project: React.FC = () => {
 
   const handleNewProjectSlider = async (event: React.FormEvent) => {
     event.preventDefault();
-    if (fileDetails.length < 1) {
-      notyf.error("Please upload at least 1 project image.");
-      return;
-    }
+    // if (fileDetails.length < 1) {
+    //   notyf.error("Please upload at least 1 project image.");
+    //   return;
+    // }
     // const uploadedFileURLs: string[] = [];
     const file = fileDetails[0];
     const fileUrl = await uploadFile(new File([await fetch(file.url).then(res => res.blob())], file.name, { type: "image/*" }));
@@ -483,6 +483,10 @@ const Project: React.FC = () => {
                       id="file-upload"
                       className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] mt-1 block w-full p-2 border border-defaultborder rounded-md"
                       onChange={handleFileChange}
+                      required
+                      onInvalid={(e) => (e.target as HTMLInputElement).setCustomValidity("Please upload at least 2 images.")}
+                      onInput={(e) => (e.target as HTMLInputElement).setCustomValidity("")}
+                      disabled={fileDetails.length >= 10}
                     />
                     {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
                   </div>
@@ -558,7 +562,9 @@ const Project: React.FC = () => {
                     id="file-upload"
                     className="outline-none focus:outline-none focus:ring-0 mt-1 block w-full p-2 border border-defaultborder rounded-md"
                     accept="image/*"
-
+                    required
+                    onInvalid={(e) => (e.target as HTMLInputElement).setCustomValidity("Please upload an image.")}
+                    onInput={(e) => (e.target as HTMLInputElement).setCustomValidity("")}
                     onChange={(e) => {
                       const file = e.target.files?.[0];
 
@@ -656,7 +662,9 @@ const Project: React.FC = () => {
                     id="file-upload"
                     className="outline-none focus:outline-none focus:ring-0 mt-1 block w-full p-2 border border-defaultborder rounded-md"
                     accept="image/*"
-
+                    required
+                    onInvalid={(e) => (e.target as HTMLInputElement).setCustomValidity("Please upload an image.")}
+                    onInput={(e) => (e.target as HTMLInputElement).setCustomValidity("")}
                     onChange={(e) => {
                       const file = e.target.files?.[0];
 

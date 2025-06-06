@@ -401,6 +401,8 @@ const ProductMaster: React.FC = () => {
                     onClose={closeModal}
                     onCancel={closeModal}
                     onConfirm={handleConfirm}
+                    requiredQuestion={true}
+                    questionErrorMessage="Please enter a valid quantity"
                     title={`Create QR Code for ${selectedProduct.name}`} onSubmit={function (): void {
                         throw new Error('Function not implemented.');
                     }}

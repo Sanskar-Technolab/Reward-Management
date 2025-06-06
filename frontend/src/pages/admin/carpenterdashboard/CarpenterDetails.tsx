@@ -293,7 +293,7 @@ const CarpenterDetails: React.FC = () => {
                                 <div className="xl:col-span-12 col-span-12 mb-4">
                                     <label className="form-label text-sm text-defaulttextcolor font-semibold">Customer Status</label>
                                     <select
-                                        className="form-control w-full rounded-5px border border-[#dadada] form-control-light mt-2 text-sm"
+                                        className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full rounded-5px border border-[#dadada] form-control-light mt-2 text-sm"
                                         value={updatedStatus}
                                         onChange={handleStatusChange}
                                     >

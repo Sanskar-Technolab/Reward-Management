@@ -242,10 +242,13 @@ const SetContactUs: React.FC = () => {
                                             <input
                                                 type="text"
                                                 id="companyAddress"
-                                                className="form-control w-full !rounded-md !bg-light text-defaulttextcolor text-xs font-medium "
+                                                className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full !rounded-md !bg-light text-defaulttextcolor text-xs font-medium "
                                                 placeholder="Enter company address"
                                                 value={companyAddress}
                                                 onChange={(e) => setCompanyAddress(e.target.value)}
+                                                required
+                                                onInvalid={(e) => (e.target as HTMLInputElement).setCustomValidity("Company address is required.")}
+                                                onInput={(e) => (e.target as HTMLInputElement).setCustomValidity("")}
                                             />
                                         </div>
                                         
@@ -259,10 +262,13 @@ const SetContactUs: React.FC = () => {
                                             <input
                                                 type="email"
                                                 id="companyEmail"
-                                                className={`form-control w-full !rounded-md !bg-light text-defaulttextcolor text-xs font-medium ${emailError ? 'border-red-500' : ''}`}
+                                                className={`outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full !rounded-md !bg-light text-defaulttextcolor text-xs font-medium ${emailError ? 'border-red-500' : ''}`}
                                                 placeholder="Enter company email"
                                                 value={companyEmail}
                                                 onChange={handleEmailChange}
+                                                // required
+                                                // onInvalid={(e) => (e.target as HTMLInputElement).setCustomValidity("Company email is required.")}
+                                                // onInput={(e) => (e.target as HTMLInputElement).setCustomValidity("")}
                                             />
                                             {emailError && (
                                                 <p className="text-red text-xs mt-1">{emailError}</p>
@@ -279,10 +285,13 @@ const SetContactUs: React.FC = () => {
                                             <input
                                                 type="text"
                                                 id="companyWebsite"
-                                                className={`form-control w-full !rounded-md !bg-light text-defaulttextcolor text-xs font-medium ${websiteError ? 'border-red-500' : ''}`}
+                                                className={`outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full !rounded-md !bg-light text-defaulttextcolor text-xs font-medium ${websiteError ? 'border-red-500' : ''}`}
                                                 placeholder="Enter company website (e.g., example.com)"
                                                 value={companyWebsite}
                                                 onChange={handleWebsiteChange}
+                                                required
+                                                onInvalid={(e) => (e.target as HTMLInputElement).setCustomValidity("Company website is required.")}
+                                                // onInput={(e) => (e.target as HTMLInputElement).setCustomValidity("")}
                                             />
                                             {websiteError && (
                                                 <p className="text-red text-xs mt-1">{websiteError}</p>
@@ -301,10 +310,13 @@ const SetContactUs: React.FC = () => {
                                                     <input
                                                         type="tel"
                                                         id={`companyMobile${index}`}
-                                                        className={`form-control w-full !rounded-md !bg-light text-defaulttextcolor text-xs font-medium ${mobileErrors[index] ? 'border-red-500' : ''}`}
+                                                        className={`outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full !rounded-md !bg-light text-defaulttextcolor text-xs font-medium ${mobileErrors[index] ? 'border-red-500' : ''}`}
                                                         placeholder="Enter 10-digit mobile number"
                                                         value={mobile}
                                                         onChange={(e) => handleMobileChange(index, e.target.value)}
+                                                        // required
+                                                        // onInvalid={(e) => (e.target as HTMLInputElement).setCustomValidity("Company address is required.")}
+                                                        // onInput={(e) => (e.target as HTMLInputElement).setCustomValidity("")}
                                                     />
                                                     {companyMobile.length > 1 && (
                                                         <button
@@ -341,7 +353,7 @@ const SetContactUs: React.FC = () => {
                                             </label>
                                             <textarea
                                                 id="companyAboutUs"
-                                                className="form-control w-full !rounded-md !bg-light text-defaulttextcolor text-xs font-medium"
+                                                className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full !rounded-md !bg-light text-defaulttextcolor text-xs font-medium"
                                                 placeholder="Enter About Us"
                                                 value={companyAboutUs}
                                                 onChange={(e) => setCompanyAboutUs(e.target.value)}
