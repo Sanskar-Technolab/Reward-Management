@@ -105,34 +105,55 @@ def get_user_details(name):
 #         frappe.log_error(frappe.get_traceback(), _("API Error"))
 #         return {"status": "error", "message": str(e)}
 
-
 @frappe.whitelist()
-def check_username_availability(username):
+def check_username_availability(username, mobileno=None):
     try:
-        """Check if username already exists in the system"""
         if not username:
-            return {"success": False,"message": "Username is required."}
+            return {"success": False, "message": "Username required"}
+
+        current_user = frappe.session.user
+        user_data = frappe.get_cached_doc("User", current_user)
+
+        # Check username
+        if username != user_data.username and frappe.db.exists("User", {"username": username}):
+            return {"success": False, "message": "Username already exists"}
+
+        # Check mobile
+        if mobileno and mobileno != user_data.mobile_no and frappe.db.exists("User", {"mobile_no": mobileno}):
+            return {"success": False, "message": "Mobile number exists"}
+
+        return {"success": True, "message": "Available"}
+
+    except Exception as e:
+        return {"success": False, "message": str(e)}
+
+# @frappe.whitelist()
+# def check_username_availability(username):
+#     try:
+#         """Check if username already exists in the system"""
+#         if not username:
+#             return {"success": False,"message": "Username is required."}
         
          
-        # Get current logged-in user's username
-        current_user = frappe.session.user
-        current_user_data = frappe.get_doc("User", current_user)
-        current_username = current_user_data.username
+#         # Get current logged-in user's username
+#         current_user = frappe.session.user
+#         current_user_data = frappe.get_doc("User", current_user)
+#         current_username = current_user_data.username
         
-        # If requested username matches current user's username, allow it
-        if username == current_username:
-            print("current_username----",current_user_data)
-            return {"success": True, "message": "This is your current username."}
+#         # If requested username matches current user's username, allow it
+#         if username == current_username:
+#             # print("current_username----",current_user_data)
+#             return {"success": True, "message": "This is your current username."}
         
-        exists = frappe.db.exists("User", {"username": username})
-        if exists:
-            return {"success": False,  "message": "Username already exists."}
-        else:
-            # If username does not exist, return success with message
-            return {"success": True,  "message": "Username is not available."}
-    except Exception as e:
-        frappe.log_error(frappe.get_traceback(), _("API Error"))
-        return {"success": False, "message": str(e)}
+#         exists = frappe.db.exists("User", {"username": username})
+#         if exists:
+#             return {"success": False,  "message": "Username already exists."}
+#         else:
+#             # If username does not exist, return success with message
+#             return {"success": True,  "message": "Username is not available."}
+#     except Exception as e:
+#         frappe.log_error(frappe.get_traceback(), _("API Error"))
+#         return {"success": False, "message": str(e)}
 
 @frappe.whitelist(allow_guest=False)
 def update_user_details():
@@ -200,7 +221,7 @@ def update_user_details():
 
 
     
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist(allow_guest=False)
 def update_user_image(name, new_image_url):
     try:
         # Fetch User document based on email
@@ -220,14 +241,14 @@ def update_user_image(name, new_image_url):
         
     
 # Remove user Profile 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist(allow_guest=False)
 def remove_user_image(name):
     try:
         # Fetch User document based on email
-        user = frappe.get_doc("User", {"name": name})
+        user = frappe.get_doc("User", {"email": name})
 
         # Reset or remove user's image (example: setting it to None)
-        user.user_image = None  # Assuming 'user_image' is the field name for image
+        user.user_image = None  
 
         # Save changes
         user.save()
@@ -240,7 +261,7 @@ def remove_user_image(name):
 
 
 # Update password ------
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist(allow_guest=False)
 def update_password_without_current():
     try:
         user_data = frappe.form_dict  # Use form_dict to get form data
@@ -264,10 +285,10 @@ def update_password_without_current():
     
     
 # Get Gender Doctype list-----
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist(allow_guest=False)
 def get_all_gender():
     try:
-        genders = frappe.get_list("Gender", filters={}, fields=["name"])
+        genders = frappe.get_list("Gender", filters={}, fields=["name"],order_by="name asc")
         return genders
     except Exception as e:
         frappe.throw(_("Error fetching genders: {0}").format(str(e)))

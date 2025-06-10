@@ -319,9 +319,9 @@ const FAQDashboard: React.FC = () => {
         <Fragment>
               <Pageheader 
                 currentpage={"FAQ"} 
-                activepage={"/frequently-asked-question"} 
+                // activepage={"/frequently-asked-question"} 
                 
-                activepagename='FAQ' 
+                // activepagename='FAQ' 
                
             />
             {/* <Pageheader currentpage="FAQ" activepage="Faq's" mainpage="Faq's" /> */}

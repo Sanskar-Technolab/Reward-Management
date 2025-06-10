@@ -350,9 +350,9 @@ const CarpenterRegistration: React.FC = () => {
         <Fragment>
             <Pageheader
                 currentpage={"Customer Registration"}
-                activepage={"/carpenter-registration"}
+                // activepage={"/carpenter-registration"}
 
-                activepagename='Customer Dashboard'
+                // activepagename='Customer Dashboard'
 
             />
 

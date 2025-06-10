@@ -204,10 +204,9 @@ const ProductMaster: React.FC = () => {
         <Fragment>
             <Pageheader
                 currentpage={"Product Master"}
-                activepage={"/product-master"}
+                // activepage={"/product-master"}
                 // mainpage={"/product-master"} 
-                activepagename='Product Master'
-            // mainpagename='Product Master' 
+                // activepagename='Product Master'
             />
             {/* <Pageheader currentpage={pagecurrentPage} activepage={activePage} mainpage={mainPage}  /> */}
 

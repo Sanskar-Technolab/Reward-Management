@@ -29,6 +29,7 @@ interface ProductOrder {
     order_time?:string;
     approved_date?:string;
     approved_time?:string;
+    notes?: string;
 }
 
 const notyf = new Notyf({
@@ -77,7 +78,7 @@ const ProductOrder: React.FC = () => {
 
 
     const { data: orderData, error } = useFrappeGetDocList<ProductOrder>('Product Order', {
-        fields: ['name', 'product_id', 'product_image', 'mobile_number', 'full_name', 'pincode', 'product_name', 'customer_id', 'customer_email', 'address', 'city', 'order_date','gift_points','order_status'],
+        fields: ['name', 'product_id', 'product_image', 'mobile_number', 'full_name', 'pincode', 'product_name', 'customer_id', 'customer_email', 'address', 'city', 'order_date','gift_points','order_status','notes'],
         orderBy: {
             field: 'creation',
             order: 'desc',
@@ -236,6 +237,7 @@ const ProductOrder: React.FC = () => {
             product_name: selectedOrderRequest.product_name,
             order_status: selectedOrderRequest.order_status,
             gift_points: selectedOrderRequest.gift_points,
+            notes : selectedOrderRequest.notes, 
         };
     
         try {
@@ -243,7 +245,7 @@ const ProductOrder: React.FC = () => {
             const response = await axios.put(`/api/method/reward_management.api.product_order.update_product_order`, data);
     
             if (response.status === 200) {
-                // console.log("Product Order updated successfully");
+                console.log("Product Order updated successfully");
     
                 // Show success alert and close modal
                 setShowSuccessAlert(true);
@@ -270,8 +272,8 @@ const ProductOrder: React.FC = () => {
         <Fragment>
             <Pageheader
                 currentpage={"Product Order"}
-                activepage={"/product-order"}
-                activepagename="Product Order"
+                // activepage={"/product-order"}
+                // activepagename="Product Order"
             />
 
             <div className="grid grid-cols-12 gap-x-6 bg-white mt-5 rounded-lg shadow-lg">
@@ -308,6 +310,8 @@ const ProductOrder: React.FC = () => {
 
                                     { header: 'Order Date', accessor: 'order_date' },
                                     { header: 'Product Status', accessor: 'order_status' },
+                                    { header: 'Notes', accessor: 'notes' }
+                                  
                                 ]}
                                 data={filteredData || []}
                                 currentPage={currentPage}
@@ -337,14 +341,17 @@ const ProductOrder: React.FC = () => {
                     productnameLevel="Product Name"
                     giftpointLevel="Points"
                     statusLabel="Order Status"
+                    notesLabel="Notes"
                     orderId={selectedOrderRequest.name}
                     productName={selectedOrderRequest.product_name || ''}
                     giftPoint={selectedOrderRequest.gift_points || 0}
                     status={selectedOrderRequest.order_status || ''}
+                    notes={selectedOrderRequest.notes || ''} 
                     setOrderId={(value) => setSelectedOrderRequest(prev => ({ ...prev, name: value }))}
                     setProductName={(value) => setSelectedOrderRequest(prev => ({ ...prev, product_name: value }))}
                     setGiftPoint={(value) => setSelectedOrderRequest(prev => ({ ...prev, gift_points: value }))}
                     setStatus={(value) => setSelectedOrderRequest(prev => ({ ...prev, order_status: value }))}
+                    setNotes={(value) => setSelectedOrderRequest(prev => ({ ...prev, notes: value }))} // Add setNotes handler
                     onClose={handleCloseModal}
                     onSubmit={handleSubmit}
                     onCancel={handleCancel}               

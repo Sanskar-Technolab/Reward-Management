@@ -268,9 +268,9 @@ const CarpenterRewardRequest: React.FC = () => {
         <Fragment>
               <Pageheader 
                 currentpage={"Reward Request"} 
-                activepage={"/redeemption-request"} 
+                // activepage={"/redeemption-request"} 
               
-                activepagename="Reward Request"
+                // activepagename="Reward Request"
                
             />
            

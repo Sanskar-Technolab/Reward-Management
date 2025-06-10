@@ -96,9 +96,9 @@ const SetRewardPointsDashboard: React.FC = () => {
         <Fragment>
               <Pageheader 
                 currentpage={"Set Reward Points"} 
-                activepage={"/set-reward-points"} 
+                // activepage={"/set-reward-points"} 
                 // mainpage={"/set-reward-points"} 
-                activepagename="Set Reward Points"
+                // activepagename="Set Reward Points"
                 // mainpagename="Set Reward Points "
             />
             {/* <Pageheader currentpage="Set Reward Points" activepage="Set Reward Points" mainpage="Set Reward Points" /> */}

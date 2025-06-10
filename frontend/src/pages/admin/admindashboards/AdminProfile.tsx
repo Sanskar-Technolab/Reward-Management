@@ -37,11 +37,13 @@ const notyf = new Notyf({
 
 const AdminProfile = () => {
     const [showSuccessAlert, setShowSuccessAlert] = useState(false);
+    const [alertMessage, setAlertMessage] = useState('');
+    const [alertTitle, setAlertTitle] = useState('');
     const [selectedImage, setSelectedImage] = useState(face9);
     const [activeTab, setActiveTab] = useState('personal-info');
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [UserImage, setUserImage] = useState('');
-    const [changeImage, setchangeImage] = useState('');
+    const [changeImage, setchangeImage] = useState<File | null>(null);
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [username, setUsername] = useState('');
@@ -133,75 +135,6 @@ const AdminProfile = () => {
         };
     }, [isGenderDropdownOpen]);
 
-    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (file) {
-            setSelectedImage(URL.createObjectURL(file));
-            setchangeImage(file);
-        }
-    };
-
-    const update_user_details = async (e: React.FormEvent) => {
-        e.preventDefault();
-        
-        const form = e.currentTarget as HTMLFormElement;
-        if (!form.checkValidity()) {
-            form.reportValidity();
-            return;
-        }
-
-        let userNameOrEmail = email.toLowerCase();
-
-        try {
-            const availabilityResponse = await axios.get(
-                `/api/method/reward_management.api.admin_profile.check_username_availability`, 
-                { params: { username } }
-            );
-            // if(availabilityResponse){
-            //     console.log("Username availability response:", availabilityResponse);
-            // }
-
-            if (availabilityResponse.data?.message.success === false) {
-                notyf.error(`${availabilityResponse.data.message.message}`);
-                return;
-            }
-
-            if (availabilityResponse.data?.message.success == true) {
-                const response = await axios.post('/api/method/reward_management.api.admin_profile.update_user_details', {
-                    name: userNameOrEmail === "administrator" ? "Administrator" : userNameOrEmail, 
-                    first_name: firstName,
-                    last_name: lastName,
-                    full_name: fullname,
-                    username: username,
-                    phone,
-                    mobile_no: mobileno,
-                    gender,
-                    birth_date: birthdate,
-                    location
-                });
-
-                if (response.data.message.status === "success") {
-                    setShowSuccessAlert(true);
-                    setTimeout(() => {
-                        window.location.reload(); 
-                    }, 3000);
-                } else {
-                    console.log("Error updating user details:", response.data.message);
-                }
-            }
-        } catch (error) {
-            console.log("Error updating user details:", error);
-        }
-    };
-
-    const openFileInput = () => {
-        fileInputRef.current?.click();
-    };
-
-    const handleTabClick = (tabId: string) => {
-        setActiveTab(tabId);
-    };
-
     const uploadFile = async (file: File) => {
         const formData = new FormData();
         formData.append("file", file, file.name);
@@ -223,14 +156,12 @@ const AdminProfile = () => {
         }
     };
 
-    const changeUserImage = async () => {
-        if (!changeImage) {
-            notyf.error("Please select an image first.");
+    const updateUserImage = async (file: File) => {
+        const uploadedFileUrl = await uploadFile(file);
+        if (!uploadedFileUrl) {
+            notyf.error("Failed to upload image");
             return;
         }
-
-        const uploadedFileUrl = await uploadFile(changeImage);
-        if (!uploadedFileUrl) return;
 
         try {
             const response = await axios.post(`/api/method/reward_management.api.admin_profile.update_user_image`, {
@@ -240,15 +171,30 @@ const AdminProfile = () => {
 
             if (response.data.message.status === "success") {
                 localStorage.setItem('uploadedFileUrl', uploadedFileUrl);
-                setTimeout(() => {
-                    window.location.reload(); 
-                }, 1000);
                 setUserImage(uploadedFileUrl);
+                setAlertTitle('Success');
+                setAlertMessage('Profile image updated successfully!');
+                setShowSuccessAlert(true);
+                 setTimeout(() => {
+                               
+                                window.location.reload();
+                            }, 100);
+                // notyf.success("Profile image updated successfully!");
             } else {
                 notyf.error(`Failed to update user image: ${response.data.message}`);
             }
         } catch (error) {
             notyf.error(`Error updating user image: ${error}`);
+        }
+    };
+
+    const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            // Set temporary URL for immediate preview
+            setSelectedImage(URL.createObjectURL(file));
+            // Upload the image immediately
+            await updateUserImage(file);
         }
     };
 
@@ -260,13 +206,80 @@ const AdminProfile = () => {
             });
             localStorage.removeItem('uploadedFileUrl');
             setUserImage(face9);
+            setAlertTitle('Success');
+            setAlertMessage('Profile image removed successfully!');
+            setShowSuccessAlert(true);
             setTimeout(() => {
-                setUserImage(face9);
-                window.location.reload();
-            }, 1000);
+            // setUserImage(face9);
+            window.location.reload();}, 100);
+            // notyf.success("Profile image removed successfully!");
         } catch (error) {
             console.error('Error removing user image:', error);
+            notyf.error('Failed to remove profile image');
         }
+    };
+
+    const update_user_details = async (e: React.FormEvent) => {
+        e.preventDefault();
+        
+        const form = e.currentTarget as HTMLFormElement;
+        if (!form.checkValidity()) {
+            form.reportValidity();
+            return;
+        }
+
+        let userNameOrEmail = email.toLowerCase();
+
+        try {
+            const availabilityResponse = await axios.get(
+                `/api/method/reward_management.api.admin_profile.check_username_availability`, 
+                { params: { username, mobileno } }
+            );
+            
+            if (availabilityResponse.data?.message.success === false) {
+                notyf.error(`${availabilityResponse.data.message.message}`);
+                return;
+            }
+
+            if (availabilityResponse.data?.message.success == true) {
+                const response = await axios.post('/api/method/reward_management.api.admin_profile.update_user_details', {
+                    name: userNameOrEmail === "administrator" ? "Administrator" : userNameOrEmail, 
+                    first_name: firstName,
+                    last_name: lastName,
+                    full_name: fullname,
+                    username: username,
+                    phone,
+                    mobile_no: mobileno,
+                    gender,
+                    birth_date: birthdate,
+                    location
+                });
+
+                if (response.data.message.status === "success") {
+                setAlertTitle('Success');
+                setAlertMessage('Profile updated successfully!');
+                setShowSuccessAlert(true);
+                 setTimeout(() => {
+                                window.location.reload();
+                            }, 100);
+                    // notyf.success("Profile updated successfully!");
+                } else {
+                    console.log("Error updating user details:", response.data.message);
+                    notyf.error(`Failed to update profile: ${response.data.message.message}`);
+                }
+            }
+        } catch (error) {
+            console.log("Error updating user details:", error);
+            notyf.error("Failed to update profile");
+        }
+    };
+
+    const openFileInput = () => {
+        fileInputRef.current?.click();
+    };
+
+    const handleTabClick = (tabId: string) => {
+        setActiveTab(tabId);
     };
 
     const toggleNewPasswordVisibility = () => {
@@ -298,12 +311,17 @@ const AdminProfile = () => {
             );
 
             if (response.data.message.status === "success") {
+                // setShowSuccessAlert(true);
+                setAlertTitle('Success');
+                setAlertMessage('Password updated successfully!');
                 setShowSuccessAlert(true);
+                // notyf.success("Password updated successfully!");
             } else {
                 notyf.error(`Error updating password: ${response.data.message}`);
             }
         } catch (error) {
             console.error("Error updating password:", error);
+            notyf.error("Failed to update password");
         }
     };
 
@@ -311,8 +329,6 @@ const AdminProfile = () => {
         <Fragment>
             <Pageheader
                 currentpage={"Admin Profile"}
-                activepage={"/admin-profile"}
-                activepagename="Admin Profile"
             />
             
             <div className='container sm:p-3 !p-0 mt-4'>
@@ -341,17 +357,17 @@ const AdminProfile = () => {
                                                     <span className="avatar avatar-xxl avatar-rounded relative inline-block">
                                                         <img src={UserImage || selectedImage} alt="" id="profile-img" className='rounded-full w-[130px] h-[130px] object-cover' />
                                                         <span aria-label="anchor" className="badge rounded-full bg-primary avatar-badge absolute top-[65%] right-[2px] cursor-pointer py-[2px] px-[6px]" onClick={openFileInput}>
-                                                            <input type="file" name="photo" ref={fileInputRef} onChange={handleImageChange} style={{ display: 'none' }} className="absolute w-full h-full opacity-0" id="profile-image" />
+                                                            <input type="file" name="photo" ref={fileInputRef} onChange={handleImageChange} style={{ display: 'none' }} className="absolute w-full h-full opacity-0" id="profile-image" accept="image/*" />
                                                             <i className="fe fe-camera !text-[0.65rem] text-white"></i>
                                                         </span>
                                                     </span>
                                                 </div>
                                                 <div className="inline-flex">
-                                                    <button type="button" className="ti-btn text-white bg-primary me-1" onClick={changeUserImage}>Change</button>
                                                     <button type="button" className="bg-primary/20 ti-btn text-defaulttextcolor" onClick={removeUserImage}>Remove</button>
                                                 </div>
                                             </div>
                                             <form id="profile-data" className='overflow-hidden' onSubmit={update_user_details}>
+                                                {/* Rest of the form remains the same */}
                                                 <h6 className="font-semibold mb-4 text-[1rem]">Profile</h6>
                                                 <div className="sm:grid grid-cols-12 gap-6 mb-6">
                                                     <div className="xl:col-span-6 col-span-12">
@@ -461,8 +477,8 @@ const AdminProfile = () => {
                                                     </div>
                                                     <div className="xl:col-span-6 col-span-12 gender-dropdown-container ">
                                                         <label htmlFor="gender" className="form-label text-sm text-defaulttextcolor font-semibold">Gender</label>
-                                                        <div 
-                                                            className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full rounded-[5px] border border-[#dadada] form-control-light mt-2 text-sm cursor-pointer"
+                                                        <div
+                                                            className="z-[40%]  outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full rounded-[5px] border border-[#dadada] form-control-light mt-2 text-sm cursor-pointer"
                                                             onClick={() => setIsGenderDropdownOpen(!isGenderDropdownOpen)}
                                                             tabIndex={0}
                                                             onKeyDown={(e) => {
@@ -473,16 +489,26 @@ const AdminProfile = () => {
                                                                 }
                                                             }}
                                                         >
-                                                            <div className="flex justify-between items-center p-2">
+                                                            <div className="flex justify-between items-center p-2 ">
                                                                 <span>{gender || "Select Gender"}</span>
-                                                                <i className={`fe fe-chevron-${isGenderDropdownOpen ? 'up' : 'down'} text-[0.8rem]`}></i>
+                                                                <i className={`fe fe-chevron-${isGenderDropdownOpen ? 'up' : 'down'} text-defaultsize`}></i>
                                                             </div>
                                                             {isGenderDropdownOpen && (
-                                                                <div className="mt-1 w-full bg-white shadow-lg rounded-[5px] border border-[#dadada] max-h-60 overflow-auto">
+                                                                <div className=" w-full bg-white shadow-lg rounded-[5px] border border-[#dadada] max-h-40 overflow-auto p-2">
+                                                                    <div
+                                                                        className={`px-1 my-1 hover:bg-primary/10 cursor-pointer ${!gender ? 'bg-primary/20 text-primary' : ''}`}
+                                                                        onClick={(e) => {
+                                                                            e.stopPropagation();
+                                                                            setGender('');
+                                                                            setIsGenderDropdownOpen(false);
+                                                                        }}
+                                                                    >
+                                                                        Select Gender
+                                                                    </div>
                                                                     {genders.map((g, index) => (
-                                                                        <div 
-                                                                            key={index} 
-                                                                            className={`p-2 hover:bg-gray-100 cursor-pointer ${gender === g.name ? 'bg-primary/10 text-primary' : ''}`}
+                                                                        <div
+                                                                            key={index}
+                                                                            className={`px-1 my-1 hover:bg-primary/10 cursor-pointer ${gender === g.name ? 'bg-primary/20 text-primary' : ''}`}
                                                                             onClick={(e) => {
                                                                                 e.stopPropagation();
                                                                                 setGender(g.name);
@@ -591,7 +617,16 @@ const AdminProfile = () => {
                     </div>
                 </div>
             </div>
-            {showSuccessAlert && <SuccessAlert message="Profile Update successfully!" />}
+            {showSuccessAlert && 
+            <SuccessAlert 
+                    title={alertTitle}
+                    showButton={false}
+                    showCancleButton={false}
+                    showCollectButton={false}
+                    showAnotherButton={false}
+                    showMessagesecond={false}
+                    message={alertMessage}            
+            />}
         </Fragment>
     );
 };

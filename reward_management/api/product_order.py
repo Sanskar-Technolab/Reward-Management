@@ -66,7 +66,7 @@ def create_new_product_order(product_name, fullname, city, mobile, pincode, addr
 
 # Update Product Order And Deduct Points from Customer Account amd Add Product Order History into Point History Table-----
 @frappe.whitelist()
-def update_product_order(product_name, order_status, name, gift_points):
+def update_product_order(product_name, order_status, name, gift_points,notes):
     try:
         # Fetch product order to ensure it exists
         order = frappe.get_doc("Product Order", name)
@@ -81,6 +81,7 @@ def update_product_order(product_name, order_status, name, gift_points):
         order.product_name = product_name
         order.order_status = order_status
         order.gift_points = gift_points
+        order.notes = notes
         order.approved_date = current_datetime.date()  # Extract date
         order.approved_time = current_datetime.strftime('%H:%M:%S')  # Extract time in HH:MM:SS format
 
@@ -113,6 +114,7 @@ def update_product_order(product_name, order_status, name, gift_points):
             gift_point_details.gift_id = order.product_id
             gift_point_details.gift_product_name = order.product_name
             gift_point_details.deduct_gift_points = order.gift_points
+            gift_point_details.notes =  order.notes
             gift_point_details.date = nowdate()
             gift_point_details.time = current_datetime.strftime('%H:%M:%S')
             gift_point_details.save(ignore_permissions=True)

@@ -211,9 +211,9 @@ const CarpenterDetails: React.FC = () => {
         <Fragment>
              <Pageheader 
                 currentpage={"Customer Details"} 
-                activepage={"/carpenter-details"} 
+                // activepage={"/carpenter-details"} 
                 // mainpage={"/carpenter-details"} 
-                activepagename='Customer Dashboard' 
+                // activepagename='Customer Dashboard' 
                 // mainpagename='Customer Details' 
             />
             {/* <Pageheader currentpage="Customer Details" activepage="Customer Dashboard" mainpage="Customer Details" /> */}

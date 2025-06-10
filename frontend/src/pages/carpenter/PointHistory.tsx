@@ -15,6 +15,7 @@ interface PointHistoryItem {
     gift_product_name:string;
     deduct_gift_points:number;
     time : string;
+    notes?: string;
 
 }
 
@@ -174,9 +175,9 @@ const PointHistory: React.FC = () => {
 
            <Pageheader 
                 currentpage={"Point History"} 
-                activepage={"/point-history"} 
+                // activepage={"/point-history"} 
                 // mainpage={"/point-history"} 
-                activepagename="Point History"
+                // activepagename="Point History"
                 // mainpagename="Point History"
             />
        
@@ -242,6 +243,7 @@ const PointHistory: React.FC = () => {
                                     { header: 'Time', accessor: 'time' },
                                     { header: 'Gift Name', accessor: 'gift_product_name' },
                                     { header: 'Deduct Points', accessor: 'deduct_gift_points' },
+                                    { header: 'Notes', accessor: 'notes' },
                                 ]}
                                 data={filteredData}
                                 currentPage={currentPage}

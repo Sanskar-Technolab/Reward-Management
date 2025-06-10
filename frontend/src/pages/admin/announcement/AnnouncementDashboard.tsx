@@ -386,9 +386,9 @@ const AnnouncementDashboard: React.FC = () => {
         <Fragment>
             <Pageheader 
                 currentpage={"Announcement"} 
-                activepage={"/announcement"} 
+                // activepage={"/announcement"} 
                 
-                activepagename='Announcement' 
+                // activepagename='Announcement' 
                 
             />
           

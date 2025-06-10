@@ -202,7 +202,7 @@ def get_carpainter_data(user):
                 "Customer Gift Point Details",
                 filters={"customer_id": customer_id},
                 fields=[
-                    "deduct_gift_points", "date", "time", "gift_product_name", "gift_id"
+                    "deduct_gift_points", "date", "time", "gift_product_name", "gift_id","notes"
                 ],
                 order_by="creation desc"
             )
@@ -217,7 +217,7 @@ def get_carpainter_data(user):
             for point in product_point_history:
                 point_history.append({
                     "type": "product",
-                    "points": point["earned_points"],
+                    "earned_points": point["earned_points"],
                     "product_name": point["product_name"],
                     "product_id": point["product_id"],
                     "product_category": point["product_category"],
@@ -229,11 +229,12 @@ def get_carpainter_data(user):
             for point in gift_point_history:
                 point_history.append({
                     "type": "gift",
-                    "points": point["deduct_gift_points"],
+                    "deduct_gift_points": point["deduct_gift_points"],
                     "gift_product_name": point["gift_product_name"],
                     "gift_id": point["gift_id"],
                     "date": point["date"],
-                    "time": point["time"]
+                    "time": point["time"],
+                    "notes": point["notes"]  # Include notes if available
                 })
 
             # Optional: sort combined point history by date and time

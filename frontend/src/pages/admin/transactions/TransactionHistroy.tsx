@@ -140,9 +140,9 @@ const TransactionHistory: React.FC = () => {
         <Fragment>
              <Pageheader 
                 currentpage={"Transaction History"} 
-                activepage={"/transaction-history"} 
+                // activepage={"/transaction-history"} 
         
-                activepagename="Transaction History"
+                // activepagename="Transaction History"
              
             />
            

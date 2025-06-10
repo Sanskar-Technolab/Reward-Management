@@ -217,8 +217,8 @@ const SetContactUs: React.FC = () => {
         <>
             <Pageheader
                 currentpage={"Set Company Address"}
-                activepage={"/company-address"}
-                activepagename="Set Company Address"
+                // activepage={"/company-address"}
+                // activepagename="Set Company Address"
             />
             <div className="grid grid-cols-12 gap-x-6 p-6">
                 <div className="col-span-12 flex justify-center items-center">

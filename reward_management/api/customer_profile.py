@@ -26,7 +26,6 @@ def get_users():
 
 
 # Get User Doctype Data 
-
 @frappe.whitelist()
 def get_user_details(name):
     try:
@@ -57,6 +56,26 @@ def get_user_details(name):
         raise frappe.ValidationError(_("Error fetching user details: {0}").format(str(e)))
 
 
+
+# check if new email is exist or not------
+@frappe.whitelist()
+def check_email_exists(email):
+    try:
+        current_user = frappe.session.user
+        if current_user == email:
+            return {"success": True,"message": "This is your current email."}
+        # Check if the email exists in the User doctype
+        user_exists = frappe.db.exists("User", {"email": email})
+
+        if user_exists:
+            return {"success":False,
+                    "message": "Email already exists."}
+        else:
+            return {"success":True,"message": "Email is available."}
+
+    except Exception as e:
+        frappe.log_error(frappe.get_traceback(), _("API Error"))
+        return {"status": "error", "message": str(e)}
 
 # update user profile and id--------
 @frappe.whitelist()
@@ -302,7 +321,7 @@ def remove_user_image(name):
 @frappe.whitelist()
 def get_all_gender():
     try:
-        genders = frappe.get_list("Gender", filters={}, fields=["name"])
+        genders = frappe.get_list("Gender", filters={}, fields=["name"], order_by="name asc")
         return genders
     except Exception as e:
         frappe.throw(_("Error fetching genders: {0}").format(str(e)))

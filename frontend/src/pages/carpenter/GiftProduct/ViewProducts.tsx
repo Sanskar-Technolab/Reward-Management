@@ -123,8 +123,8 @@ const ViewProduct = () => {
     <>
       <Pageheader 
         currentpage={"Products"} 
-        activepage={"/gift-products"} 
-        activepagename='Products' 
+        // activepage={"/gift-products"} 
+        // activepagename='Products' 
       />
       <div className="grid grid-cols-12 gap-x-6 pb-10">
         <div className="xxl:col-span-12 xl:col-span-12 lg:col-span-12 col-span-12">
