@@ -1,0 +1,175 @@
+{
+ "actions": [],
+ "allow_import": 1,
+ "allow_rename": 1,
+ "autoname": "naming_series:",
+ "creation": "2025-05-23 13:03:58.016767",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "naming_series",
+  "product_table_name",
+  "product_qr_id",
+  "points",
+  "generated_date",
+  "generated_time",
+  "product_qr",
+  "column_break_ctob",
+  "product_qr_name",
+  "carpenter_id",
+  "qr_code_image",
+  "scanned",
+  "redeem_date",
+  "earned_amount"
+ ],
+ "fields": [
+  {
+   "fieldname": "product_table_name",
+   "fieldtype": "Link",
+   "in_filter": 1,
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Product Table Name",
+   "options": "Product",
+   "search_index": 1
+  },
+  {
+   "fieldname": "product_qr_name",
+   "fieldtype": "Data",
+   "in_filter": 1,
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Product QR Name",
+   "search_index": 1
+  },
+  {
+   "fieldname": "product_qr_id",
+   "fieldtype": "Int",
+   "in_filter": 1,
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Product QR ID",
+   "search_index": 1
+  },
+  {
+   "fieldname": "carpenter_id",
+   "fieldtype": "Link",
+   "in_filter": 1,
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Carpenter ID",
+   "options": "Customer",
+   "search_index": 1
+  },
+  {
+   "fieldname": "points",
+   "fieldtype": "Float",
+   "in_filter": 1,
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Points",
+   "search_index": 1
+  },
+  {
+   "fieldname": "generated_date",
+   "fieldtype": "Date",
+   "in_filter": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Generated Date",
+   "search_index": 1
+  },
+  {
+   "fieldname": "generated_time",
+   "fieldtype": "Time",
+   "in_filter": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Generated Time"
+  },
+  {
+   "fieldname": "qr_code_image",
+   "fieldtype": "Attach",
+   "label": "Qr Code Image"
+  },
+  {
+   "default": "0",
+   "fieldname": "scanned",
+   "fieldtype": "Check",
+   "in_filter": 1,
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Scanned"
+  },
+  {
+   "fieldname": "redeem_date",
+   "fieldtype": "Date",
+   "in_filter": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Redeem Date"
+  },
+  {
+   "fieldname": "earned_amount",
+   "fieldtype": "Data",
+   "label": "Earned Amount"
+  },
+  {
+   "fieldname": "column_break_ctob",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "product_qr",
+   "fieldtype": "Link",
+   "in_filter": 1,
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Product QR",
+   "options": "Product QR",
+   "search_index": 1
+  },
+  {
+   "default": "{product_qr_id}.-.#####",
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "label": "Naming Series",
+   "options": "{product_qr_id}.-.#####"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "make_attachments_public": 1,
+ "modified": "2025-05-29 17:00:04.858831",
+ "modified_by": "Administrator",
+ "module": "Reward Management",
+ "name": "QR Data",
+ "naming_rule": "By \"Naming Series\" field",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

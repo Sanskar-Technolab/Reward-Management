@@ -11,7 +11,7 @@ const Sidebar = ({ isSidebarActive }: any) => {
     const [isHover, setIsHover] = useState(false);
     const [logo, setLogo] = useState(null);
     const [loading, setLoading] = useState(true);
-    const location = useLocation(); // ✅ Use useLocation at top level
+    const location = useLocation();
     const currentPath = location.pathname;
 
     const storedRoles = localStorage.getItem('user_roles');

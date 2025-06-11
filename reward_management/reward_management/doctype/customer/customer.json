@@ -20,7 +20,11 @@
   "city",
   "image",
   "section_break_z17c",
-  "point_history"
+  "point_history",
+  "product_point_history_tab",
+  "product_point_history",
+  "gift_point_history_tab",
+  "gift_point_history"
  ],
  "fields": [
   {
@@ -111,12 +115,33 @@
    "fieldname": "enabled",
    "fieldtype": "Check",
    "label": "Enabled"
+  },
+  {
+   "fieldname": "product_point_history",
+   "fieldtype": "HTML",
+   "label": "Product Point History"
+  },
+  {
+   "fieldname": "gift_point_history",
+   "fieldtype": "HTML",
+   "label": "Gift Point History"
+  },
+  {
+   "fieldname": "product_point_history_tab",
+   "fieldtype": "Tab Break",
+   "label": "Product Point History"
+  },
+  {
+   "fieldname": "gift_point_history_tab",
+   "fieldtype": "Tab Break",
+   "label": "Gift Point History"
   }
  ],
+ "grid_page_length": 50,
  "image_field": "image",
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-12-30 16:13:41.046428",
+ "modified": "2025-06-02 17:32:08.037079",
  "modified_by": "Administrator",
  "module": "Reward Management",
  "name": "Customer",
@@ -136,6 +161,7 @@
    "write": 1
   }
  ],
+ "row_format": "Dynamic",
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": []

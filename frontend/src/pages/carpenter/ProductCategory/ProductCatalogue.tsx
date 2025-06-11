@@ -9,8 +9,8 @@ const ProductCatalogue = () => {
 
    // Fetch Product Category data
    const { data: products, error, isLoading } = useFrappeGetDocList('Product Category', {
-    fields: ['name', 'catalogue_image'], // Fetch fields from the Product Category doctype
-    limit: 10, // Adjust limit as needed
+    fields: ['name', 'catalogue_image'], 
+   
   });
 
   return (
@@ -40,7 +40,7 @@ const ProductCatalogue = () => {
                 <img
                   src={product.catalogue_image || "placeholder-image-url.png"}
                   alt={product.name}
-                  className="w-full h-48 object-cover rounded-[10px]"
+                  className="w-full h-48 object-cover rounded-[10px] bg-white"
                 />
                 <h3 className="mt-4 text-center text-defaultsize font-normal text-black">
                   {product.name}

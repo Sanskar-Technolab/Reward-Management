@@ -44,7 +44,7 @@ const notyf = new Notyf({
 
 const CarpenterDetails: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage] = useState(5);
+    const [itemsPerPage] = useState(10);
     const [searchQuery, setSearchQuery] = useState('');
     const [validMobileNumbers, setValidMobileNumbers] = useState<string[]>([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -211,9 +211,9 @@ const CarpenterDetails: React.FC = () => {
         <Fragment>
              <Pageheader 
                 currentpage={"Customer Details"} 
-                activepage={"/carpenter-details"} 
+                // activepage={"/carpenter-details"} 
                 // mainpage={"/carpenter-details"} 
-                activepagename='Customer Dashboard' 
+                // activepagename='Customer Dashboard' 
                 // mainpagename='Customer Details' 
             />
             {/* <Pageheader currentpage="Customer Details" activepage="Customer Dashboard" mainpage="Customer Details" /> */}
@@ -293,7 +293,7 @@ const CarpenterDetails: React.FC = () => {
                                 <div className="xl:col-span-12 col-span-12 mb-4">
                                     <label className="form-label text-sm text-defaulttextcolor font-semibold">Customer Status</label>
                                     <select
-                                        className="form-control w-full rounded-5px border border-[#dadada] form-control-light mt-2 text-sm"
+                                        className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full rounded-5px border border-[#dadada] form-control-light mt-2 text-sm"
                                         value={updatedStatus}
                                         onChange={handleStatusChange}
                                     >

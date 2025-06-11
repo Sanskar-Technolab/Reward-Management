@@ -1,5 +1,7 @@
 /* Existing styles for the sidebar */
 .side-menu {
+    position: fixed;
+    top: 0;
     width: 15rem; /* Default width */
     /* background-color: rgb(17 ,28 ,67); */
     background-color: rgba(213, 210, 210, 0.989);
@@ -10,8 +12,7 @@
     top: 0;
     left: 0;
     height: 100%;
-    /* overflow-y:scroll; */
-    z-index: 1000; /* Ensure it’s above other content */
+    z-index: 1000; 
     font-family: 'Montserrat', sans-serif;
 }
 
@@ -130,6 +131,7 @@
     padding-bottom: 5rem;
     justify-content: center;
 }
+
 
 .sidebar-menu-item:hover{
     /* background-color: rgb(255 255 255 / 0.05); */
