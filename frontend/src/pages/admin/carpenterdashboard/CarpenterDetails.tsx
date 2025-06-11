@@ -69,6 +69,7 @@ const CarpenterDetails: React.FC = () => {
     });
 
     useEffect(() => {
+        // console.log("customer details data", carpenterData);
         document.title='Customer Details';
         // Extract and set valid mobile numbers whenever userData changes
         const extractedMobileNumbers = userData?.map(user => user.mobile_no) || [];
@@ -77,12 +78,17 @@ const CarpenterDetails: React.FC = () => {
 
     // Filter Carpenters Data
     // const filteredCarpenters = carpenterData?.filter(carpenter => validMobileNumbers.includes(carpenter.mobile_number)) || [];
-    const filteredCarpenters = carpenterData?.filter(carpenter =>
-        validMobileNumbers.includes(carpenter.mobile_number)
-    ).map(carpenter => ({
-        ...carpenter, // Spread the original carpenter data
+    // const filteredCarpenters = carpenterData?.filter(carpenter =>
+    //     validMobileNumbers.includes(carpenter.mobile_number)
+    // ).map(carpenter => ({
+    //     ...carpenter, // Spread the original carpenter data
+    //     enabled: carpenter.enabled === 1 ? 'Active' : 'DeActive'
+    // })) || [];
+        const filteredCarpenters = carpenterData?.map(carpenter => ({
+        ...carpenter,
         enabled: carpenter.enabled === 1 ? 'Active' : 'DeActive'
     })) || [];
+
 
     // Function to filter data based on search query
     const filteredData = filteredCarpenters.filter(carpenter => {
