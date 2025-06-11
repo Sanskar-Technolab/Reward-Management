@@ -2,14 +2,13 @@ import React from 'react';
 import { Notyf } from 'notyf';
 import 'notyf/notyf.min.css';
 
-
- const notyf = new Notyf({
-        position: {
-            x: 'right',
-            y: 'top',
-        },
-        duration: 5000, 
-    });
+const notyf = new Notyf({
+  position: {
+    x: 'right',
+    y: 'top',
+  },
+  duration: 5000,
+});
 
 interface ViewModalProps {
   title: string;
@@ -31,19 +30,15 @@ interface ViewModalProps {
   setDate?: (value: string) => void;
   setEndDate?: (value: string) => void;
 
-  // Optional placeholders
   questionPlaceholder?: string;
   answerPlaceholder?: string;
   startDatePlaceholder?: string;
   endDatePlaceholder?: string;
 
-  // Validation control props
   requiredQuestion?: boolean;
   requiredAnswer?: boolean;
   questionErrorMessage?: string;
   answerErrorMessage?: string;
-
-  
 }
 
 const ViewModal: React.FC<ViewModalProps> = ({
@@ -75,16 +70,11 @@ const ViewModal: React.FC<ViewModalProps> = ({
   answerErrorMessage = "Answer is required",
 }) => {
   const handleSubmit = () => {
-    if (requiredQuestion && !question.trim()) {
-      notyf.error(questionErrorMessage);
+    const form = document.getElementById('view-modal-form') as HTMLFormElement;
+    if (form && !form.checkValidity()) {
+      form.reportValidity(); // triggers native HTML validation UI
       return;
     }
-
-    if (requiredAnswer && !answer.trim()) {
-      notyf.error(answerErrorMessage);
-      return;
-    }
-
     onSubmit();
   };
 
@@ -100,17 +90,20 @@ const ViewModal: React.FC<ViewModalProps> = ({
             </button>
           </div>
 
-          <div className="p-4 overflow-auto flex-1">
+          <form id="view-modal-form" className="p-4 overflow-auto flex-1">
             <div className="mb-4">
               <label htmlFor="question" className="form-label text-sm text-defaulttextcolor font-semibold">
                 {questionLabel} <span className="text-red">*</span>
               </label>
               <input
-                className="outline-none focus:outline-none focus:ring-0 form-control w-full rounded-5px border border-[#dadada] mt-2 text-sm"
+                className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full rounded-5px border border-[#dadada] mt-2 text-sm"
                 placeholder={questionPlaceholder}
                 id="question"
                 value={question}
                 onChange={(e) => setQuestion(e.target.value)}
+                required={requiredQuestion}
+                onInvalid={(e) => (e.target as HTMLInputElement).setCustomValidity(questionErrorMessage)}
+                onInput={(e) => (e.target as HTMLInputElement).setCustomValidity("")}
               />
             </div>
 
@@ -120,11 +113,14 @@ const ViewModal: React.FC<ViewModalProps> = ({
               </label>
               <input
                 type="text"
-                className="outline-none focus:outline-none focus:ring-0 form-control w-full rounded-5px border border-[#dadada] mt-2 text-sm"
+                className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full rounded-5px border border-[#dadada] mt-2 text-sm"
                 placeholder={answerPlaceholder}
                 id="answer"
                 value={answer}
                 onChange={(e) => setAnswer(e.target.value)}
+                required={requiredAnswer}
+                onInvalid={(e) => (e.target as HTMLInputElement).setCustomValidity(answerErrorMessage)}
+                onInput={(e) => (e.target as HTMLInputElement).setCustomValidity("")}
               />
             </div>
 
@@ -135,7 +131,7 @@ const ViewModal: React.FC<ViewModalProps> = ({
                 </label>
                 <input
                   type="date"
-                  className="outline-none focus:outline-none focus:ring-0 form-control w-full rounded-5px border border-[#dadada] mt-2 text-sm"
+                  className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full rounded-5px border border-[#dadada] mt-2 text-sm"
                   id="date"
                   placeholder={startDatePlaceholder}
                   value={date || ''}
@@ -151,7 +147,7 @@ const ViewModal: React.FC<ViewModalProps> = ({
                 </label>
                 <input
                   type="date"
-                  className="outline-none focus:outline-none focus:ring-0 form-control w-full rounded-5px border border-[#dadada] mt-2 text-sm"
+                  className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full rounded-5px border border-[#dadada] mt-2 text-sm"
                   id="endDate"
                   placeholder={endDatePlaceholder}
                   value={endDate || ''}
@@ -159,7 +155,7 @@ const ViewModal: React.FC<ViewModalProps> = ({
                 />
               </div>
             )}
-          </div>
+          </form>
 
           <div className="border-t border-defaultborder p-4 flex justify-end">
             <button onClick={handleSubmit} className="ti-btn bg-primary text-white me-3">

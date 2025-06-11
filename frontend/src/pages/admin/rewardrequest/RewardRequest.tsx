@@ -60,7 +60,7 @@ const formatDate = (dateStr: string | undefined): string => {
 
 const CarpenterRewardRequest: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage] = useState(5); 
+    const [itemsPerPage] = useState(10); 
     const [selectedRewardRequest, setSelectedRewardRequest] = useState<RewardRequest | null>(null); 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const navigate = useNavigate();
@@ -268,9 +268,9 @@ const CarpenterRewardRequest: React.FC = () => {
         <Fragment>
               <Pageheader 
                 currentpage={"Reward Request"} 
-                activepage={"/redeemption-request"} 
+                // activepage={"/redeemption-request"} 
               
-                activepagename="Reward Request"
+                // activepagename="Reward Request"
                
             />
            

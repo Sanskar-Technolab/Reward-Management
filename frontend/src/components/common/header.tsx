@@ -51,30 +51,37 @@ const Header = ({ toggleSidebar, isSidebarActive }: any) => {
         setDropdownOpen(!dropdownOpen);
     };
 
+
+
+
     useEffect(() => {
         const fetchUserEmailAndInitScanner = async () => {
             try {
                 const userResponse = await axios.get(`/api/method/frappe.auth.get_logged_user`, {
-                   
+
                 });
-    
+                // console.log("userResponse", userResponse.data.message);
+
                 const userdata = await axios.get(`/api/resource/User/${userResponse.data.message}`, {
-                   
+
                 });
                 // console.log("userdata", userdata.data.data);
-    
+
                 setUsername(userdata.data.data.full_name || "");
                 // console.log("usename", userdata.data.data.username);
                 setUserImage(userdata.data.data.user_image || ProfilePic);
-    
+
             } catch (error) {
                 console.error("Error fetching data:", error);
                 // You might want to set an error state or show a notification here.
             }
         };
-    
+
+       
+
         fetchUserEmailAndInitScanner();
     }, []);
+
 
     const toggleFullScreen = () => {
         const elem = document.documentElement;
@@ -152,7 +159,7 @@ const Header = ({ toggleSidebar, isSidebarActive }: any) => {
     const handleCloseSearchModal = () => {
         setIsSearchModalOpen(false);
     };
-   
+
     const handleDropdownToggle = () => {
         setDropdownVisible(prevState => !prevState);
     };
@@ -294,7 +301,16 @@ const Header = ({ toggleSidebar, isSidebarActive }: any) => {
                     </div>
                 </nav>
             </header>
-            <Modalsearch isOpen={isSearchModalOpen} onClose={handleCloseSearchModal} />
+            {/* <Modalsearch isOpen={isSearchModalOpen} onClose={handleCloseSearchModal} /> */}
+            {/* Background Overlay + Modal */}
+            {isSearchModalOpen && (
+                <>
+                    <div className="fixed inset-0 bg-black bg-opacity-40 z-[9998]"></div>
+                    <div className="fixed inset-0 z-[9999] flex justify-center items-start pt-24">
+                        <Modalsearch isOpen={true} onClose={handleCloseSearchModal} />
+                    </div>
+                </>
+            )}
         </Fragment>
     );
 };

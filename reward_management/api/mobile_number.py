@@ -6,6 +6,8 @@ from datetime import datetime, timedelta
 # import requests
 from reward_management.api.auth import generate_keys
 
+from reward_management.api.sms_setting import send_api_sms
+
 @frappe.whitelist(allow_guest=True)
 def get_mobile_verification_fields():
     try:
@@ -15,26 +17,68 @@ def get_mobile_verification_fields():
         return e
 
 # Generate random OTP for mobile number and set value
+# @frappe.whitelist(allow_guest=True)
+# def generate_or_update_otp(mobile_number):
+#     if not mobile_number:
+#         return {'status': 'failed', 'message': 'Mobile number is required'}
+
+#     # Generate OTP
+#     # otp = str(random.randint(100000, 999999))
+#     otp = str(123456)  # For testing purposes, use a fixed OTP)
+
+#     # Check if a document already exists for the given mobile number
+#     existing_verification = frappe.get_all('Mobile Verification', filters={'mobile_number': mobile_number}, fields=["name", "mobile_number", "otp"], limit=1)
+    
+#     if existing_verification:
+#         # If a document exists, update the existing OTP
+#         doc = frappe.get_doc('Mobile Verification', existing_verification[0].name)
+#         doc.otp = otp
+#         doc.save(ignore_permissions=True)
+#         result = {'status': 'success', 'message': 'OTP updated successfully', 'mobile_number': mobile_number, 'otp': otp}
+#     else:
+#         # If no document exists, create a new one with the generated OTP
+#         doc = frappe.get_doc({
+#             'doctype': 'Mobile Verification',
+#             'mobile_number': mobile_number,
+#             'otp': otp
+#         })
+#         doc.insert(ignore_permissions=True)
+#         result = {'status': 'success', 'message': 'OTP generated successfully', 'mobile_number': mobile_number, 'otp': otp}
+    
+#     # Print values for debugging
+#     for key, value in result.items():
+#         print(f"{key}: {value}")
+
+#     return result
+
+
+# Generate or update otp with sms integration--------------------
 @frappe.whitelist(allow_guest=True)
-def generate_or_update_otp(mobile_number):
+def generate_or_update_otp(mobile_number, template_name=None):
     if not mobile_number:
         return {'status': 'failed', 'message': 'Mobile number is required'}
 
     # Generate OTP
+    
     # otp = str(random.randint(100000, 999999))
-    otp = str(123456)  # For testing purposes, use a fixed OTP)
+    otp = "123456"  
 
     # Check if a document already exists for the given mobile number
-    existing_verification = frappe.get_all('Mobile Verification', filters={'mobile_number': mobile_number}, fields=["name", "mobile_number", "otp"], limit=1)
-    
+    existing_verification = frappe.get_all(
+        'Mobile Verification',
+        filters={'mobile_number': mobile_number},
+        fields=["name", "mobile_number", "otp"],
+        limit=1
+    )
+
     if existing_verification:
-        # If a document exists, update the existing OTP
+        # Update existing OTP
         doc = frappe.get_doc('Mobile Verification', existing_verification[0].name)
         doc.otp = otp
         doc.save(ignore_permissions=True)
         result = {'status': 'success', 'message': 'OTP updated successfully', 'mobile_number': mobile_number, 'otp': otp}
     else:
-        # If no document exists, create a new one with the generated OTP
+        # Insert new OTP record
         doc = frappe.get_doc({
             'doctype': 'Mobile Verification',
             'mobile_number': mobile_number,
@@ -42,10 +86,15 @@ def generate_or_update_otp(mobile_number):
         })
         doc.insert(ignore_permissions=True)
         result = {'status': 'success', 'message': 'OTP generated successfully', 'mobile_number': mobile_number, 'otp': otp}
-    
-    # Print values for debugging
-    for key, value in result.items():
-        print(f"{key}: {value}")
+
+    # Send OTP via SMS using template_name
+    sms_result = send_api_sms(mobile_number, otp, template_name=template_name)
+
+    # Combine both results: OTP generation and SMS response
+    result.update({
+        "sms_status": sms_result.get("status"),
+        "sms_response": sms_result.get("response_text")
+    })
 
     return result
 
@@ -88,7 +137,7 @@ def verify_otp(mobile_number, otp):
         modified_time = otp_verification[0].modified
         time_diff = datetime.now() - modified_time
 
-        if time_diff <= timedelta(minutes=1):
+        if time_diff <= timedelta(minutes=2):
             # OTP is valid
             otp_status = {'status': 'success', 'message': 'OTP matched successfully', 'mobile_number': mobile_number, 'otp': otp, 'modified': modified_time}
             
@@ -223,31 +272,9 @@ def check_user_registration(mobile_number):
 
 #     return result
 
-# # Match OTP
-# @frappe.whitelist(allow_guest=True)
-# def verify_otp(mobile_number, otp):
-#     if not mobile_number or not otp:
-#         return {'status': 'failed', 'message': 'Mobile number and OTP are required'}
-    
-#     # Fetch the Mobile Verification document
-#     otp_verification = frappe.get_all('Mobile Verification', filters={'mobile_number': mobile_number, 'otp': otp}, fields=["name", "mobile_number", "otp", "modified"], limit=1)
-    
-#     if otp_verification:
-#         modified_time = otp_verification[0].modified
-#         time_diff = datetime.now() - modified_time
 
-#         if time_diff <= timedelta(minutes=10):
-#             result = {'status': 'success', 'message': 'OTP matched successfully', 'mobile_number': mobile_number, 'otp': otp, 'modified': modified_time}
-#         else:
-#             result = {'status': 'failed', 'message': 'OTP expired', 'mobile_number': mobile_number, 'otp': otp, 'modified': modified_time}
-#     else:
-#         result = {'status': 'failed', 'message': 'Invalid OTP', 'mobile_number': mobile_number, 'otp': otp}
-    
-#     # Print values for debugging
-#     for key, value in result.items():
-#         print(f"{key}: {value}")
 
-#     return result
+# verify place order otp for product order
 
 @frappe.whitelist(allow_guest=True)
 def verify_otp_product_order(mobile_number, otp):
@@ -263,10 +290,10 @@ def verify_otp_product_order(mobile_number, otp):
     )
     
     if otp_verification:
-        modified_time = otp_verification[0].get('modified')  # This is already a datetime object
+        modified_time = otp_verification[0].get('modified')  
         time_diff = datetime.now() - modified_time
 
-        if time_diff <= timedelta(minutes=1):
+        if time_diff <= timedelta(minutes=2):
             # OTP is valid
             return {
                 'status': 'success',

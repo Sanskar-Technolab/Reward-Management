@@ -139,7 +139,10 @@ const QRScanner = () => {
       });
 
       if (response.data.message?.success === true) {
-        // console.log("Points collected successfully:", response);
+        console.log("Points collected successfully:", response);
+        console.log("Product QR ID:", productQrId);
+        console.log("Product Table Name:", productTableName);
+        console.log("Customer ID:", customerId);
 
         // Second API call to update scanned status
         const updateResponse = await axios.post(`/api/method/reward_management.api.qr_code_product_detail.update_scanned_status`, {

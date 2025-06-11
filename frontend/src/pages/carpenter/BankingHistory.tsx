@@ -169,8 +169,8 @@ const BankingHistory: React.FC = () => {
         <Fragment>
               <Pageheader 
                 currentpage={"Banking History"} 
-                activepage={"/banking-history"} 
-                activepagename="Banking History"
+                // activepage={"/banking-history"} 
+                // activepagename="Banking History"
               
             />
            

@@ -18,7 +18,7 @@ def count_redeem_request():
     return total_redeem_request
 
 
-# count total qr code points-------
+# count total qr code points------
 @frappe.whitelist()
 def total_points_of_qr_code():
     # Fetch fields from the Product QR document
@@ -28,12 +28,12 @@ def total_points_of_qr_code():
 
     # Fetch child table data linked with qr_table field for each Product QR document
     for qr_doc in qr_docs:
-        qr_doc['qr_table_data'] = frappe.get_all("Product QR Table",
-                                                 filters={"parent": qr_doc['name']},
+        qr_doc = frappe.get_all("QR Data",
+                                                 filters={"product_qr": qr_doc.name},
                                                  fields=["product_table_name", "qr_code_image", "product_qr_id", "points", "generated_date"])
         
         # Calculate the total points for this Product QR document
-        for row in qr_doc['qr_table_data']:
+        for row in qr_doc:
             total_points += row.get('points', 0)
 
     # Return the QR docs and total points

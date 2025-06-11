@@ -9,6 +9,7 @@
   "naming_series",
   "product_name",
   "quantity",
+  "qr_data",
   "qr_table"
  ],
  "fields": [
@@ -36,15 +37,22 @@
    "label": "Quantity"
   },
   {
+   "fieldname": "qr_data",
+   "fieldtype": "HTML",
+   "label": "QR Data"
+  },
+  {
    "fieldname": "qr_table",
    "fieldtype": "Table",
    "label": "QR Table",
    "options": "Product QR Table"
   }
  ],
+ "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-12-26 18:14:07.271926",
+ "make_attachments_public": 1,
+ "modified": "2025-05-26 13:06:05.631540",
  "modified_by": "Administrator",
  "module": "Reward Management",
  "name": "Product QR",
@@ -64,7 +72,11 @@
    "write": 1
   }
  ],
+ "row_format": "Dynamic",
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "track_changes": 1,
+ "track_seen": 1,
+ "track_views": 1
 }

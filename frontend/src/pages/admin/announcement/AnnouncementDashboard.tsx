@@ -31,7 +31,7 @@ interface Announcements {
 const AnnouncementDashboard: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(1);
      // Number of items per page
-    const [itemsPerPage] = useState(5);
+    const [itemsPerPage] = useState(10);
     // State for modal visibility
     const [isModalOpen, setIsModalOpen] = useState(false); 
     // State to track if modal is for add or edit
@@ -128,14 +128,26 @@ const AnnouncementDashboard: React.FC = () => {
 
     const handleSubmit = async () => {
 
-        if (!isValidAnnouncementTitle(question)) {
-            notyf.error('Announcement title should only contain letters and spaces.');
+        // if (!isValidAnnouncementTitle(question)) {
+        //     notyf.error('Announcement title should only contain letters and spaces.');
+        //     return;
+        // }
+        // if (!isValidAnnouncementTitle(answer)) {
+        //     notyf.error('Announcement subject should only contain letters and spaces.');
+        //     return;
+        // }
+        const isQuestionValid = isValidAnnouncementTitle(question);
+        const isAnswerValid = isValidAnnouncementTitle(answer);
+        if (!isQuestionValid || !isAnswerValid) {
+            if (!isQuestionValid && !isAnswerValid) {
+                notyf.error('Title and Subject should only contain letters and spaces.');
+            } else if (!isQuestionValid) {
+                notyf.error('Title should only contain letters and spaces.');
+            } else if (!isAnswerValid) {
+                notyf.error('Subject should only contain letters and spaces.');
+            }
             return;
-        }
-        if (!isValidAnnouncementTitle(answer)) {
-            notyf.error('Announcement subject should only contain letters and spaces.');
-            return;
-        }
+            }
         const data = {
             title: question,
             subject: answer,
@@ -172,6 +184,19 @@ const AnnouncementDashboard: React.FC = () => {
 
     const handleEditSubmit = async () => {
         if (!selectedAnnouncement) return;
+
+        const isQuestionValid = isValidAnnouncementTitle(question);
+        const isAnswerValid = isValidAnnouncementTitle(answer);
+        if (!isQuestionValid || !isAnswerValid) {
+            if (!isQuestionValid && !isAnswerValid) {
+                notyf.error('Title and Subject should only contain letters and spaces.');
+            } else if (!isQuestionValid) {
+                notyf.error('Title should only contain letters and spaces.');
+            } else if (!isAnswerValid) {
+                notyf.error('Subject should only contain letters and spaces.');
+            }
+            return;
+            }
 
         const data = {
             title: question,
@@ -361,9 +386,9 @@ const AnnouncementDashboard: React.FC = () => {
         <Fragment>
             <Pageheader 
                 currentpage={"Announcement"} 
-                activepage={"/announcement"} 
+                // activepage={"/announcement"} 
                 
-                activepagename='Announcement' 
+                // activepagename='Announcement' 
                 
             />
           
@@ -417,7 +442,7 @@ const AnnouncementDashboard: React.FC = () => {
             </div>
 
             {/* Render the modal conditionally */}
-            {isModalOpen && (
+            {/* {isModalOpen && (
                 <ViewModalComponent
                     title={modalMode === 'add' ? "Add Announcement" : "Edit Announcement"}
                     questionLabel={"Title"}
@@ -445,7 +470,37 @@ const AnnouncementDashboard: React.FC = () => {
                     onCancel={handleCloseModal}
                 />
             )}
-            {isConfirmDeleteModalOpen && (
+            */}
+            {isModalOpen && (
+            <ViewModalComponent
+                title={modalMode === 'add' ? "Add Announcement" : "Edit Announcement"}
+                questionLabel="Title"
+                answerLabel="Subject"
+                questionPlaceholder="Enter Announcement Title"
+                answerPlaceholder="Enter Announcement Subject"
+                startDateLabel="Published On"
+                endDateLabel="End Date"
+                showDate={true}
+                showEndDate={true}
+                question={question}
+                answer={answer}
+                date={date}
+                endDate={endDate}
+                setQuestion={setQuestion}
+                setAnswer={setAnswer}
+                setDate={setDate}
+                setEndDate={setEndDate}
+                requiredQuestion
+                requiredAnswer
+                questionErrorMessage="Announcement title is required."
+                answerErrorMessage="Announcement subject cannot be empty."
+                onClose={handleCloseModal}
+                onSubmit={modalMode === 'add' ? handleSubmit : handleEditSubmit}
+                onCancel={handleCloseModal}
+            />
+            )}
+
+             {isConfirmDeleteModalOpen && (
                 <DangerAlert
                     type="danger"
                     message={`Are you sure you want to delete this announcement?`}
@@ -455,6 +510,7 @@ const AnnouncementDashboard: React.FC = () => {
                     confirmText="Continue"
                 />
             )}
+
             {showSuccessAlert && (
                 <SuccessAlert
                     title={alertTitle}

@@ -81,7 +81,9 @@ function App() {
       <div className={`page layout ${isSidebarActive ? 'sidebar-narrow' : 'sidebar-wide'}`}>
               <Header toggleSidebar={toggleSidebar} isSidebarActive={isSidebarActive} />
               <Sidebar isSidebarActive={isSidebarActive} />
-              <div className='content main-index' style={{ marginInlineStart: isSidebarActive ? '5rem' : '15rem' }}>
+              <div className='content main-index' 
+              style={{ marginInlineStart: isSidebarActive ? '5rem' : '15rem' }}
+              >
                 <div className='main-content bg-body-bg'>
                   <Outlet />
                 </div>

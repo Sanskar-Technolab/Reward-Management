@@ -258,7 +258,7 @@ const handleRemoveImage = (indexToRemove: number) => {
                                                 />
                                             </div>
                                             <div className="xl:col-span-12 col-span-12">
-                                                <label htmlFor="product-cost-add" className="form-label text-sm font-semibold text-defaulttextcolor">Points</label>
+                                                <label htmlFor="product-cost-add" className="form-label text-sm font-semibold text-defaulttextcolor">Points<span style={{color:'red'}}>*</span></label>
                                                 <input
                                                     type="text"
                                                     className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full text-defaultsize text-defaulttextcolor border border-defaultborder rounded-[0.5rem] mt-2"
@@ -266,6 +266,9 @@ const handleRemoveImage = (indexToRemove: number) => {
                                                     placeholder="Reward points"
                                                     value={points}
                                                     onChange={(e) => setPoints(e.target.value)}
+                                                    required
+                                                    onInvalid={(e) => (e.target as HTMLInputElement).setCustomValidity("Please enter valid reward points .")}
+                                                    onInput={(e) => (e.target as HTMLInputElement).setCustomValidity("")}
                                                 />
                                             </div>
                                         </div>
