@@ -1,5 +1,5 @@
 import { Fragment, useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import '../../assets/css/header.css';
 import '../../assets/css/style.css';
 
@@ -12,8 +12,16 @@ import Modalsearch from "./modalsearch/modalsearch";
 import { useFrappeAuth } from "frappe-react-sdk";
 import axios from 'axios';
 
+// ✅ If you use Notyf or any custom notification
+import { Notyf } from 'notyf';
+import 'notyf/notyf.min.css';
+
+const notyf = new Notyf();
+
 const Header = ({ toggleSidebar, isSidebarActive }: any) => {
+    const navigate = useNavigate();
     const { logout } = useFrappeAuth();
+
     const [sessionId, setSessionId] = useState(localStorage.getItem('session_id'));
     const [fullScreen, setFullScreen] = useState(false);
     const [theme, setTheme] = useState({
@@ -31,14 +39,16 @@ const Header = ({ toggleSidebar, isSidebarActive }: any) => {
     const [UserImage, setUserImage] = useState(ProfilePic);
     const [username, setUsername] = useState('');
 
-    const carpenterrole = localStorage.getItem('carpenterrole');
+    // const carpenterrole = localStorage.getItem('carpenterrole');
     const roles = JSON.parse(localStorage.getItem('user_roles') || '[]');
-    const isAdmin = carpenterrole === "Admin" || roles.includes("Admin") || roles.includes("Administrator");
-    const isCustomer = carpenterrole === "Customer";
+    // const isAdmin = carpenterrole === "Admin" || roles.includes("Admin") || roles.includes("Administrator");
+    // const isCustomer = carpenterrole === "Customer" || roles.includes("Customer");
+    const isAdmin = roles.includes("Admin") || roles.includes("Administrator");
+    const isCustomer = roles.includes("Customer");
 
-    // Determine profile URL based on role
-    const profileUrl = isCustomer ? '/profile-setting' : 
-                     (isAdmin || roles.includes("Administrator")) ? '/admin-profile' : null;
+
+    const profileUrl = isCustomer ? '/profile-setting' :
+        (isAdmin || roles.includes("Administrator")) ? '/admin-profile' : null;
 
     const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
     const handleDropdownToggle = () => setDropdownVisible(prev => !prev);
@@ -58,22 +68,21 @@ const Header = ({ toggleSidebar, isSidebarActive }: any) => {
         setFullScreen(!!document.fullscreenElement);
     };
 
-    // Handle logout when new session is detected
     const handleLogout = () => {
         localStorage.clear();
+        localStorage.setItem('session_id', sessionId || '');
+        localStorage.setItem('user_roles', JSON.stringify(roles));
         logout();
-        window.location.href = '/'; // Redirect to login page
+        window.location.href = '/';
     };
 
-    // Refresh user data
     const refreshUserData = async () => {
         try {
             const userResponse = await axios.get(`/api/method/frappe.auth.get_logged_user`);
             const userdata = await axios.get(`/api/resource/User/${userResponse.data.message}`);
             setUsername(userdata.data.data.full_name || "");
             setUserImage(userdata.data.data.user_image || ProfilePic);
-            
-            // Update session ID if it's a new login
+
             const currentSessionId = localStorage.getItem('session_id');
             if (!currentSessionId) {
                 const newSessionId = Math.random().toString(36).substring(2, 15);
@@ -94,7 +103,6 @@ const Header = ({ toggleSidebar, isSidebarActive }: any) => {
     }, []);
 
     useEffect(() => {
-        // Set up session management
         const currentSessionId = localStorage.getItem('session_id');
         if (!currentSessionId) {
             const newSessionId = Math.random().toString(36).substring(2, 15);
@@ -102,32 +110,49 @@ const Header = ({ toggleSidebar, isSidebarActive }: any) => {
             setSessionId(newSessionId);
         }
 
-        // Listen for storage changes (other tabs)
         const handleStorageChange = (event: StorageEvent) => {
             if (event.key === 'session_id' && event.newValue !== sessionId) {
-                // Only handle if the change came from localStorage (same browser)
                 if (event.storageArea === localStorage) {
-                    alert("Your session has ended because a new login was detected in another tab.");
+                    // alert("Your session has ended because a new login was detected in another tab.");
                     handleLogout();
                 }
             }
-            
-            // Refresh user data when user-related storage changes
-            if (event.key === 'user_id' || event.key === 'user_roles' || event.key === 'carpenterrole') {
+
+            // ✅ Role change handling with redirect
+            if (event.key === 'user_roles') {
+                const updatedRoles = JSON.parse(localStorage.getItem('user_roles') || '[]');
+                if (Array.isArray(updatedRoles)) {
+                    if (updatedRoles.includes('Admin') || updatedRoles.includes('Administrator')) {
+                        // notyf.success("Admin role detected. Redirecting to Admin Dashboard...");
+                        setTimeout(() => {
+                            navigate('/admin-dashboard');
+                            window.location.reload();
+                        }, 2000);
+                    } else if (updatedRoles.includes('Customer')) {
+                        // notyf.success("Customer role detected. Redirecting to Carpenter Dashboard...");
+                        setTimeout(() => {
+                            navigate('/carpenter-dashboard');
+                            window.location.reload();
+
+                        }, 2000);
+                    }
+                }
+            }
+
+            if (event.key === 'user_id' || event.key === 'carpenterrole') {
                 refreshUserData();
             }
         };
 
         window.addEventListener('storage', handleStorageChange);
-        
-        // Also listen for changes in the current tab
+
         const intervalId = setInterval(() => {
             const currentSessionId = localStorage.getItem('session_id');
             if (currentSessionId !== sessionId) {
                 alert("Your session has ended because a new login was detected.");
                 handleLogout();
             }
-        }, 1000); // Check every second
+        }, 1000);
 
         return () => {
             window.removeEventListener('storage', handleStorageChange);

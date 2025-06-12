@@ -1,7 +1,8 @@
 import { useFrappeAuth } from 'frappe-react-sdk';
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
-import { useEffect, useState,useRef } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
+
 
 import { Notyf } from 'notyf';
 import 'notyf/notyf.min.css'; 
@@ -34,17 +35,14 @@ const notyf = new Notyf({
     ],
 });
 
-
 const PrivateRoutes = () => {
     const { currentUser, isValidating, isLoading, logout } = useFrappeAuth();
     const location = useLocation();
     const path = location.pathname;
 
     const [roles, setRoles] = useState<string[]>([]);
-    const [isCustomer, setIsCustomer] = useState<boolean>(false);
     const [loadingRoles, setLoadingRoles] = useState(true);
-    const [unauthorizedRedirect, setUnauthorizedRedirect] = useState<string | null>(null);
-
+    
     // Ref to track if notification was already shown
     const alertShown = useRef(false);
 
@@ -54,7 +52,6 @@ const PrivateRoutes = () => {
             .then((res) => {
                 const fetchedRoles = res.data.message.data.roles || [];
                 setRoles(fetchedRoles);
-                setIsCustomer(fetchedRoles.includes('Customer'));
                 setLoadingRoles(false);
             })
             .catch((err) => {
@@ -64,6 +61,7 @@ const PrivateRoutes = () => {
     }, []);
 
     const isAdmin = roles.includes("Admin") || roles.includes("Administrator");
+    const isCustomer = roles.includes("Customer");
 
     const adminPaths = [
         '/admin-dashboard', '/admin-profile', '/product-master', '/gift-master',
@@ -95,25 +93,22 @@ const PrivateRoutes = () => {
 
     // Access Validation
     if (isTryingAdminPath && !isAdmin) {
-        if (!unauthorizedRedirect) {
+        if (!alertShown.current) {
             notyf.error("You are not authorized to access admin pages.");
             alertShown.current = true;
-            setUnauthorizedRedirect('/admin-dashboard');
         }
-        
+        return <Navigate to="/carpenter-dashboard" replace />;
     }
 
     if (isTryingCustomerPath && !isCustomer) {
-        if (!unauthorizedRedirect) {
+        if (!alertShown.current) {
             notyf.error("You are not authorized to access customer pages.");
             alertShown.current = true;
-            setUnauthorizedRedirect('/carpenter-dashboard');
         }
-      
+        return <Navigate to="/admin-dashboard" replace />;
     }
-     if (unauthorizedRedirect) {
-        return <Navigate to={unauthorizedRedirect} replace />;
-    }
+
+    
 
     return <Outlet />;
 };
