@@ -27,7 +27,13 @@ def get_instructions():
 # # ADD or UPDATE INSTRUCTIONS--------
 @frappe.whitelist(allow_guest=False)
 def add_new_instruction(new_image_url, image_description):
-    try
+    try:
+        current_user = frappe.session.user
+        # Get current user's roles
+        user_roles = frappe.get_roles(current_user)
+        # Allow only Administrator or users with "Admin" role
+        if current_user != "Administrator" and "Admin" not in user_roles:
+            return {"success": False, "message": "Permission denied"}
     # Ensure the inputs are lists
         if not isinstance(new_image_url, list):
             frappe.throw("The 'new_image_url' parameter must be an array of image URLs.")
