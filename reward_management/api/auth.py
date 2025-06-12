@@ -86,3 +86,36 @@ def generate_keys(user):
     frappe.db.commit()
 
     return api_secret
+
+
+
+
+# get session user roles-----------
+@frappe.whitelist(allow_guest=False)
+def get_user_roles():
+    try:
+        user = frappe.session.user
+
+        if user == "Guest":
+            return {
+                "success": False,
+                "message": "You are not logged in.",
+                "data": {}
+            }
+
+        roles = frappe.get_roles(user)
+
+        return {
+            "success": True,
+            "message": "User roles retrieved successfully.",
+            "data": {
+                "user": user,
+                "roles": roles
+            }
+        }
+    except Exception as e:
+        frappe.log_error("API Get User Roles Error", str(e))
+        return {
+            "success": False,
+            "message": f"Failed to get user roles: {str(e)}"
+        }
