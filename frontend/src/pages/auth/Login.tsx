@@ -266,7 +266,6 @@ const Login = () => {
                     `/api/method/reward_management.api.mobile_number.generate_or_update_otp`,
                     {
                         mobile_number: mobile,
-                        template_name:"login",
                     },
                     {
                         headers: {
@@ -307,7 +306,7 @@ const Login = () => {
     // Start time for otp ------
     const startTimer = () => {
         setIsTimerActive(true);
-        setTimer(120);
+        setTimer(60);
         const countdown = setInterval(() => {
             setTimer((prevTimer) => {
                 if (prevTimer <= 1) {
@@ -344,9 +343,7 @@ const Login = () => {
             if (checkResponse.data.message && checkResponse.data.message.registered && checkResponse.data.message.approved && checkResponse.data.message.activate) {
                 // Call the OTP generation API
                 const otpResponse = await axios.post(`/api/method/reward_management.api.mobile_number.generate_or_update_otp`, {
-                    mobile_number: mobilenumber,
-                    template_name:"login",
-
+                    mobile_number: mobilenumber
                 }, {
                     headers: { 'Content-Type': 'application/json' }
                 });
@@ -478,8 +475,8 @@ const Login = () => {
             <div className=" h-[100vh] bg-[var(--body-bg)] flex items-center justify-center text-defaultsize text-defaulttextcolor ">
                 <div className="grid grid-cols-12 gap-4 b ">
                     <div className="xxl:col-span-4 xl:col-span-4 lg:col-span-4 md:col-span-3 sm:col-span-2"></div>
-                    <div className="xxl:col-span-4 xl:col-span-4 lg:col-span-4 md:col-span-6 sm:col-span-8 col-span-12 sm:max-w-[420px] sm:w-[420px] max-w-[300px] w-[300px]">
-                        <div className="sm:p-8 p-4 box-shadow-md border border-defaultborder shadow-md rounded-[10px] bg-white ">
+                    <div className="xxl:col-span-4 xl:col-span-4 lg:col-span-4 md:col-span-6 sm:col-span-8 col-span-12 ">
+                        <div className="p-8 box-shadow-md border border-defaultborder shadow-md rounded-[10px] bg-white ">
 
                             <div className="flex justify-center mb-8 ">
                                 {/* <img src={desktoplogo} alt="logo" className="w-28" /> */}
@@ -516,9 +513,9 @@ const Login = () => {
                                 </Callout.Root>
                             )}
 
-                            <div className="mt-6 sm:w-full">
+                            <div className="mt-6">
                                 {currentForm === 'login' && (
-                                    <form onSubmit={handleLogin} className='sm:max-w-[350px] sm:w-[350px] max-w-[250px] w-[250px]'>
+                                    <form onSubmit={handleLogin} className='max-w-[350px] w-[350px]'>
                                         <Box className="mb-4">
                                             <Text as='label' htmlFor='username' className='text-defaultsize font-semibold '>Username/Email</Text>
                                             <input
@@ -532,7 +529,7 @@ const Login = () => {
                                         </Box>
                                         <Box className="mb-4 ">
                                             <Text as='label' htmlFor='password' className='text-defaultsize font-semibold '>Password</Text>
-                                            <div className="relative sm:max-w-full sm:w-full max-w-[250px] w-[250px]">
+                                            <div className="relative">
                                                 <input
                                                     id='password'
                                                     type={passwordShow ? 'text' : 'password'}
@@ -558,13 +555,13 @@ const Login = () => {
 
                                 {currentForm === "register" && (
                                     <form onSubmit={handleRegister}>
-                                        <Box className="mb-4  sm:max-w-[350px] sm:w-[350px] max-w-[250px] w-[250px]">
+                                        <Box className="mb-4 max-w-[350px] w-[350px]">
                                             <Box className="xl:col-span-12 col-span-12 mb-3">
                                                 <Text as='label' htmlFor="firstName" className="form-label text-defaultsize font-semibold">First Name</Text>
                                                 <input
                                                     type="text"
                                                     name="firstName"
-                                                    className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control form-control-lg border rounded-[5px] p-2 mt-2 text-xs sm:w-full w-[250px] "
+                                                    className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control form-control-lg border rounded-[5px] p-2 mt-2 text-xs w-full"
                                                     onChange={changeHandler}
                                                     value={firstName}
                                                     placeholder="First Name"
@@ -577,7 +574,7 @@ const Login = () => {
                                                 <input
                                                     type="text"
                                                     name="lastName"
-                                                    className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control form-control-lg border rounded-[5px] p-2 mt-2 text-xs sm:w-full w-[250px] "
+                                                    className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control form-control-lg border rounded-[5px] p-2 mt-2 text-xs w-full"
                                                     onChange={changeHandler}
                                                     value={lastName}
                                                     placeholder="Last Name"
@@ -590,7 +587,7 @@ const Login = () => {
                                                 <input
                                                     type="text"
                                                     name="city"
-                                                    className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control form-control-lg border rounded-[5px] p-2 mt-2 text-xs sm:w-full w-[250px] "
+                                                    className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control form-control-lg border rounded-[5px] p-2 mt-2 text-xs w-full"
                                                     onChange={changeHandler}
                                                     value={city}
                                                     placeholder="City"
@@ -603,7 +600,7 @@ const Login = () => {
                                                 <input
                                                     type="tel"
                                                     name="mobile"
-                                                    className={`outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control form-control-lg border rounded-[5px] p-2 mt-2 text-xs sm:w-full w-[250px]  ${mobile.length !== 10 || !/^\d+$/.test(mobile) ? 'border-red-500' : ''}`}
+                                                    className={`outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control form-control-lg border rounded-[5px] p-2 mt-2 text-xs w-full ${mobile.length !== 10 || !/^\d+$/.test(mobile) ? 'border-red-500' : ''}`}
                                                     onChange={changeHandler}
                                                     value={mobile}
                                                     placeholder="Mobile Number"
@@ -629,7 +626,7 @@ const Login = () => {
                                                         <input
                                                             type="number"
                                                             name="otp"
-                                                            className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control form-control-lg border rounded-[5px] p-2 mt-2 text-xs sm:w-full w-[250px] "
+                                                            className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control form-control-lg border rounded-[5px] p-2 mt-2 text-xs w-full"
                                                             onChange={changeHandler}
                                                             value={otp}
                                                             placeholder="OTP"
@@ -682,7 +679,7 @@ const Login = () => {
                                 )}
 
                                 {currentForm === 'carpenterLogin' && (
-                                    <form onSubmit={handleCarpenterLogin} className='sm:max-w-[350px] sm:w-[350px] max-w-[300px] w-[300px]'>
+                                    <form onSubmit={handleCarpenterLogin} className='max-w-[350px] w-[350px]'>
                                         <Box className="mb-4 ">
                                             <Text as='label' htmlFor='mobilenumber' className='text-defaultsize font-semibold'>Mobile Number</Text>
                                             <input

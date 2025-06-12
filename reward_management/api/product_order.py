@@ -68,6 +68,14 @@ def create_new_product_order(product_name, fullname, city, mobile, pincode, addr
 @frappe.whitelist()
 def update_product_order(product_name, order_status, name, gift_points,notes):
     try:
+        current_user = frappe.session.user
+        
+         # Get current user's roles
+        user_roles = frappe.get_roles(current_user)
+
+        # Allow only Administrator or users with "Admin" role
+        if current_user != "Administrator" and "Admin" not in user_roles:
+            return {"success": False, "message": "Permission denied"}
         # Fetch product order to ensure it exists
         order = frappe.get_doc("Product Order", name)
 

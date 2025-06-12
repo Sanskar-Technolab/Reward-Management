@@ -137,6 +137,14 @@ def update_or_rename_product(data):
 @frappe.whitelist()
 def update_product(product_id, product_name, reward_points):
     try:
+        current_user = frappe.session.user
+        
+         # Get current user's roles
+        user_roles = frappe.get_roles(current_user)
+
+        # Allow only Administrator or users with "Admin" role
+        if current_user != "Administrator" and "Admin" not in user_roles:
+            return {"success": False, "message": "Permission denied"}
         # Fetch the product by its name (which is the `name` field)
         product = frappe.get_doc("Product", product_id)
         
@@ -244,6 +252,14 @@ def get_product_details(product_id):
 @frappe.whitelist()
 def add_category(productCategory):
     try:
+        current_user = frappe.session.user
+        
+         # Get current user's roles
+        user_roles = frappe.get_roles(current_user)
+
+        # Allow only Administrator or users with "Admin" role
+        if current_user != "Administrator" and "Admin" not in user_roles:
+            return {"success": False, "message": "Permission denied"}
         productcategory=frappe.new_doc("Product Category")
         productcategory.category_name = productCategory
         
@@ -265,6 +281,14 @@ def add_category(productCategory):
 @frappe.whitelist()
 def add_product(productName, productPrice, rewardPoints, discription, rewardAmount, pointReward, productCategory, productImage=None):
     try:
+        current_user = frappe.session.user
+        
+         # Get current user's roles
+        user_roles = frappe.get_roles(current_user)
+
+        # Allow only Administrator or users with "Admin" role
+        if current_user != "Administrator" and "Admin" not in user_roles:
+            return {"success": False, "message": "Permission denied"}
         # Create a new instance of the Product document
         product = frappe.new_doc("Product")
         product.product_name = productName
@@ -312,6 +336,14 @@ def add_product(productName, productPrice, rewardPoints, discription, rewardAmou
 @frappe.whitelist()
 def upload_file():
     try:
+        current_user = frappe.session.user
+        
+         # Get current user's roles
+        user_roles = frappe.get_roles(current_user)
+
+        # Allow only Administrator or users with "Admin" role
+        if current_user != "Administrator" and "Admin" not in user_roles:
+            return {"success": False, "message": "Permission denied"}
         # Example: Retrieving file from FormData
         file = frappe.request.files.get('file')
         if not file:
@@ -341,6 +373,14 @@ def get_tableproduct_detail(product_id=None):
         frappe.throw(_("Product ID is required"))
 
     try:
+        current_user = frappe.session.user
+        
+         # Get current user's roles
+        user_roles = frappe.get_roles(current_user)
+
+        # Allow only Administrator or users with "Admin" role
+        if current_user != "Administrator" and "Admin" not in user_roles:
+            return {"success": False, "message": "Permission denied"}
         product = frappe.get_doc("Product", product_id)
         frappe.log_error(frappe.as_json(product.as_dict()), "Product Details")
         
@@ -391,6 +431,14 @@ def get_tableproduct_detail(product_id=None):
 @frappe.whitelist(allow_guest=False)
 def delete_reward_point_row_by_index(product_id, row_index, from_date, update_data=None):
     try:
+        current_user = frappe.session.user
+        
+         # Get current user's roles
+        user_roles = frappe.get_roles(current_user)
+
+        # Allow only Administrator or users with "Admin" role
+        if current_user != "Administrator" and "Admin" not in user_roles:
+            return {"success": False, "message": "Permission denied"}
         # Convert types
         row_index = int(row_index)
         from_date = frappe.utils.getdate(from_date)

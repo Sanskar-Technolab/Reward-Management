@@ -161,6 +161,7 @@ fetchWebsiteSettings();
         <Route path='/customer-product' element={<CusromerProducts />} />
         <Route path='/redeem-point-guide' element={<RedeemPointGuide/>}/>
         <Route path='/view-product-details/:product_id' element={<CustomerProductDetails/>} />
+        
         <Route element={<AppLayout/>}>
         <Route path='/' element={<PrivateRoutes/>}>
           <Route path='/admin-profile' element={<AdminProfile />} />
