@@ -60,8 +60,14 @@ def generate_or_update_otp(mobile_number, template_name=None):
 
     # Generate OTP
     
+      # Assign a fixed OTP for a specific number
+    if mobile_number == "8200605367":
+        otp = "123456"
+    else:
+        otp = str(random.randint(100000, 999999))
+    
     # otp = str(random.randint(100000, 999999))
-    otp = "123456"  
+    # otp = "123456"  
 
     # Check if a document already exists for the given mobile number
     existing_verification = frappe.get_all(

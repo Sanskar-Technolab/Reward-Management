@@ -69,6 +69,27 @@ const Login = () => {
         setLoginError("");
     };
 
+
+    // Check if user is already logged in
+    const checkLoggedInUser = async () => {
+        try {
+            const response = await axios.get('/api/method/frappe.auth.get_logged_user');
+            if (response.data.message && response.data.message !== 'Guest') {
+                const userRoles = JSON.parse(localStorage.getItem('user_roles') || []);
+                
+                // Redirect based on role
+                if (userRoles.includes('Admin') || userRoles.includes('Administrator')) {
+                    navigate('/admin-dashboard');
+                } else {
+                    // Assuming carpenter role is stored or can be fetched
+                    navigate('/carpenter-dashboard');
+                }
+            }
+        } catch (error) {
+            console.log('Error checking logged-in user:', error);
+        }
+    };
+
     // show logged use roles---------------------
     const fetchUserRoles = async (username: string) => {
         try {
@@ -96,13 +117,7 @@ const Login = () => {
                 usr: username,
                 pwd: password
             });
-            // const response = await axios.post(`/api/method/login`, {
-            //     usr: username,
-            //     pwd: password
-            // });
-            // console.log(username, password);
-            // console.log('Login successful:', response.data.full_name);
-
+           
             // Fetch roles
             const rolesResponse = await fetchUserRoles(username);
             // console.log("rolesResponse----", rolesResponse);
@@ -110,6 +125,14 @@ const Login = () => {
             // Extract roles from the response
             const roles = rolesResponse.message || []; // Assuming `message` contains the array of roles
             localStorage.setItem('user_roles', JSON.stringify(roles));
+
+            // Save user credentials (optional, if available)
+            const credentials = {
+                user_name: username,
+                email: username,  // Frappe uses email as username by default
+                // Add more fields if needed (e.g., full_name, first_name)
+            };
+            localStorage.setItem("credentials", JSON.stringify(credentials));
 
             // console.log('User roles:', roles);
 
@@ -266,6 +289,7 @@ const Login = () => {
                     `/api/method/reward_management.api.mobile_number.generate_or_update_otp`,
                     {
                         mobile_number: mobile,
+                        template_name:"login",
                     },
                     {
                         headers: {
@@ -337,13 +361,15 @@ const Login = () => {
                 params: { mobile_number: mobilenumber },
             });
             // console.log("login response data",checkResponse)
+           
 
-            localStorage.setItem('carpenterrole', checkResponse.data.message.role_profile_name);
+            // localStorage.setItem('carpenterrole', checkResponse.data.message.role_profile_name);
 
             if (checkResponse.data.message && checkResponse.data.message.registered && checkResponse.data.message.approved && checkResponse.data.message.activate) {
                 // Call the OTP generation API
                 const otpResponse = await axios.post(`/api/method/reward_management.api.mobile_number.generate_or_update_otp`, {
-                    mobile_number: mobilenumber
+                    mobile_number: mobilenumber,
+                    template_name:"login",
                 }, {
                     headers: { 'Content-Type': 'application/json' }
                 });
@@ -396,7 +422,21 @@ const Login = () => {
             // Check if the OTP verification was successful
             if (response.data.message.status === "success") {
                 // Save login status in localStorage
+                
                 localStorage.setItem("login", "true");
+
+                const getRolesResponse = await axios.get('/api/method/reward_management.api.get_roles.get_user_roles_for_mobile', {
+                        params: {
+                            mobile_number:mobilenumber
+                        }
+                    });
+                    // console.log("getRolesResponse----", getRolesResponse);
+
+                    const roles = getRolesResponse.data.message.data || []; // Assuming 'message' contains the array of roles
+                    localStorage.setItem('user_roles', JSON.stringify(roles));
+                    // console.log('User roles:', roles);
+
+                
 
                 // Save user data in localStorage
                 const credentials = {
@@ -425,6 +465,7 @@ const Login = () => {
 
 
     useEffect(() => {
+           checkLoggedInUser();
 
         const fetchWebsiteSettings = async () => {
             try {

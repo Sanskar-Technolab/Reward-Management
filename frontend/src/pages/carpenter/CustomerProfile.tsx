@@ -115,13 +115,13 @@ const AdminProfile = () => {
         fetchallgenders();
     }, [showSuccessAlert]);
 
-    const handleImageChange = (e: any) => {
-        const file = e.target.files[0];
-        if (file) {
-            setSelectedImage(URL.createObjectURL(file));
-            setchangeImage(file);
-        }
-    };
+    // const handleImageChange = (e: any) => {
+    //     const file = e.target.files[0];
+    //     if (file) {
+    //         setSelectedImage(URL.createObjectURL(file));
+    //         setchangeImage(file);
+    //     }
+    // };
 
     const update_user_details = async (e: any) => {
         e.preventDefault();
@@ -208,13 +208,15 @@ const AdminProfile = () => {
         }
     };
 
-    const changeUserImage = async () => {
-        if (!changeImage) {
+    const changeUserImage = async (file:File) => {
+        const uploadedFileUrl = await uploadFile(file);
+
+        if (!uploadedFileUrl) {
             notyf.error("Please select new image");
             return;
         }
 
-        const uploadedFileUrl = await uploadFile(changeImage);
+        // const uploadedFileUrl = await uploadFile(changeImage);
 
         if (uploadedFileUrl) {
             try {
@@ -235,6 +237,19 @@ const AdminProfile = () => {
             } catch (error) {
                 console.error("Error updating user image:", error);
             }
+        }
+    };
+
+
+    const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            // Set temporary URL for immediate preview
+            setSelectedImage(URL.createObjectURL(file));
+            // Set the file in state for changeUserImage to use
+            // setchangeImage(file);
+            // Upload the image using the state
+            await changeUserImage(file);
         }
     };
 
@@ -276,7 +291,7 @@ const AdminProfile = () => {
                                         <div className="sm:p-4 p-0">
                                             <h6 className="font-semibold mb-4 text-[1rem]">Photo :</h6>
                                             <div className="mb-6 sm:flex items-center">
-                                                <div className="mb-0 me-[3rem] relative">
+                                                {/* <div className="mb-0 me-[3rem] relative">
                                                     <span className="avatar avatar-xxl avatar-rounded relative inline-block">
                                                         <img src={UserImage || selectedImage} alt="" id="profile-img" className='rounded-full w-[130px] h-[130px] object-cover' />
                                                         <span aria-label="anchor" className="badge rounded-full bg-primary avatar-badge absolute top-[65%]  right-[2px] cursor-pointer py-[2px] px-[6px]" onClick={openFileInput}>
@@ -284,9 +299,19 @@ const AdminProfile = () => {
                                                             <i className="fe fe-camera !text-[0.65rem] text-white"></i>
                                                         </span>
                                                     </span>
+                                                </div> */}
+
+                                                 <div className="mb-0 me-[3rem] relative">
+                                                    <span className="avatar avatar-xxl avatar-rounded relative inline-block">
+                                                        <img src={UserImage || selectedImage} alt="" id="profile-img" className='rounded-full w-[130px] h-[130px] object-cover' />
+                                                        <span aria-label="anchor" className="badge rounded-full bg-primary avatar-badge absolute top-[65%] right-[2px] cursor-pointer py-[2px] px-[6px]" onClick={openFileInput}>
+                                                            <input type="file" name="photo" ref={fileInputRef} onChange={handleImageChange} style={{ display: 'none' }} className="absolute w-full h-full opacity-0" id="profile-image" accept="image/*" />
+                                                            <i className="fe fe-camera !text-[0.65rem] text-white"></i>
+                                                        </span>
+                                                    </span>
                                                 </div>
                                                 <div className="inline-flex">
-                                                    <button type="button" className="ti-btn bg-primary text-white me-1" onClick={changeUserImage}>Change</button>
+                                                    {/* <button type="button" className="ti-btn bg-primary text-white me-1" onClick={changeUserImage}>Change</button> */}
                                                     <button type="button" className="ti-btn bg-primary/20 text-defaulttextcolor" onClick={removeUserImage}>Remove</button>
                                                 </div>
                                             </div>

@@ -11,7 +11,9 @@ import TableComponent from '../../../components/ui/tables/tablecompnent';
 interface Gift {
     name: string,
     gift_product_name?: string,
-    points?: number
+    points?: number,
+    enabled?: boolean,
+    status?: string;
 }
 
 const ProductMaster: React.FC = () => {
@@ -44,8 +46,12 @@ const ProductMaster: React.FC = () => {
 
                 if (response.data.message.status === 'success') {
                     if (Array.isArray(productData) && productData.length > 0) {
-                        setGiftData(productData);
-                        setFilteredData(productData);
+                        const updatedData = productData.map(item => ({
+                        ...item,
+                        status: item.enabled === 1 ? 'Active' : 'Inactive'
+                    }));
+                        setGiftData(updatedData);
+                        setFilteredData(updatedData);
                     } else {
                         setError('No products available.');
                     }
@@ -77,7 +83,8 @@ const ProductMaster: React.FC = () => {
             return (
                 gift.gift_product_name?.toLowerCase().includes(query) ||
                 gift.name?.toLowerCase().includes(query) ||
-                gift.points?.toString().includes(query) // Convert points to string for comparison
+                gift.points?.toString().includes(query) ||
+                gift.status?.toLowerCase().includes(query)  
             );
         }
             
@@ -97,28 +104,13 @@ const ProductMaster: React.FC = () => {
 
     const handleSearch = (value: string) => setSearchQuery(value);
 
-    // const openModal = (product: Gift) => {
-    //     setSelectedProduct(product);
-    //     setModalOpen(true);
-    // };
+ 
 
     const handleEditGiftProduct = (item: Gift) => {
         navigate(`/edit-gift-product/${encodeURIComponent(item.name)}`);
     };
     
     
-    // const handleEditGiftProduct = (item: Gift) => {
-        
-    //     const giftId = item.name.replace(/\s+/g, '_');
-       
-    //     navigate(`/edit-gift-product/${giftId}`);
-    // };
-    // const closeModal = () => {
-    //     setModalOpen(false);
-    //     setSelectedProduct(null);
-    //     setShowSuccessAlert(false);
-
-    // };
 
     const handleDeleteProduct = (item: Gift) => {
         setProductToDelete(item);
@@ -195,6 +187,7 @@ const ProductMaster: React.FC = () => {
                                 { header: 'Gift ID', accessor: 'name' },
                                 { header: 'Gift Product Name', accessor: 'gift_product_name' },
                                 { header: 'Points', accessor: 'points' },
+                                {header:'Status',accessor:'status'}
                             ]}
                             data={filteredData || []}
                             currentPage={currentPage}
@@ -211,6 +204,19 @@ const ProductMaster: React.FC = () => {
                             columnStyles={{
                                 'Gift ID': 'text-[var(--primaries)] font-semibold',
                             }}
+                             getColumnColorClass={(value, accessor) => {
+                                    // console.log(`Value: ${value}, Accessor: ${accessor}`); 
+                                    if (accessor === 'status') {
+                                       
+                                        if (value === 'Active') {
+                                            return 'text-green';  
+                                        }
+                                        if (value  === 'Inactive') {
+                                            return 'text-red';  
+                                        }
+                                    }
+                                    return '';  
+                                }}
                         />
                     </div>
                 </div>
