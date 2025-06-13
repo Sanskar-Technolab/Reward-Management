@@ -17,10 +17,10 @@ const ProductCatalogue = () => {
     <>
       <Pageheader
         currentpage={"Product Catalogue"}
-        activepage={"/product-catalogue"}
-        mainpage={"/product-catalogue"}
-        activepagename="Product Catalogue"
-        mainpagename="Product Catalogue"
+        // activepage={"/product-catalogue"}
+        // mainpage={"/product-catalogue"}
+        // activepagename="Product Catalogue"
+        // mainpagename="Product Catalogue"
       />
       <div className="grid grid-cols-12 gap-x-6 pb-5 mt-5">
         <div className="xxl:col-span-12 xl:col-span-12 lg:col-span-12 col-span-12">
