@@ -86,7 +86,7 @@ const Login = () => {
                 }
             }
         } catch (error) {
-            console.error('Error checking logged-in user:', error);
+            console.log('Error checking logged-in user:', error);
         }
     };
 
@@ -361,7 +361,6 @@ const Login = () => {
                 params: { mobile_number: mobilenumber },
             });
             // console.log("login response data",checkResponse)
-           console.log("login response data", checkResponse);
            
 
             // localStorage.setItem('carpenterrole', checkResponse.data.message.role_profile_name);
@@ -431,11 +430,11 @@ const Login = () => {
                             mobile_number:mobilenumber
                         }
                     });
-                    console.log("getRolesResponse----", getRolesResponse);
+                    // console.log("getRolesResponse----", getRolesResponse);
 
                     const roles = getRolesResponse.data.message.data || []; // Assuming 'message' contains the array of roles
                     localStorage.setItem('user_roles', JSON.stringify(roles));
-                    console.log('User roles:', roles);
+                    // console.log('User roles:', roles);
 
                 
 

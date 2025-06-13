@@ -68,13 +68,65 @@ const Header = ({ toggleSidebar, isSidebarActive }: any) => {
         setFullScreen(!!document.fullscreenElement);
     };
 
-    const handleLogout = () => {
-        localStorage.clear();
-        localStorage.setItem('session_id', sessionId || '');
-        localStorage.setItem('user_roles', JSON.stringify(roles));
-        logout();
-        window.location.href = '/';
-    };
+    // const handleLogout = () => {
+    //     localStorage.clear();
+    //     localStorage.setItem('session_id', sessionId || '');
+    //     localStorage.setItem('user_roles', JSON.stringify(roles));
+    //     logout();
+    //     window.location.href = '/';
+    // };
+
+const handleLogout = async () => {
+  try {
+    // Add credentials include for Firefox
+    await fetch('/api/method/logout', {
+      method: 'POST',
+      credentials: 'include', // Crucial for Firefox
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      }
+    });
+
+    // Nuclear option for Firefox
+    document.cookie.split(';').forEach(c => {
+      document.cookie = c.trim().split('=')[0] + '=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/';
+    });
+
+    localStorage.clear();
+    sessionStorage.clear();
+    localStorage.setItem('session_id', sessionId || '');
+    localStorage.setItem('user_roles', JSON.stringify(roles));
+    logout();
+    window.location.href = '/';
+  } catch (error) {
+    console.log('Firefox logout error:', error);
+    localStorage.clear();
+    sessionStorage.clear();
+    localStorage.setItem('session_id', sessionId || '');
+    localStorage.setItem('user_roles', JSON.stringify(roles));
+    logout();
+    window.location.href = '/';
+  }
+};
+// const handleLogout = async () => {
+//   try {
+//     localStorage.clear();
+//     localStorage.setItem('session_id', sessionId || '');
+//     localStorage.setItem('user_roles', JSON.stringify(roles));
+//     logout();
+//     window.location.href = '/';
+//   } catch (error) {
+//     console.log('SDK Logout failed:', error);
+//     localStorage.clear();
+//     localStorage.setItem('session_id', sessionId || '');
+//     localStorage.setItem('user_roles', JSON.stringify(roles));
+//     // Force cleanup and redirect
+//     localStorage.removeItem('user');
+//     logout();
+//     window.location.href = '/';
+//   }
+// };
 
     const refreshUserData = async () => {
         try {
@@ -90,7 +142,7 @@ const Header = ({ toggleSidebar, isSidebarActive }: any) => {
                 setSessionId(newSessionId);
             }
         } catch (error) {
-            console.error("Error fetching user data:", error);
+            console.log("Error fetching user data:", error);
             handleLogout();
         }
     };

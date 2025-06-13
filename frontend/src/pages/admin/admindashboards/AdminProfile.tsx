@@ -43,7 +43,7 @@ const AdminProfile = () => {
     const [activeTab, setActiveTab] = useState('personal-info');
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [UserImage, setUserImage] = useState('');
-    const [changeImage, setchangeImage] = useState<File | null>(null);
+    // const [changeImage, setchangeImage] = useState<File | null>(null);
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [username, setUsername] = useState('');

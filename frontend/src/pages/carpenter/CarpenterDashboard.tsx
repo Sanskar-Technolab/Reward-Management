@@ -27,7 +27,7 @@ const CarpenterDashboard: React.FC = () => {
     const notyf = new Notyf({
       duration: 3000,  
       // Positioning the notification at the top center
-      position: { x: 'center', y: 'top' }, 
+      position: { x: 'right', y: 'top' }, 
     });
 
     
@@ -110,13 +110,13 @@ useEffect(() => {
         if (Array.isArray(productData) && productData.length > 0) {
           setProducts(productData);
         } else {
-          setError('No products available.');
+          console.log('No products available.');
         }
       } else {
-        setError('API returned an error status.');
+        console.log('API returned an error status.');
       }
     } catch (err) {
-      setError(err.message || 'Failed to fetch products.');
+      console.log(err.message || 'Failed to fetch products.');
     } finally {
       setLoading(false);
     }
@@ -364,22 +364,31 @@ useEffect(() => {
                   </div>
                   <div className="grid grid-cols-12 xl:gap-y-0 gap-4">
                     {/* Dynamically render ProductCard components */}
-                    {products.map((product, index) => (
-                      <div
-                        key={index}
-                        className="xxl:col-span-3 xl:col-span-3 lg:col-span-6 md:col-span-6 sm:col-span-12 col-span-12"
-                      >
-                         <ProductCard
-                      productImage={
-                        product.gift_product_images?.[0]?.gift_product_image || '/placeholder-image.png'
-                      }
-                      productName={product.gift_product_name}
-                      rewardPoints={product.points}
-                      onClick={() => handleRedeemClick(product.gift_product_name, product.points)}
-                    />
+                    {products.length > 0 ? (
+                      products.map((product, index) => (
+                        <div
+                          key={index}
+                          className="xxl:col-span-3 xl:col-span-3 lg:col-span-6 md:col-span-6 sm:col-span-12 col-span-12"
+                        >
+                          <ProductCard
+                            productImage={
+                              product.gift_product_images?.[0]?.gift_product_image || '/placeholder-image.png'
+                            }
+                            productName={product.gift_product_name}
+                            rewardPoints={product.points}
+                            onClick={() => handleRedeemClick(product.gift_product_name, product.points)}
+                          />
+                        </div>
+                      ))
+                    ) : (
+                      <div className="col-span-12">
+                        <p className="text-center text-gray-500 mt-4">
+                          No products available.
+                        </p>
                       </div>
-                    ))}
+                    )}
                   </div>
+
                   
                 </div>
               </div>
