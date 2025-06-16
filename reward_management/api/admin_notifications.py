@@ -166,7 +166,7 @@ def send_customer_product_order_approved_notification(doc, method=None):
             'document_type': 'Product Order',
             'document_name': doc.name
         })
-        notification.insert(ignore_permissions=True)
+        notification.insert(ignore_permissions=False)
         frappe.db.commit()
 
         return {
@@ -255,7 +255,7 @@ def send_customer_product_order_approved_notification(doc, method=None):
 
 
  
-
+# send system notification to customer for earned reward points-------
 @frappe.whitelist()
 def send_customer_reward_points_earn_notification(doc, method=None):
     try:
@@ -345,7 +345,7 @@ def send_customer_reward_points_earn_notification(doc, method=None):
         'document_type': 'Customer',
         'document_name': doc.name
     })
-    notification.insert(ignore_permissions=True)
+    notification.insert(ignore_permissions=False)
     frappe.db.commit()
 
     return {

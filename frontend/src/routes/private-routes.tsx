@@ -70,7 +70,7 @@ const PrivateRoutes = () => {
         '/carpenter-registration', '/carpenter-details', '/redeemption-request',
         '/redeem-history', '/announcement', '/transaction-history', '/frequently-asked-question',
         '/company-address', '/add-login-instructions', '/product-catagory', '/add-user',
-        '/set-reward-points', '/notifications', '/point-conversion', '/project'
+        '/set-reward-points',  '/point-conversion', '/project'
     ];
 
     const customerPaths = [
