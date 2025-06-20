@@ -1,8 +1,8 @@
 import React, { useState, Fragment, useEffect } from 'react';
 
-import { Box, Button, Callout, Card, Text } from '@radix-ui/themes';
+import { Box, Button, Callout, Text } from '@radix-ui/themes';
 
-import { useNavigate } from 'react-router-dom';
+import { useNavigate,Link } from 'react-router-dom';
 
 
 import axios from 'axios';
@@ -586,6 +586,12 @@ const Login = () => {
                                                 >
                                                     {passwordShow ? 'Hide' : 'Show'}
                                                 </button>
+                                            </div>
+                                            {/* Forgot Password Link */}
+                                            <div className="mt-2 text-right">
+                                                <Link to="/forgot-password" className="text-xs text-primary hover:underline">
+                                                    Forgot Password?
+                                                </Link>
                                             </div>
                                         </Box>
                                         <Button type="submit" className="w-full mb-2 ti-btn ti-btn-primary !bg-primary !text-white !font-medium ">
