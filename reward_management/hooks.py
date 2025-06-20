@@ -48,6 +48,10 @@ app_license = "mit"
 # role_home_page = {
 # 	"Role": "home_page"
 # }
+# role_home_page = {
+# 	"Admin": "admin-dashboard",
+#     "Customer": "customer-dashboard"
+# }
 
 # Generators
 # ----------

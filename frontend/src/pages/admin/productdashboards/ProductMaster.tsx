@@ -30,7 +30,7 @@ const ProductMaster: React.FC = () => {
     const [alertMessage, setAlertMessage] = useState('');
     const [alertTitle, setAlertTitle] = useState('');
     const [searchQuery, setSearchQuery] = useState('');
-    const [itemsPerPage] = useState(5);
+    const [itemsPerPage] = useState(10);
     const [productToDelete, setProductToDelete] = useState<Product | null>(null);
     const [isConfirmDeleteModalOpen, setIsConfirmDeleteModalOpen] = useState(false);
     const { data: productsData, mutate: mutateProducts } = useFrappeGetDocList<Product>('Product', {
@@ -204,10 +204,9 @@ const ProductMaster: React.FC = () => {
         <Fragment>
             <Pageheader
                 currentpage={"Product Master"}
-                activepage={"/product-master"}
+                // activepage={"/product-master"}
                 // mainpage={"/product-master"} 
-                activepagename='Product Master'
-            // mainpagename='Product Master' 
+                // activepagename='Product Master'
             />
             {/* <Pageheader currentpage={pagecurrentPage} activepage={activePage} mainpage={mainPage}  /> */}
 
@@ -401,6 +400,8 @@ const ProductMaster: React.FC = () => {
                     onClose={closeModal}
                     onCancel={closeModal}
                     onConfirm={handleConfirm}
+                    requiredQuestion={true}
+                    questionErrorMessage="Please enter a valid quantity"
                     title={`Create QR Code for ${selectedProduct.name}`} onSubmit={function (): void {
                         throw new Error('Function not implemented.');
                     }}

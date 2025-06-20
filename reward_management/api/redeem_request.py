@@ -41,9 +41,6 @@ def create_redeem_request(customer_id, redeemed_points):
     try:
         # Fetch current point status for the customer
         current_point_status = frappe.get_value("Customer", customer_id, "total_points")
-        
-        
-        
         # Ensure redeemed_points is an integer
         redeemed_points = int(redeemed_points)
 

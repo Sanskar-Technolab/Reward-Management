@@ -292,9 +292,9 @@ const RedeemRequest: React.FC = () => {
         <Fragment>
               <Pageheader 
                 currentpage={"Redeem Request"} 
-                activepage={"/redeem-request"} 
+                // activepage={"/redeem-request"} 
                 // mainpage={"/redeem-request"} 
-                activepagename="Redeem Request"
+                // activepagename="Redeem Request"
                 // mainpagename="Redeem Request"
             />
             {/* <Pageheader currentpage="Redeem Request" activepage="Redeem Request" mainpage="Redeem Request" /> */}

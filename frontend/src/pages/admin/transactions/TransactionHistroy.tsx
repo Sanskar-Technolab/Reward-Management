@@ -21,7 +21,7 @@ interface Transaction {
 const TransactionHistory: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(1);
      // Number of items per page
-    const [itemsPerPage] = useState(5);
+    const [itemsPerPage] = useState(10);
      // State for search query
     const [searchQuery, setSearchQuery] = useState('');
     const [fromDate, setFromDate] = useState<Date | null>(null);
@@ -140,9 +140,9 @@ const TransactionHistory: React.FC = () => {
         <Fragment>
              <Pageheader 
                 currentpage={"Transaction History"} 
-                activepage={"/transaction-history"} 
+                // activepage={"/transaction-history"} 
         
-                activepagename="Transaction History"
+                // activepagename="Transaction History"
              
             />
            

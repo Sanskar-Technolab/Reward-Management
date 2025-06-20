@@ -8,8 +8,12 @@
     justify-content: center !important;
  }
  #html5-qrcode-button-camera-start{
-    background-color: #eae1ff !important;
-    color: #845adf !important;
+    /* background-color: #eae1ff !important; */
+      background-color: #000000 !important;
+
+    /* color: #845adf !important; */
+      color: #ffffff !important;
+
     font-weight: 500 !important;
     margin-bottom: 0.25rem;
     margin-inline-start: 0px;
@@ -32,8 +36,12 @@
     transition-duration: 150ms;
  }
  #html5-qrcode-button-camera-stop{
-    background-color: #eae1ff !important;
-    color: #845adf !important;
+    /* background-color: #eae1ff !important; */
+   background-color: #000000 !important;
+
+    /* color: #845adf !important; */
+   color: #ffffff !important;
+
     font-weight: 500 !important;
     margin-bottom: 0.25rem;
     margin-inline-start: 0px;

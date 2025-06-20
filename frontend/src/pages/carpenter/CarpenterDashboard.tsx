@@ -27,7 +27,7 @@ const CarpenterDashboard: React.FC = () => {
     const notyf = new Notyf({
       duration: 3000,  
       // Positioning the notification at the top center
-      position: { x: 'center', y: 'top' }, 
+      position: { x: 'right', y: 'top' }, 
     });
 
     
@@ -49,10 +49,10 @@ useEffect(() => {
 
         setInstructions(formattedInstructions);
       } else {
-        console.error("Failed to fetch instructions or no images available.");
+        console.error("Failed to fetch project or no images available.");
       }
     } catch (error) {
-      console.error("Error fetching instructions:", error);
+      console.error("Error fetching project:", error);
     } finally {
       setLoading(false);
     }
@@ -110,13 +110,13 @@ useEffect(() => {
         if (Array.isArray(productData) && productData.length > 0) {
           setProducts(productData);
         } else {
-          setError('No products available.');
+          console.log('No products available.');
         }
       } else {
-        setError('API returned an error status.');
+        console.log('API returned an error status.');
       }
     } catch (err) {
-      setError(err.message || 'Failed to fetch products.');
+      console.log(err.message || 'Failed to fetch products.');
     } finally {
       setLoading(false);
     }
@@ -157,7 +157,7 @@ useEffect(() => {
       const formattedProductName = productName.replace(/\s+/g, '-');
       navigate(`/product-details/${formattedProductName}`);
     } else {
-      notyf.error('You do not have sufficient points to redeem this product.');  // Show error notification
+      notyf.error('You do not have sufficient points to redeem this product.'); 
     }
   };
 
@@ -212,15 +212,15 @@ useEffect(() => {
         <img
           src={`${window.origin}${instructions[0].image}`}
           alt={instructions[0].instruction_name}
-          className="w-full lg:h-[450px] md:h-[300px] sm:h-[200px] object-fill"
+          className="w-full lg:h-[450px] md:h-[300px] sm:h-[200px] object-contain"
         />
       </div>
     )}
 
-    {/* Show error message if no instructions */}
-    {!loading && instructions.length === 0 && (
-      <div>No instructions available.</div>
-    )}
+    {/* Show error message if no projects */}
+    {/* {!loading && instructions.length === 0 && (
+      <div>No projects available.</div>
+    )} */}
   </div>
       <div className="grid grid-cols-12 gap-x-6 pb-10 md:mt-0 sm:mt-5 ">
         <div className="xxl:col-span-12 xl:col-span-12 lg:col-span-12 col-span-12">
@@ -364,22 +364,31 @@ useEffect(() => {
                   </div>
                   <div className="grid grid-cols-12 xl:gap-y-0 gap-4">
                     {/* Dynamically render ProductCard components */}
-                    {products.map((product, index) => (
-                      <div
-                        key={index}
-                        className="xxl:col-span-3 xl:col-span-3 lg:col-span-6 md:col-span-6 sm:col-span-12 col-span-12"
-                      >
-                         <ProductCard
-                      productImage={
-                        product.gift_product_images?.[0]?.gift_product_image || '/placeholder-image.png'
-                      }
-                      productName={product.gift_product_name}
-                      rewardPoints={product.points}
-                      onClick={() => handleRedeemClick(product.gift_product_name, product.points)}
-                    />
+                    {products.length > 0 ? (
+                      products.map((product, index) => (
+                        <div
+                          key={index}
+                          className="xxl:col-span-3 xl:col-span-3 lg:col-span-6 md:col-span-6 sm:col-span-12 col-span-12"
+                        >
+                          <ProductCard
+                            productImage={
+                              product.gift_product_images?.[0]?.gift_product_image || '/placeholder-image.png'
+                            }
+                            productName={product.gift_product_name}
+                            rewardPoints={product.points}
+                            onClick={() => handleRedeemClick(product.gift_product_name, product.points)}
+                          />
+                        </div>
+                      ))
+                    ) : (
+                      <div className="col-span-12">
+                        <p className="text-center text-gray-500 mt-4">
+                          No products available.
+                        </p>
                       </div>
-                    ))}
+                    )}
                   </div>
+
                   
                 </div>
               </div>

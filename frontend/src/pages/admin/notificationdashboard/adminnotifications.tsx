@@ -138,9 +138,9 @@ const NotificationsDashboard = () => {
         <Fragment>
               <Pageheader 
                 currentpage={"Notifications"} 
-                activepage={"/notifications"} 
+                // activepage={"/notifications"} 
                 // mainpage={"/notifications"} 
-                activepagename="Notifications"
+                // activepagename="Notifications"
                 // mainpagename="Notifications "
             />
             {/* <Pageheader currentpage="Notifications" activepage="Pages" mainpage="Notifications" /> */}
