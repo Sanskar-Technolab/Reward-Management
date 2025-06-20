@@ -8,6 +8,7 @@ import { Theme } from '@radix-ui/themes';
 import Header from './components/common/header';
 import Sidebar from './components/common/sidebar';
 import Login from './pages/auth/Login';
+import ForgetPassword from './pages/auth/ForgetPassword.tsx';
 import CusromerProducts from './pages/customer/CustomerProduct.tsx'
 import CustomerProductDetails from './pages/customer/ViewProduct.tsx'
 import PrivateRoutes from './routes/private-routes';
@@ -156,6 +157,7 @@ fetchWebsiteSettings();
     createRoutesFromElements(
       <>
         <Route path='/' element={<Login />} />
+        <Route path='forgot-password' element ={<ForgetPassword/>}/>
         <Route path='/qr-reward-guide' element={<QRRewardGuide />} />
         <Route path='/reward-gift-guide' element={<QRGiftInstruction/>}/>
         <Route path='/customer-product' element={<CusromerProducts />} />
