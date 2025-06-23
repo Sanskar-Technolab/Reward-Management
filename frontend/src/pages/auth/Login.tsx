@@ -101,7 +101,7 @@ const Login = () => {
             });
             return response.data;
         } catch (error) {
-            console.error('Error fetching roles:', error);
+            console.log('Error fetching roles:', error);
             throw error;
         }
     };
@@ -179,8 +179,10 @@ const Login = () => {
 
             return response.data;
         } catch (error) {
-            console.error('Error during carpainter registration:', error);
+            console.log('Error during carpainter registration:', error);
+            notyf.error(`${error}`);
             throw new Error('Failed to register. Please try again.');
+           
         }
     };
 
@@ -243,10 +245,12 @@ const Login = () => {
                     // Optionally, reset OTP visibility state
                     setIsOtpVisible(false);
                 } else {
-                    setLoginError("Failed to register. Please try again.");
+                    notyf.error(registerResponse.message.message);
+                    // setLoginError("Failed to register. Please try again.");
                 }
             } else {
-                alert("OTP Not Matched.");
+                // alert("OTP Not Matched.");
+                notyf.error(otpResponse.data.message);
                 setLoginError("Failed to match OTP. Please try again.");
             }
         } catch (error) {
@@ -312,15 +316,18 @@ const Login = () => {
                     // Start the timer
                     startTimer();
                 } else {
-                    setLoginError("Failed to send OTP. Please try again.");
+                    notyf.error(response.data.message.message)
+                    console.log("error",response);
+                    // setLoginError("Failed to send OTP. Please try again.");
                 }
             } else {
                 // If user is already registered, show error message
                 notyf.error(checkResponse.data.message.message);
+                console.log("error",checkResponse);
                 // setLoginError(checkResponse.data.message.message);
             }
         } catch (error) {
-            console.error("Error generating OTP:", error);
+            console.log("Error generating OTP:", error);
             setLoginError("An error occurred while generating OTP.");
         }
     };
