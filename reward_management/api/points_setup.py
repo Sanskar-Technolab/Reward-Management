@@ -4,14 +4,6 @@ from frappe import _
 @frappe.whitelist()
 def get_redeem_points():
     try:
-        current_user = frappe.session.user
-        
-         # Get current user's roles
-        user_roles = frappe.get_roles(current_user)
-
-        # Allow only Administrator or users with "Admin" role
-        if current_user != "Administrator" and "Admin" not in user_roles:
-            return {"success": False, "message": "Permission denied"}
         # Fetch maximum and minimum points from your custom doctype
         redeem_setup = frappe.get_single('Redeemption Points Setup')  # Replace with your doctype name
 
