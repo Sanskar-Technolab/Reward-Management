@@ -20,7 +20,7 @@ def create_new_product_order(product_name, fullname, city, mobile, pincode, addr
         product = frappe.db.get_value("Gift Product", {"gift_product_name": product_name}, ["name", "points"], as_dict=True)
     
         if not product:
-            frappe.log_error(("Product not found for the given name."))
+            frappe.log_error("Product not found for the given name.")
             return{
                 "success": False,
                 "message": "Product not found for the given name."
