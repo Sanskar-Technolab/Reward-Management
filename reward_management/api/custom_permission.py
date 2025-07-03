@@ -43,7 +43,7 @@ def get_permission_query_conditions(user):
             if doctype == "Customer":
                 return f"`tabCustomer`.`email` = {frappe.db.escape(user)}"
             elif doctype == "Customer Gift Point Details":
-                return f"`tabCustomer Gift Point Details`.`email` = {frappe.db.escape(user)}"
+                return f"`tabCustomer Gift Point Details`.`mobile_number` = {frappe.db.escape(mobile_no)}"
             elif doctype == "Customer Registration":
                 if mobile_no:
                     return f"`tabCustomer Registration`.`mobile_number` = {frappe.db.escape(mobile_no)}"

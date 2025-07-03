@@ -38,7 +38,7 @@ const ProductOrder = () => {
     const { productId } = useParams<{ productId: string }>();
 
     const notyf = new Notyf({
-        duration: 3000,
+        duration: 6000,
         position: { x: "center", y: "top" },
     });
 

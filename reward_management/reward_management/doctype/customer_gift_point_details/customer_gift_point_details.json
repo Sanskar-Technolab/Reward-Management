@@ -17,7 +17,8 @@
   "time",
   "customer_id",
   "customer_name",
-  "email"
+  "email",
+  "mobile_number"
  ],
  "fields": [
   {
@@ -109,12 +110,18 @@
    "in_filter": 1,
    "in_standard_filter": 1,
    "label": "Email"
+  },
+  {
+   "fetch_from": "customer_id.mobile_number",
+   "fieldname": "mobile_number",
+   "fieldtype": "Data",
+   "label": "Mobile Number"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-06-30 16:26:04.581695",
+ "modified": "2025-07-01 10:37:22.243137",
  "modified_by": "Administrator",
  "module": "Reward Management",
  "name": "Customer Gift Point Details",
