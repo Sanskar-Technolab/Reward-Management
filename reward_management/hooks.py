@@ -269,8 +269,8 @@ fixtures = [
          {
          "dt":"Website Settings",
      },
-         {
-        "dt": "Document Naming Rule",     
-    },
+    #      {
+    #     "dt": "Document Naming Rule",     
+    # },
 
 ]

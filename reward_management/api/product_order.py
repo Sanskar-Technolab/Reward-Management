@@ -60,6 +60,16 @@ def create_new_product_order(product_name, fullname, city, mobile, pincode, addr
             
         customer_doc.total_pending_order_points = current_pending_points + product_points
         customer_doc.save(ignore_permissions=True)
+        
+        product_order = frappe.get_value("Product Order",{"customer_id":customer_id.name, "order_status": "Pending"}, ["name","gift_points"])
+        
+        total_order_points = sum(product_order, key=lambda x: x.get('gift_points', 0)) if product_order else 0
+        
+        if total_order_points > customer_id.current_points:
+            return {
+                "success": False,
+                "message": "Can not order this product. Your pending request points and current request points together exceed your total available points."
+            }
 
         
         # Create a new instance of the Product Order document

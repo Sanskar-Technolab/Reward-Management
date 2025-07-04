@@ -106,9 +106,14 @@ const ProductMaster: React.FC = () => {
 
  
 
+    // const handleEditGiftProduct = (item: Gift) => {
+    //     navigate(`/edit-gift-product/${encodeURIComponent(item.name)}`);
+    // };
     const handleEditGiftProduct = (item: Gift) => {
-        navigate(`/edit-gift-product/${encodeURIComponent(item.name)}`);
-    };
+    // console.log("Navigating with name:", item.name); // Add this to debug
+  navigate(`/edit-gift-product/${item.name}`);
+};
+
     
     
 
