@@ -100,7 +100,7 @@ def generate_or_update_otp(mobile_number, template_name=None):
         }
 
 
-# Match OTP
+# Match OTP and verify user registration status-------------------
 
 @frappe.whitelist(allow_guest=True)
 def verify_otp(mobile_number, otp):
