@@ -23,21 +23,37 @@
   {
    "fieldname": "carpainter_name",
    "fieldtype": "Data",
+   "in_filter": 1,
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
    "label": "Customer Name"
   },
   {
    "fieldname": "mobile_number",
    "fieldtype": "Data",
+   "in_filter": 1,
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
    "label": "Mobile Number"
   },
   {
    "fieldname": "city",
    "fieldtype": "Data",
+   "in_filter": 1,
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
    "label": "City"
   },
   {
    "fieldname": "status",
    "fieldtype": "Select",
+   "in_filter": 1,
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
    "label": "Status",
    "options": "Pending\nApproved\nCancel"
   },
@@ -83,9 +99,10 @@
    "options": "Customer-Registration.-.YYYY.-.MM.-."
   }
  ],
+ "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-12-31 12:14:39.620801",
+ "modified": "2025-06-02 11:51:10.616365",
  "modified_by": "Administrator",
  "module": "Reward Management",
  "name": "Customer Registration",
@@ -105,6 +122,7 @@
    "write": 1
   }
  ],
+ "row_format": "Dynamic",
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": []

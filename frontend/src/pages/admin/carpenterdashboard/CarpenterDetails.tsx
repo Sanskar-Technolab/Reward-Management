@@ -44,7 +44,7 @@ const notyf = new Notyf({
 
 const CarpenterDetails: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage] = useState(5);
+    const [itemsPerPage] = useState(10);
     const [searchQuery, setSearchQuery] = useState('');
     const [validMobileNumbers, setValidMobileNumbers] = useState<string[]>([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -69,6 +69,7 @@ const CarpenterDetails: React.FC = () => {
     });
 
     useEffect(() => {
+        // console.log("customer details data", carpenterData);
         document.title='Customer Details';
         // Extract and set valid mobile numbers whenever userData changes
         const extractedMobileNumbers = userData?.map(user => user.mobile_no) || [];
@@ -77,12 +78,17 @@ const CarpenterDetails: React.FC = () => {
 
     // Filter Carpenters Data
     // const filteredCarpenters = carpenterData?.filter(carpenter => validMobileNumbers.includes(carpenter.mobile_number)) || [];
-    const filteredCarpenters = carpenterData?.filter(carpenter =>
-        validMobileNumbers.includes(carpenter.mobile_number)
-    ).map(carpenter => ({
-        ...carpenter, // Spread the original carpenter data
+    // const filteredCarpenters = carpenterData?.filter(carpenter =>
+    //     validMobileNumbers.includes(carpenter.mobile_number)
+    // ).map(carpenter => ({
+    //     ...carpenter, // Spread the original carpenter data
+    //     enabled: carpenter.enabled === 1 ? 'Active' : 'DeActive'
+    // })) || [];
+        const filteredCarpenters = carpenterData?.map(carpenter => ({
+        ...carpenter,
         enabled: carpenter.enabled === 1 ? 'Active' : 'DeActive'
     })) || [];
+
 
     // Function to filter data based on search query
     const filteredData = filteredCarpenters.filter(carpenter => {
@@ -211,9 +217,9 @@ const CarpenterDetails: React.FC = () => {
         <Fragment>
              <Pageheader 
                 currentpage={"Customer Details"} 
-                activepage={"/carpenter-details"} 
+                // activepage={"/carpenter-details"} 
                 // mainpage={"/carpenter-details"} 
-                activepagename='Customer Dashboard' 
+                // activepagename='Customer Dashboard' 
                 // mainpagename='Customer Details' 
             />
             {/* <Pageheader currentpage="Customer Details" activepage="Customer Dashboard" mainpage="Customer Details" /> */}
@@ -293,7 +299,7 @@ const CarpenterDetails: React.FC = () => {
                                 <div className="xl:col-span-12 col-span-12 mb-4">
                                     <label className="form-label text-sm text-defaulttextcolor font-semibold">Customer Status</label>
                                     <select
-                                        className="form-control w-full rounded-5px border border-[#dadada] form-control-light mt-2 text-sm"
+                                        className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full rounded-5px border border-[#dadada] form-control-light mt-2 text-sm"
                                         value={updatedStatus}
                                         onChange={handleStatusChange}
                                     >

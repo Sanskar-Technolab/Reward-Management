@@ -1,58 +1,9 @@
 import frappe
 from frappe.model.document import Document
 from datetime import datetime
+import re
 
 
-# @frappe.whitelist(allow_guest=True)
-# def create_new_carpainters(firstname, lastname, city, mobile):
-#     try:
-#         # Check if the Carpainter already exists
-#         carpainter_by_mobile = frappe.db.exists("Customer", {"mobile_number": mobile})
-
-#         if carpainter_by_mobile:
-#             return {"status": "failed", "message": "Customer already exists. Please login into your account."}
-
-#         # Create full_name by combining first_name and last_name
-#         full_name = f"{firstname} {lastname}"
-
-#         # Create a new Carpainter
-#         carpenter = frappe.get_doc({
-#             "doctype": "Customer",
-#             "first_name": firstname,
-#             "last_name": lastname,
-#             "full_name": full_name,  # Set full_name here
-#             "city": city,
-#             "mobile_number": mobile,
-#             # "naming_series": "Carpainter.-.{full_name}.-.YYYY.-.#####",  # Adjust as per your naming convention
-#             "status": "Pending"  # Set status to "Pending"
-#         })
-#         carpenter.insert()
-
-#         # Log the details of the newly created Carpainter
-#         carpainter_dict = carpenter.as_dict()
-#         carpainter_details = "\n".join([f"{key}: {value}" for key, value in carpainter_dict.items()])
-#         frappe.logger().info(f"New Customer Details:\n{carpainter_details}")
-
-#         # Create a new Carpainter Registration with carpainter_id set to the name of the created Carpainter
-#         carpainter_registration = frappe.get_doc({
-#             "doctype": "Customer Registration",
-#             "carpainter_id": carpenter.name,  # Set carpainter_id to the name of the Carpainter
-#             "carpainter_name": full_name,
-#             "mobile_number": mobile,
-#             "status": "Pending",  # Set status to "Pending"
-#             "registration_date": frappe.utils.now_datetime().strftime('%Y-%m-%d'),  # Set registration_date to the current date
-#             "registration_time": frappe.utils.now_datetime().strftime('%H:%M:%S'),# Set registration_date to the current datetime
-#             "approved_time": ""
-#         })
-#         carpainter_registration.insert()
-
-#         # Call function to create users for all Approved Carpainters
-#         create_users_for_approved_carpainters()
-
-#         return {"status": "success", "message": "Customer and Customer Registration created successfully"}
-#     except Exception as e:
-#         frappe.logger().error(f"Error creating Customer or Customer Registration: {str(e)}")
-#         return {"status": "failed", "message": str(e)}
 
 
 
@@ -60,6 +11,48 @@ from datetime import datetime
 @frappe.whitelist(allow_guest=True)
 def create_new_carpainters(firstname, lastname, city, mobile):
     try:
+
+        # --- Validations ---
+        if firstname.strip().lower() == lastname.strip().lower():
+            return {"success": False, "status": "failed", "message": "First name and last name cannot be the same."}
+
+        if not firstname.isalpha() or not lastname.isalpha():
+            return {"success": False, "status": "failed", "message": "First name and last name must contain only alphabets."}
+
+        # if not city.isalpha():
+        #     return {"success": False, "status": "failed", "message": "City name must contain only letters."}
+        if not re.match(r"^[A-Za-z ]+$", city.strip()):
+            return {
+                "success": False,
+                "status": "failed",
+                "message": "City name must contain only letters and spaces."
+            }
+
+        # if not mobile.isdigit() or len(mobile) != 10:
+        #     return {"success": False, "status": "failed", "message": "Mobile number must be a valid 10-digit number."}
+        
+        if not mobile.isdigit():
+            return {
+                "success": False,
+                "status": "failed",
+                "message": "Mobile number must contain only digits."
+            }
+
+        if len(mobile) != 10:
+            return {
+                "success": False,
+                "status": "failed",
+                "message": "Mobile number must be exactly 10 digits long."
+            }
+
+        if not re.match(r"^[6-9]", mobile):
+            return {
+                "success": False,
+                "status": "failed",
+                "message": "Mobile number must start with digits between 6 and 9."
+            }
+        
+        
         # Check if the Carpainter already exists
         carpainter_by_mobile = frappe.db.exists("Customer", {"mobile_number": mobile})
 

@@ -48,6 +48,10 @@ app_license = "mit"
 # role_home_page = {
 # 	"Role": "home_page"
 # }
+# role_home_page = {
+# 	"Admin": "admin-dashboard",
+#     "Customer": "customer-dashboard"
+# }
 
 # Generators
 # ----------
@@ -102,12 +106,21 @@ app_license = "mit"
 # -----------
 # Permissions evaluated in scripted ways
 
-# permission_query_conditions = {
-# 	"Event": "frappe.desk.doctype.event.event.get_permission_query_conditions",
-# }
+permission_query_conditions = {
+	# "Event": "frappe.desk.doctype.event.event.get_permission_query_conditions",
+    "Customer": "reward_management.api.custom_permission.get_permission_query_conditions",
+    "Customer Gift Point Details":"reward_management.api.custom_permission.get_permission_query_conditions",
+    "Customer Registration":"reward_management.api.custom_permission.get_permission_query_conditions",
+    "User":"reward_management.api.custom_permission.get_permission_query_conditions",
+    "Bank Balance":"reward_management.api.custom_permission.get_permission_query_conditions",
+
+}
+
+
 #
 # has_permission = {
 # 	"Event": "frappe.desk.doctype.event.event.has_permission",
+ 
 # }
 
 # DocType Class
@@ -256,8 +269,8 @@ fixtures = [
          {
          "dt":"Website Settings",
      },
-         {
-        "dt": "Document Naming Rule",     
-    },
+    #      {
+    #     "dt": "Document Naming Rule",     
+    # },
 
 ]

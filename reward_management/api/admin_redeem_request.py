@@ -3,20 +3,42 @@ from frappe import _
 
 @frappe.whitelist()
 def get_redeem_request():
-    redeem_requests = frappe.get_all("Redeem Request", fields=["name", "customer_id", "redeemed_points", "current_point_status", "total_points", "approve_time", "received_time", "request_status", "received_date", "approved_on", "amount", "transection_id"])
-    
-    for request in redeem_requests:
-        if request.get('received_date'):
-            request['received_date'] = frappe.utils.formatdate(request['received_date'], 'dd-MM-yyyy')  # Format received_date as dd-MM-yyyy
-        if request.get('approved_on'):
-            request['approved_on'] = frappe.utils.formatdate(request['approved_on'], 'dd-MM-yyyy')  # Format approved_on as dd-MM-yyyy
-    
-    return redeem_requests
+    try:
+        current_user = frappe.session.user
+        
+         # Get current user's roles
+        user_roles = frappe.get_roles(current_user)
 
+        # Allow only Administrator or users with "Admin" role
+        if current_user != "Administrator" and "Admin" not in user_roles:
+            return {"success": False, "message": "Permission denied"}
+        redeem_requests = frappe.get_list("Redeem Request", fields=["name", "customer_id", "redeemed_points", "current_point_status", "total_points", "approve_time", "received_time", "request_status", "received_date", "approved_on", "amount", "transection_id"])
+        
+        for request in redeem_requests:
+            if request.get('received_date'):
+                request['received_date'] = frappe.utils.formatdate(request['received_date'], 'dd-MM-yyyy')  # Format received_date as dd-MM-yyyy
+            if request.get('approved_on'):
+                request['approved_on'] = frappe.utils.formatdate(request['approved_on'], 'dd-MM-yyyy')  # Format approved_on as dd-MM-yyyy
+        
+        return redeem_requests
+    except Exception as e:
+        frappe.log_error(frappe.get_traceback(), _("Error in get_redeem_request"))
+        return {
+            "success": False,
+            "message": _("Failed to fetch redeem requests: {0}").format(str(e))
+        }
 # Reward point to rate conversion logic-------
 @frappe.whitelist()
 def calculate_amount(request_id):
     try:
+        current_user = frappe.session.user
+        
+         # Get current user's roles
+        user_roles = frappe.get_roles(current_user)
+
+        # Allow only Administrator or users with "Admin" role
+        if current_user != "Administrator" and "Admin" not in user_roles:
+            return {"success": False, "message": "Permission denied"}
         # Fetch the redeem request document
         redeem_request = frappe.get_doc("Redeem Request", request_id)
         redeemed_points = redeem_request.get("redeemed_points")
@@ -57,6 +79,14 @@ def calculate_amount(request_id):
 @frappe.whitelist()
 def update_redeem_request_status(request_id, action, transaction_id=None, amount=None):
     try:
+        current_user = frappe.session.user
+        
+         # Get current user's roles
+        user_roles = frappe.get_roles(current_user)
+
+        # Allow only Administrator or users with "Admin" role
+        if current_user != "Administrator" and "Admin" not in user_roles:
+            return {"success": False, "message": "Permission denied"}
         redeem_request = frappe.get_doc("Redeem Request", request_id)
         request_action = redeem_request.request_status  # Previous status
         
@@ -171,7 +201,16 @@ def update_redeem_request_status(request_id, action, transaction_id=None, amount
         
 # Create Bank Balance ----------
 def create_bank_balance(redeem_request_id, amount, transaction_id=None):
+    
     try:
+        current_user = frappe.session.user
+        
+         # Get current user's roles
+        user_roles = frappe.get_roles(current_user)
+
+        # Allow only Administrator or users with "Admin" role
+        if current_user != "Administrator" and "Admin" not in user_roles:
+            return {"success": False, "message": "Permission denied"}
         # Create Bank Balance document
         bank_balance = frappe.new_doc("Bank Balance")
         bank_balance.redeem_request_id = redeem_request_id
