@@ -84,9 +84,7 @@ def create_new_product_order(product_name, fullname, city, mobile, pincode, addr
                 "message": "Cannot order this product. Your pending request points and current request points together exceed your total available points."
             }
             
-        # Update customer's pending points
-        customer_doc.total_pending_order_points = current_pending_points + product_points
-        customer_doc.save(ignore_permissions=True)
+       
         
         # Create a new Product Order
         product_order = frappe.new_doc("Product Order")
@@ -110,6 +108,10 @@ def create_new_product_order(product_name, fullname, city, mobile, pincode, addr
         
         # Save the document
         product_order.insert(ignore_permissions=True)
+
+        # Update customer's pending points
+        customer_doc.total_pending_order_points = current_pending_points + product_points
+        customer_doc.save(ignore_permissions=True)
         
         # Return success message
         return {
@@ -229,6 +231,157 @@ def create_new_product_order(product_name, fullname, city, mobile, pincode, addr
 
 
 # Update Product Order And Deduct Points from Customer Account amd Add Product Order History into Point History Table-----
+
+# @frappe.whitelist()
+# def update_product_order(product_name, order_status, name, gift_points, notes):
+#     try:
+#         current_user = frappe.session.user
+        
+#         # Get current user's roles
+#         user_roles = frappe.get_roles(current_user)
+
+#         # Allow only Administrator or users with "Admin" role
+#         if current_user != "Administrator" and "Admin" not in user_roles:
+#             return {"success": False, "message": "Permission denied"}
+        
+#         # Fetch product order to ensure it exists
+#         order = frappe.get_doc("Product Order", name)
+#         if not order:
+#             return {"success": False, "status": "error", "message": "Product Order not found"}
+        
+#         # Store previous status for status change checks
+#         previous_status = order.order_status
+#         print("previous_status\n\n\n\n\\n\n", previous_status)
+
+#         customer = frappe.get_doc("Customer", order.customer_id)
+#         current_points = float(customer.current_points or 0)
+#         gift_points = float(gift_points)
+
+#         # Set received_date to the current datetime
+#         current_datetime = now_datetime()
+
+#         # Update the Product Order with the new values
+#         order.product_name = product_name
+#         order.order_status = order_status
+#         order.gift_points = gift_points
+#         order.notes = notes
+#         order.approved_date = current_datetime.date()  
+#         order.approved_time = current_datetime.strftime('%H:%M:%S')  
+
+#         # Save the updated Product Order
+#         order.save()
+
+#         # 1. Condition: Changing from Cancel to Approved
+#         if order_status == "Approved" and previous_status == "Cancel":
+#             if gift_points > current_points: 
+#                 return {
+#                     "success": False, 
+#                     "status": "error", 
+#                     "message": "Customer Current Point Balance is not sufficient to approve this order."
+#                 }
+            
+#             # Deduct points from customer
+#             customer.current_points = float(customer.current_points or 0) - gift_points
+#             customer.redeem_points = float(customer.redeem_points or 0) + gift_points
+            
+#             # Create gift point details record
+#             gift_point_details = frappe.new_doc("Customer Gift Point Details")
+#             gift_point_details.customer_id = order.customer_id
+#             gift_point_details.customer_name = order.full_name
+#             gift_point_details.gift_id = order.product_id
+#             gift_point_details.gift_product_name = order.product_name
+#             gift_point_details.deduct_gift_points = order.gift_points
+#             gift_point_details.notes = order.notes
+#             gift_point_details.date = nowdate()
+#             gift_point_details.time = current_datetime.strftime('%H:%M:%S')
+#             gift_point_details.save(ignore_permissions=True)
+            
+#             # Save customer
+#             customer.save(ignore_permissions=True)
+#             frappe.db.commit()
+            
+#             return {
+#                 "success": True,
+#                 "status": "success", 
+#                 "message": "Product order approved successfully after cancellation."
+#             }
+
+#         # 2. Condition: Changing from Approved to Cancel
+#         elif order_status == "Cancel" and previous_status == "Approved":
+#             # Refund points to customer
+#             customer.current_points = float(customer.current_points or 0) + gift_points
+#             customer.redeem_points = float(customer.redeem_points or 0) - gift_points
+            
+#             # Save customer
+#             customer.save(ignore_permissions=True)
+#             frappe.db.commit()
+            
+#             return {
+#                 "success": True,
+#                 "status": "success", 
+#                 "message": "Approved Product Order cancelled and points refunded successfully."
+#             }
+
+#         # Rest of your conditions (Approved and Cancel from Pending)...
+#         elif order_status == "Approved":
+#             if gift_points > current_points: 
+#                 return {
+#                     "success": False, 
+#                     "status": "error", 
+#                     "message": "Customer Current Point Balance is not sufficient to approve this order."
+#                 }
+            
+#             # Update pending points if they exist
+#             if customer.total_pending_order_points and customer.total_pending_order_points > 0:
+#                 customer.total_pending_order_points = float(customer.total_pending_order_points or 0) - gift_points
+            
+#             # Deduct points and add to redeemed
+#             customer.current_points = float(customer.current_points or 0) - gift_points
+#             customer.redeem_points = float(customer.redeem_points or 0) + gift_points
+            
+#             # Create gift point details
+#             gift_point_details = frappe.new_doc("Customer Gift Point Details")
+#             gift_point_details.customer_id = order.customer_id
+#             gift_point_details.customer_name = order.full_name
+#             gift_point_details.gift_id = order.product_id
+#             gift_point_details.gift_product_name = order.product_name
+#             gift_point_details.deduct_gift_points = order.gift_points
+#             gift_point_details.notes = order.notes
+#             gift_point_details.date = nowdate()
+#             gift_point_details.time = current_datetime.strftime('%H:%M:%S')
+#             gift_point_details.save(ignore_permissions=True)
+            
+#             # Save customer
+#             customer.save(ignore_permissions=True)
+#             frappe.db.commit()
+            
+#             return {
+#                 "success": True,
+#                 "status": "success", 
+#                 "message": "Product Order approved successfully."
+#             }
+
+#         elif order_status == "Cancel":
+#             # Only adjust pending points if they exist
+#             if customer.total_pending_order_points and customer.total_pending_order_points > 0:
+#                 customer.total_pending_order_points = float(customer.total_pending_order_points) - gift_points
+#                 customer.save(ignore_permissions=True)
+#                 frappe.db.commit()
+#                 return {
+#                     "success": True,
+#                     "status": "success", 
+#                     "message": "Product Order cancelled successfully."
+#                 }
+#             else:
+#                 return {
+#                     "success": True,
+#                     "status": "success", 
+#                     "message": "Product Order cancelled."
+#                 }
+
+#     except Exception as e:
+#         frappe.log_error(frappe.get_traceback(), "update_product_order Error")
+#         return {"success": False, "status": "error", "message": str(e)}
 @frappe.whitelist()
 def update_product_order(product_name, order_status, name, gift_points,notes):
     try:
@@ -242,6 +395,9 @@ def update_product_order(product_name, order_status, name, gift_points,notes):
             return {"success": False, "message": "Permission denied"}
         # Fetch product order to ensure it exists
         order = frappe.get_doc("Product Order", name)
+         # Store previous status for status change checks
+        previous_status = order.order_status
+        print("previous_status\n\n\n\n\\n\n", previous_status)
 
         if not order:
             return {"success":False,"status": "error", "message": "Product Order not found"}
@@ -250,10 +406,10 @@ def update_product_order(product_name, order_status, name, gift_points,notes):
         current_points = float(customer.current_points or 0)
         # get_customer_product_orders = frappe.get_list("Product Order", filters={"customer_id": order.customer_id, "order_status": ["Pending", "Cancel"]}, fields=["gift_points"])
 
-        # total_order_points = sum(get_customer_product_orders, key=lambda x: x.get('gift_points', 0))
-        
-        if order.gift_points > current_points:
-            return {"success":False, "status": "error", "message": "Customer Current Point Balance is not sufficient for approved this order."}
+        # Convert gift_points to float for comparison
+        gift_points = float(gift_points)
+
+       
 
         # Set received_date to the current datetime
         current_datetime = now_datetime()
@@ -266,16 +422,18 @@ def update_product_order(product_name, order_status, name, gift_points,notes):
         order.approved_date = current_datetime.date()  
         order.approved_time = current_datetime.strftime('%H:%M:%S')  
 
-        # Save the updated Product Order
-        order.save()
+         
 
         # If order is approved, update the customer's points
         if order_status == "Approved":
+            if gift_points > current_points: 
+                return {"success":False, "status": "error", "message": "Customer Current Point Balance is not sufficient for approved this order."}
             # Fetch the Customer record associated with the order
             customer = frappe.get_doc("Customer", order.customer_id)
 
             # Deduct points from the customer's current points and add to redeemed points
-            customer.total_pending_order_points = (customer.total_pending_order_points or 0) - gift_points
+            if customer.total_pending_order_points and customer.total_pending_order_points > 0:
+                customer.total_pending_order_points = float((customer.total_pending_order_points or 0) - gift_points)
             customer.current_points = customer.current_points - gift_points
             customer.redeem_points = (customer.redeem_points or 0) + gift_points
             
@@ -306,15 +464,24 @@ def update_product_order(product_name, order_status, name, gift_points,notes):
 
 
             # Save the customer record
-            customer.save(ignore_permissions=True)
+            customer.save(ignore_permissions=False)
 
             # Commit the transaction
             frappe.db.commit()
+
         elif order_status == "Cancel":
-            customer.total_pending_order_points = (customer.total_pending_order_points or 0) - gift_points
-            frappe.db.commit()
-            message = f"Product Order cancelled successfully."
-            
+            customer = frappe.get_doc("Customer", order.customer_id)
+            if customer.total_pending_order_points and customer.total_pending_order_points > 0:
+                customer.total_pending_order_points = float((customer.total_pending_order_points) - gift_points)
+                customer.save(ignore_permissions=True)
+                frappe.db.commit()
+                message = f"Product Order cancelled successfully."
+            else:
+                message = "Product Order cancelled."
+
+         # Save the updated Product Order
+        order.save()
+
 
         return {"success":True,"status": "success", "message":message}
 
