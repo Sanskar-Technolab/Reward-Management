@@ -7,76 +7,90 @@ from frappe.utils import now_datetime,nowdate
 
 
 # Create New Product Order --------------
+
+# Create New Product Order --------------
 @frappe.whitelist()
 def create_new_product_order(product_name, fullname, city, mobile, pincode, address, email):
     if not mobile and not fullname:
-        return{
+        return {
             "success": False,
             "message": "Mobile number and full name are required."
         }
+    
     try:
         # Fetch product_id from product_name
-    
-        product = frappe.db.get_value("Gift Product", {"gift_product_name": product_name}, ["name", "points"], as_dict=True)
+        product = frappe.get_value(
+            "Gift Product", 
+            {"gift_product_name": product_name}, 
+            ["name", "points"], 
+            as_dict=True
+        )
     
         if not product:
             frappe.log_error("Product not found for the given name.")
-            return{
+            return {
                 "success": False,
                 "message": "Product not found for the given name."
             }
             
-            
         product_id = product.name
-        product_points =float(product.points or 0) 
-           
+        product_points = float(product.points or 0)
         
-        # Fetch customer_id using mobile number (assumes customer exists)
+        # Fetch customer using mobile number
+        customer = frappe.get_value(
+            "Customer", 
+            {"mobile_number": mobile}, 
+            ["name", "total_points", "total_pending_order_points"], 
+            as_dict=True
+        )
         
-        customer_id = frappe.get_value("Customer", {"mobile_number": mobile}, ["name", "total_points", "total_pending_order_points"], as_dict=True)
-        if not customer_id:
+        if not customer:
             frappe.log_error("Customer not found for the given mobile number.")
             return {
                 "success": False,
                 "message": "Customer not found for the given mobile number."
             }
             
-        # customer_id = customer.name
-        # current_pending_points = customer.total_pending_order_points or 0
-        
         # Load full Customer document
-        customer_doc = frappe.get_doc("Customer", customer_id)
+        customer_doc = frappe.get_doc("Customer", customer.name)
         current_points = float(customer_doc.current_points or 0)
         current_pending_points = float(customer_doc.total_pending_order_points or 0)
         
-         # Check if customer has enough available points
+        # Check if customer has enough available points
         available_points = current_points - current_pending_points
 
         if available_points < product_points:
             return {
                 "success": False,
-                "message": "Can not order this product. Your pending request points and current request points together exceed your total available points."
+                "message": "Insufficient available points. Your pending request points and current request points together exceed your total available points."
             }
             
+        # Get all pending product orders for the customer
+        pending_orders = frappe.get_all(
+            "Product Order",
+            filters={
+                "customer_id": customer.name, 
+                "order_status": "Pending"
+            },
+            fields=["gift_points"]
+        )
+        
+        # Calculate total points from pending orders
+        total_pending_points = sum(float(order.get("gift_points", 0)) for order in pending_orders) if pending_orders else 0
+        
+        if (total_pending_points + product_points) > current_points:
+            return {
+                "success": False,
+                "message": "Cannot order this product. Your pending request points and current request points together exceed your total available points."
+            }
+            
+        # Update customer's pending points
         customer_doc.total_pending_order_points = current_pending_points + product_points
         customer_doc.save(ignore_permissions=True)
         
-        product_order = frappe.get_value("Product Order",{"customer_id":customer_id.name, "order_status": "Pending"}, ["name","gift_points"])
-        
-        total_order_points = sum(product_order, key=lambda x: x.get('gift_points', 0)) if product_order else 0
-        
-        if total_order_points > customer_id.current_points:
-            return {
-                "success": False,
-                "message": "Can not order this product. Your pending request points and current request points together exceed your total available points."
-            }
-
-        
-        # Create a new instance of the Product Order document
+        # Create a new Product Order
         product_order = frappe.new_doc("Product Order")
-        
-        # Set values for the fields of the document
-        product_order.customer_id = customer_id.name
+        product_order.customer_id = customer.name
         product_order.product_id = product_id
         product_order.product_name = product_name
         product_order.full_name = fullname
@@ -85,6 +99,8 @@ def create_new_product_order(product_name, fullname, city, mobile, pincode, addr
         product_order.pincode = pincode
         product_order.address = address
         product_order.customer_email = email
+        product_order.gift_points = product_points
+        
         # Set received_date to the current datetime
         current_datetime = now_datetime()
         product_order.order_date = current_datetime.date()
@@ -92,18 +108,123 @@ def create_new_product_order(product_name, fullname, city, mobile, pincode, addr
         product_order.order_status = "Pending"
         product_order.approved_time = ""
         
-
-        
         # Save the document
         product_order.insert(ignore_permissions=True)
         
         # Return success message
-        return {"status": "success", "message": ("Product Order created successfully.")}
+        return {
+            "status": "success", 
+            "message": "Product Order created successfully.",
+            "success": True
+        }
     
     except Exception as e:
         # Log error and raise exception
-        frappe.log_error(f"Error creating product order: {str(e)}")
-        return {"success":False,"status": "error", "message": ("Failed to create product order. Please try again later.")}
+        frappe.log_error(f"Error creating product order: {str(e)}", "Product Order Creation Error")
+        return {
+            "success": False,
+            "status": "error", 
+            "message": "Failed to create product order. Please try again later."
+        }
+
+# @frappe.whitelist()
+# def create_new_product_order(product_name, fullname, city, mobile, pincode, address, email):
+#     if not mobile and not fullname:
+#         return{
+#             "success": False,
+#             "message": "Mobile number and full name are required."
+#         }
+#     try:
+#         # Fetch product_id from product_name
+    
+#         product = frappe.db.get_value("Gift Product", {"gift_product_name": product_name}, ["name", "points"], as_dict=True)
+    
+#         if not product:
+#             frappe.log_error("Product not found for the given name.")
+#             return{
+#                 "success": False,
+#                 "message": "Product not found for the given name."
+#             }
+            
+            
+#         product_id = product.name
+#         product_points =float(product.points or 0) 
+           
+        
+#         # Fetch customer_id using mobile number (assumes customer exists)
+        
+#         customer_id = frappe.get_value("Customer", {"mobile_number": mobile}, ["name", "total_points", "total_pending_order_points"], as_dict=True)
+#         if not customer_id:
+#             frappe.log_error("Customer not found for the given mobile number.")
+#             return {
+#                 "success": False,
+#                 "message": "Customer not found for the given mobile number."
+#             }
+            
+#         # customer_id = customer.name
+#         # current_pending_points = customer.total_pending_order_points or 0
+        
+#         # Load full Customer document
+#         customer_doc = frappe.get_doc("Customer", customer_id)
+#         current_points = float(customer_doc.current_points or 0)
+#         current_pending_points = float(customer_doc.total_pending_order_points or 0)
+        
+#          # Check if customer has enough available points
+#         available_points = current_points - current_pending_points
+
+#         if available_points < product_points:
+#             return {
+#                 "success": False,
+#                 "message": "Can not order this product. Your pending request points and current request points together exceed your total available points."
+#             }
+            
+#         customer_doc.total_pending_order_points = current_pending_points + product_points
+#         customer_doc.save(ignore_permissions=True)
+        
+#         product_order = frappe.get_value("Product Order",{"customer_id":customer_id.name, "order_status": "Pending"}, ["name","gift_points"])
+        
+#         total_order_points = sum(product_order, key=lambda x: x.get('gift_points', 0)) if product_order else 0
+#         total_order_points = float(total_order_points)
+        
+#         if total_order_points > customer_id.current_points:
+#             return {
+#                 "success": False,
+#                 "message": "Can not order this product. Your pending request points and current request points together exceed your total available points."
+#             }
+
+        
+#         # Create a new instance of the Product Order document
+#         product_order = frappe.new_doc("Product Order")
+        
+#         # Set values for the fields of the document
+#         product_order.customer_id = customer_id.name
+#         product_order.product_id = product_id
+#         product_order.product_name = product_name
+#         product_order.full_name = fullname
+#         product_order.city = city
+#         product_order.mobile_number = mobile
+#         product_order.pincode = pincode
+#         product_order.address = address
+#         product_order.customer_email = email
+#         # Set received_date to the current datetime
+#         current_datetime = now_datetime()
+#         product_order.order_date = current_datetime.date()
+#         product_order.order_time = current_datetime.time().strftime('%H:%M:%S')
+#         product_order.order_status = "Pending"
+#         product_order.approved_time = ""
+        
+
+        
+#         # Save the document
+#         product_order.insert(ignore_permissions=True)
+        
+#         # Return success message
+#         return {"status": "success", "message": ("Product Order created successfully.")}
+    
+#     except Exception as e:
+#         # Log error and raise exception
+#         frappe.log_error(f"Error creating product order: {str(e)}")
+#         return {"success":False,"status": "error", "message": ("Failed to create product order. Please try again later.")}
 
 
 
