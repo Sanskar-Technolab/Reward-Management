@@ -291,7 +291,7 @@ def update_product_order(product_name, order_status, name, gift_points, notes):
             frappe.db.commit()
 
 
-        # 1. Condition: Changing from Cancel to Approved
+        # 1. Condition: Changing from Cancel to Approved---
         if order_status == "Approved" and previous_status == "Cancel":
             if gift_points > current_points: 
                 return error("Customer Current Point Balance is not sufficient to approve this order.")
@@ -307,7 +307,7 @@ def update_product_order(product_name, order_status, name, gift_points, notes):
             # Save customer
             save_customer()
             # customer.save(ignore_permissions=False)
-            # frappe.db.commit()
+          
 
             return success("Product order approved successfully after cancellation.")
            
