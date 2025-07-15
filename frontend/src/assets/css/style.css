@@ -215,12 +215,13 @@ html {
     /* margin-inline-start: 15rem; */
     height: -webkit-fill-available;
     background-color: var(--body-bg);
+    
     height: 100vh;
     font-family: 'Inter', sans-serif !important;
 }
 .main-content {
     padding-left: 1.5rem;
-    padding-right: 1.5rem;
+    padding-right: 1.5rem;  
 }
 .page {
     display: flex;
@@ -228,3 +229,10 @@ html {
 
     flex-direction: column;
 }
+/* .main-index {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+} */

@@ -1,6 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
+ "autoname": "hash",
  "creation": "2024-07-30 17:06:55.228582",
  "doctype": "DocType",
  "editable_grid": 1,
@@ -106,15 +107,18 @@
    "label": "Time"
   }
  ],
+ "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2024-12-31 11:58:57.546335",
+ "modified": "2025-06-02 16:23:57.990186",
  "modified_by": "Administrator",
  "module": "Reward Management",
  "name": "Customer Product Detail",
+ "naming_rule": "Random",
  "owner": "Administrator",
  "permissions": [],
+ "row_format": "Dynamic",
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": []

@@ -59,13 +59,13 @@ const AddProduct: React.FC = () => {
 
     const handleAddCategory = async (event: any) => {
         event.preventDefault();
-        console.log("first");
+        // console.log("first");
 
         try {
             const response = await createCategory({ productCategory: newCategory });
 
             if (response) {
-                console.log("product category name:", response);
+                // console.log("product category name:", response);
 
                 // Correctly update state with the new category
                 setProductCategory(prevCategories => [
@@ -78,7 +78,7 @@ const AddProduct: React.FC = () => {
                 setShowAddCategoryModal(false);
             }
         } catch (error) {
-            console.error("Error adding category:", error);
+            console.log("Error adding category:", error);
         }
     };
 
@@ -114,11 +114,11 @@ const AddProduct: React.FC = () => {
             if (response.data.message && response.data.message.file_url) {
                 return response.data.message.file_url;
             } else {
-                console.error("File URL not found in response:", response.data);
+                console.log("File URL not found in response:", response.data);
                 return null;
             }
         } catch (error) {
-            console.error("Error uploading file:", error.response ? error.response.data : error.message);
+            console.log("Error uploading file:", error.response ? error.response.data : error.message);
             return null;
         }
     };

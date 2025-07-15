@@ -1,56 +1,120 @@
 import frappe
 from frappe.model.document import Document
 
+# @frappe.whitelist()
+# def get_gift_products():
+#     try:
+#         # Fetch all gift products
+#         gift_products = frappe.get_all(
+#             "Gift Product", 
+#             fields=["name", "gift_product_name", "points", "gift_detail","description","gift_specification","enabled"], order_by="creation desc"
+#         )
+        
+#         if gift_products:
+#             all_gift_products = []
+            
+#             for product in gift_products:
+#                 # Fetch related child table records
+#                 gift_product_images = frappe.get_all(
+#                     "Product Gift Child Table", 
+#                     filters={"parent": product.get("name")}, 
+#                     fields=["gift_product_image"]
+#                 )
+                
+#                 # Add the child table data to the product dictionary
+#                 product["gift_product_images"] = gift_product_images
+                
+#                 # Append to the result list
+#                 all_gift_products.append(product)
+            
+#             # Return the complete data
+#             return {
+#                 "status": "success", 
+#                 "data": all_gift_products  # Include all fetched data in the response
+#             }
+#         else:
+#             return {
+#                 "status": "success", 
+#                 "data": [], 
+#                 "message": "No gift products found"
+#             }
+#     except Exception as e:
+#         # Log error for debugging in Frappe error logs
+#         frappe.log_error(frappe.get_traceback(), "Get Gift Products Error")
+        
+#         # Return error response
+#         return {
+#             "status": "error", 
+#             "message": str(e)
+#         }
+
+
 @frappe.whitelist()
 def get_gift_products():
     try:
-        # Fetch all gift products
-        gift_products = frappe.get_all(
-            "Gift Product", 
-            fields=["name", "gift_product_name", "points", "gift_detail","description","gift_specification"], order_by="creation desc"
-        )
-        
-        if gift_products:
-            all_gift_products = []
-            
-            for product in gift_products:
-                # Fetch related child table records
-                gift_product_images = frappe.get_all(
-                    "Product Gift Child Table", 
-                    filters={"parent": product.get("name")}, 
-                    fields=["gift_product_image"]
-                )
-                
-                # Add the child table data to the product dictionary
-                product["gift_product_images"] = gift_product_images
-                
-                # Append to the result list
-                all_gift_products.append(product)
-            
-            # Return the complete data
+        current_user = frappe.session.user
+
+        # Block Guest users
+        if current_user == "Guest":
             return {
-                "status": "success", 
-                "data": all_gift_products  # Include all fetched data in the response
+                "status": "error",
+                "message": "Permission denied for guest users"
             }
+
+        user_roles = frappe.get_roles(current_user)
+
+        # Set filters based on role
+        if current_user == "Administrator" or "Admin" in user_roles:
+            filters = {}  # No filter, show all
+        elif "Customer" in user_roles:
+            filters = {"enabled": 1}  # Show only enabled
         else:
             return {
-                "status": "success", 
-                "data": [], 
+                "status": "error",
+                "message": "Permission denied"
+            }
+
+        # Fetch gift products
+        gift_products = frappe.get_all(
+            "Gift Product",
+            filters=filters,
+            fields=["name", "gift_product_name", "points", "gift_detail", "description", "gift_specification", "enabled"],
+            order_by="creation desc"
+        )
+
+        if not gift_products:
+            return {
+                "status": "error",
                 "message": "No gift products found"
             }
-    except Exception as e:
-        # Log error for debugging in Frappe error logs
-        frappe.log_error(frappe.get_traceback(), "Get Gift Products Error")
-        
-        # Return error response
+
+        # Append child images to each product
+        all_gift_products = []
+        for product in gift_products:
+            gift_product_images = frappe.get_all(
+                "Product Gift Child Table",
+                filters={"parent": product.get("name")},
+                fields=["gift_product_image"]
+            )
+            product["gift_product_images"] = gift_product_images
+            all_gift_products.append(product)
+
         return {
-            "status": "error", 
+            "status": "success",
+            "data": all_gift_products
+        }
+
+    except Exception as e:
+        frappe.log_error(frappe.get_traceback(), "Get Gift Products Error")
+        return {
+            "status": "error",
             "message": str(e)
         }
 
+
 # Add New Gift Product-------------
 @frappe.whitelist()
-def add_gift_product(new_image_url, giftproductName, giftproductDetails, giftproductDescription, points, giftproductSpecificaton):
+def add_gift_product(new_image_url, giftproductName, giftproductDetails, giftproductDescription, points, giftproductSpecificaton, status):
     # Ensure the input is a list for new_image_url
     if not isinstance(new_image_url, list):
         frappe.throw(_("The 'new_image_url' parameter must be an array of image URLs."))
@@ -62,7 +126,8 @@ def add_gift_product(new_image_url, giftproductName, giftproductDetails, giftpro
         "gift_detail": giftproductDetails,
         "description": giftproductDescription,
         "points": points,
-        "gift_specification": giftproductSpecificaton
+        "gift_specification": giftproductSpecificaton,
+        "enabled": status  # Set the enabled status
     })
 
     # Append images to the gift_product_image child table
@@ -91,7 +156,8 @@ def get_url_gift_products(url_name):
         gift_products = frappe.get_all(
             "Gift Product", 
             filters={"name": url_name},  # Match `name` field with `url_name`
-            fields=["name", "gift_product_name", "points", "gift_detail", "description", "gift_specification"]
+            fields=["name", "gift_product_name", "points", "gift_detail", "description", "gift_specification", "enabled"],
+            order_by="creation desc"
         )
         
         if gift_products:
@@ -135,7 +201,7 @@ def get_url_gift_products(url_name):
         
         
 @frappe.whitelist()
-def update_gift_product(new_image_url, giftproductName, giftproductDetails, giftproductDescription, points, giftproductSpecificaton):
+def update_gift_product(new_image_url, giftproductName, giftproductDetails, giftproductDescription, points, giftproductSpecificaton,status):
     # Ensure the input is a list for new_image_url
     if not isinstance(new_image_url, list):
         frappe.throw(_("The 'new_image_url' parameter must be an array of image URLs."))
@@ -152,6 +218,7 @@ def update_gift_product(new_image_url, giftproductName, giftproductDetails, gift
         gift_doc.description = giftproductDescription
         gift_doc.points = points
         gift_doc.gift_specification = giftproductSpecificaton
+        gift_doc.enabled = status  # Update the enabled status
         
         # Clear existing images before appending new ones
         gift_doc.set("gift_product_image", [])
@@ -180,7 +247,8 @@ def update_gift_product(new_image_url, giftproductName, giftproductDetails, gift
             "gift_detail": giftproductDetails,
             "description": giftproductDescription,
             "points": points,
-            "gift_specification": giftproductSpecificaton
+            "gift_specification": giftproductSpecificaton,
+            "enabled": status  # Set the enabled status
         })
 
         # Append images to the gift_product_image child table
@@ -205,6 +273,24 @@ def update_gift_product(new_image_url, giftproductName, giftproductDetails, gift
 @frappe.whitelist()
 def get_filtered_gift_products(user):
     try:
+        
+        current_user = frappe.session.user
+
+        # Block Guest users
+        if current_user == "Guest":
+            return {
+                "status": "error",
+                "message": "Permission denied for guest users"
+            }
+
+        user_roles = frappe.get_roles(current_user)
+        if "Customer" not in user_roles:
+            return {
+                "status": "error",
+                "message": "Permission denied: Only customers can access this."
+            }
+
+        
         # Step 1: Fetch user information
         user_info = frappe.get_doc("User", user)
         if not user_info:
@@ -242,7 +328,8 @@ def get_filtered_gift_products(user):
         # Step 3: Fetch all gift products and filter out excluded ones
         gift_products = frappe.get_all(
             "Gift Product",
-            fields=["name", "gift_product_name", "points", "gift_detail", "description", "gift_specification"],
+            fields=["name", "gift_product_name", "points", "gift_detail", "description", "gift_specification","enabled"],
+            filters={"enabled":1},
             order_by="creation desc"
         )
 
