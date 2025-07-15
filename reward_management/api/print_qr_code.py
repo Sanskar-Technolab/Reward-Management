@@ -29,19 +29,81 @@ import time
 
 #     return qr_docs
 
+
+
 @frappe.whitelist()
 def print_qr_code_data(limit_start=None, limit_page_length=None):
-    # Fetch fields from the Product QR document
-    qr_docs = frappe.get_all("QR Data", fields=["name","product_qr", "product_table_name", "qr_code_image", "product_qr_id", "points","generated_date","generated_time","scanned","product_qr_name","carpenter_id","redeem_date"],
-    limit_start=limit_start,
-    limit_page_length=limit_page_length)
-    for qr_data in qr_docs:
-            if qr_data.get('generated_date'):
-                qr_data['generated_date'] = frappe.utils.formatdate(qr_data['generated_date'], 'dd-MM-yyyy')
-            if qr_data.get('redeem_date'):
-                qr_data['redeem_date'] = frappe.utils.formatdate(qr_data['redeem_date'], 'dd-MM-yyyy')
+    try:
+        # Fetch fields from the Product QR document
+        qr_docs = frappe.get_all("QR Data", fields=["name","product_qr", "product_table_name", "qr_code_image", "product_qr_id", "points","generated_date","generated_time","scanned","product_qr_name","carpenter_id","redeem_date"],
+        limit_start=limit_start,
+        limit_page_length=limit_page_length)
+        for qr_data in qr_docs:
+                if qr_data.get('generated_date'):
+                    qr_data['generated_date'] = frappe.utils.formatdate(qr_data['generated_date'], 'dd-MM-yyyy')
+                if qr_data.get('redeem_date'):
+                    qr_data['redeem_date'] = frappe.utils.formatdate(qr_data['redeem_date'], 'dd-MM-yyyy')
 
-    return qr_docs
+        return qr_docs
+    except Exception as e:
+        frappe.log_error("error",str(e))
+
+
+
+# @frappe.whitelist()
+# def update_all_product_qr_quantities():
+#     try:
+#         all_product_qrs = frappe.get_all("Product QR", fields=["name", "product_name"])
+#         for product_qr in all_product_qrs:
+#             count = frappe.db.count("QR Data", {
+#                 "product_name": product_qr.product_name,
+#                 "product_table_name": product_qr.name
+#             })
+            
+#             return{
+#                 "success":True,
+#                 "message":"successfully count qr code data",
+#                 "data":count
+#             }
+#     except Exception as e:
+#         frappe.log_error("error",str(e))
+
+@frappe.whitelist()
+def update_all_product_qr_quantities():
+    try:
+        # Get all Product QR records
+        all_product_qrs = frappe.get_all("Product QR", fields=["name", "product_name"])
+        
+        updated_counts = []
+        
+        for product_qr in all_product_qrs:
+            # Count matching QR Data records
+            count = frappe.db.count("QR Data", {
+                "product_table_name": product_qr.product_name
+            })
+            
+         
+            updated_counts.append({
+                "product_name": product_qr.product_name,
+                "quantity": count
+            })
+        
+        
+        return {
+            "success": True,
+            "message": f"Successfully updated quantities for {len(updated_counts)} Product QR records",
+            "data": updated_counts
+        }
+        
+    except Exception as e:
+        frappe.log_error("Error in update_all_product_qr_quantities", str(e))
+        frappe.db.rollback()
+        return {
+            "success": False,
+            "message": "Failed to update quantities",
+            "error": str(e)
+        }
+
 
 
 

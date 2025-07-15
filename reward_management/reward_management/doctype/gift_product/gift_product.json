@@ -1,6 +1,7 @@
 {
  "actions": [],
- "autoname": "format:Gift-{gift_product_name}-{YYYY}-{#####}",
+ "allow_rename": 1,
+ "autoname": "naming_series:",
  "creation": "2024-12-09 10:34:00.785138",
  "doctype": "DocType",
  "engine": "InnoDB",
@@ -48,11 +49,11 @@
    "label": "Gift Specification"
   },
   {
-   "default": "Gift.-.{gift_product_name}.-.YYYY.-.",
+   "default": "CGP.-.MM.-.YYYY.-.#####",
    "fieldname": "naming_series",
    "fieldtype": "Select",
    "label": "Naming Series",
-   "options": "Gift.-.{gift_product_name}.-.YYYY.-."
+   "options": "CGP.-.MM.-.YYYY.-.#####"
   },
   {
    "fieldname": "column_break_vbge",
@@ -68,11 +69,11 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-06-13 10:45:48.525579",
+ "modified": "2025-07-04 11:25:34.860823",
  "modified_by": "Administrator",
  "module": "Reward Management",
  "name": "Gift Product",
- "naming_rule": "Expression",
+ "naming_rule": "By \"Naming Series\" field",
  "owner": "Administrator",
  "permissions": [
   {
@@ -91,5 +92,6 @@
  "row_format": "Dynamic",
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "track_changes": 1
 }

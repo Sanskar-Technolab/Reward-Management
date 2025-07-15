@@ -1,5 +1,5 @@
 import React from 'react';
-import { useState } from 'react';
+// import { useState } from 'react';
 
 interface ViewModalProps {
     title: string;
@@ -48,7 +48,6 @@ const ProductOrderRequestEdit: React.FC<ViewModalProps> = ({
     const isStatusDisabled = status === 'Approved' || status === 'Cancel';
     const showNotesField = (status === 'Approved' || status === 'Cancel') && setNotes;
 
-    // const [notes, setNotes] = useState('');
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
@@ -106,8 +105,8 @@ const ProductOrderRequestEdit: React.FC<ViewModalProps> = ({
                                 onChange={(e) => setStatus(e.target.value)}
                             >
                                 <option value="Pending" disabled={isStatusDisabled}>Pending</option>
-                                <option value="Approved">Approved</option>
-                                <option value="Cancel">Cancel</option>
+                                <option value="Approved" disabled={status === 'Cancel'}>Approved</option>
+                                <option value="Cancel" disabled={status === 'Approved'}>Cancel</option>
                             </select>
                         </div>
 
