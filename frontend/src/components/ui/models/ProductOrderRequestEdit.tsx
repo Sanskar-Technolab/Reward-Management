@@ -48,7 +48,6 @@ const ProductOrderRequestEdit: React.FC<ViewModalProps> = ({
     const isStatusDisabled = status === 'Approved' || status === 'Cancel';
     const showNotesField = (status === 'Approved' || status === 'Cancel') && setNotes;
 
-    // const [notes, setNotes] = useState('');
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">

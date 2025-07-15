@@ -130,15 +130,6 @@ const ProductOrder: React.FC = () => {
     //     return `${day}-${month}-${year}`;
     // };
 
-    // const formattedProductOrderData = orderData?.map(order => ({
-    //     ...order,
-    //     transfer_date: order.order_date ? formatDate(order.order_date) : '',
-    //     // product_image_display: order.product_image ? (
-    //     //     <img src={order.product_image} alt="Product" style={{ width: '100px', height: 'auto' }} />
-    //     // ) : (
-    //     //     'No Image' 
-    //     // ),
-    // })) || [];
 
     const formatDateToMySQL = (dateString: string) => {
         const [year, month, day] = dateString.split('-').map(Number);
@@ -149,12 +140,10 @@ const ProductOrder: React.FC = () => {
 
     const parseDateString = (dateString: string): Date | null => {
         if (typeof dateString !== 'string') {
-            // console.error("Expected a string, but received:", dateString);
             return null;
         }
         const parts = dateString.split('-');
         if (parts.length !== 3) {
-            // console.error("Invalid date format:", dateString);
             return null;
         }
         const day = parseInt(parts[0], 10);
@@ -163,14 +152,7 @@ const ProductOrder: React.FC = () => {
         return new Date(year, month, day);
     };
 
-    // const formatDateToISO = (dateString: string) => {
-    //     const date = new Date(dateString);
-    //     const year = date.getFullYear();
-    //     const month = (`0${date.getMonth() + 1}`).slice(-2);
-    //     const day = (`0${date.getDate()}`).slice(-2);
-    //     return `${year}-${month}-${day}`;
-    // };
-    
+  
 
 
     const formattedProductOrderData = orderData?.map(order => ({
