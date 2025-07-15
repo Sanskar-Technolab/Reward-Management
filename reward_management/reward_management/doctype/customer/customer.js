@@ -158,7 +158,7 @@ frappe.ui.form.on("Customer", {
                     <div class='product-point-card'>
                         <p class='d-none unique-id'>${getSafeValue(gift.name)}</p>
                         <p><strong>Customer ID:</strong> ${getSafeValue(gift.customer_id)}</p>
-                        <p><strong>Customer Full Name:</strong> ${getSafeValue(gift.customer_full_name)}</p>
+                        <p><strong>Customer Full Name:</strong> ${getSafeValue(gift.customer_name)}</p>
                         <p><strong>Gift Product ID:</strong> ${getSafeValue(gift.gift_id)}</p>
                         <p><strong>Gift Product Name:</strong> ${getSafeValue(gift.gift_product_name)}</p>
                         <p><strong>Points Used:</strong> ${getSafeValue(gift.deduct_gift_points)}</p>

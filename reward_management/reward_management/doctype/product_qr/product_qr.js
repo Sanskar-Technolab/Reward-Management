@@ -1,17 +1,9 @@
 // Copyright (c) 2024, Palak Padalia and contributors
 // For license information, please see license.txt
 frappe.ui.form.on("Product QR", {
+
   refresh(frm) {
-    // Only add the delete button once
-    // if (!frm.custom_buttons_set) {
-    //   frm.add_custom_button(__("Delete Attachments"), function() {
-    //     delete_attachments(frm);
-    //   });
-    //   frm.custom_buttons_set = true;
-    // }
-
-
-
+    
     const pageSize = 9;
       let currentPage = 1;
       let totalCount = 0;
@@ -27,7 +19,7 @@ frappe.ui.form.on("Product QR", {
                   limit_start: offset
               },
               callback: function(response) {
-                console.log("qr code response", response);
+                // console.log("qr code response", response);
                   const result = response.message;
                   const qrItems = result.data;
                   totalCount = result.total_count;

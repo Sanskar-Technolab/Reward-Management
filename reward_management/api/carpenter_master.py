@@ -431,7 +431,7 @@ def update_carpainter_points(product_name, points, earned_amount):
             "time": frappe.utils.now_datetime().strftime('%H:%M:%S'),
         })
 
-        new_point_doc.insert(ignore_permissions=True) 
+        new_point_doc.insert(ignore_permissions=False) 
 
         return {
             "success": True,

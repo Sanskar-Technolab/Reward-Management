@@ -17,6 +17,7 @@
   "total_points",
   "current_points",
   "redeem_points",
+  "total_pending_order_points",
   "city",
   "image",
   "section_break_z17c",
@@ -73,19 +74,22 @@
   {
    "fieldname": "total_points",
    "fieldtype": "Float",
-   "label": "Total Points"
+   "label": "Total Points",
+   "non_negative": 1
   },
   {
    "fieldname": "current_points",
    "fieldtype": "Float",
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "label": "Current Points"
+   "label": "Current Points",
+   "non_negative": 1
   },
   {
    "fieldname": "redeem_points",
    "fieldtype": "Float",
-   "label": "Redeem Points"
+   "label": "Redeem Points",
+   "non_negative": 1
   },
   {
    "fieldname": "city",
@@ -135,13 +139,19 @@
    "fieldname": "gift_point_history_tab",
    "fieldtype": "Tab Break",
    "label": "Gift Point History"
+  },
+  {
+   "fieldname": "total_pending_order_points",
+   "fieldtype": "Float",
+   "label": "Total Pending Order Points",
+   "non_negative": 1
   }
  ],
  "grid_page_length": 50,
  "image_field": "image",
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-06-12 18:17:52.402404",
+ "modified": "2025-07-03 10:17:14.479876",
  "modified_by": "Administrator",
  "module": "Reward Management",
  "name": "Customer",

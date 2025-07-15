@@ -173,6 +173,7 @@ const handleRemoveImage = (indexToRemove: number) => {
 
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
+        
 
         // validate points -------------
 

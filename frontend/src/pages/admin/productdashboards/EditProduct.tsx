@@ -161,7 +161,7 @@ const EditProduct: React.FC = () => {
                 );
 
                 if (response.data && response.data.message.message) {
-                    console.log("Edit Product Data", response);
+                    // console.log("Edit Product Data", response);
                     const product = response.data.message.message;
 
                     // console.log("reward points:",product.reward_points);

@@ -16,7 +16,9 @@
   "date",
   "time",
   "customer_id",
-  "customer_name"
+  "customer_name",
+  "email",
+  "mobile_number"
  ],
  "fields": [
   {
@@ -100,12 +102,26 @@
    "fieldname": "notes",
    "fieldtype": "Small Text",
    "label": "Notes"
+  },
+  {
+   "fetch_from": "customer_id.email",
+   "fieldname": "email",
+   "fieldtype": "Data",
+   "in_filter": 1,
+   "in_standard_filter": 1,
+   "label": "Email"
+  },
+  {
+   "fetch_from": "customer_id.mobile_number",
+   "fieldname": "mobile_number",
+   "fieldtype": "Data",
+   "label": "Mobile Number"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-06-10 11:47:45.732339",
+ "modified": "2025-07-01 10:37:22.243137",
  "modified_by": "Administrator",
  "module": "Reward Management",
  "name": "Customer Gift Point Details",

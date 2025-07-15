@@ -86,13 +86,13 @@ const EditGiftProduct: React.FC = () => {
                             setExistingImages(imageDetails);
                         }
                     } else {
-                        console.error("No matching product found.");
+                        console.log("No matching product found.");
                     }
                 } else {
-                    console.error("Failed to fetch product data.");
+                    console.log("Failed to fetch product data.");
                 }
             } catch (err) {
-                console.error("Error fetching gift products:", err);
+                console.log("Error fetching gift products:", err);
             }
         };
 
