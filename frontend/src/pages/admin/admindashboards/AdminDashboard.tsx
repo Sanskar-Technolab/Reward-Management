@@ -67,7 +67,7 @@ const AdminDashboard: React.FC = () => {
                     setTop10Customers([]);
                 }
             } catch (error) {
-                console.error("Error processing top customers data:", error);
+                console.log("Error processing top customers data:", error);
                 setTop10Customers([]);
             } finally {
                 setLoading(false);
