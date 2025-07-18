@@ -89,3 +89,41 @@ def total_product():
     return total_products
 
 
+# top 10 carpenter based on total points-------
+
+@frappe.whitelist()
+def top_ten_customers():
+    try:
+        # Get all users with role profile "Carpenter"
+        users = frappe.get_all(
+            "User",
+            filters={"role_profile_name": "Customer"},
+            fields=["mobile_no"]
+        )
+
+        # Extract mobile numbers from users
+        user_mobile_numbers = [u.mobile_no for u in users if u.mobile_no]
+
+        if not user_mobile_numbers:
+            return {
+                "success":False,
+                "message":"user not found",
+                "data":None
+            }
+
+        # Get matching customers with total_points
+        customers = frappe.get_all(
+            "Customer",
+            filters={"mobile_number": ["in", user_mobile_numbers]},
+            fields=["name", "full_name", "mobile_number", "total_points","city"],
+            order_by="total_points desc",
+            limit_page_length=10
+        )
+
+        return {
+            "success":True,
+            "message":"top 10 customers get successfully.",
+            "data":customers
+        }
+    except Exception as e:
+        frappe.log_error("error",str(e))
