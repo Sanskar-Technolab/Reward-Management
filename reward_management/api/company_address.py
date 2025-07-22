@@ -129,6 +129,14 @@ def get_company_address():
 @frappe.whitelist()
 def add_or_update_company_address(address, email, website, mobile_numbers, about_company):
     try:
+        current_user = frappe.session.user
+        
+         # Get current user's roles
+        user_roles = frappe.get_roles(current_user)
+
+        # Allow only Administrator or users with "Admin" role
+        if current_user != "Administrator" and "Admin" not in user_roles:
+            return {"success": False, "message": "Permission denied"}
         # Check if the company address already exists (Assuming it's a single doctype)
         company_address_doc = frappe.db.get_single_value("Company Address", "address")
 

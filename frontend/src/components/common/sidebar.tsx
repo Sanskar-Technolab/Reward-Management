@@ -11,11 +11,11 @@ const Sidebar = ({ isSidebarActive }: any) => {
     const [isHover, setIsHover] = useState(false);
     const [logo, setLogo] = useState(null);
     const [loading, setLoading] = useState(true);
-    const location = useLocation(); // ✅ Use useLocation at top level
+    const location = useLocation();
     const currentPath = location.pathname;
 
     const storedRoles = localStorage.getItem('user_roles');
-    const carpenterrole = localStorage.getItem('carpenterrole');
+    // const carpenterrole = localStorage.getItem('carpenterrole');
     const roles = storedRoles ? JSON.parse(storedRoles) : [];
 
     const getItemIndex = (title: any) => SidebarData.findIndex(item => item.title === title);
@@ -27,7 +27,7 @@ const Sidebar = ({ isSidebarActive }: any) => {
         } else if (roles.includes("Admin")) {
             const faqIndex = getItemIndex("FAQ's");
             return faqIndex !== -1 ? SidebarData.slice(0, faqIndex + 1) : SidebarData;
-        } else if (carpenterrole === "Customer") {
+        } else if (roles.includes("Customer")) {
             const startIndex = getItemIndex('Dashboard');
             const endIndex = getItemIndex('Contact');
             return startIndex !== -1 && endIndex !== -1 ? SidebarData.slice(startIndex, endIndex + 1) : [];

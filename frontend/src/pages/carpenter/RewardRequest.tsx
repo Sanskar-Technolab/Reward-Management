@@ -108,7 +108,7 @@ const RedeemRequest: React.FC = () => {
         try {
             const response = await axios.get(`/api/method/reward_management.api.redeem_request_data.get_redeem_request_details`, {
             });
-            // console.log("Redeem Request table data:", response);
+            console.log("Redeem Request table data:", response);
             const RedeemRequestData = response.data.message.message;
 
             if (Array.isArray(RedeemRequestData)) {
@@ -211,7 +211,7 @@ const RedeemRequest: React.FC = () => {
                 redeemed_points: redeemedPoints,
             });
             // console.log("Redeem request successful:", response.data);
-            if (response.data.message.success === "true") {
+            if (response.data && response.data.message.success == true) {
                 setIsModalOpen(false);
                 setShowSuccessAlert(true);  
                 setPointRedeem('')            
@@ -292,9 +292,9 @@ const RedeemRequest: React.FC = () => {
         <Fragment>
               <Pageheader 
                 currentpage={"Redeem Request"} 
-                activepage={"/redeem-request"} 
+                // activepage={"/redeem-request"} 
                 // mainpage={"/redeem-request"} 
-                activepagename="Redeem Request"
+                // activepagename="Redeem Request"
                 // mainpagename="Redeem Request"
             />
             {/* <Pageheader currentpage="Redeem Request" activepage="Redeem Request" mainpage="Redeem Request" /> */}

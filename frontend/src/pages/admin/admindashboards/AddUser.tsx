@@ -173,9 +173,9 @@ const AddUserDashboard: React.FC = () => {
         <Fragment>
             <Pageheader 
                 currentpage={"Add User"} 
-                activepage={"/add-user"} 
+                // activepage={"/add-user"} 
                 
-                activepagename='Add User' 
+                // activepagename='Add User' 
                
             />
            

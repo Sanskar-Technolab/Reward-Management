@@ -56,7 +56,7 @@ def update_registration_request_status(registration_id, status):
                     # Return success message indicating no point history added
                     return {
                         "status": "success",
-                        "message": _("Customer created successfully, but no point history found.")
+                        "message": "Customer created successfully, but no point history found."
                     }
                 else:
                     # If point history exists, assign it and create customer
@@ -70,7 +70,7 @@ def update_registration_request_status(registration_id, status):
 
                     return {
                         "status": "success",
-                        "message": _("Customer created successfully with point history.")
+                        "message": "Customer created successfully with point history."
                     }
 
             else:

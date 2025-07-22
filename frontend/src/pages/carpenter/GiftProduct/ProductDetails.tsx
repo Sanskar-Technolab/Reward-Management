@@ -223,7 +223,7 @@ const ProductDetails = () => {
                     <img
                       src={image}
                       alt={`Product Image ${index + 1}`}
-                      className="w-full  lg:h-[450px] md:h-[300px] sm:h-[200px] object-fill"
+                      className="w-full  lg:h-[450px] md:h-[300px] sm:h-[200px] object-contain"
                     />
                   </div>
                 ))}
