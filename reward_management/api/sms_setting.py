@@ -29,12 +29,33 @@ def send_api_sms(mobile_number, otp, template_id=None, template_name=None):
             "Almost done! {VAR} is the One Time Password (OTP) to place your Order on Dekaa App. It’s valid for 2 minutes. Please don’t share with anyone."
         )
         template_id = "1707174858556978097"
+        
+    elif template_name == "customer_registration":
+        message_template = (
+            "Alert! A new Customer has registered with mobile no {#var#} on the Dekaa Fix LLP app."
+        )
+        template_id = "1707175368959106868"
+        
+    elif template_name == "approved_customer_registration":
+        message_template = (
+            "Alert! Your account registered with mobile no {#var#} on the Dekaa Fix LLP app has been approved."
+        )
+        template_id = "1707175368979515550"
+        
     else:
         return{
             "success":False,
             "message": "Invalid or missing template name."
         }
-    message = message_template.replace("{VAR}", otp)
+    # message = message_template.replace("{VAR}", otp)
+    
+    #  Dynamic placeholder replacement
+    if "{VAR}" in message_template:
+        message = message_template.replace("{VAR}", otp)
+    elif "{#var#}" in message_template:
+        message = message_template.replace("{#var#}", otp)
+    else:
+        message = message_template
 
    
 

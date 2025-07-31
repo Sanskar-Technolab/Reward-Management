@@ -2,8 +2,7 @@ import frappe
 from frappe.model.document import Document
 from datetime import datetime
 import re
-
-
+from reward_management.api.send_admin_sms import admin_sms_for_new_carpenter_registration
 
 
 
@@ -11,6 +10,30 @@ import re
 @frappe.whitelist(allow_guest=True)
 def create_new_carpainters(firstname, lastname, city, mobile):
     try:
+        if not firstname:
+            return{
+                "success":False,
+                "message":"firstname is required.",
+                "status": "failed",
+            }
+        if not lastname:
+            return{
+                "success":False,
+                "message":"lastname is required.",
+                "status": "failed",
+            }
+        if not mobile:
+            return{
+                "success":False,
+                "message":"mobile is required.",
+                "status": "failed",
+            }
+        if not city:
+            return{
+                "success":False,
+                "message":"city is required.",
+                "status": "failed",
+            }
 
         # --- Validations ---
         if firstname.strip().lower() == lastname.strip().lower():
@@ -92,16 +115,14 @@ def create_new_carpainters(firstname, lastname, city, mobile):
             "approved_time":'',
         })
         carpenter_new_ragistration.insert()
+        
+        # sent admin sms for the carpenter regiatration request---
+        admin_sms_for_new_carpenter_registration(mobile)
 
         # Log the details of the newly created Carpainter
         carpainter_dict = carpenter_new_ragistration.as_dict()
         carpainter_details = "\n".join([f"{key}: {value}" for key, value in carpainter_dict.items()])
         frappe.logger().info(f"New Carpainter Details:\n{carpainter_details}")
-
-     
-
-        # Call function to create users for all Approved Carpainters
-        # create_users_for_approved_carpainters()
 
         return {"success":True,"status": "success", "message": "Registration submitted successfully. Your account will be activated after admin approval"}
     except Exception as e:
@@ -122,3 +143,6 @@ def check_carpainter_registration(mobile_no):
     except Exception as e:
         return {"is_registered": False, "message": str(e)}
     
+
+
+ 

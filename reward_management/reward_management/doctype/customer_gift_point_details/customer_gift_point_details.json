@@ -121,7 +121,7 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-07-01 10:37:22.243137",
+ "modified": "2025-07-29 14:45:55.520095",
  "modified_by": "Administrator",
  "module": "Reward Management",
  "name": "Customer Gift Point Details",
@@ -144,5 +144,6 @@
  "row_format": "Dynamic",
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "track_changes": 1
 }
