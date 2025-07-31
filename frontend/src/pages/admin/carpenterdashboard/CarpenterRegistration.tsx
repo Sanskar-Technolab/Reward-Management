@@ -216,11 +216,11 @@ const CarpenterRegistration: React.FC = () => {
                 setAlertMessage('Registration Request Approved Successsfully!!!');
                 setAlertTitle('Success');
             } else {
-                console.error("Failed to update registration request status and new user creating: ", response.data.message);
+                console.log("Failed to update registration request status and new user creating: ", response.data.message);
                 notyf.error(`Failed to update Registration Request: ${response.data.message}`);
             }
         } catch (error: any) {
-            console.error("Error details:", {
+            console.log("Error details:", {
                 message: error.message,
                 response: error.response?.data,
                 stack: error.stack,
@@ -255,7 +255,7 @@ const CarpenterRegistration: React.FC = () => {
                 notyf.error('Failed to update registration request status and delete user/customer.');
             }
         } catch (error) {
-            console.error("Error details:", {
+            console.log("Error details:", {
                 message: error.message,
                 response: error.response?.data,
                 stack: error.stack,
