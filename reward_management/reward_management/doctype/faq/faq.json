@@ -47,9 +47,10 @@
    "label": "Created Date"
   }
  ],
+ "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-12-26 18:21:24.817378",
+ "modified": "2025-07-29 14:47:36.119921",
  "modified_by": "Administrator",
  "module": "Reward Management",
  "name": "FAQ",
@@ -69,7 +70,9 @@
    "write": 1
   }
  ],
+ "row_format": "Dynamic",
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "track_changes": 1
 }

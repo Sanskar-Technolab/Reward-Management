@@ -42,6 +42,7 @@ const SidebarDiv = styled.div<{ $isActive?: boolean }>`
   color: ${(props) => (props.$isActive ? 'white' : 'rgb(49, 48, 48)')};
 
   &:hover {
+  
     background-color: ${(props) =>
       props.$isActive ? 'black' : 'rgba(53, 51, 51, 0.05)'};
     color: ${(props) => (props.$isActive ? 'white' : 'rgb(8, 8, 8)')};
@@ -66,18 +67,23 @@ const DropdownLink = styled(NavLink)`
   text-decoration: none;
   font-size: 0.85rem;
   line-height: 1;
+    margin-bottom: 5px;
+
   font-weight: 500;
   color: rgb(49, 48, 48);
   border-radius: 6px;
 
   &.active {
     color: black;
+    background-color: rgba(53, 51, 51,0.1);
+    margin-bottom: 5px;
     font-weight: bold;
   }
 
   &:hover {
     background-color: rgba(53, 51, 51, 0.05);
     color: rgb(8, 8, 8);
+    margin-bottom: 5px;
     cursor: pointer;
   }
 `;

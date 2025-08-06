@@ -18,7 +18,7 @@ def count_redeem_request():
     return total_redeem_request
 
 
-# count total qr code points-------
+# count total qr code points------
 @frappe.whitelist()
 def total_points_of_qr_code():
     # Fetch fields from the Product QR document
@@ -28,12 +28,12 @@ def total_points_of_qr_code():
 
     # Fetch child table data linked with qr_table field for each Product QR document
     for qr_doc in qr_docs:
-        qr_doc['qr_table_data'] = frappe.get_all("Product QR Table",
-                                                 filters={"parent": qr_doc['name']},
+        qr_doc = frappe.get_all("QR Data",
+                                                 filters={"product_qr": qr_doc.name},
                                                  fields=["product_table_name", "qr_code_image", "product_qr_id", "points", "generated_date"])
         
         # Calculate the total points for this Product QR document
-        for row in qr_doc['qr_table_data']:
+        for row in qr_doc:
             total_points += row.get('points', 0)
 
     # Return the QR docs and total points
@@ -89,3 +89,41 @@ def total_product():
     return total_products
 
 
+# top 10 carpenter based on total points-------
+
+@frappe.whitelist()
+def top_ten_customers():
+    try:
+        # Get all users with role profile "Carpenter"
+        users = frappe.get_all(
+            "User",
+            filters={"role_profile_name": "Customer"},
+            fields=["mobile_no"]
+        )
+
+        # Extract mobile numbers from users
+        user_mobile_numbers = [u.mobile_no for u in users if u.mobile_no]
+
+        if not user_mobile_numbers:
+            return {
+                "success":False,
+                "message":"user not found",
+                "data":None
+            }
+
+        # Get matching customers with total_points
+        customers = frappe.get_all(
+            "Customer",
+            filters={"mobile_number": ["in", user_mobile_numbers]},
+            fields=["name", "full_name", "mobile_number", "total_points","city"],
+            order_by="total_points desc",
+            limit_page_length=10
+        )
+
+        return {
+            "success":True,
+            "message":"top 10 customers get successfully.",
+            "data":customers
+        }
+    except Exception as e:
+        frappe.log_error("error",str(e))

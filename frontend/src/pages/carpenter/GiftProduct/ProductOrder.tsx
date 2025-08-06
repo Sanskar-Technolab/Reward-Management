@@ -38,7 +38,7 @@ const ProductOrder = () => {
     const { productId } = useParams<{ productId: string }>();
 
     const notyf = new Notyf({
-        duration: 3000,
+        duration: 6000,
         position: { x: "center", y: "top" },
     });
 
@@ -49,10 +49,16 @@ const ProductOrder = () => {
        setFullnameError('');
        
        
-       if (value && !validator.isAlpha(value)) {
-            setFullnameError('Please enter a valid name');
-        }
-    };
+    //    if (value && !validator.isAlpha(value)) {
+    //         setFullnameError('Please enter a valid name');
+    //     }
+    // };
+
+        if (value && !/^[A-Za-z\s]+$/.test(value)) {
+        setFullnameError('Please enter a valid name');
+    }
+  };
+
 
     const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
@@ -210,7 +216,11 @@ const ProductOrder = () => {
         try {
             const otpResponse = await axios.post(
                 `/api/method/reward_management.api.mobile_number.generate_or_update_otp`,
-                { mobile_number: mobile },
+                { mobile_number: mobile,
+                  template_name:"place_order"
+
+
+                 },
                 { headers: { "Content-Type": "application/json" } }
             );
 

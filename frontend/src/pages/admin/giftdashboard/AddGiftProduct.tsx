@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,useRef } from 'react';
 import Pageheader from '../../../components/common/pageheader/pageheader';
 import SunEditor from 'suneditor-react';
 import { useNavigate } from 'react-router-dom';
@@ -28,7 +28,10 @@ const AddGiftProduct: React.FC = () => {
     const [giftproductDetails, setGiftProductDetails] = useState('');
     const [giftproductDescription, setGiftProductDescription] = useState('');
     const [giftproductSpecificaton, setGiftProductSpecificaton] = useState('');
+    const [status, setStatus] = useState('Active');
     const [showSuccessAlert, setShowSuccessAlert] = useState(false);
+    const [isStatusDropdownOpen, setIsStatusDropdownOpen] = useState(false);
+    const statusDropdownRef = useRef<HTMLDivElement>(null);
     const [error, setError] = useState('');
     const navigate = useNavigate();
 
@@ -40,6 +43,7 @@ const AddGiftProduct: React.FC = () => {
         setGiftProductDetails('');
         setGiftProductDescription('');
         setGiftProductSpecificaton('');
+        setStatus('Active'); 
     };
 
     const handlecancel = () => {
@@ -57,7 +61,29 @@ const AddGiftProduct: React.FC = () => {
             }, 3000);
             return () => clearTimeout(timer);
         }
+
+        const handleClickOutside = (event: MouseEvent) => {
+            if (statusDropdownRef.current && !statusDropdownRef.current.contains(event.target as Node)) {
+                setIsStatusDropdownOpen(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
     }, [showSuccessAlert, navigate]);
+
+
+     const handleStatusChange = (newStatus: string) => {
+        setStatus(newStatus);
+        setIsStatusDropdownOpen(false);
+    };
+
+    const toggleStatusDropdown = () => {
+        setIsStatusDropdownOpen(!isStatusDropdownOpen);
+    };
+
 
    
  // Handle file selection
@@ -147,6 +173,7 @@ const handleRemoveImage = (indexToRemove: number) => {
 
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
+        
 
         // validate points -------------
 
@@ -178,7 +205,8 @@ const handleRemoveImage = (indexToRemove: number) => {
                 giftproductDetails: giftproductDetails,  
                 giftproductDescription: giftproductDescription,  
                 points: points, 
-                giftproductSpecificaton: giftproductSpecificaton 
+                giftproductSpecificaton: giftproductSpecificaton ,
+                status: status === 'Active' ? 1 : 0 
             };
     
             // Make the API call to add a new gift product
@@ -258,7 +286,7 @@ const handleRemoveImage = (indexToRemove: number) => {
                                                 />
                                             </div>
                                             <div className="xl:col-span-12 col-span-12">
-                                                <label htmlFor="product-cost-add" className="form-label text-sm font-semibold text-defaulttextcolor">Points</label>
+                                                <label htmlFor="product-cost-add" className="form-label text-sm font-semibold text-defaulttextcolor">Points<span style={{color:'red'}}>*</span></label>
                                                 <input
                                                     type="text"
                                                     className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full text-defaultsize text-defaulttextcolor border border-defaultborder rounded-[0.5rem] mt-2"
@@ -266,8 +294,72 @@ const handleRemoveImage = (indexToRemove: number) => {
                                                     placeholder="Reward points"
                                                     value={points}
                                                     onChange={(e) => setPoints(e.target.value)}
+                                                    required
+                                                    onInvalid={(e) => (e.target as HTMLInputElement).setCustomValidity("Please enter valid reward points .")}
+                                                    onInput={(e) => (e.target as HTMLInputElement).setCustomValidity("")}
                                                 />
                                             </div>
+
+
+                                             <div className="xl:col-span-12 col-span-12" ref={statusDropdownRef}>
+                                                <label htmlFor="product-status" className="form-label text-sm font-semibold text-defaulttextcolor">Status</label>
+                                                <div className="relative mb-4">
+                                                    <div
+                                                        className=" flex items-center justify-between p-1 border border-defaultborder rounded-[0.5rem] mt-2 cursor-pointer"
+                                                        onClick={toggleStatusDropdown}
+                                                    >
+                                                        <span className={`px-2 py-1 rounded text-sm ${
+                                                            status === 'Active' 
+                                                                ? 'bg-green-100 text-primary' 
+                                                                : 'bg-red-100 text-primary'
+                                                        }`}>
+                                                            {status}
+                                                        </span>
+                                                        <i className={`fe fe-chevron-${isStatusDropdownOpen ? 'up' : 'down'} text-defaultsize`}></i>
+                                                    </div>
+                                                    
+                                                    {isStatusDropdownOpen && (
+                                                        <div className="absolute z-10 w-full  bg-white border border-defaultborder rounded-[0.5rem] shadow-lg p-2 text-primary">
+                                                            <div 
+                                                                className={`hover:bg-primary/10 cursor-pointer mb-1 ${
+                                                                    status === 'Active' ? 'bg-primary/20' : ''
+                                                                }`}
+                                                                onClick={() => handleStatusChange('Active')}
+                                                            >
+                                                                <span className="bg-green-100 text-green-800 px-2 py-1 rounded text-sm">
+                                                                    Active
+                                                                </span>
+                                                            </div>
+                                                            <div 
+                                                                className={`hover:bg-primary/10 cursor-pointer ${
+                                                                    status === 'Inactive' ? 'bg-primary/20' : ''
+                                                                }`}
+                                                                onClick={() => handleStatusChange('Inactive')}
+                                                            >
+                                                                <span className="bg-red-100 text-red-800 px-2 py-1 rounded text-sm">
+                                                                    Inactive
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                               
+                                            </div>
+
+                                            {/* add status */}
+                                             {/* <div className="xl:col-span-12 col-span-12">
+                                                <label htmlFor="product-status" className="form-label text-sm font-semibold text-defaulttextcolor">Status</label>
+                                                <select
+                                                    id="product-status"
+                                                    className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] form-control w-full text-defaultsize text-defaulttextcolor border border-defaultborder rounded-[0.5rem] mt-2 "
+                                                    value={status}
+                                                    onChange={(e) => setStatus(e.target.value)}
+                                                >
+                                                    <option value="Active">Active</option>
+                                                    <option value="Inactive">Inactive</option>
+                                                </select>
+                                            </div> */}
+                                            
                                         </div>
                                     </div>
                                     <div className="xxl:col-span-6 xl:col-span-12 lg:col-span-12 md:col-span-6 col-span-12 gap-4">
@@ -305,6 +397,7 @@ const handleRemoveImage = (indexToRemove: number) => {
                                                 <input
                                                     type="file"
                                                     multiple
+                                                    accept="image/*"
                                                     id="file-upload"
                                                     className="outline-none focus:outline-none focus:ring-0 no-outline focus:border-[#dadada] mt-1 block w-full p-2 border rounded-md"
                                                     onChange={handleFileChange}
@@ -324,7 +417,7 @@ const handleRemoveImage = (indexToRemove: number) => {
                                                             <button
                                                                 type="button"
                                                                 onClick={() => handleRemoveImage(index)}
-                                                                className="absolute top-[-10px] right-[-10px] bg-red-600 text-primary p-1 rounded-full opacity-0 group-hover:opacity-100 transition"
+                                                                className="absolute top-[-10px] right-[-10px] text-defaulttextcolor p-1 group-hover:opacity-100 transition"
                                                             >
                                                                 <i className="ri-close-line text-primary text-lg font-bold "></i>
                                                             </button>

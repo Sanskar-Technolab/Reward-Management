@@ -80,9 +80,10 @@
    "fieldtype": "Section Break"
   }
  ],
+ "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-12-30 16:18:16.594850",
+ "modified": "2025-07-29 14:46:51.844792",
  "modified_by": "Administrator",
  "module": "Reward Management",
  "name": "Product",
@@ -102,7 +103,9 @@
    "write": 1
   }
  ],
+ "row_format": "Dynamic",
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "track_changes": 1
 }

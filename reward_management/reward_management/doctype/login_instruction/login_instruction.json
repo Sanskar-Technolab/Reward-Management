@@ -15,10 +15,11 @@
    "options": "Login Instruction Guide"
   }
  ],
+ "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2024-12-19 10:26:03.967354",
+ "modified": "2025-07-29 14:48:01.706473",
  "modified_by": "Administrator",
  "module": "Reward Management",
  "name": "Login Instruction",
@@ -35,7 +36,10 @@
    "write": 1
   }
  ],
+ "row_format": "Dynamic",
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "track_changes": 1,
+ "track_seen": 1
 }
