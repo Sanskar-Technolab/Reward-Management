@@ -289,46 +289,10 @@ def update_product_order(product_name, order_status, name, gift_points, notes):
         def save_customer():
             customer.save(ignore_permissions=True)
             frappe.db.commit()
-
-
-        # 1. Condition: Changing from Cancel to Approved---
-        if order_status == "Approved" and previous_status == "Cancel":
-            if gift_points > current_points: 
-                return error("Customer Current Point Balance is not sufficient to approve this order.")
-
-            
-            # Deduct points from customer
-            customer.current_points = float(customer.current_points or 0) - gift_points
-            customer.redeem_points = float(customer.redeem_points or 0) + gift_points
-            
-            # Create gift point details record
-            update_order_fields()
-            create_gift_point_entry()
-            # Save customer
-            save_customer()
-            # customer.save(ignore_permissions=False)
-          
-
-            return success("Product order approved successfully after cancellation.")
-           
-
-        # 2. Condition: Changing from Approved to Cancel
-        elif order_status == "Cancel" and previous_status == "Approved":
-            # Refund points to customer
-            customer.current_points = float(customer.current_points or 0) + gift_points
-            customer.redeem_points = float(customer.redeem_points or 0) - gift_points
-            update_order_fields()
-            save_customer()
-            return success("Approved Product Order cancelled and points refunded successfully.")
-
-        # 4. Condition: if alrerady Approved and trying to approve again 
-        elif order_status == "Approved" and previous_status == "Approved":
-            return error("Product Order is already approved.")
-
-        # 5. Condition: For Approved Order----
+         # 1. Condition: For Approved Order----
             
         # Rest of your conditions (Approved and Cancel from Pending)...
-        elif order_status == "Approved":
+        if order_status == "Approved":
             if gift_points > current_points:
                 return error("Customer Current Point Balance is not sufficient to approve this order.") 
                
@@ -345,21 +309,43 @@ def update_product_order(product_name, order_status, name, gift_points, notes):
             create_gift_point_entry()
             save_customer()
             return success("Product Order approved successfully.")
-
-        # 3. Condition: if alrerday Cancelled and trying to cancel again
-        elif order_status == "Cancel" and previous_status == "Cancel":
-            return error ("Product Order is already cancelled.")    
-
-        # 6. Condition: For Cancelled Order----
+        
+        
+        
+        
+          # 2. Condition: For Cancelled Order----
+          
         elif order_status == "Cancel":
-            customer = frappe.get_doc("Customer", order.customer_id)
-            if customer.total_pending_order_points and customer.total_pending_order_points > 0:
-                customer.total_pending_order_points = float((customer.total_pending_order_points) - gift_points)
+                customer = frappe.get_doc("Customer", order.customer_id)
+                
+                # Deduct from pending points if available
+                if customer.total_pending_order_points and customer.total_pending_order_points > 0 and customer.total_pending_order_points >= gift_points:
+                    customer.total_pending_order_points = float(customer.total_pending_order_points) - gift_points
+
                 update_order_fields()
                 save_customer()
+                order.save(ignore_permissions=True)
+
                 return success("Product Order cancelled successfully.")
-            else:
-                return success("Product Order cancelled.")
+
+        # elif order_status == "Cancel":
+        #     customer = frappe.get_doc("Customer", order.customer_id)
+        #     if customer.total_pending_order_points and customer.total_pending_order_points > 0:
+        #         customer.total_pending_order_points = float((customer.total_pending_order_points) - gift_points)
+        #         update_order_fields()
+        #         save_customer()
+        #         order.save(ignore_permissions=True)
+        #         return success("Product Order cancelled successfully.")
+
+
+        # 3. Condition: if alrerady Approved and trying to approve again 
+        elif order_status == "Approved" and previous_status == "Approved":
+            return error("Product Order is already approved.")
+
+       
+        # 4. Condition: if alrerday Cancelled and trying to cancel again
+        elif order_status == "Cancel" and previous_status == "Cancel":
+            return error ("Product Order is already cancelled.")    
                
     except Exception as e:
         frappe.log_error(frappe.get_traceback(), "update_product_order Error")

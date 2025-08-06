@@ -227,7 +227,7 @@ const ProductOrder: React.FC = () => {
             const response = await axios.put(`/api/method/reward_management.api.product_order.update_product_order`, data);
             // console.log("Response:", response.data);
     
-            if (response.data && response.data.message.success==true) {
+            if (response.data && response.data.message && response.data.message.success === true) {                
                 // console.log("Product Order updated successfully");
     
                 // Show success alert and close modal
@@ -240,7 +240,7 @@ const ProductOrder: React.FC = () => {
             }
         } catch (error) {
             console.log("Error:", error.message || error);
-            notyf.error(`Failed to update Product Order Request: ${error}`);
+            notyf.error(`Error: ${error}`);
         }
     };
     
