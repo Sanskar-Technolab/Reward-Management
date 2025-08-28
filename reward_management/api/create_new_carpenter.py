@@ -80,7 +80,7 @@ def create_new_carpainters(firstname, lastname, city, mobile):
         carpainter_by_mobile = frappe.db.exists("Customer", {"mobile_number": mobile})
 
         if carpainter_by_mobile:
-            return {"success":False,"status": "failed", "message": "Carpenter already exists. Please login into your account."}
+            return {"success":False,"status": "failed", "message": "Customer already exists. Please login into your account."}
         
         
         
@@ -126,9 +126,10 @@ def create_new_carpainters(firstname, lastname, city, mobile):
 
         return {"success":True,"status": "success", "message": "Registration submitted successfully. Your account will be activated after admin approval"}
     except Exception as e:
-        frappe.logger().error(f"Error creating Carpainter or Carpainter Registration: {str(e)}")
-        return {"status": "failed", "message": str(e)}
-    
+        frappe.log_error(f"Error creating Carpainter or Carpainter Registration: {str(e)}")
+        # frappe.logger().error(f"Error creating Carpainter or Carpainter Registration: {str(e)}")
+        return {"success": False, "status": "failed", "message": str(e)}
+
 
 @frappe.whitelist(allow_guest=True)
 def check_carpainter_registration(mobile_no):
