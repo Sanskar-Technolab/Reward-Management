@@ -151,7 +151,7 @@
  "image_field": "image",
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-07-29 14:45:49.141003",
+ "modified": "2025-09-12 12:41:29.270842",
  "modified_by": "Administrator",
  "module": "Reward Management",
  "name": "Customer",
@@ -175,5 +175,7 @@
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
- "track_changes": 1
+ "track_changes": 1,
+ "track_seen": 1,
+ "track_views": 1
 }
