@@ -17,6 +17,21 @@
  {
   "docstatus": 0,
   "doctype": "Role Profile",
+  "modified": "2024-08-27 13:08:40.347130",
+  "name": "Customer",
+  "role_profile": "Customer",
+  "roles": [
+   {
+    "parent": "Customer",
+    "parentfield": "roles",
+    "parenttype": "Role Profile",
+    "role": "Customer"
+   }
+  ]
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Role Profile",
   "modified": "2024-09-04 12:54:19.291789",
   "name": "Admin",
   "role_profile": "Admin",
@@ -38,21 +53,6 @@
     "parentfield": "roles",
     "parenttype": "Role Profile",
     "role": "Inbox User"
-   }
-  ]
- },
- {
-  "docstatus": 0,
-  "doctype": "Role Profile",
-  "modified": "2024-08-27 13:08:40.347130",
-  "name": "Customer",
-  "role_profile": "Customer",
-  "roles": [
-   {
-    "parent": "Customer",
-    "parentfield": "roles",
-    "parenttype": "Role Profile",
-    "role": "Customer"
    }
   ]
  }

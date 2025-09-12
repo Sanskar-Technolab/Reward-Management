@@ -328,30 +328,37 @@ def update_customer_points(points):
     user_mobile_no = user_info.mobile_no
 
     try:
-        # Convert points to integer
-        points = int(points)
-    except ValueError:
-            return {"success": False,"message":"Invalid points value"}
+        return{
+            "success":False,
+            "message":"To scan the QR code, please update the app to the latest version."
+        }
+    #     # Convert points to integer
+    #     points = int(points)
+    # except ValueError:
+    #         return {"success": False,"message":"Invalid points value"}
 
-        # frappe.throw(_("Invalid points value"))
+    #     # frappe.throw(_("Invalid points value"))
 
-    # Fetch the customer record using the mobile number
-    customer = frappe.get_list("Customer", filters={'mobile_number': user_mobile_no}, fields=['name', 'total_points','current_points'])
-    if not customer:
-         return {"success": False,"message":"Customer not found"}
-        # frappe.throw(_("Customer not found"))
+    # # Fetch the customer record using the mobile number
+    # customer = frappe.get_list("Customer", filters={'mobile_number': user_mobile_no}, fields=['name', 'total_points','current_points'])
+    # if not customer:
+    #      return {"success": False,"message":"Customer not found"}
+    #     # frappe.throw(_("Customer not found"))
 
-    # Assuming there's only one customer with this mobile number
-    customer_doc = frappe.get_doc("Customer", customer[0].name)
+    # # Assuming there's only one customer with this mobile number
+    # customer_doc = frappe.get_doc("Customer", customer[0].name)
 
-    # Update the total points
-    customer_doc.total_points  += points
-    customer_doc.current_points += points
-    customer_doc.save()
+    # # Update the total points
+    # customer_doc.total_points  += points
+    # customer_doc.current_points += points
+    # customer_doc.save()
 
-    return {"success": True,
-            "message":"update customer points successfully."
-            }
+    # return {"success": True,
+    #         "message":"update customer points successfully."
+    #         }
+    except Exception as e:
+        frappe.log_error("Error in Updating Customer Points",str(e))
+        return {"success":False,"error": f"Server error: {e}"}
 
 
 
@@ -402,41 +409,47 @@ def update_customer_points(points):
 
 # update customer point with create new customer point detail document----------------
 @frappe.whitelist()
-def update_carpainter_points(product_name, points, earned_amount):
+def update_carpainter_points(product_name=None, points=None, earned_amount=None):
     try:
         logged_in_user = frappe.session.user
         user_info = frappe.get_doc("User", logged_in_user)
         user_mobile_no = user_info.mobile_no
+        
+        
+        return{
+            "success":False,
+            "message":"To scan the QR code, please update the app to the latest version."
+        }
 
         # Convert to float to ensure valid numeric values
-        points = float(points)
-        earned_amount = float(earned_amount)
+        # points = float(points)
+        # earned_amount = float(earned_amount)
 
-        # Fetch the Customer (Carpainter) record using the mobile number
-        carpainter = frappe.get_list("Customer", filters={'mobile_number': user_mobile_no}, fields=['name'])
+        # # Fetch the Customer (Carpainter) record using the mobile number
+        # carpainter = frappe.get_list("Customer", filters={'mobile_number': user_mobile_no}, fields=['name'])
 
-        if not carpainter:
-            return {"success": False, "message": "Customer not found"}
+        # if not carpainter:
+        #     return {"success": False, "message": "Customer not found"}
 
-        customer_id = carpainter[0].name
+        # customer_id = carpainter[0].name
 
-        # Create a new Customer Product Point Detail document
-        new_point_doc = frappe.get_doc({
-            "doctype": "Customer Product Point Detail",
-            "customer_id": customer_id,
-            "product_id": product_name,
-            "earned_points": points,
-            "earned_amount": earned_amount,
-            "date": frappe.utils.nowdate(),
-            "time": frappe.utils.now_datetime().strftime('%H:%M:%S'),
-        })
+        # # Create a new Customer Product Point Detail document
+        # new_point_doc = frappe.get_doc({
+        #     "doctype": "Customer Product Point Detail",
+        #     "customer_id": customer_id,
+        #     "product_id": product_name,
+        #     "earned_points": points,
+        #     "earned_amount": earned_amount,
+        #     "date": frappe.utils.nowdate(),
+        #     "time": frappe.utils.now_datetime().strftime('%H:%M:%S'),
+        # })
 
-        new_point_doc.insert(ignore_permissions=False) 
+        # new_point_doc.insert(ignore_permissions=False) 
 
-        return {
-            "success": True,
-            "message": "Customer Point Updated Successfully."
-        }
+        # return {
+        #     "success": True,
+        #     "message": "Customer Point Updated Successfully."
+        # }
 
     except Exception as e:
         frappe.log_error(frappe.get_traceback(), f"Error in Updating Customer Points: {e}")
