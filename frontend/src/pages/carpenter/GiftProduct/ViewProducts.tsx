@@ -14,13 +14,13 @@ const ViewProduct = () => {
   const navigate = useNavigate(); 
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
   const [currentPoints, setCurrentPoints] = useState(0);  // Store customer points
 
   // Initialize Notyf for notifications
   const notyf = new Notyf({
     duration: 3000,  
-    position: { x: 'center', y: 'top' }, 
+    position: { x: 'right', y: 'top' }, 
   });
 
 
@@ -67,11 +67,9 @@ const ViewProduct = () => {
           if (response.data.message.status === 'success') {
             if (Array.isArray(productData) && productData.length > 0) {
               setProducts(productData);
-            } else {
-              setError('No products available.');
-            }
+            } 
           } else {
-            setError('API returned an error status.');
+            console.log('API returned an error status.',response);
           }
         } catch (err) {
           setError(err.message || 'Failed to fetch products.');
@@ -95,7 +93,7 @@ const ViewProduct = () => {
           setError('No logged-in user found.');
         }
       } catch (error) {
-        console.error('Error fetching logged user data:', error);
+        console.log('Error fetching logged user data:', error);
         setError('Failed to fetch user data.');
       }
     };
@@ -123,28 +121,37 @@ const ViewProduct = () => {
     <>
       <Pageheader 
         currentpage={"Products"} 
-        activepage={"/gift-products"} 
-        activepagename='Products' 
+        // activepage={"/gift-products"} 
+        // activepagename='Products' 
       />
       <div className="grid grid-cols-12 gap-x-6 pb-10">
         <div className="xxl:col-span-12 xl:col-span-12 lg:col-span-12 col-span-12">
           <div className="grid grid-cols-12 gap-x-6">
             <div className="xl:col-span-12 col-span-12">
               <div className="grid grid-cols-12 xl:gap-y-0 gap-4">
-                {products.map((product, index) => (
-                  <div
-                    key={index}
-                    className="xxxl:col-span-2 xxl:col-span-3 xl:col-span-4 lg:col-span-6 md:col-span-6 sm:col-span-12 col-span-12 h-auto"
-                  >
-                    <ProductCard
-                      productImage={product.gift_product_images?.[0]?.gift_product_image || '/placeholder-image.png'}
-                      productName={product.gift_product_name}
-                      rewardPoints={product.points}
-                      onClick={() => handleRedeemClick(product.gift_product_name, product.points)} // Pass pointsRequired as second argument
-                    />
-                  </div>
-                ))}
-              </div>
+                  {products.length > 0 ? (
+                    products.map((product, index) => (
+                      <div
+                        key={index}
+                        className="xxxl:col-span-2 xxl:col-span-3 xl:col-span-4 lg:col-span-6 md:col-span-6 sm:col-span-12 col-span-12 h-auto"
+                      >
+                        <ProductCard
+                          productImage={product.gift_product_images?.[0]?.gift_product_image || '/placeholder-image.png'}
+                          productName={product.gift_product_name}
+                          rewardPoints={product.points}
+                          onClick={() => handleRedeemClick(product.gift_product_name, product.points)}
+                        />
+                      </div>
+                    ))
+                  ) : (
+                    <div className="col-span-12">
+                      <p className="text-center text-gray-500 mt-4">
+                        No products available.
+                      </p>
+                    </div>
+                  )}
+                </div>
+
             </div>
           </div>
         </div>

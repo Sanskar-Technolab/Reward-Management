@@ -54,7 +54,7 @@ const notyf = new Notyf({
 
 const FAQDashboard: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage] = useState(5);
+    const [itemsPerPage] = useState(10);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [modalTitle, setModalTitle] = useState('');
     const [question, setQuestion] = useState('');
@@ -319,9 +319,9 @@ const FAQDashboard: React.FC = () => {
         <Fragment>
               <Pageheader 
                 currentpage={"FAQ"} 
-                activepage={"/frequently-asked-question"} 
+                // activepage={"/frequently-asked-question"} 
                 
-                activepagename='FAQ' 
+                // activepagename='FAQ' 
                
             />
             {/* <Pageheader currentpage="FAQ" activepage="Faq's" mainpage="Faq's" /> */}

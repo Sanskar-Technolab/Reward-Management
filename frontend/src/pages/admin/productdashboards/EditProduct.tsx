@@ -31,6 +31,7 @@ interface PointConversion {
     reward_point: number;
     payout_amount: number;
     from_date: Date;
+    idx :number;
 }
 
 const notyf = new Notyf({
@@ -108,6 +109,7 @@ const EditProduct: React.FC = () => {
         try {
             const response = await axios.get(`/api/resource/Product/${productId}`);
             const productData = response.data.data;
+            // console.log("Product Data:", productData);
             const rewardPointConversionRateData =
                 productData.reward_point_conversion_rate || [];
             return rewardPointConversionRateData;
@@ -162,8 +164,10 @@ const EditProduct: React.FC = () => {
                     // console.log("Edit Product Data", response);
                     const product = response.data.message.message;
 
+                    // console.log("reward points:",product.reward_points);
+
                     setProductName(product.product_name || "");
-                    setRewardPoints(product.reward_points || "");
+                    setRewardPoints(product.reward_points || 0);
                     setproductPrice(product.product_price || "");
                     setProductDescription(product.discription || "");
                     setProductCategory(product.category || "");
@@ -176,7 +180,9 @@ const EditProduct: React.FC = () => {
                     setExistingImages(images);
 
                     // Set child table data
-                    setChildTableData(product.reward_point_conversion_rate || []);
+                    // setChildTableData(product.reward_point_conversion_rate || []);
+                    setChildTableData(product.reward_point_conversion_rate );
+
                 } else {
                     console.log("Product details not found in response.",response);
                 }
@@ -313,27 +319,60 @@ const EditProduct: React.FC = () => {
             };
 
             // Use PUT to update the product and include the new child row
-            await axios.put(`/api/resource/Product/${productId}`, data, {
+            const updateresponse = await axios.put(`/api/resource/Product/${productId}`, data, {
                 headers: {
                     "Content-Type": "application/json",
                 },
             });
 
-            setShowSuccessAlert(true);
-            setAlertMessage('Product updated successfully!');
-            if (showSuccessAlert) {
-                const timer = setTimeout(() => {
-                    setShowSuccessAlert(false);
-
-
-                    navigate("/product-master");
-                }, 3000);
-                return () => clearTimeout(timer);
+            if (updateresponse && updateresponse.status === 200) {
+                console.log("update response data", updateresponse);
+        
+                const productName = updateresponse.data.data.name; 
+                const rewardPoints = data.reward_points; 
+        
+                await axios.get(`/api/method/reward_management.api.product_master.update_linked_doc`, {
+                    params: {
+                        product: productName,
+                        reward_point: rewardPoints,
+                    },
+                });
+                // if(doc){
+                //     console.log("qr data update data",doc);
+                // }
+        
+                setShowSuccessAlert(true);
+                setAlertMessage('Product updated successfully!');
+                
+                if (showSuccessAlert) {
+                    const timer = setTimeout(() => {
+                        setShowSuccessAlert(false);
+                        navigate("/product-master");
+                    }, 3000);
+                    return () => clearTimeout(timer);
+                }
             }
         } catch (error) {
-            console.log("Error adding new row to child table:", error);
-            notyf.error("An error occurred while adding the new row. Please try again.");
+            console.log("Error updating product or adding new row:", error);
+            notyf.error("An error occurred while updating the product. Please try again.");
         }
+        
+
+    //         setShowSuccessAlert(true);
+    //         setAlertMessage('Product updated successfully!');
+    //         if (showSuccessAlert) {
+    //             const timer = setTimeout(() => {
+    //                 setShowSuccessAlert(false);
+
+
+    //                 navigate("/product-master");
+    //             }, 3000);
+    //             return () => clearTimeout(timer);
+    //         }
+    //     } catch (error) {
+    //         console.log("Error adding new row to child table:", error);
+    //         notyf.error("An error occurred while adding the new row. Please try again.");
+    //     }
     };
 
     const handleCloseModal = () => {
@@ -345,7 +384,7 @@ const EditProduct: React.FC = () => {
     // Other states: productName, productPrice, etc.
 
     const handleTabChange = (tab: any) => {
-        setActiveTab(tab); // Change active tab
+        setActiveTab(tab); 
     };
 
     const formatDate = (date: Date) => {
@@ -389,68 +428,92 @@ const EditProduct: React.FC = () => {
     };
 
 
+    // const deleteMatchedRow = async (itemToDelete: any) => {
+    //     const { product_name, reward_point, payout_amount, from_date } = itemToDelete;
 
+
+    //     try {
+    //         // Convert from_date from 'dd-mm-yyyy' to 'yyyy-mm-dd' for the comparison
+    //         const dateParts = from_date.split('-');
+    //         if (dateParts.length !== 3) {
+    //             throw new Error("Invalid date format. Expected dd-mm-yyyy: " + from_date);
+    //         }
+    //         const fromDate = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`; // Convert to 'yyyy-mm-dd'
+
+    //         // Fetch the existing product data first
+    //         const response = await axios.get(`/api/resource/Product/${productId}`);
+    //         const productData = response.data.data;
+
+    //         // Filter out the row that matches the criteria
+    //         const updatedChildTable = productData.reward_point_conversion_rate.filter(
+    //             (childItem: any) => {
+    //                 // Convert child's from_date from 'yyyy-mm-dd' to a comparable format
+    //                 const childDateParts = childItem.from_date.split('-');
+    //                 if (childDateParts.length !== 3) {
+    //                     throw new Error("Invalid childItem.from_date: " + childItem.from_date);
+    //                 }
+    //                 const childDate = `${childDateParts[0]}-${childDateParts[1]}-${childDateParts[2]}`; // Ensure it's 'yyyy-mm-dd' for comparison
+
+    //                 return !(
+    //                     childItem.product_name === product_name &&
+    //                     childItem.reward_point === reward_point &&
+    //                     childItem.payout_amount === payout_amount &&
+    //                     childDate === fromDate // Compare dates as 'yyyy-mm-dd'
+    //                 );
+    //             }
+    //         );
+
+    //         // Prepare data for the product update
+    //         const data = {
+    //             product_name: productData.product_name,
+    //             category: productData.category,
+    //             reward_points: productData.reward_points,
+    //             product_price: productData.product_price,
+    //             discription: productData.discription,
+    //             product_image: productData.product_image,
+    //             reward_point_conversion_rate: updatedChildTable,
+    //         };
+
+    //         // Use PUT to update the product and remove the matched row
+    //         await axios.put(`/api/resource/Product/${productId}`, data, {
+    //             headers: {
+    //                 "Content-Type": "application/json",
+    //             },
+    //         });
+
+    //         setShowSuccessAlert(true);
+    //         setAlertMessage('Point Conversion deleted successfully!');
+
+    //     } catch (error) {
+    //         console.log("Error deleting matched row:", error);
+    //     }
+    // };
     const deleteMatchedRow = async (itemToDelete: any) => {
-        const { product_name, reward_point, payout_amount, from_date } = itemToDelete;
-
-
+        const { product_name, from_date, idx } = itemToDelete;
+    
         try {
-            // Convert from_date from 'dd-mm-yyyy' to 'yyyy-mm-dd' for the comparison
             const dateParts = from_date.split('-');
             if (dateParts.length !== 3) {
                 throw new Error("Invalid date format. Expected dd-mm-yyyy: " + from_date);
             }
-            const fromDate = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`; // Convert to 'yyyy-mm-dd'
-
-            // Fetch the existing product data first
-            const response = await axios.get(`/api/resource/Product/${productId}`);
-            const productData = response.data.data;
-
-            // Filter out the row that matches the criteria
-            const updatedChildTable = productData.reward_point_conversion_rate.filter(
-                (childItem: any) => {
-                    // Convert child's from_date from 'yyyy-mm-dd' to a comparable format
-                    const childDateParts = childItem.from_date.split('-');
-                    if (childDateParts.length !== 3) {
-                        throw new Error("Invalid childItem.from_date: " + childItem.from_date);
-                    }
-                    const childDate = `${childDateParts[0]}-${childDateParts[1]}-${childDateParts[2]}`; // Ensure it's 'yyyy-mm-dd' for comparison
-
-                    return !(
-                        childItem.product_name === product_name &&
-                        childItem.reward_point === reward_point &&
-                        childItem.payout_amount === payout_amount &&
-                        childDate === fromDate // Compare dates as 'yyyy-mm-dd'
-                    );
-                }
-            );
-
-            // Prepare data for the product update
-            const data = {
-                product_name: productData.product_name,
-                category: productData.category,
-                reward_points: productData.reward_points,
-                product_price: productData.product_price,
-                discription: productData.discription,
-                product_image: productData.product_image,
-                reward_point_conversion_rate: updatedChildTable,
-            };
-
-            // Use PUT to update the product and remove the matched row
-            await axios.put(`/api/resource/Product/${productId}`, data, {
-                headers: {
-                    "Content-Type": "application/json",
-                },
+            const fromDate = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`;
+    
+            const updatedChildTable = await axios.post('/api/method/reward_management.api.product_master.delete_reward_point_row_by_index', {
+                product_id: product_name,
+                row_index: idx,  // This is Frappe's idx
+                from_date: fromDate
             });
-
+    
+            console.log("updated child table data", updatedChildTable.data);
+    
             setShowSuccessAlert(true);
             setAlertMessage('Point Conversion deleted successfully!');
-
+    
         } catch (error) {
             console.log("Error deleting matched row:", error);
         }
     };
-
+    
 
     const handleDeleteAmount = (item: PointConversion) => {
         // Save the item to be deleted

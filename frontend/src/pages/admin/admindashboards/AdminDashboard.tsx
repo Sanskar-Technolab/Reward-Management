@@ -1,44 +1,27 @@
 import '../../../assets/css/style.css';
 import '../../../assets/css/pages/admindashboard.css';
 import React, { Fragment, useState, useEffect } from "react";
-import { useFrappeGetDocList, useFrappeGetCall } from 'frappe-react-sdk';
-
+import { useFrappeGetCall } from 'frappe-react-sdk';
 
 interface Carpenter {
     name: string;
-    full_name?: string;
+    full_name: string;
     mobile_number: string;
     city: string;
-    total_points?: number;
+    total_points: number;
 }
-interface User {
-    name: string;
-    mobile_no: string;
-}
-
 
 const AdminDashboard: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(5);
 
-    const { data: userData } = useFrappeGetDocList<User>('User', {
-        fields: ['mobile_no','name']
-    });
-
-
-    const { data: carpentersData } = useFrappeGetDocList<Carpenter>('Customer', {
-        fields: ['name', 'full_name', 'mobile_number', 'city', 'total_points'],
-        page: currentPage,
-        pageSize: itemsPerPage
-    });
-
-    
     const { data: productsRes } = useFrappeGetCall('reward_management.api.admin_dashboards_cards.total_product');
     const { data: redemptionsRes } = useFrappeGetCall('reward_management.api.admin_dashboards_cards.count_redemptions');
     const { data: pendingRes } = useFrappeGetCall('reward_management.api.admin_dashboards_cards.count_redeem_request');
     const { data: qrPointsRes } = useFrappeGetCall('reward_management.api.admin_dashboards_cards.total_points_of_qr_code');
     const { data: pointsRes } = useFrappeGetCall('reward_management.api.admin_dashboards_cards.get_total_points_data');
     const { data: carpentersRes } = useFrappeGetCall('reward_management.api.admin_dashboards_cards.count_total_customers');
+    const { data: top10CustomersRes } = useFrappeGetCall('reward_management.api.admin_dashboards_cards.top_ten_customers');
 
     const [productCount, setProductCount] = useState<number>(0);
     const [redemptionsCount, setRedemptionsCount] = useState<number>(0);
@@ -48,54 +31,62 @@ const AdminDashboard: React.FC = () => {
     const [countTotalRedeemedpoints, setCountTotalRedeemedpoints] = useState<number>(0);
     const [countTotalAvailablePoints, setCountTotalAvailablePoints] = useState<number>(0);
     const [countTotalRegisteredCarpenter, setCountTotalRegisteredCarpenter] = useState<number>(0);
+    const [top10Customers, setTop10Customers] = useState<Carpenter[]>([]);
+    const [loading, setLoading] = useState<boolean>(true);
 
     useEffect(() => {
-        document.title='Admin Dashboard';
-        if (productsRes) setProductCount(productsRes.message);
-        if (redemptionsRes) setRedemptionsCount(redemptionsRes.message);
-        if (pendingRes) setPendingRedeemptionCount(pendingRes.message);
-        if (qrPointsRes) setTotalGeneratedQrPoint(qrPointsRes.message.total_points);
+        document.title = 'Admin Dashboard';
+        
+        // Set all the dashboard card values
+        if (productsRes) setProductCount(productsRes.message || 0);
+        if (redemptionsRes) setRedemptionsCount(redemptionsRes.message || 0);
+        if (pendingRes) setPendingRedeemptionCount(pendingRes.message || 0);
+        if (qrPointsRes) setTotalGeneratedQrPoint(qrPointsRes.message?.total_points || 0);
         if (pointsRes) {
-            const pointsData = pointsRes.message;
+            const pointsData = pointsRes.message || {};
             setCountTotalScannedPoint(pointsData.total_points || 0);
             setCountTotalRedeemedpoints(pointsData.total_redeem_points || 0);
             setCountTotalAvailablePoints(pointsData.total_available_points || 0);
         }
-        if (carpentersRes) setCountTotalRegisteredCarpenter(carpentersRes.message);
-    }, [productsRes, redemptionsRes, pendingRes, qrPointsRes, pointsRes, carpentersRes]);
+        if (carpentersRes) setCountTotalRegisteredCarpenter(carpentersRes.message || 0);
 
-   // Extract mobile numbers from User data
-   const validMobileNumbers = userData?.map(user => user.mobile_no) || [];
+        // Handle top 10 customers data
+        if (top10CustomersRes) {
+            try {
+                const response = top10CustomersRes.message;
+                if (response && response.success && response.data) {
+                    const customers = response.data.map((customer: any) => ({
+                        name: customer.name || '',
+                        full_name: customer.full_name || '',
+                        mobile_number: customer.mobile_number || '',
+                        city: customer.city || '',
+                        total_points: customer.total_points || 0
+                    }));
+                    setTop10Customers(customers);
+                } else {
+                    setTop10Customers([]);
+                }
+            } catch (error) {
+                console.log("Error processing top customers data:", error);
+                setTop10Customers([]);
+            } finally {
+                setLoading(false);
+            }
+        }
+    }, [productsRes, redemptionsRes, pendingRes, qrPointsRes, pointsRes, carpentersRes, top10CustomersRes]);
 
-   // Filter Carpenters Data
-   const filteredCarpenters = carpentersData?.filter(carpenter => validMobileNumbers.includes(carpenter.mobile_number)) || [];
+    // Pagination Logic
+    const totalItems = top10Customers.length;
+    const totalPages = Math.ceil(totalItems / itemsPerPage);
+    const currentItems = top10Customers.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
-   // Sort Carpenters by total_points in descending order
-   const sortedCarpenters = filteredCarpenters.sort((a, b) => (b.total_points || 0) - (a.total_points || 0));
-
-   // Get Top 10 Carpenters
-   const top10Carpenters = sortedCarpenters.slice(0, 10);
-
-   // Pagination Logic
-   const totalItems = top10Carpenters.length;
-   const totalPages = Math.ceil(totalItems / itemsPerPage);
-
-   const currentItems = top10Carpenters.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
-
-   const handlePrevPage = () => {
-       if (currentPage > 1) setCurrentPage(currentPage - 1);
-   };
-
-   const handleNextPage = () => {
-       if (currentPage < totalPages) setCurrentPage(currentPage + 1);
-   };
-
-   const handlePageChange = (pageNumber: number) => {
-       if (pageNumber >= 1 && pageNumber <= totalPages) {
-           setCurrentPage(pageNumber);
-       }
-   };
-
+    const handlePrevPage = () => currentPage > 1 && setCurrentPage(currentPage - 1);
+    const handleNextPage = () => currentPage < totalPages && setCurrentPage(currentPage + 1);
+    const handlePageChange = (pageNumber: number) => {
+        if (pageNumber >= 1 && pageNumber <= totalPages) {
+            setCurrentPage(pageNumber);
+        }
+    };
 
     return (
         <Fragment>
@@ -107,6 +98,7 @@ const AdminDashboard: React.FC = () => {
                     </p>
                 </div>
             </div>
+
             {/* Number Card Section */}
             <div className="grid grid-cols-12 gap-x-6 mb-4">
                 <div className="xxl:col-span-12 xl:col-span-12 lg:col-span-12 col-span-12">
@@ -169,6 +161,7 @@ const AdminDashboard: React.FC = () => {
                 </div>
             </div>
         
+            {/* Top 10 Customers Table */}
             <div className="grid grid-cols-12 gap-x-6 bg-white mt-5 rounded-lg shadow-lg">
                 <div className="xl:col-span-12 col-span-12">
                     <div className="">
@@ -191,65 +184,85 @@ const AdminDashboard: React.FC = () => {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {currentItems.length > 0 ? (
-                                            currentItems.map((carpenter, index) => (
+                                        {loading ? (
+                                            <tr>
+                                                <td colSpan={6} className="text-center p-3 border border-gray-300">Loading...</td>
+                                            </tr>
+                                        ) : currentItems.length > 0 ? (
+                                            currentItems.map((customer, index) => (
                                                 <tr key={index}>
-                                                    <td className="text-start p-3 border border-gray-300  text-defaultsize font-medium text-defaulttextcolor ">{(currentPage - 1) * itemsPerPage + index + 1}</td>
-                                                    <td className="text-start p-3 border border-gray-300 text-primary text-defaultsize font-semibold">{carpenter.name}</td>
-                                                    <td className="text-start p-3 border border-gray-300  text-defaultsize font-medium text-defaulttextcolor ">{carpenter.full_name}</td>
-                                                    <td className="text-start p-3 border border-gray-300  text-defaultsize font-medium text-defaulttextcolor ">{carpenter.mobile_number}</td>
-                                                    <td className="text-start p-3 border border-gray-300  text-defaultsize font-medium text-defaulttextcolor ">{carpenter.city}</td>
-                                                    <td className="text-start p-3 border border-gray-300  text-defaultsize font-medium text-defaulttextcolor ">{carpenter.total_points}</td>
+                                                    <td className="text-start p-3 border border-gray-300 text-defaultsize font-medium text-defaulttextcolor">
+                                                        {(currentPage - 1) * itemsPerPage + index + 1}
+                                                    </td>
+                                                    <td className="text-start p-3 border border-gray-300 text-primary text-defaultsize font-semibold">
+                                                        {customer.name}
+                                                    </td>
+                                                    <td className="text-start p-3 border border-gray-300 text-defaultsize font-medium text-defaulttextcolor">
+                                                        {customer.full_name}
+                                                    </td>
+                                                    <td className="text-start p-3 border border-gray-300 text-defaultsize font-medium text-defaulttextcolor">
+                                                        {customer.mobile_number}
+                                                    </td>
+                                                    <td className="text-start p-3 border border-gray-300 text-defaultsize font-medium text-defaulttextcolor">
+                                                        {customer.city}
+                                                    </td>
+                                                    <td className="text-start p-3 border border-gray-300 text-defaultsize font-medium text-defaulttextcolor">
+                                                        {customer.total_points}
+                                                    </td>
                                                 </tr>
                                             ))
                                         ) : (
                                             <tr>
-                                                <td colSpan={6} className="text-center p-3 border border-gray-300">No data available</td>
+                                                <td colSpan={6} className="text-center p-3 border border-gray-300">
+                                                    No customers found
+                                                </td>
                                             </tr>
                                         )}
                                     </tbody>
                                 </table>
-                                <div className="box-footer p-4 border-t">
-                                    <div className="sm:flex items-center">
-                                        <div className="text-defaulttextcolor dark:text-defaulttextcolor/70 font-normal text-defaultsize">
-                                            Showing {currentItems.length} Entries <i className="bi bi-arrow-right ms-2 font-semibold"></i>
-                                        </div>
-                                        <div className="ms-auto">
-                                            <nav aria-label="Page navigation" className="pagination-style-4">
-                                                <ul className="ti-pagination flex items-center px-3 mb-0">
-                                                    <li className="page-item px-2">
-                                                        <button
-                                                            className="page-link"
-                                                            onClick={handlePrevPage}
-                                                            disabled={currentPage === 1}
-                                                        >
-                                                            Prev
-                                                        </button>
-                                                    </li>
-                                                    {Array.from({ length: totalPages }, (_, index) => (
-                                                        <li className="page-item px-2" key={index + 1}>
+                                {!loading && totalPages > 1 && (
+                                    <div className="box-footer p-4 border-t">
+                                        <div className="sm:flex items-center">
+                                            <div className="text-defaulttextcolor dark:text-defaulttextcolor/70 font-normal text-defaultsize">
+                                                Showing {currentItems.length} of {top10Customers.length} Entries <i className="bi bi-arrow-right ms-2 font-semibold"></i>
+                                            </div>
+                                            <div className="ms-auto">
+                                                <nav aria-label="Page navigation" className="pagination-style-4">
+                                                    <ul className="ti-pagination flex items-center px-3 mb-0">
+                                                        <li className="page-item px-2">
                                                             <button
-                                                                className={`page-link px-2 rounded-md ${currentPage === index + 1 ? 'text-white bg-primary' : 'bg-gray-200'}`}
-                                                                onClick={() => handlePageChange(index + 1)}
+                                                                className="page-link"
+                                                                onClick={handlePrevPage}
+                                                                disabled={currentPage === 1}
                                                             >
-                                                                {index + 1}
+                                                                Prev
                                                             </button>
                                                         </li>
-                                                    ))}
-                                                    <li className="page-item px-2">
-                                                        <button
-                                                            className="page-link"
-                                                            onClick={handleNextPage}
-                                                            disabled={currentPage === totalPages}
-                                                        >
-                                                            Next
-                                                        </button>
-                                                    </li>
-                                                </ul>
-                                            </nav>
+                                                        {Array.from({ length: totalPages }, (_, index) => (
+                                                            <li className="page-item px-2" key={index + 1}>
+                                                                <button
+                                                                    className={`page-link px-2 rounded-md ${currentPage === index + 1 ? 'text-white bg-primary' : 'bg-gray-200'}`}
+                                                                    onClick={() => handlePageChange(index + 1)}
+                                                                >
+                                                                    {index + 1}
+                                                                </button>
+                                                            </li>
+                                                        ))}
+                                                        <li className="page-item px-2">
+                                                            <button
+                                                                className="page-link"
+                                                                onClick={handleNextPage}
+                                                                disabled={currentPage === totalPages}
+                                                            >
+                                                                Next
+                                                            </button>
+                                                        </li>
+                                                    </ul>
+                                                </nav>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+                                )}
                             </div>
                         </div>
                     </div>

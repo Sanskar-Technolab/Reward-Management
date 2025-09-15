@@ -8,6 +8,7 @@ import { Theme } from '@radix-ui/themes';
 import Header from './components/common/header';
 import Sidebar from './components/common/sidebar';
 import Login from './pages/auth/Login';
+import ForgetPassword from './pages/auth/ForgetPassword.tsx';
 import CusromerProducts from './pages/customer/CustomerProduct.tsx'
 import CustomerProductDetails from './pages/customer/ViewProduct.tsx'
 import PrivateRoutes from './routes/private-routes';
@@ -81,7 +82,9 @@ function App() {
       <div className={`page layout ${isSidebarActive ? 'sidebar-narrow' : 'sidebar-wide'}`}>
               <Header toggleSidebar={toggleSidebar} isSidebarActive={isSidebarActive} />
               <Sidebar isSidebarActive={isSidebarActive} />
-              <div className='content main-index' style={{ marginInlineStart: isSidebarActive ? '5rem' : '15rem' }}>
+              <div className='content main-index' 
+              style={{ marginInlineStart: isSidebarActive ? '5rem' : '15rem' }}
+              >
                 <div className='main-content bg-body-bg'>
                   <Outlet />
                 </div>
@@ -154,11 +157,13 @@ fetchWebsiteSettings();
     createRoutesFromElements(
       <>
         <Route path='/' element={<Login />} />
+        <Route path='forgot-password' element ={<ForgetPassword/>}/>
         <Route path='/qr-reward-guide' element={<QRRewardGuide />} />
         <Route path='/reward-gift-guide' element={<QRGiftInstruction/>}/>
         <Route path='/customer-product' element={<CusromerProducts />} />
         <Route path='/redeem-point-guide' element={<RedeemPointGuide/>}/>
         <Route path='/view-product-details/:product_id' element={<CustomerProductDetails/>} />
+        
         <Route element={<AppLayout/>}>
         <Route path='/' element={<PrivateRoutes/>}>
           <Route path='/admin-profile' element={<AdminProfile />} />

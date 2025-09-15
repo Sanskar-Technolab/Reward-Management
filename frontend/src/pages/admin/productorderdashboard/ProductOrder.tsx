@@ -29,6 +29,7 @@ interface ProductOrder {
     order_time?:string;
     approved_date?:string;
     approved_time?:string;
+    notes?: string;
 }
 
 const notyf = new Notyf({
@@ -53,7 +54,7 @@ const notyf = new Notyf({
 
 const ProductOrder: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage] = useState(5);
+    const [itemsPerPage] = useState(10);
     const [searchQuery, setSearchQuery] = useState('');
     const [fromDate, setFromDate] = useState<Date | null>(null);
     const [toDate, setToDate] = useState<Date | null>(null);
@@ -77,7 +78,7 @@ const ProductOrder: React.FC = () => {
 
 
     const { data: orderData, error } = useFrappeGetDocList<ProductOrder>('Product Order', {
-        fields: ['name', 'product_id', 'product_image', 'mobile_number', 'full_name', 'pincode', 'product_name', 'customer_id', 'customer_email', 'address', 'city', 'order_date','gift_points','order_status'],
+        fields: ['name', 'product_id', 'product_image', 'mobile_number', 'full_name', 'pincode', 'product_name', 'customer_id', 'customer_email', 'address', 'city', 'order_date','gift_points','order_status','notes'],
         orderBy: {
             field: 'creation',
             order: 'desc',
@@ -129,15 +130,6 @@ const ProductOrder: React.FC = () => {
     //     return `${day}-${month}-${year}`;
     // };
 
-    // const formattedProductOrderData = orderData?.map(order => ({
-    //     ...order,
-    //     transfer_date: order.order_date ? formatDate(order.order_date) : '',
-    //     // product_image_display: order.product_image ? (
-    //     //     <img src={order.product_image} alt="Product" style={{ width: '100px', height: 'auto' }} />
-    //     // ) : (
-    //     //     'No Image' 
-    //     // ),
-    // })) || [];
 
     const formatDateToMySQL = (dateString: string) => {
         const [year, month, day] = dateString.split('-').map(Number);
@@ -148,12 +140,10 @@ const ProductOrder: React.FC = () => {
 
     const parseDateString = (dateString: string): Date | null => {
         if (typeof dateString !== 'string') {
-            // console.error("Expected a string, but received:", dateString);
             return null;
         }
         const parts = dateString.split('-');
         if (parts.length !== 3) {
-            // console.error("Invalid date format:", dateString);
             return null;
         }
         const day = parseInt(parts[0], 10);
@@ -162,14 +152,7 @@ const ProductOrder: React.FC = () => {
         return new Date(year, month, day);
     };
 
-    // const formatDateToISO = (dateString: string) => {
-    //     const date = new Date(dateString);
-    //     const year = date.getFullYear();
-    //     const month = (`0${date.getMonth() + 1}`).slice(-2);
-    //     const day = (`0${date.getDate()}`).slice(-2);
-    //     return `${year}-${month}-${day}`;
-    // };
-    
+  
 
 
     const formattedProductOrderData = orderData?.map(order => ({
@@ -236,13 +219,15 @@ const ProductOrder: React.FC = () => {
             product_name: selectedOrderRequest.product_name,
             order_status: selectedOrderRequest.order_status,
             gift_points: selectedOrderRequest.gift_points,
+            notes : selectedOrderRequest.notes, 
         };
     
         try {
             // Make the PUT request to update the Product Order
             const response = await axios.put(`/api/method/reward_management.api.product_order.update_product_order`, data);
+            // console.log("Response:", response.data);
     
-            if (response.status === 200) {
+            if (response.data && response.data.message && response.data.message.success === true) {                
                 // console.log("Product Order updated successfully");
     
                 // Show success alert and close modal
@@ -250,12 +235,12 @@ const ProductOrder: React.FC = () => {
                 setAlertMessage(`${response.data.message.message}`);
                 handleCloseModal();
             } else {
-                console.error("Failed to update Product Order Request:", response.data);
-                notyf.error(`Failed to update Product Order Request: ${response.data.message}`);
+                console.log("Failed to update Product Order Request:", response.data);
+                notyf.error(`${response.data.message.message}`);
             }
         } catch (error) {
-            console.error("Error:", error.message || error);
-            notyf.error(`Failed to update Product Order Request: ${error}`);
+            console.log("Error:", error.message || error);
+            notyf.error(`Error: ${error}`);
         }
     };
     
@@ -270,8 +255,8 @@ const ProductOrder: React.FC = () => {
         <Fragment>
             <Pageheader
                 currentpage={"Product Order"}
-                activepage={"/product-order"}
-                activepagename="Product Order"
+                // activepage={"/product-order"}
+                // activepagename="Product Order"
             />
 
             <div className="grid grid-cols-12 gap-x-6 bg-white mt-5 rounded-lg shadow-lg">
@@ -308,6 +293,8 @@ const ProductOrder: React.FC = () => {
 
                                     { header: 'Order Date', accessor: 'order_date' },
                                     { header: 'Product Status', accessor: 'order_status' },
+                                    { header: 'Notes', accessor: 'notes' }
+                                  
                                 ]}
                                 data={filteredData || []}
                                 currentPage={currentPage}
@@ -337,14 +324,17 @@ const ProductOrder: React.FC = () => {
                     productnameLevel="Product Name"
                     giftpointLevel="Points"
                     statusLabel="Order Status"
+                    notesLabel="Notes"
                     orderId={selectedOrderRequest.name}
                     productName={selectedOrderRequest.product_name || ''}
                     giftPoint={selectedOrderRequest.gift_points || 0}
                     status={selectedOrderRequest.order_status || ''}
+                    notes={selectedOrderRequest.notes || ''} 
                     setOrderId={(value) => setSelectedOrderRequest(prev => ({ ...prev, name: value }))}
                     setProductName={(value) => setSelectedOrderRequest(prev => ({ ...prev, product_name: value }))}
                     setGiftPoint={(value) => setSelectedOrderRequest(prev => ({ ...prev, gift_points: value }))}
                     setStatus={(value) => setSelectedOrderRequest(prev => ({ ...prev, order_status: value }))}
+                    setNotes={(value) => setSelectedOrderRequest(prev => ({ ...prev, notes: value }))} // Add setNotes handler
                     onClose={handleCloseModal}
                     onSubmit={handleSubmit}
                     onCancel={handleCancel}               

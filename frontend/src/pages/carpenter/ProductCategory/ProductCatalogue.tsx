@@ -9,18 +9,18 @@ const ProductCatalogue = () => {
 
    // Fetch Product Category data
    const { data: products, error, isLoading } = useFrappeGetDocList('Product Category', {
-    fields: ['name', 'catalogue_image'], // Fetch fields from the Product Category doctype
-    limit: 10, // Adjust limit as needed
+    fields: ['name', 'catalogue_image'], 
+   
   });
 
   return (
     <>
       <Pageheader
         currentpage={"Product Catalogue"}
-        activepage={"/product-catalogue"}
-        mainpage={"/product-catalogue"}
-        activepagename="Product Catalogue"
-        mainpagename="Product Catalogue"
+        // activepage={"/product-catalogue"}
+        // mainpage={"/product-catalogue"}
+        // activepagename="Product Catalogue"
+        // mainpagename="Product Catalogue"
       />
       <div className="grid grid-cols-12 gap-x-6 pb-5 mt-5">
         <div className="xxl:col-span-12 xl:col-span-12 lg:col-span-12 col-span-12">
@@ -40,7 +40,7 @@ const ProductCatalogue = () => {
                 <img
                   src={product.catalogue_image || "placeholder-image-url.png"}
                   alt={product.name}
-                  className="w-full h-48 object-cover rounded-[10px]"
+                  className="w-full h-48 object-cover rounded-[10px] bg-white"
                 />
                 <h3 className="mt-4 text-center text-defaultsize font-normal text-black">
                   {product.name}

@@ -8,7 +8,7 @@ from frappe import _
 @frappe.whitelist()
 def get_users():
     try:
-        users = frappe.get_all("User", fields=["name", "email", "mobile_no", "user_image","new_password"])
+        users = frappe.get_list("User", fields=["name", "email", "mobile_no", "user_image","new_password"])
         
         # Check if users were retrieved
         if users:
@@ -105,10 +105,51 @@ def get_user_details(name):
 #         frappe.log_error(frappe.get_traceback(), _("API Error"))
 #         return {"status": "error", "message": str(e)}
 
+@frappe.whitelist()
+def check_username_availability(username, mobileno=None):
+    try:
+        
+        current_user = frappe.session.user
+        
+         # Get current user's roles
+        user_roles = frappe.get_roles(current_user)
 
-@frappe.whitelist(allow_guest=True)
+        # Allow only Administrator or users with "Admin" role
+        if current_user != "Administrator" and "Admin" not in user_roles:
+            return {"success": False, "message": "Permission denied"}
+
+        if not username:
+            return {"success": False, "message": "Username required"}
+
+        
+        user_data = frappe.get_cached_doc("User", current_user)
+
+        # Check username
+        if username != user_data.username and frappe.db.exists("User", {"username": username}):
+            return {"success": False, "message": "Username already exists"}
+
+        # Check mobile
+        if mobileno and mobileno != user_data.mobile_no and frappe.db.exists("User", {"mobile_no": mobileno}):
+            return {"success": False, "message": "Mobile number exists"}
+
+        return {"success": True, "message": "Available"}
+
+    except Exception as e:
+        return {"success": False, "message": str(e)}
+
+
+@frappe.whitelist(allow_guest=False)
 def update_user_details():
     try:
+        current_user = frappe.session.user
+        
+         # Get current user's roles
+        user_roles = frappe.get_roles(current_user)
+
+        # Allow only Administrator or users with "Admin" role
+        if current_user != "Administrator" and "Admin" not in user_roles:
+            return {"success": False, "message": "Permission denied"}
+
         user_data = frappe.form_dict
         name_or_email = user_data.get('name')
 
@@ -127,6 +168,23 @@ def update_user_details():
                 return {"status": "error", "message": "User not found."}
             
             user = frappe.get_doc("User", user)
+        # Ensure user is a valid User document
+        if not user_data.first_name:
+            return {"status": "error", "message": "First name is required."}
+        if not user_data.last_name:
+            return {"status": "error", "message": "Last name is required."}
+        if not user_data.full_name:
+            return {"status": "error", "message": "Full name is required."}
+        if not user_data.username:
+            return {"status": "error", "message": "Username is required."}
+        
+        # new_username = user_data.get("username")
+
+        # Check if username already exists for another user
+        # existing_user = frappe.db.get_value("User", {"username": new_username}, "name")
+        # if existing_user and existing_user != user_data.username:
+        #     frappe.log_error(frappe.get_traceback(), _("Username Already Exists"))
+        #     return {"status": "error", "message": "Username already exists."}
 
         # Update the fields...
         user.first_name = user_data.get('first_name', user.first_name)
@@ -155,9 +213,18 @@ def update_user_details():
 
 
     
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist(allow_guest=False)
 def update_user_image(name, new_image_url):
     try:
+        current_user = frappe.session.user
+        
+         # Get current user's roles
+        user_roles = frappe.get_roles(current_user)
+
+        # Allow only Administrator or users with "Admin" role
+        if current_user != "Administrator" and "Admin" not in user_roles:
+            return {"success": False, "message": "Permission denied"}
+
         # Fetch User document based on email
         user = frappe.get_doc("User", {"email": name})
 
@@ -175,14 +242,23 @@ def update_user_image(name, new_image_url):
         
     
 # Remove user Profile 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist(allow_guest=False)
 def remove_user_image(name):
     try:
+        current_user = frappe.session.user
+        
+         # Get current user's roles
+        user_roles = frappe.get_roles(current_user)
+
+        # Allow only Administrator or users with "Admin" role
+        if current_user != "Administrator" and "Admin" not in user_roles:
+            return {"success": False, "message": "Permission denied"}
+
         # Fetch User document based on email
-        user = frappe.get_doc("User", {"name": name})
+        user = frappe.get_doc("User", {"email": name})
 
         # Reset or remove user's image (example: setting it to None)
-        user.user_image = None  # Assuming 'user_image' is the field name for image
+        user.user_image = None  
 
         # Save changes
         user.save()
@@ -195,9 +271,18 @@ def remove_user_image(name):
 
 
 # Update password ------
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist(allow_guest=False)
 def update_password_without_current():
     try:
+        current_user = frappe.session.user
+        
+         # Get current user's roles
+        user_roles = frappe.get_roles(current_user)
+
+        # Allow only Administrator or users with "Admin" role
+        if current_user != "Administrator" and "Admin" not in user_roles:
+            return {"success": False, "message": "Permission denied"}
+
         user_data = frappe.form_dict  # Use form_dict to get form data
         email = user_data.get('email')
         new_password = user_data.get('new_password')
@@ -219,10 +304,19 @@ def update_password_without_current():
     
     
 # Get Gender Doctype list-----
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist(allow_guest=False)
 def get_all_gender():
     try:
-        genders = frappe.get_list("Gender", filters={}, fields=["name"])
+        current_user = frappe.session.user
+        
+         # Get current user's roles
+        user_roles = frappe.get_roles(current_user)
+
+        # Allow only Administrator or users with "Admin" role
+        if current_user != "Administrator" and "Admin" not in user_roles:
+            return {"success": False, "message": "Permission denied"}
+
+        genders = frappe.get_list("Gender", filters={}, fields=["name"],order_by="name asc")
         return genders
     except Exception as e:
         frappe.throw(_("Error fetching genders: {0}").format(str(e)))

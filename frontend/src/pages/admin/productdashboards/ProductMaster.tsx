@@ -30,9 +30,11 @@ const ProductMaster: React.FC = () => {
     const [alertMessage, setAlertMessage] = useState('');
     const [alertTitle, setAlertTitle] = useState('');
     const [searchQuery, setSearchQuery] = useState('');
-    const [itemsPerPage] = useState(5);
+    const [itemsPerPage] = useState(10);
     const [productToDelete, setProductToDelete] = useState<Product | null>(null);
     const [isConfirmDeleteModalOpen, setIsConfirmDeleteModalOpen] = useState(false);
+    const [qrDataResponse, setQrDataResponse] = useState<any[]>([]);
+
     const { data: productsData, mutate: mutateProducts } = useFrappeGetDocList<Product>('Product', {
         fields: ['name', 'product_name', 'category', 'reward_points', 'product_price'],
          // limit_start: pageIndex * 10,
@@ -43,21 +45,69 @@ const ProductMaster: React.FC = () => {
          }
     });
     // Fetch Product QR Data
-    const { data: productQRData } = useFrappeGetDocList<Product>('Product QR', {
+    const { data: productQRData,mutate: mutateQR } = useFrappeGetDocList<Product>('Product QR', {
         fields: ['name', 'product_name', 'quantity']
     });
+    
     // Combine Product and Product QR Data
+    // const combinedData = productsData?.map(product => {
+    //     const qrData = productQRData?.find(qr => qr.product_name === product.name);
+    //     return {
+    //         ...product,
+    //         quantity: qrData?.quantity || 0
+    //     };
+    // });
+
+  // Combine Product and Product QR Data with API response data
     const combinedData = productsData?.map(product => {
-        const qrData = productQRData?.find(qr => qr.product_name === product.name);
+        // Try to find matching data from API response first
+        const apiResponseItem = qrDataResponse.find(item => item.product_name === product.name);
+        
+        // If not found in API response, use existing QR data
+        const matchingQRs = apiResponseItem 
+            ? [{ quantity: apiResponseItem.quantity }] 
+            : productQRData?.filter(qr => qr.product_name === product.name);
+        
+        const totalQuantity = matchingQRs?.reduce((sum, qr) => sum + (qr.quantity || 0), 0) || 0;
+        
         return {
             ...product,
-            quantity: qrData?.quantity || 0
+            quantity: totalQuantity
         };
-    });
+    }) || [];
+
     const navigate = useNavigate();
+
+    // Function to refresh all quantities
+    const refreshQuantities = async () => {
+        try {
+            setLoading(true);
+            const response = await axios.post('/api/method/reward_management.api.print_qr_code.update_all_product_qr_quantities');
+            
+            if (response.data && response.data.message && response.data.message.success === true) {
+                // console.log("QR data response:", response.data.message);
+                
+                // Store the API response data
+                setQrDataResponse(response.data.message.data || []);
+            
+                // Refresh both datasets
+                await Promise.all([mutateProducts(), mutateQR()]);
+            } else {
+                console.log(response.data?.message?.message || 'Unknown error occurred');
+            }
+        } catch (error) {
+            console.log('Error refreshing quantities:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
 
     useEffect(() => {
         document.title = 'Products Dashboard';
+        // Initial data load
+        refreshQuantities();
+
         if (showSuccessAlert) {
             const timer = setTimeout(() => {
                 setShowSuccessAlert(false);
@@ -204,10 +254,9 @@ const ProductMaster: React.FC = () => {
         <Fragment>
             <Pageheader
                 currentpage={"Product Master"}
-                activepage={"/product-master"}
+                // activepage={"/product-master"}
                 // mainpage={"/product-master"} 
-                activepagename='Product Master'
-            // mainpagename='Product Master' 
+                // activepagename='Product Master'
             />
             {/* <Pageheader currentpage={pagecurrentPage} activepage={activePage} mainpage={mainPage}  /> */}
 
@@ -401,6 +450,8 @@ const ProductMaster: React.FC = () => {
                     onClose={closeModal}
                     onCancel={closeModal}
                     onConfirm={handleConfirm}
+                    requiredQuestion={true}
+                    questionErrorMessage="Please enter a valid quantity"
                     title={`Create QR Code for ${selectedProduct.name}`} onSubmit={function (): void {
                         throw new Error('Function not implemented.');
                     }}

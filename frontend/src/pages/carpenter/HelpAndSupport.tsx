@@ -49,9 +49,9 @@ const Faqs = () => {
   <Fragment>
         <Pageheader 
                 currentpage={"Faq's"} 
-                activepage={"/help-and-support"} 
+                // activepage={"/help-and-support"} 
                 // mainpage={"/help-and-support"} 
-                activepagename="Faq's"
+                // activepagename="Faq's"
                 // mainpagename="Faq's"
             />
     {/* <Pageheader currentpage="Faq's" activepage="" mainpage="Faq's" /> */}

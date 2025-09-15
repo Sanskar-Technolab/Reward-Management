@@ -86,3 +86,79 @@ def generate_keys(user):
     frappe.db.commit()
 
     return api_secret
+
+
+
+
+# get session user roles-----------
+@frappe.whitelist(allow_guest=False)
+def get_user_roles():
+    try:
+        user = frappe.session.user
+
+        if user == "Guest":
+            return {
+                "success": False,
+                "message": "You are not logged in.",
+                "data": {}
+            }
+
+        roles = frappe.get_roles(user)
+
+        return {
+            "success": True,
+            "message": "User roles retrieved successfully.",
+            "data": {
+                "user": user,
+                "roles": roles
+            }
+        }
+    except Exception as e:
+        frappe.log_error("API Get User Roles Error", str(e))
+        return {
+            "success": False,
+            "message": f"Failed to get user roles: {str(e)}"
+        }
+
+
+@frappe.whitelist(allow_guest=False)
+def get_user_roles(user_id=None):
+    """
+    Get roles for a specific user
+    Args:
+        user_id (str): The username to get roles for (defaults to current user)
+    Returns:
+        dict: Contains user roles and other basic info
+    """
+    
+    # If no user_id provided, use current user
+    if not user_id:
+        user_id = frappe.session.user
+    
+    # Validate the requesting user has permission
+    if frappe.session.user != user_id and "System Manager" not in frappe.get_roles():
+        frappe.throw(("Not permitted"), frappe.PermissionError)
+    
+    try:
+        user = frappe.get_doc("User", user_id)
+        
+        # Get all roles (including inherited from roles)
+        roles = frappe.get_roles(user_id)
+        
+        return {
+            "success": True,
+            "data": {
+                "username": user_id,
+                "full_name": user.full_name,
+                "roles": roles,
+                "email": user.email
+            }
+        }
+    
+    except Exception as e:
+        frappe.log_error(f"Failed to get roles for user {user_id}: {str(e)}")
+        return {
+            "success": False,
+            "error": str(e),
+            "message": "Failed to fetch user roles"
+        }

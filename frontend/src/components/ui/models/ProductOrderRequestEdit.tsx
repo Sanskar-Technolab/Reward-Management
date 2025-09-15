@@ -1,4 +1,5 @@
 import React from 'react';
+// import { useState } from 'react';
 
 interface ViewModalProps {
     title: string;
@@ -9,7 +10,9 @@ interface ViewModalProps {
     orderId: string;
     productName: string;
     giftPoint : number;
+    notesLabel?: string;
     status: string;
+    notes?: string;
     onClose: () => void;
     onSubmit: () => void;
     onCancel: () => void;
@@ -17,6 +20,7 @@ interface ViewModalProps {
     setProductName: (value: string) => void;
     setGiftPoint:(value: number)=> void;
     setStatus: (value: string) => void;
+    setNotes?: (value: string) => void;
    
 }
 
@@ -28,6 +32,7 @@ const ProductOrderRequestEdit: React.FC<ViewModalProps> = ({
     statusLabel,
     giftPoint,
     orderId,
+    notes = '',
     productName,
     status,
     onClose,
@@ -37,9 +42,11 @@ const ProductOrderRequestEdit: React.FC<ViewModalProps> = ({
     setProductName,
     setGiftPoint,
     setStatus,
+    setNotes = () => {},
   
 }) => {
     const isStatusDisabled = status === 'Approved' || status === 'Cancel';
+    const showNotesField = (status === 'Approved' || status === 'Cancel') && setNotes;
 
 
     return (
@@ -98,10 +105,28 @@ const ProductOrderRequestEdit: React.FC<ViewModalProps> = ({
                                 onChange={(e) => setStatus(e.target.value)}
                             >
                                 <option value="Pending" disabled={isStatusDisabled}>Pending</option>
-                                <option value="Approved">Approved</option>
-                                <option value="Cancel">Cancel</option>
+                                 {/* <option value="Approved" >Approved</option>
+                                <option value="Cancel" >Cancel</option> */}
+                                <option value="Approved" disabled={status === 'Cancel'}>Approved</option>
+                                <option value="Cancel" disabled={status === 'Approved'}>Cancel</option>
                             </select>
                         </div>
+
+                        {showNotesField && (
+                            <div className="xl:col-span-12 col-span-12 mb-4">
+                                <label htmlFor="notes" className="form-label text-sm text-defaulttextcolor font-semibold">
+                                    Notes
+                                </label>
+                                <textarea
+                                    className="form-control w-full rounded-5px border border-[#dadada] mt-2 text-sm p-2 focus:border-primary focus:ring-0"
+                                    placeholder="Enter notes here"
+                                    id="notes"
+                                    value={notes}
+                                    onChange={(e) => setNotes(e.target.value)}
+                                    rows={3}
+                                />
+                            </div>
+                        )}
                         
                     </div>
                     <div className='border-t border-defaultborder p-4 flex justify-end'>

@@ -41,9 +41,6 @@ def create_redeem_request(customer_id, redeemed_points):
     try:
         # Fetch current point status for the customer
         current_point_status = frappe.get_value("Customer", customer_id, "total_points")
-        
-        
-        
         # Ensure redeemed_points is an integer
         redeemed_points = int(redeemed_points)
 
@@ -97,7 +94,12 @@ def create_redeem_request(customer_id, redeemed_points):
         print(f"Creation Date: {redeem_request.creation}")
         
         # Return success message
-        return _("Redeem Request created successfully.")
+        return {
+            "success":True,
+            "message":"Redeem Request created successfully.",
+            "data":redeem_request.name
+            
+            }
     
     except Exception as e:
         # Log error and raise exception

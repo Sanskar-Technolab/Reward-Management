@@ -78,24 +78,25 @@ const Modalsearch = ({ isOpen, onClose }: any) => {
 
   const myfunction = (inputValue: any) => {
     document.querySelector(".search-result")?.classList.remove("d-none");
-
+  
     const filteredSidebarData = filterSidebarData();
     const searchResults: any = [];
-
+  
     filteredSidebarData.forEach((item: any) => {
-      if (item.title.toLowerCase().includes(inputValue.toLowerCase())) {
+      // Skip parent menus with subNav and no direct path
+      if (!item.subNav && item.path && item.title.toLowerCase().includes(inputValue.toLowerCase())) {
         searchResults.push(item);
       }
-
+  
       if (item.subNav) {
         item.subNav.forEach((subItem: any) => {
-          if (subItem.title.toLowerCase().includes(inputValue.toLowerCase())) {
+          if (subItem.path && subItem.title.toLowerCase().includes(inputValue.toLowerCase())) {
             searchResults.push(subItem);
           }
-
+  
           if (subItem.subNav) {
             subItem.subNav.forEach((deepSubItem: any) => {
-              if (deepSubItem.title.toLowerCase().includes(inputValue.toLowerCase())) {
+              if (deepSubItem.path && deepSubItem.title.toLowerCase().includes(inputValue.toLowerCase())) {
                 searchResults.push(deepSubItem);
               }
             });
@@ -103,6 +104,48 @@ const Modalsearch = ({ isOpen, onClose }: any) => {
         });
       }
     });
+  
+  //   if (searchResults.length > 0 && inputValue !== "") {
+  //     setShow1(true);
+  //     setShow2(true);
+  //     setsearchcolor("text-dark");
+  //     setsearchval(`Search results for '${inputValue}'`);
+  //     setNavData(searchResults);
+  //   } else {
+  //     setShow1(false);
+  //     setShow2(false);
+  //     setsearchcolor('text-danger');
+  //     setsearchval("No results found");
+  //   }
+  // };
+  
+  // const myfunction = (inputValue: any) => {
+  //   document.querySelector(".search-result")?.classList.remove("d-none");
+
+  //   const filteredSidebarData = filterSidebarData();
+  //   const searchResults: any = [];
+
+  //   filteredSidebarData.forEach((item: any) => {
+  //     if (item.title.toLowerCase().includes(inputValue.toLowerCase())) {
+  //       searchResults.push(item);
+  //     }
+
+  //     if (item.subNav) {
+  //       item.subNav.forEach((subItem: any) => {
+  //         if (subItem.title.toLowerCase().includes(inputValue.toLowerCase())) {
+  //           searchResults.push(subItem);
+  //         }
+
+  //         if (subItem.subNav) {
+  //           subItem.subNav.forEach((deepSubItem: any) => {
+  //             if (deepSubItem.title.toLowerCase().includes(inputValue.toLowerCase())) {
+  //               searchResults.push(deepSubItem);
+  //             }
+  //           });
+  //         }
+  //       });
+  //     }
+  //   });
 
     if (searchResults.length > 0 && inputValue !== "") {
       setShow1(true);
@@ -125,7 +168,7 @@ const Modalsearch = ({ isOpen, onClose }: any) => {
   return (
     <Fragment>
       {isOpen && (
-        <div id="search-modal" className="hs-overlay ti-modal mt-[1.75rem]  ">
+        <div id="search-modal" className="hs-overlay ti-modal mt-[1.75rem]" >
           <div className="ti-modal-box" ref={modalRef}>
             <div className="ti-modal-content !border !border-defaultborder dark:!border-defaultborder !rounded-[0.5rem]">
               <div className="ti-modal-body m-2">

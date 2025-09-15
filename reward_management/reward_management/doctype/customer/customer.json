@@ -17,10 +17,15 @@
   "total_points",
   "current_points",
   "redeem_points",
+  "total_pending_order_points",
   "city",
   "image",
   "section_break_z17c",
-  "point_history"
+  "point_history",
+  "product_point_history_tab",
+  "product_point_history",
+  "gift_point_history_tab",
+  "gift_point_history"
  ],
  "fields": [
   {
@@ -69,19 +74,22 @@
   {
    "fieldname": "total_points",
    "fieldtype": "Float",
-   "label": "Total Points"
+   "label": "Total Points",
+   "non_negative": 1
   },
   {
    "fieldname": "current_points",
    "fieldtype": "Float",
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "label": "Current Points"
+   "label": "Current Points",
+   "non_negative": 1
   },
   {
    "fieldname": "redeem_points",
    "fieldtype": "Float",
-   "label": "Redeem Points"
+   "label": "Redeem Points",
+   "non_negative": 1
   },
   {
    "fieldname": "city",
@@ -111,12 +119,39 @@
    "fieldname": "enabled",
    "fieldtype": "Check",
    "label": "Enabled"
+  },
+  {
+   "fieldname": "product_point_history",
+   "fieldtype": "HTML",
+   "label": "Product Point History"
+  },
+  {
+   "fieldname": "gift_point_history",
+   "fieldtype": "HTML",
+   "label": "Gift Point History"
+  },
+  {
+   "fieldname": "product_point_history_tab",
+   "fieldtype": "Tab Break",
+   "label": "Product Point History"
+  },
+  {
+   "fieldname": "gift_point_history_tab",
+   "fieldtype": "Tab Break",
+   "label": "Gift Point History"
+  },
+  {
+   "fieldname": "total_pending_order_points",
+   "fieldtype": "Float",
+   "label": "Total Pending Order Points",
+   "non_negative": 1
   }
  ],
+ "grid_page_length": 50,
  "image_field": "image",
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-12-30 16:13:41.046428",
+ "modified": "2025-09-12 12:41:29.270842",
  "modified_by": "Administrator",
  "module": "Reward Management",
  "name": "Customer",
@@ -136,7 +171,11 @@
    "write": 1
   }
  ],
+ "row_format": "Dynamic",
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "track_changes": 1,
+ "track_seen": 1,
+ "track_views": 1
 }

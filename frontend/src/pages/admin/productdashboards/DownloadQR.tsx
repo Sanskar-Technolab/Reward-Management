@@ -50,7 +50,11 @@ const DownloadQRCode: React.FC = () => {
             }
 
             try {
-                const response = await axios.get(`/api/method/reward_management.api.print_qr_code.get_product_by_name`, {
+                // const response = await axios.get(`/api/method/reward_management.api.print_qr_code.get_product_by_name`, {
+                //     params: { productName },
+                // });get_qr_data
+
+                const response = await axios.get(`/api/method/reward_management.api.print_qr_code.get_product_qr_by_name`, {
                     params: { productName },
                 });
 
@@ -133,7 +137,7 @@ const DownloadQRCode: React.FC = () => {
       };
 
     const handleAddProductClick = () => {
-        console.log("Back button clicked");
+        // console.log("Back button clicked");
         navigate('/product-master');
     };
 
@@ -157,13 +161,13 @@ const DownloadQRCode: React.FC = () => {
 
     const handleConfirmDownload = async (selectedSize: any) => {
     if (!selectedProduct) {
-        console.error("No product selected.");
+        console.log("No product selected.");
         return;
     }
     console.log("Selected Product:", selectedProduct.product_name);
 
     if (!selectedProduct.qr_code_images || selectedProduct.qr_code_images.length === 0) {
-        console.error("No QR images found.");
+        console.log("No QR images found.");
         return;
     }
 
@@ -367,7 +371,7 @@ const DownloadQRCode: React.FC = () => {
         
         
     } else {
-        console.error("Invalid size selected.");
+        console.log("Invalid size selected.");
         return;
     }
 

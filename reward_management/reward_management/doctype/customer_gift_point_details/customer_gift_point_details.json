@@ -1,0 +1,149 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "naming_series:",
+ "creation": "2025-06-02 16:32:33.259302",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "naming_series",
+  "gift_id",
+  "deduct_gift_points",
+  "gift_image",
+  "notes",
+  "column_break_qfav",
+  "gift_product_name",
+  "date",
+  "time",
+  "customer_id",
+  "customer_name",
+  "email",
+  "mobile_number"
+ ],
+ "fields": [
+  {
+   "fieldname": "gift_id",
+   "fieldtype": "Link",
+   "in_filter": 1,
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Gift ID",
+   "options": "Gift Product"
+  },
+  {
+   "fetch_from": "gift_id.gift_product_name",
+   "fieldname": "gift_product_name",
+   "fieldtype": "Data",
+   "label": "Gift Product Name"
+  },
+  {
+   "fieldname": "date",
+   "fieldtype": "Date",
+   "in_filter": 1,
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Date"
+  },
+  {
+   "fieldname": "deduct_gift_points",
+   "fieldtype": "Float",
+   "in_filter": 1,
+   "in_list_view": 1,
+   "in_preview": 1,
+   "label": "Deduct Gift Points"
+  },
+  {
+   "fieldname": "column_break_qfav",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "gift_image",
+   "fieldtype": "Attach Image",
+   "in_preview": 1,
+   "label": "Gift Image"
+  },
+  {
+   "fieldname": "time",
+   "fieldtype": "Time",
+   "in_filter": 1,
+   "in_list_view": 1,
+   "in_preview": 1,
+   "label": "Time"
+  },
+  {
+   "default": "GIFTPOINT.-.YYYY.-.#####",
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "label": "Naming Series",
+   "options": "GIFTPOINT.-.YYYY.-.#####"
+  },
+  {
+   "fieldname": "customer_id",
+   "fieldtype": "Link",
+   "in_filter": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Customer ID",
+   "options": "Customer"
+  },
+  {
+   "fetch_from": "customer_id.first_name",
+   "fieldname": "customer_name",
+   "fieldtype": "Data",
+   "in_filter": 1,
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Customer Name"
+  },
+  {
+   "fieldname": "notes",
+   "fieldtype": "Small Text",
+   "label": "Notes"
+  },
+  {
+   "fetch_from": "customer_id.email",
+   "fieldname": "email",
+   "fieldtype": "Data",
+   "in_filter": 1,
+   "in_standard_filter": 1,
+   "label": "Email"
+  },
+  {
+   "fetch_from": "customer_id.mobile_number",
+   "fieldname": "mobile_number",
+   "fieldtype": "Data",
+   "label": "Mobile Number"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-07-29 14:45:55.520095",
+ "modified_by": "Administrator",
+ "module": "Reward Management",
+ "name": "Customer Gift Point Details",
+ "naming_rule": "By \"Naming Series\" field",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

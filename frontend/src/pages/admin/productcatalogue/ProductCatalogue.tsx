@@ -263,8 +263,8 @@ const ProductCatalogue: React.FC = () => {
         <>
             <Pageheader
                 currentpage={"Product Catalogue"}
-                activepage={"/product-catagory"}
-                activepagename="Product Catalogue"
+                // activepage={"/product-catagory"}
+                // activepagename="Product Catalogue"
             />
 
             <div className="grid grid-cols-12 gap-x-6 bg-white mt-5 rounded-lg shadow-lg">
