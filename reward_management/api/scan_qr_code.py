@@ -218,7 +218,7 @@ def scan_qr_code_image(decode_text):
 
             if customer_doc.total_points != qr_points_sum or customer_doc.total_points != earned_points_sum:
                 customer_doc.total_points = qr_points_sum
-                customer_doc.current_points = customer_doc.total_points - (customer_doc.redeemed_points or 0)
+                customer_doc.current_points = customer_doc.total_points - (customer_doc.redeem_points or 0)
                 customer_doc.save(ignore_permissions=True)
 
             frappe.db.commit()
@@ -652,18 +652,6 @@ def scan_and_update_qr_number(product_qr_id):
             if oldest_unscanned and qr_data["name"] != oldest_unscanned["name"]:
                 return {"success": False, "message": "Please scan the older QR code first."}
 
-        # # Handle duplicate QR entries
-        # if len(qr_data_list) > 1:
-        #     qr_data = next((qr for qr in qr_data_list if not qr.scanned), None)
-        #     if not qr_data:
-        #         return {"success": False, "message": "All QRs with this ID are already scanned."}
-        #     if qr_data["name"] != qr_data_list[0]["name"]:
-        #         return {"success": False, "message": "Please scan the older QR code first."}
-        # else:
-        #     qr_data = qr_data_list[0]
-        #     if qr_data["scanned"]:
-        #         return {"success": False, "message": "This QR Number has already been scanned."}
-
         # ---------------------------
         # STEP 2: Validate Product & Reward
         # ---------------------------
@@ -756,7 +744,7 @@ def scan_and_update_qr_number(product_qr_id):
         if customer_doc.total_points != qr_points_sum or customer_doc.total_points != earned_points_sum:
             customer_doc.total_points = qr_points_sum
             # customer_doc.current_points = qr_points_sum
-            customer_doc.current_points = customer_doc.total_points - (customer_doc.redeemed_points or 0)
+            customer_doc.current_points = customer_doc.total_points - (customer_doc.redeem_points or 0)
 
             customer_doc.save(ignore_permissions=True)
 
