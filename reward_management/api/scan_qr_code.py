@@ -218,7 +218,7 @@ def scan_qr_code_image(decode_text):
 
             if customer_doc.total_points != qr_points_sum or customer_doc.total_points != earned_points_sum:
                 customer_doc.total_points = qr_points_sum
-                customer_doc.current_points = qr_points_sum
+                customer_doc.current_points = customer_doc.total_points - (customer_doc.redeemed_points or 0)
                 customer_doc.save(ignore_permissions=True)
 
             frappe.db.commit()
@@ -473,7 +473,7 @@ def get_product_details_from_qr_number(product_qr_id):
 # update qr code status and add point to the customer account after scanning the qr code from the qe code number ------
 
 # scann qr code from the qr code number and rollback if any of process is not running ----------------------
-@frappe.whitelist()
+# @frappe.whitelist()
 # def scan_and_update_qr_number(product_qr_id):
 #     try:
 #         if not product_qr_id:
@@ -755,7 +755,9 @@ def scan_and_update_qr_number(product_qr_id):
 
         if customer_doc.total_points != qr_points_sum or customer_doc.total_points != earned_points_sum:
             customer_doc.total_points = qr_points_sum
-            customer_doc.current_points = qr_points_sum
+            # customer_doc.current_points = qr_points_sum
+            customer_doc.current_points = customer_doc.total_points - (customer_doc.redeemed_points or 0)
+
             customer_doc.save(ignore_permissions=True)
 
         frappe.db.commit()
